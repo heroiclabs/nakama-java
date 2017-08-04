@@ -1,0 +1,97 @@
+/*
+ * Copyright 2017 Heroic Labs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+    }
+}
+
+plugins {
+    id 'com.google.protobuf' version '0.8.2'
+    id 'java'
+    id 'idea'
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+
+group = 'com.heroiclabs.nakama'
+version = '0.1.0'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.16.18'
+    compile 'com.google.code.gson:gson:2.8.1'
+    compile 'com.google.protobuf:protobuf-lite:3.0.1'
+    compile 'com.squareup.okhttp3:okhttp:3.8.1'
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    testCompile 'junit:junit:4.12'
+}
+
+idea {
+    module {
+        sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/java");
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Nakama client',
+                   'Implementation-Version': version
+    }
+}
+
+protobuf {
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                remove java // Don't generate a copy with "protobuf-java".
+            }
+            task.plugins {
+                javalite { // Must activate "javalite" plugin.
+                }
+            }
+        }
+    }
+    plugins {
+        javalite {
+            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
+        }
+    }
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.3.0'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+shadowJar {
+}
+
+sourceSets {
+    main {
+        proto {
+            srcDir "$projectDir/server/server"
+        }
+    }
+}
