@@ -47,7 +47,7 @@ public interface Session {
 
     /**
      * @param currentTimeMillis The current time in milliseconds to compare with token.
-     * @return True if the
+     * @return True if the session has expired.
      */
     boolean isExpired(long currentTimeMillis);
 }

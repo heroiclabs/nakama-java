@@ -20,12 +20,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import lombok.Data;
+import lombok.ToString;
 
 import java.lang.reflect.Type;
 import java.util.Base64;
 import java.util.Map;
 
 @Data
+@ToString(includeFieldNames=true)
 public class DefaultSession implements Session {
 
     private final long createdAt;
