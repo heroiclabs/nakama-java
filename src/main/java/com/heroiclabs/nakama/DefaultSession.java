@@ -27,7 +27,7 @@ import java.util.Base64;
 import java.util.Map;
 
 @Data
-@ToString(includeFieldNames=true)
+@ToString(includeFieldNames = true)
 public class DefaultSession implements Session {
 
     private final long createdAt;

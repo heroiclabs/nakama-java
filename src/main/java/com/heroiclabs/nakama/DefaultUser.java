@@ -16,6 +16,8 @@
 
 package com.heroiclabs.nakama;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +26,33 @@ import lombok.ToString;
 @Data
 @ToString(includeFieldNames = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-class DefaultError implements Error {
+class DefaultUser implements User {
 
-    private final String message;
+    private final String avatarUrl;
 
-    private final ErrorCode code;
+    private final long createdAt;
 
+    private final String fullname;
+
+    private final String handle;
+
+    private final byte[] id;
+
+    private final String lang;
+
+    private final long lastOnlineAt;
+
+    private final String location;
+
+    private final byte[] metadata;
+
+    private final String timezone;
+
+    private final long updatedAt;
+
+    public <T> T getMetadata(final Class<T> clazz) {
+        // TODO move to static type.
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(new String(metadata), clazz);
+    }
 }
