@@ -16,11 +16,27 @@
 
 package com.heroiclabs.nakama;
 
-import com.stumbleupon.async.Deferred;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-public interface Client {
+import java.util.UUID;
 
-    Deferred<Session> login(AuthenticateMessage auth);
-    Deferred<Session> register(AuthenticateMessage auth);
+public class AuthenticateMessageTest {
+
+    private static Client client;
+
+    @BeforeClass
+    public static void init() {
+        client = DefaultClient.builder("defaultkey").build();
+        Assert.assertNotNull(client);
+    }
+
+    @Test
+    public void testDevice() throws Exception {
+        final AuthenticateMessage auth = AuthenticateMessage.device(UUID.randomUUID().toString());
+        final Session session = client.register(auth).join(2000);
+        Assert.assertNotNull(session);
+    }
 
 }

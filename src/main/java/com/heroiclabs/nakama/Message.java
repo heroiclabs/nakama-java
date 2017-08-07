@@ -16,11 +16,5 @@
 
 package com.heroiclabs.nakama;
 
-import com.stumbleupon.async.Deferred;
-
-public interface Client {
-
-    Deferred<Session> login(AuthenticateMessage auth);
-    Deferred<Session> register(AuthenticateMessage auth);
-
+public interface Message {
 }
