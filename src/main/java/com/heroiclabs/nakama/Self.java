@@ -30,7 +30,7 @@ public interface Self extends User {
     /**
      * @return A list of device Ids linked with the user.
      */
-    List<byte[]> getDeviceIds();
+    List<String> getDeviceIds();
 
     /**
      * @return The email address linked with the user.

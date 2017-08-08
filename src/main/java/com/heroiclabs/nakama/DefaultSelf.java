@@ -16,10 +16,7 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 
@@ -52,7 +49,7 @@ class DefaultSelf implements Self {
 
     private final String customId;
 
-    private final List<byte[]> deviceIds;
+    private final List<String> deviceIds;
 
     private final String email;
 
@@ -68,6 +65,15 @@ class DefaultSelf implements Self {
 
     public <T> T getMetadata(final Class<T> clazz) {
         return DefaultClient.GSON.fromJson(new String(metadata), clazz);
+    }
+
+    static Self fromProto(final @NonNull com.heroiclabs.nakama.Api.Self self) {
+        return new DefaultSelf(self.getUser().getAvatarUrl(), self.getUser().getCreatedAt(),
+                self.getUser().getFullname(), self.getUser().getHandle(), self.getUser().getId().toByteArray(),
+                self.getUser().getLang(), self.getUser().getLastOnlineAt(), self.getUser().getLocation(),
+                self.getUser().getMetadata().toByteArray(), self.getUser().getTimezone(), self.getUser().getUpdatedAt(),
+                self.getCustomId(), self.getDeviceIdsList(), self.getEmail(), self.getFacebookId(),
+                self.getGamecenterId(), self.getGoogleId(), self.getSteamId(), self.getVerified());
     }
 
 }

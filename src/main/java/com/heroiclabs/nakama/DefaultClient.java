@@ -192,31 +192,34 @@ public class DefaultClient implements Client {
                     return;
                 }
 
-                final Deferred def;
-                final String collationId;
-                if ((collationId = envelope.getCollationId()) != null) {
-                    def = collationIds.get(collationId);
-                    if (def == null) {
-                        // TODO notify a listener about not finding the deferred caller to respond to, or log a warning?
-                        return;
-                    }
+                final String collationId = envelope.getCollationId();
+                if (collationId == null) {
+                    // TODO handle purely incoming messages.
+                    return;
+                }
+
+                final Deferred def = collationIds.get(collationId);
+                if (def == null) {
+                    // TODO notify a listener about not finding the deferred caller to respond to, or log a warning?
+                    return;
                 }
 
                 switch (envelope.getPayloadCase()) {
                     case ERROR:
-                        deferred.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode()));
+                        def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode()));
                         break;
                     case SELF:
-
+                        def.callback(DefaultSelf.fromProto(envelope.getSelf().getSelf()));
+                        break;
                     default:
-                        deferred.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode()));
+                        def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode()));
                 }
             }
 
             @Override
             public void onClosing(WebSocket webSocket, int code, String reason) {
                 super.onClosing(webSocket, code, reason);
-                // No action here.
+                // No action needed here.
             }
 
             @Override

@@ -20,8 +20,6 @@ import lombok.NonNull;
 
 public interface AuthenticateMessage extends CollatedMessage<Session> {
 
-    com.heroiclabs.nakama.Api.AuthenticateRequest.Builder getPayload();
-
     static AuthenticateMessage custom(final @NonNull String id) {
         final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
                 com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
