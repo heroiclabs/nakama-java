@@ -26,7 +26,10 @@ import okhttp3.*;
 import okio.ByteString;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class DefaultClient implements Client {
@@ -45,7 +48,10 @@ public class DefaultClient implements Client {
     private final int timeout;
     private final boolean noDelay;
 
+    private final Map<String, Deferred> collationIds;
+
     private final OkHttpClient client;
+    private WebSocket socket;
 
     private DefaultClient(final String serverKey, final String host, final int port, final String lang,
                           final boolean ssl, final int timeout, final boolean noDelay) {
@@ -56,6 +62,8 @@ public class DefaultClient implements Client {
         this.ssl = ssl;
         this.timeout = timeout;
         this.noDelay = noDelay;
+
+        collationIds = new ConcurrentHashMap<>();
 
         client = new OkHttpClient.Builder()
                 .connectTimeout(3000, TimeUnit.MILLISECONDS)
@@ -75,10 +83,7 @@ public class DefaultClient implements Client {
     private Deferred<Session> authenticate(final AuthenticateMessage auth, final String path) {
         final Deferred<Session> deferred = new Deferred<>();
 
-        final byte[] payload = auth.getPayload()
-                .setCollationId(UUID.randomUUID().toString())
-                .build()
-                .toByteArray();
+        final byte[] payload = auth.asBytes(UUID.randomUUID().toString());
 
         final HttpUrl url = new HttpUrl.Builder()
                 .scheme(ssl ? "https" : "http")
@@ -131,7 +136,31 @@ public class DefaultClient implements Client {
         return deferred;
     }
 
-    public static DefaultClient defaults(String serverKey) {
+    public Deferred<Void> connect(Session session) {
+        final Deferred<Void> deferred = new Deferred<>();
+
+        final String url = new HttpUrl.Builder()
+                .scheme(ssl ? "https" : "http")
+                .host(host)
+                .port(port)
+                .encodedPath("/api")
+                .build()
+                .toString()
+                .replaceFirst("http", "ws");
+
+        final Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        return deferred;
+    }
+
+    public Deferred<Void> disconnect() {
+        final Deferred<Void> deferred = new Deferred<>();
+        return deferred;
+    }
+
+    public static Client defaults(String serverKey) {
         return builder(serverKey).build();
     }
 
@@ -149,7 +178,7 @@ public class DefaultClient implements Client {
         private int timeout = 5000;
         private boolean noDelay = true;
 
-        public DefaultClient build() {
+        public Client build() {
             return new DefaultClient(serverKey, host, port, lang, ssl, timeout, noDelay);
         }
 

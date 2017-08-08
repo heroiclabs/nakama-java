@@ -17,12 +17,20 @@
 package com.heroiclabs.nakama;
 
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
  * An error caused from an operation with the server.
  */
-public interface Error {
+public abstract class Error extends Exception {
+
+    /**
+     * @param message The error message to construct with.
+     */
+    public Error(final @NonNull String message) {
+        super(message);
+    }
 
     /**
      * The error code for the problem.
@@ -54,10 +62,5 @@ public interface Error {
     /**
      * @return The code for the error.
      */
-    ErrorCode getCode();
-
-    /**
-     * @return The message of the error.
-     */
-    String getMessage();
+    abstract ErrorCode getCode();
 }

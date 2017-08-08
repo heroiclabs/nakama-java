@@ -23,7 +23,8 @@ package com.heroiclabs.nakama;
  */
 public interface CollatedMessage<T> {
     /**
-     * @return The unique identifier for the message acknowledgement.
+     * @param collationId The collation ID to assign to the serialized message instance.
+     * @return The serialized format of the message.
      */
-    String getCollationId();
+    byte[] asBytes(String collationId);
 }

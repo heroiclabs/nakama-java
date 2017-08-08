@@ -16,18 +16,19 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(includeFieldNames = true)
-class DefaultError extends Error {
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+class DefaultAuthenticateMessage implements AuthenticateMessage {
 
-    private final ErrorCode code;
+    private final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload;
 
-    DefaultError(final @NonNull String message, final @NonNull ErrorCode code) {
-        super(message);
-        this.code = code;
+    public byte[] asBytes(final @NonNull String collationId) {
+        return payload.clone().setCollationId(collationId).build().toByteArray();
     }
 
 }

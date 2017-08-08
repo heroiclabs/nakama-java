@@ -20,4 +20,8 @@ package com.heroiclabs.nakama;
  * A message which requires no acknowledgement by the server.
  */
 public interface Message {
+    /**
+     * @return The serialized format of the message.
+     */
+    byte[] asBytes();
 }

@@ -33,4 +33,15 @@ public interface Client {
      * @return A {@code Session} for the user.
      */
     Deferred<Session> register(AuthenticateMessage message);
+
+    /**
+     * @param session The {@code Session} to connect the socket with.
+     * @return Placeholder return type to allow chaining operations.
+     */
+    Deferred<Void> connect(Session session);
+
+    /**
+     * @return Placeholder return type to allow chaining operations.
+     */
+    Deferred<Void> disconnect();
 }
