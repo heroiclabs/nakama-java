@@ -16,17 +16,16 @@
 
 package com.heroiclabs.nakama;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Data
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthenticateMessage {
 
     private final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload;
-
-    private AuthenticateMessage(final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload) {
-        this.payload = payload;
-    }
 
     public static AuthenticateMessage custom(final @NonNull String id) {
         final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =

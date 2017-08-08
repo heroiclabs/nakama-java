@@ -18,9 +18,19 @@ package com.heroiclabs.nakama;
 
 import com.stumbleupon.async.Deferred;
 
+/**
+ * A client for the Nakama server.
+ */
 public interface Client {
+    /**
+     * @param message The {@code AuthenticateMessage} to send to the server.
+     * @return A {@code Session} for the user.
+     */
+    Deferred<Session> login(AuthenticateMessage message);
 
-    Deferred<Session> login(AuthenticateMessage auth);
-    Deferred<Session> register(AuthenticateMessage auth);
-
+    /**
+     * @param message The {@code AuthenticateMessage} to send to the server.
+     * @return A {@code Session} for the user.
+     */
+    Deferred<Session> register(AuthenticateMessage message);
 }

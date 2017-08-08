@@ -16,8 +16,14 @@
 
 package com.heroiclabs.nakama;
 
-public interface CollatedMessage<T> extends Message {
-
+/**
+ * A message which returns a response from the server.
+ *
+ * @param <T> The type of the message response.
+ */
+public interface CollatedMessage<T> {
+    /**
+     * @return The unique identifier for the message acknowledgement.
+     */
     String getCollationId();
-
 }

@@ -16,5 +16,8 @@
 
 package com.heroiclabs.nakama;
 
+/**
+ * A message which requires no acknowledgement by the server.
+ */
 public interface Message {
 }
