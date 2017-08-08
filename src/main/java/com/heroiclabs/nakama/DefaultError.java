@@ -30,4 +30,9 @@ class DefaultError extends Error {
         this.code = code;
     }
 
+    DefaultError(final @NonNull String message, final int code) {
+        super(message);
+        this.code = ErrorCode.fromInt(code);
+    }
+
 }

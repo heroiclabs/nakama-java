@@ -16,8 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -69,9 +67,7 @@ class DefaultSelf implements Self {
     private final boolean verified;
 
     public <T> T getMetadata(final Class<T> clazz) {
-        // TODO move to static type.
-        Gson gson = new GsonBuilder().create();
-        return gson.fromJson(new String(metadata), clazz);
+        return DefaultClient.GSON.fromJson(new String(metadata), clazz);
     }
 
 }

@@ -20,6 +20,10 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * An error caused from an operation with the server.
  */
@@ -57,6 +61,19 @@ public abstract class Error extends Exception {
         RUNTIME_FUNCTION_EXCEPTION(17);
 
         private final int code;
+
+        // Static helpers to transform wire protocol int codes into their enum equivalents.
+        private static final Map<Integer, ErrorCode> codeMappings;
+        static {
+            Map<Integer, ErrorCode> codes = new HashMap<>();
+            for (ErrorCode code : ErrorCode.values()) {
+                codes.put(code.code, code);
+            }
+            codeMappings = Collections.unmodifiableMap(codes);
+        }
+        static ErrorCode fromInt(final int code) {
+            return codeMappings.getOrDefault(code + 1, ErrorCode.UNKNOWN);
+        }
     }
 
     /**

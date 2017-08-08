@@ -38,10 +38,23 @@ public interface Client {
      * @param session The {@code Session} to connect the socket with.
      * @return Placeholder return type to allow chaining operations.
      */
-    Deferred<Void> connect(Session session);
+    Deferred<Boolean> connect(Session session);
 
     /**
      * @return Placeholder return type to allow chaining operations.
      */
-    Deferred<Void> disconnect();
+    Deferred<Boolean> disconnect();
+
+    /**
+     * @param message The message to send.
+     * @param <T> The expected return type.
+     * @return An instance of the expected return type.
+     */
+    <T> Deferred<T> send(CollatedMessage<T> message);
+
+    /**
+     * @param message The message to send.
+     * @return Placeholder return type to allow chaining operations.
+     */
+    Deferred<Boolean> send(Message message);
 }
