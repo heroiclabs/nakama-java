@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DefaultClient implements Client {
 
-    public final Gson GSON = new GsonBuilder()
+    final Gson GSON = new GsonBuilder()
             .enableComplexMapKeySerialization()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create();
