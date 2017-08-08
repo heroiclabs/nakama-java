@@ -126,14 +126,15 @@ public class DefaultClient implements Client {
                 }
 
                 switch (authResponse.getIdCase()) {
-                    case SESSION:
-                        deferred.callback(DefaultSession.restore(authResponse.getSession().getToken()));
-                        break;
                     case ERROR:
                         deferred.callback(new DefaultError(authResponse.getError().getMessage(), authResponse.getError().getCode()));
                         break;
+                    case SESSION:
+                        deferred.callback(DefaultSession.restore(authResponse.getSession().getToken()));
+                        break;
                     default:
                         deferred.callback(new DefaultError("Unknown response format from server", Error.ErrorCode.UNKNOWN));
+                        break;
                 }
             }
         });
@@ -205,6 +206,9 @@ public class DefaultClient implements Client {
                 }
 
                 switch (envelope.getPayloadCase()) {
+                    case PAYLOAD_NOT_SET:
+                        def.callback(true);
+                        break;
                     case ERROR:
                         def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode()));
                         break;
@@ -213,6 +217,7 @@ public class DefaultClient implements Client {
                         break;
                     default:
                         def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode()));
+                        break;
                 }
             }
 

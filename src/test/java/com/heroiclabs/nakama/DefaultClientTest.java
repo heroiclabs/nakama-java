@@ -16,6 +16,7 @@
 
 package com.heroiclabs.nakama;
 
+import com.stumbleupon.async.Callback;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,9 +24,31 @@ public final class DefaultClientTest {
 
     @Test
     public void builderTest() {
-        Client client = DefaultClient.builder("defaultkey").build();
-
+        final Client client = DefaultClient.builder("defaultkey").build();
         Assert.assertNotNull(client);
+    }
+
+    @Test(expected = Error.class)
+    public void sendNotConnectedUnhandled() throws Exception {
+        final Client client = DefaultClient.builder("defaultkey").build();
+        final CollatedMessage<Self> msg = SelfFetchMessage.build();
+        final Self self = client.send(msg).join();
+        Assert.fail("Must not reach this point.");
+    }
+
+    @Test
+    public void sendNotConnectedRecover() throws Exception {
+        final Client client = DefaultClient.builder("defaultkey").build();
+        final CollatedMessage<Self> msg = SelfFetchMessage.build();
+        final Self self = client.send(msg)
+                .addErrback(new Callback<Self, Error>() {
+                    @Override
+                    public Self call(Error err) throws Exception {
+                        return DefaultSelf.fromProto(com.heroiclabs.nakama.Api.Self.newBuilder().setCustomId("dummy").build());
+                    }
+                }).join();
+        Assert.assertNotNull(self);
+        Assert.assertEquals("dummy", self.getCustomId());
     }
 
 }
