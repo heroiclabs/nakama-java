@@ -34,7 +34,7 @@ public class AuthenticateMessageTest {
 
     @Test
     public void testDevice() throws Exception {
-        final AuthenticateMessage auth = AuthenticateMessage.device(UUID.randomUUID().toString());
+        final AuthenticateMessage auth = AuthenticateMessage.Builder.device(UUID.randomUUID().toString());
         final Session session = client.register(auth).join(2000);
         Assert.assertNotNull(session);
     }

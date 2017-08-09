@@ -16,13 +16,21 @@
 
 package com.heroiclabs.nakama;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+
 public interface SelfFetchMessage extends CollatedMessage<Self> {
 
-    static SelfFetchMessage build() {
-        final com.heroiclabs.nakama.Api.Envelope.Builder payload =
-                com.heroiclabs.nakama.Api.Envelope.newBuilder()
-                        .setSelfFetch(com.heroiclabs.nakama.Api.TSelfFetch.newBuilder());
-        return new DefaultSelfFetchMessage(payload);
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    class Builder {
+
+        static SelfFetchMessage build() {
+            final com.heroiclabs.nakama.Api.Envelope.Builder payload =
+                    com.heroiclabs.nakama.Api.Envelope.newBuilder()
+                            .setSelfFetch(com.heroiclabs.nakama.Api.TSelfFetch.newBuilder());
+            return new DefaultSelfFetchMessage(payload);
+        }
+
     }
 
 }

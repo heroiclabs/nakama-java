@@ -31,7 +31,7 @@ public final class DefaultClientTest {
     @Test(expected = Error.class)
     public void sendNotConnectedUnhandled() throws Exception {
         final Client client = DefaultClient.builder("defaultkey").build();
-        final CollatedMessage<Self> msg = SelfFetchMessage.build();
+        final CollatedMessage<Self> msg = SelfFetchMessage.Builder.build();
         final Self self = client.send(msg).join();
         Assert.fail("Must not reach this point.");
     }
@@ -39,7 +39,7 @@ public final class DefaultClientTest {
     @Test
     public void sendNotConnectedRecover() throws Exception {
         final Client client = DefaultClient.builder("defaultkey").build();
-        final CollatedMessage<Self> msg = SelfFetchMessage.build();
+        final CollatedMessage<Self> msg = SelfFetchMessage.Builder.build();
         final Self self = client.send(msg)
                 .addErrback(new Callback<Self, Error>() {
                     @Override

@@ -16,68 +16,76 @@
 
 package com.heroiclabs.nakama;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 
 public interface AuthenticateMessage extends CollatedMessage<Session> {
 
-    static AuthenticateMessage custom(final @NonNull String id) {
-        final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
-                com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
-                        .setCustom(id);
-        return new DefaultAuthenticateMessage(payload);
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    class Builder {
+
+        static AuthenticateMessage custom(final @NonNull String id) {
+            final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
+                    com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
+                            .setCustom(id);
+            return new DefaultAuthenticateMessage(payload);
+        }
+
+        static AuthenticateMessage device(final @NonNull String id) {
+            final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
+                    com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
+                            .setDevice(id);
+            return new DefaultAuthenticateMessage(payload);
+        }
+
+        static AuthenticateMessage email(final @NonNull String email, final @NonNull String password) {
+            final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
+                    com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
+                            .setEmail(com.heroiclabs.nakama.Api.AuthenticateRequest.Email.newBuilder()
+                                    .setEmail(email)
+                                    .setPassword(password)
+                                    .build());
+            return new DefaultAuthenticateMessage(payload);
+        }
+
+        static AuthenticateMessage facebook(final @NonNull String oauthToken) {
+            final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
+                    com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
+                            .setFacebook(oauthToken);
+            return new DefaultAuthenticateMessage(payload);
+        }
+
+        static AuthenticateMessage gameCenter(final @NonNull String playerId, final @NonNull String bundleId,
+                                              final long timestamp, final @NonNull String salt,
+                                              final @NonNull String signature, final @NonNull String publicKeyUrl) {
+            final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
+                    com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
+                            .setGameCenter(com.heroiclabs.nakama.Api.AuthenticateRequest.GameCenter.newBuilder()
+                                    .setPlayerId(playerId)
+                                    .setBundleId(bundleId)
+                                    .setTimestamp(timestamp)
+                                    .setSalt(salt)
+                                    .setSignature(signature)
+                                    .setPublicKeyUrl(publicKeyUrl)
+                                    .build());
+            return new DefaultAuthenticateMessage(payload);
+        }
+
+        static AuthenticateMessage google(final @NonNull String oauthToken) {
+            final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
+                    com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
+                            .setGoogle(oauthToken);
+            return new DefaultAuthenticateMessage(payload);
+        }
+
+        static AuthenticateMessage steam(final @NonNull String sessionToken) {
+            final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
+                    com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
+                            .setSteam(sessionToken);
+            return new DefaultAuthenticateMessage(payload);
+        }
+
     }
 
-    static AuthenticateMessage device(final @NonNull String id) {
-        final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
-                com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
-                        .setDevice(id);
-        return new DefaultAuthenticateMessage(payload);
-    }
-
-    static AuthenticateMessage email(final @NonNull String email, final @NonNull String password) {
-        final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
-                com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
-                        .setEmail(com.heroiclabs.nakama.Api.AuthenticateRequest.Email.newBuilder()
-                                .setEmail(email)
-                                .setPassword(password)
-                                .build());
-        return new DefaultAuthenticateMessage(payload);
-    }
-
-    static AuthenticateMessage facebook(final @NonNull String oauthToken) {
-        final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
-                com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
-                        .setFacebook(oauthToken);
-        return new DefaultAuthenticateMessage(payload);
-    }
-
-    static AuthenticateMessage gameCenter(final @NonNull String playerId, final @NonNull String bundleId,
-                                          final long timestamp, final @NonNull String salt,
-                                          final @NonNull String signature, final @NonNull String publicKeyUrl) {
-        final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
-                com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
-                        .setGameCenter(com.heroiclabs.nakama.Api.AuthenticateRequest.GameCenter.newBuilder()
-                                .setPlayerId(playerId)
-                                .setBundleId(bundleId)
-                                .setTimestamp(timestamp)
-                                .setSalt(salt)
-                                .setSignature(signature)
-                                .setPublicKeyUrl(publicKeyUrl)
-                                .build());
-        return new DefaultAuthenticateMessage(payload);
-    }
-
-    static AuthenticateMessage google(final @NonNull String oauthToken) {
-        final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
-                com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
-                        .setGoogle(oauthToken);
-        return new DefaultAuthenticateMessage(payload);
-    }
-
-    static AuthenticateMessage steam(final @NonNull String sessionToken) {
-        final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
-                com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
-                        .setSteam(sessionToken);
-        return new DefaultAuthenticateMessage(payload);
-    }
 }

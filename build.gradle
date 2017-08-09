@@ -24,8 +24,8 @@ plugins {
 group = 'com.heroiclabs.nakama'
 version = '0.1.0'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.16.18'

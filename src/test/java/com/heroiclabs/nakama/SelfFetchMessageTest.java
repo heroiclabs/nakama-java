@@ -40,7 +40,7 @@ public class SelfFetchMessageTest {
     @Test
     public void testSelfFetch() throws Exception {
         final String customId = UUID.randomUUID().toString();
-        final AuthenticateMessage auth = AuthenticateMessage.custom(customId);
+        final AuthenticateMessage auth = AuthenticateMessage.Builder.custom(customId);
         final Self self = client.register(auth)
                 .addCallbackDeferring(new Callback<Deferred<Boolean>, Session>() {
                         @Override
@@ -51,7 +51,7 @@ public class SelfFetchMessageTest {
                 .addCallbackDeferring(new Callback<Deferred<Self>, Boolean>() {
                         @Override
                         public Deferred<Self> call(Boolean arg) throws Exception {
-                            final CollatedMessage<Self> selfFetch = SelfFetchMessage.build();
+                            final CollatedMessage<Self> selfFetch = SelfFetchMessage.Builder.build();
                             return client.send(selfFetch);
                         }
                     })
