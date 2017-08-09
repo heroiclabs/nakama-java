@@ -16,6 +16,8 @@
 
 package com.heroiclabs.nakama;
 
+import com.stumbleupon.async.Callback;
+import com.stumbleupon.async.Deferred;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,6 +39,42 @@ public class AuthenticateMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(UUID.randomUUID().toString());
         final Session session = client.register(auth).join(2000);
         Assert.assertNotNull(session);
+    }
+
+    @Test
+    public void loginOrRegister() throws Exception {
+        final String id = UUID.randomUUID().toString();
+        final AuthenticateMessage message = AuthenticateMessage.Builder.device(id);
+        client.login(message)
+                .addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
+                    @Override
+                    public Deferred<Session> call(Session session) throws Exception {
+                        return client.connect(session);
+                    }
+                })
+                .addErrback(new Callback<Deferred<Session>, Error>() {
+                    @Override
+                    public Deferred<Session> call(Error err) throws Exception {
+                        if (err.getCode() == Error.ErrorCode.USER_NOT_FOUND) {
+                            return client.register(message);
+                        }
+                        throw err;
+                    }
+                })
+                .addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
+                    @Override
+                    public Deferred<Session> call(Session session) throws Exception {
+                        return client.connect(session);
+                    }
+                })
+                .addErrback(new Callback<Error, Error>() {
+                    @Override
+                    public Error call(Error err) throws Exception {
+                        System.out.format("Error: code '%s' with '%s'.", err.getCode(), err.getMessage());
+                        return err;
+                    }
+                })
+                .join(2000);
     }
 
 }

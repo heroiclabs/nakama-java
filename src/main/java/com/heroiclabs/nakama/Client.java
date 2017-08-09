@@ -38,7 +38,7 @@ public interface Client {
      * @param session The {@code Session} to connect the socket with.
      * @return Placeholder return type to allow chaining operations.
      */
-    Deferred<Boolean> connect(Session session);
+    Deferred<Session> connect(Session session);
 
     /**
      * @return Placeholder return type to allow chaining operations.

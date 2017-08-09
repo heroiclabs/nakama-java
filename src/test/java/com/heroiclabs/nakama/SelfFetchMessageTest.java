@@ -42,15 +42,15 @@ public class SelfFetchMessageTest {
         final String customId = UUID.randomUUID().toString();
         final AuthenticateMessage auth = AuthenticateMessage.Builder.custom(customId);
         final Self self = client.register(auth)
-                .addCallbackDeferring(new Callback<Deferred<Boolean>, Session>() {
+                .addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
                         @Override
-                        public Deferred<Boolean> call(Session session) throws Exception {
+                        public Deferred<Session> call(Session session) throws Exception {
                             return client.connect(session);
                         }
                     })
-                .addCallbackDeferring(new Callback<Deferred<Self>, Boolean>() {
+                .addCallbackDeferring(new Callback<Deferred<Self>, Session>() {
                         @Override
-                        public Deferred<Self> call(Boolean arg) throws Exception {
+                        public Deferred<Self> call(Session arg) throws Exception {
                             final CollatedMessage<Self> selfFetch = SelfFetchMessage.Builder.build();
                             return client.send(selfFetch);
                         }

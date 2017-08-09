@@ -143,8 +143,8 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public synchronized Deferred<Boolean> connect(final @NonNull Session session) {
-        final Deferred<Boolean> deferred = new Deferred<>();
+    public synchronized Deferred<Session> connect(final @NonNull Session session) {
+        final Deferred<Session> deferred = new Deferred<>();
 
         if (socket != null) {
             deferred.callback(new DefaultError("Client is already connected", Error.ErrorCode.UNKNOWN));
@@ -171,7 +171,7 @@ public class DefaultClient implements Client {
             public void onOpen(WebSocket webSocket, Response response) {
                 super.onOpen(webSocket, response);
                 // Notify the deferred caller that the client has connected and is ready to use.
-                deferred.callback(true);
+                deferred.callback(session);
             }
 
             @Override
