@@ -56,6 +56,7 @@ public class AuthenticateMessageTest {
                     @Override
                     public Deferred<Session> call(Error err) throws Exception {
                         if (err.getCode() == Error.ErrorCode.USER_NOT_FOUND) {
+                            System.out.println("User not found, registering.");
                             return client.register(message);
                         }
                         throw err;
@@ -65,6 +66,13 @@ public class AuthenticateMessageTest {
                     @Override
                     public Deferred<Session> call(Session session) throws Exception {
                         return client.connect(session);
+                    }
+                })
+                .addCallback(new Callback<Void, Session>() {
+                    @Override
+                    public Void call(Session arg) throws Exception {
+                        System.out.println("Connected!");
+                        return null;
                     }
                 })
                 .addErrback(new Callback<Error, Error>() {
