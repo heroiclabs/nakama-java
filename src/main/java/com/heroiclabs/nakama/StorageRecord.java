@@ -40,17 +40,18 @@ public interface StorageRecord extends RecordId {
         @Getter
         private final int code;
 
-        // Static helpers to transform wire protocol int codes into their enum equivalents.
-        private static final Map<Integer, PermissionRead> codeMappings;
-        static {
-            Map<Integer, PermissionRead> codes = new HashMap<>();
-            for (PermissionRead code : PermissionRead.values()) {
-                codes.put(code.code, code);
-            }
-            codeMappings = Collections.unmodifiableMap(codes);
-        }
         static PermissionRead fromInt(final int code) {
-            return codeMappings.get(code);
+            switch (code) {
+            case 0:
+                return NO_READ;
+            case 1:
+                return OWNER_READ;
+            case 2:
+                return PUBLIC_READ;
+            default:
+                String message = String.format("Unrecognised read permission: %s", code);
+                throw new IllegalArgumentException(message);
+            }
         }
     }
 
@@ -65,17 +66,16 @@ public interface StorageRecord extends RecordId {
         @Getter
         private final int code;
 
-        // Static helpers to transform wire protocol int codes into their enum equivalents.
-        private static final Map<Integer, PermissionWrite> codeMappings;
-        static {
-            Map<Integer, PermissionWrite> codes = new HashMap<>();
-            for (PermissionWrite code : PermissionWrite.values()) {
-                codes.put(code.code, code);
-            }
-            codeMappings = Collections.unmodifiableMap(codes);
-        }
         static PermissionWrite fromInt(final int code) {
-            return codeMappings.get(code);
+            switch (code) {
+            case 0:
+                return NO_WRITE;
+            case 1:
+                return OWNER_WRITE;
+            default:
+                String message = String.format("Unrecognised write permission: %s", code);
+                throw new IllegalArgumentException(message);
+            }
         }
     }
 

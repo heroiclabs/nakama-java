@@ -9,7 +9,7 @@ This client implements the protocol and all features available in the server. It
 
 If you encounter any issues with the server you can generate diagnostics for us with the [doctor](https://heroiclabs.com/docs/install-server-cli/#doctor) subcommand. Send these to support@heroiclabs.com or [open an issue](https://github.com/heroiclabs/nakama/issues). If you experience any issues with the client, it can be useful to [enable trace](https://heroiclabs.com/docs/android-java-client-guide/#logs-and-errors) to produce detailed logs and [open an issue](https://github.com/heroiclabs/nakama-java/issues).
 
-### Usage
+## Usage
 
 The client can be downloaded from [GitHub releases](https://github.com/heroiclabs/nakama-java/releases). You can download "nakama-java-$version.jar" or "nakama-java-$version-all.jar" which includes a shadowed copy of all dependencies.
 
@@ -43,7 +43,7 @@ public class NakamaSessionManager {
 }
 ```
 
-#### For Android
+### For Android
 
 Android uses a permissions system which determines which platform services the application will request to use and ask permission for from the user. The client uses the network to communicate with the server so you must add the "INTERNET" permission.
 
@@ -51,7 +51,7 @@ Android uses a permissions system which determines which platform services the a
 <uses-permission android:name="android.permission.INTERNET"/>
 ```
 
-### Contribute
+## Contribute
 
 To build the codebase you will need to install these dependencies:
 
