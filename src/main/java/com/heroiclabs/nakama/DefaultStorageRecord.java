@@ -16,12 +16,7 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Data
 @ToString(includeFieldNames = true)
@@ -52,8 +47,13 @@ class DefaultStorageRecord implements StorageRecord {
 
     @Override
     public <T> T getValue(Class<T> clazz) {
-        // TODO move to static type.
-        Gson gson = new GsonBuilder().create();
-        return gson.fromJson(new String(value), clazz);
+        return DefaultClient.GSON.fromJson(new String(value), clazz);
+    }
+
+    static StorageRecord fromProto(final @NonNull com.heroiclabs.nakama.Api.TStorageData.StorageData data) {
+        return new DefaultStorageRecord(data.getBucket(), data.getCreatedAt(), data.getCollection(),
+                data.getExpiresAt(), data.getRecord(), PermissionRead.fromInt(data.getPermissionRead()),
+                PermissionWrite.fromInt(data.getPermissionWrite()), data.getValue().toByteArray(),
+                data.getVersion().toByteArray(), data.getUpdatedAt(), data.getUserId().toByteArray());
     }
 }

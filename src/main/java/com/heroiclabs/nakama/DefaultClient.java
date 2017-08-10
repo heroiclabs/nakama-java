@@ -26,6 +26,8 @@ import okhttp3.*;
 import okio.ByteString;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,32 +46,44 @@ public class DefaultClient implements Client {
     private final String lang;
 
     private final boolean ssl;
+    private final int connectTimeout;
     private final int timeout;
     private final boolean noDelay;
+
+    private final boolean trace;
 
     private final Map<String, Deferred> collationIds;
 
     private final OkHttpClient client;
     private WebSocket socket;
 
+    private long serverTime;
+
     private DefaultClient(final String serverKey, final String host, final int port, final String lang,
-                          final boolean ssl, final int timeout, final boolean noDelay) {
+                          final boolean ssl, final int connectTimeout, final int timeout, final boolean noDelay,
+                          final boolean trace) {
         this.host = host;
         this.port = port;
         this.serverKey = serverKey;
         this.lang = lang;
         this.ssl = ssl;
+        this.connectTimeout = connectTimeout;
         this.timeout = timeout;
         this.noDelay = noDelay;
+        this.trace = trace;
 
         collationIds = new ConcurrentHashMap<>();
 
-
         client = new OkHttpClient.Builder()
-                .connectTimeout(3000, TimeUnit.MILLISECONDS)
+                .connectTimeout(connectTimeout, TimeUnit.MILLISECONDS)
                 .readTimeout(timeout, TimeUnit.MILLISECONDS)
                 .writeTimeout(timeout, TimeUnit.MILLISECONDS)
                 .build();
+    }
+
+    @Override
+    public long serverTime() {
+        return serverTime != 0 ? serverTime : System.currentTimeMillis();
     }
 
     @Override
@@ -195,7 +209,20 @@ public class DefaultClient implements Client {
 
                 final String collationId = envelope.getCollationId();
                 if (collationId == null) {
-                    // TODO handle purely incoming messages.
+                    switch (envelope.getPayloadCase()) {
+                        case PAYLOAD_NOT_SET:
+                            // TODO log an error for incoming uncollated message with no payload?
+                            break;
+                        case HEARTBEAT:
+                            final long newServerTime = envelope.getHeartbeat().getTimestamp();
+                            if (newServerTime > serverTime) {
+                                // Don't let server time go backwards.
+                                serverTime = newServerTime;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                     return;
                 }
 
@@ -207,13 +234,41 @@ public class DefaultClient implements Client {
 
                 switch (envelope.getPayloadCase()) {
                     case PAYLOAD_NOT_SET:
-                        def.callback(true);
+                        def.callback(Boolean.TRUE);
                         break;
                     case ERROR:
                         def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode()));
                         break;
                     case SELF:
                         def.callback(DefaultSelf.fromProto(envelope.getSelf().getSelf()));
+                        break;
+                    case USERS:
+                        final List<User> users = new ArrayList<>();
+                        for (final com.heroiclabs.nakama.Api.User user : envelope.getUsers().getUsersList()) {
+                            users.add(DefaultUser.fromProto(user));
+                        }
+                        def.callback(new DefaultResultSet<User>(null, users));
+                        break;
+                    case STORAGE_DATA:
+                        final List<StorageRecord> records = new ArrayList<>();
+                        for (final com.heroiclabs.nakama.Api.TStorageData.StorageData data : envelope.getStorageData().getDataList()) {
+                            records.add(DefaultStorageRecord.fromProto(data));
+                        }
+                        Cursor cursor = null;
+                        if (envelope.getStorageData().getCursor() != null && envelope.getStorageData().getCursor().size() > 0) {
+                            cursor = new DefaultCursor(envelope.getStorageData().getCursor().toByteArray());
+                        }
+                        def.callback(new DefaultResultSet<StorageRecord>(cursor, records));
+                        break;
+                    case STORAGE_KEYS:
+                        final List<RecordId> recordIds = new ArrayList<>();
+                        for (final com.heroiclabs.nakama.Api.TStorageKeys.StorageKey key : envelope.getStorageKeys().getKeysList()) {
+                            recordIds.add(DefaultRecordId.fromProto(key));
+                        }
+                        def.callback(new DefaultResultSet<RecordId>(null, recordIds));
+                        break;
+                    case RPC:
+                        def.callback(DefaultRpcResult.fromProto(envelope.getRpc()));
                         break;
                     default:
                         def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode()));
@@ -261,8 +316,13 @@ public class DefaultClient implements Client {
             socket.close(1000, null);
         }
 
-        deferred.callback(true);
+        deferred.callback(Boolean.TRUE);
         return deferred;
+    }
+
+    @Override
+    public Deferred<Boolean> logout() {
+        return send(LogoutMessage.Builder.build());
     }
 
     @Override
@@ -304,7 +364,7 @@ public class DefaultClient implements Client {
             return deferred;
         }
 
-        deferred.callback(true);
+        deferred.callback(Boolean.TRUE);
         return deferred;
     }
 
@@ -323,11 +383,13 @@ public class DefaultClient implements Client {
         private int port = 7350;
         private String lang = "en";
         private boolean ssl = false;
+        private int connectTimeout = 3000;
         private int timeout = 5000;
         private boolean noDelay = true;
+        private boolean trace = false;
 
         public Client build() {
-            return new DefaultClient(serverKey, host, port, lang, ssl, timeout, noDelay);
+            return new DefaultClient(serverKey, host, port, lang, ssl, connectTimeout, timeout, noDelay, trace);
         }
 
         public Builder host(final @NonNull String host) {
@@ -350,6 +412,11 @@ public class DefaultClient implements Client {
             return this;
         }
 
+        public Builder connectTimeout(final int connectTimeout) {
+            this.connectTimeout = connectTimeout;
+            return this;
+        }
+
         public Builder timeout(final int timeout) {
             this.timeout = timeout;
             return this;
@@ -357,6 +424,11 @@ public class DefaultClient implements Client {
 
         public Builder noDelay(final boolean noDelay) {
             this.noDelay = noDelay;
+            return this;
+        }
+
+        public Builder trace(final boolean trace) {
+            this.trace = trace;
             return this;
         }
     }

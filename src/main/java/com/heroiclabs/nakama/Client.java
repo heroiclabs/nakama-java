@@ -23,6 +23,13 @@ import com.stumbleupon.async.Deferred;
  */
 public interface Client {
     /**
+     * @return The current server time in UTC milliseconds as reported by the server
+     *         during the last heartbeat exchange. If this client has never been
+     *         connected the function returns local device current UTC milliseconds.
+     */
+    long serverTime();
+
+    /**
      * @param message The {@code AuthenticateMessage} to send to the server.
      * @return A {@code Session} for the user.
      */
@@ -44,6 +51,11 @@ public interface Client {
      * @return Placeholder return type to allow chaining operations.
      */
     Deferred<Boolean> disconnect();
+
+    /**
+     * @return Placeholder return type to allow chaining operations.
+     */
+    Deferred<Boolean> logout();
 
     /**
      * @param message The message to send.

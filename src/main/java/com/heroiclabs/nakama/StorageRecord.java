@@ -17,7 +17,12 @@
 package com.heroiclabs.nakama;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A record from the storage engine in the server.
@@ -32,7 +37,21 @@ public interface StorageRecord extends RecordId {
         OWNER_READ(1),
         PUBLIC_READ(2);
 
+        @Getter
         private final int code;
+
+        // Static helpers to transform wire protocol int codes into their enum equivalents.
+        private static final Map<Integer, PermissionRead> codeMappings;
+        static {
+            Map<Integer, PermissionRead> codes = new HashMap<>();
+            for (PermissionRead code : PermissionRead.values()) {
+                codes.put(code.code, code);
+            }
+            codeMappings = Collections.unmodifiableMap(codes);
+        }
+        static PermissionRead fromInt(final int code) {
+            return codeMappings.get(code);
+        }
     }
 
     /**
@@ -43,7 +62,21 @@ public interface StorageRecord extends RecordId {
         NO_WRITE(0),
         OWNER_WRITE(1);
 
+        @Getter
         private final int code;
+
+        // Static helpers to transform wire protocol int codes into their enum equivalents.
+        private static final Map<Integer, PermissionWrite> codeMappings;
+        static {
+            Map<Integer, PermissionWrite> codes = new HashMap<>();
+            for (PermissionWrite code : PermissionWrite.values()) {
+                codes.put(code.code, code);
+            }
+            codeMappings = Collections.unmodifiableMap(codes);
+        }
+        static PermissionWrite fromInt(final int code) {
+            return codeMappings.get(code);
+        }
     }
 
     /**

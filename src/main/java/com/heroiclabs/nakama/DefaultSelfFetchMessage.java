@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class DefaultSelfFetchMessage implements SelfFetchMessage {
+class DefaultSelfFetchMessage implements SelfFetchMessage {
 
     private final com.heroiclabs.nakama.Api.Envelope.Builder payload;
 

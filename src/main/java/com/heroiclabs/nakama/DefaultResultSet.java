@@ -22,19 +22,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @ToString(includeFieldNames = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class DefaultResultSet<T> implements ResultSet<T> {
+class DefaultResultSet<T> implements ResultSet<T> {
 
     private final Cursor cursor;
 
-    private final Set<T> results;
+    private final List<T> results;
 
     @Override
     public Iterator<T> iterator() {
         return results.iterator();
     }
+
 }

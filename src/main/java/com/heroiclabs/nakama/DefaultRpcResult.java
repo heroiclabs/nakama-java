@@ -16,12 +16,7 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Data
 @ToString(includeFieldNames = true)
@@ -34,8 +29,11 @@ class DefaultRpcResult implements RpcResult {
 
     @Override
     public <T> T getPayload(Class<T> clazz) {
-        // TODO move to static type.
-        Gson gson = new GsonBuilder().create();
-        return gson.fromJson(new String(payload), clazz);
+        return DefaultClient.GSON.fromJson(new String(payload), clazz);
     }
+
+    static RpcResult fromProto(final @NonNull com.heroiclabs.nakama.Api.TRpc rpc) {
+        return new DefaultRpcResult(rpc.getId(), rpc.getPayload().toByteArray());
+    }
+
 }

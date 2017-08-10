@@ -16,22 +16,21 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 
-@Data
-@ToString(includeFieldNames = true)
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-class DefaultRecordId implements RecordId {
+public interface LogoutMessage extends Message {
 
-    private final String bucket;
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    class Builder {
 
-    private final String collection;
+        static LogoutMessage build() {
+            final com.heroiclabs.nakama.Api.Envelope.Builder payload =
+                    com.heroiclabs.nakama.Api.Envelope.newBuilder()
+                            .setLogout(com.heroiclabs.nakama.Api.Logout.newBuilder());
+            return new DefaultLogoutMessage(payload);
+        }
 
-    private final String key;
-
-    private final byte[] version;
-
-    static RecordId fromProto(final @NonNull com.heroiclabs.nakama.Api.TStorageKeys.StorageKey key) {
-        return new DefaultRecordId(key.getBucket(), key.getCollection(), key.getRecord(), key.getVersion().toByteArray());
     }
+
 }

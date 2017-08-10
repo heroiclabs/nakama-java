@@ -16,7 +16,7 @@
 
 package com.heroiclabs.nakama;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * A set of objects which has been fetched from the server.
@@ -30,7 +30,7 @@ public interface ResultSet<T> extends Iterable<T> {
     Cursor getCursor();
 
     /**
-     * @return The underlying set of objects.
+     * @return The underlying list of objects.
      */
-    Set<T> getResults();
+    List<T> getResults();
 }

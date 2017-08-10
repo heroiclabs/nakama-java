@@ -16,22 +16,19 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Data
-@ToString(includeFieldNames = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-class DefaultRecordId implements RecordId {
+class DefaultStorageRemoveMessage implements StorageRemoveMessage {
 
-    private final String bucket;
+    private final com.heroiclabs.nakama.Api.Envelope.Builder payload;
 
-    private final String collection;
-
-    private final String key;
-
-    private final byte[] version;
-
-    static RecordId fromProto(final @NonNull com.heroiclabs.nakama.Api.TStorageKeys.StorageKey key) {
-        return new DefaultRecordId(key.getBucket(), key.getCollection(), key.getRecord(), key.getVersion().toByteArray());
+    public byte[] asBytes(final @NonNull String collationId) {
+        return payload.clone().setCollationId(collationId).build().toByteArray();
     }
+
 }

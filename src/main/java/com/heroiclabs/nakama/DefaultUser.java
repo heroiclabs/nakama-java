@@ -16,12 +16,7 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Data
 @ToString(includeFieldNames = true)
@@ -51,8 +46,14 @@ class DefaultUser implements User {
     private final long updatedAt;
 
     public <T> T getMetadata(final Class<T> clazz) {
-        // TODO move to static type.
-        Gson gson = new GsonBuilder().create();
-        return gson.fromJson(new String(metadata), clazz);
+        return DefaultClient.GSON.fromJson(new String(metadata), clazz);
     }
+
+    static User fromProto(final @NonNull com.heroiclabs.nakama.Api.User user) {
+        return new DefaultUser(user.getAvatarUrl(), user.getCreatedAt(),
+                user.getFullname(), user.getHandle(), user.getId().toByteArray(),
+                user.getLang(), user.getLastOnlineAt(), user.getLocation(),
+                user.getMetadata().toByteArray(), user.getTimezone(), user.getUpdatedAt());
+    }
+
 }
