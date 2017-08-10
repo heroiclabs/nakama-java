@@ -26,7 +26,7 @@ public interface RpcMessage extends CollatedMessage<RpcResult> {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        static Builder builder(final @NonNull String id) {
+        static Builder newBuilder(final @NonNull String id) {
             return new Builder(com.heroiclabs.nakama.Api.TRpc.newBuilder().setId(id));
         }
 

@@ -26,7 +26,7 @@ public interface StorageFetchMessage extends CollatedMessage<ResultSet<StorageRe
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        static Builder builder() {
+        static Builder newBuilder() {
             return new Builder(com.heroiclabs.nakama.Api.TStorageFetch.newBuilder());
         }
 

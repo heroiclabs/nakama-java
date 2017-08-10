@@ -26,17 +26,17 @@ public interface StorageListMessage extends CollatedMessage<ResultSet<StorageRec
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        private final @NonNull com.heroiclabs.nakama.Api.TStorageList.Builder list;
-
-        static Builder builder(final @NonNull byte[] userId) {
+        static Builder newBuilder(final @NonNull byte[] userId) {
             return new Builder(com.heroiclabs.nakama.Api.TStorageList.newBuilder()
                     .setUserId(ByteString.copyFrom(userId)));
         }
 
-        static Builder builder(final @NonNull String bucket) {
+        static Builder newBuilder(final @NonNull String bucket) {
             return new Builder(com.heroiclabs.nakama.Api.TStorageList.newBuilder()
                     .setBucket(bucket));
         }
+
+        private final @NonNull com.heroiclabs.nakama.Api.TStorageList.Builder list;
 
         public Builder userId(final @NonNull byte[] userId) {
             list.setUserId(ByteString.copyFrom(userId));

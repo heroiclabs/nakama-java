@@ -26,7 +26,7 @@ public interface UsersFetchMessage extends CollatedMessage<ResultSet<User>> {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        static Builder builder() {
+        static Builder newBuilder() {
             return new Builder(com.heroiclabs.nakama.Api.TUsersFetch.newBuilder());
         }
 

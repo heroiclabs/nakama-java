@@ -22,6 +22,7 @@ import com.google.gson.GsonBuilder;
 import com.stumbleupon.async.Deferred;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okio.ByteString;
 
@@ -33,6 +34,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class DefaultClient implements Client {
 
     static final Gson GSON = new GsonBuilder()
@@ -48,9 +50,10 @@ public class DefaultClient implements Client {
     private final boolean ssl;
     private final int connectTimeout;
     private final int timeout;
-    private final boolean noDelay;
 
     private final boolean trace;
+
+    private final ClientListener listener;
 
     private final Map<String, Deferred> collationIds;
 
@@ -60,8 +63,8 @@ public class DefaultClient implements Client {
     private long serverTime;
 
     private DefaultClient(final String serverKey, final String host, final int port, final String lang,
-                          final boolean ssl, final int connectTimeout, final int timeout, final boolean noDelay,
-                          final boolean trace) {
+                          final boolean ssl, final int connectTimeout, final int timeout, final boolean trace,
+                          final ClientListener listener) {
         this.host = host;
         this.port = port;
         this.serverKey = serverKey;
@@ -69,8 +72,8 @@ public class DefaultClient implements Client {
         this.ssl = ssl;
         this.connectTimeout = connectTimeout;
         this.timeout = timeout;
-        this.noDelay = noDelay;
         this.trace = trace;
+        this.listener = listener;
 
         collationIds = new ConcurrentHashMap<>();
 
@@ -116,6 +119,10 @@ public class DefaultClient implements Client {
                 .header("User-Agent", "nakama-java/0.1.0") // TODO set user-agent based on build version.
                 .build();
 
+        if (trace) {
+            log.debug("Authenticate request: " + request.toString());
+        }
+
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -137,6 +144,10 @@ public class DefaultClient implements Client {
                     return;
                 } finally {
                     response.close();
+                }
+
+                if (trace) {
+                    log.debug("Authenticate response: " + response.toString());
                 }
 
                 switch (authResponse.getIdCase()) {
@@ -180,6 +191,11 @@ public class DefaultClient implements Client {
                 .url(url)
                 .build();
 
+        if (trace) {
+            log.debug("Connect: " + request.toString());
+        }
+
+        final Object lock = this;
         socket = client.newWebSocket(request, new WebSocketListener() {
             @Override
             public void onOpen(WebSocket webSocket, Response response) {
@@ -192,7 +208,7 @@ public class DefaultClient implements Client {
             public void onMessage(WebSocket webSocket, String text) {
                 super.onMessage(webSocket, text);
                 // No text messages are expected.
-                // TODO log an error and/or disconnect here?
+                log.warn("Unexpected string message from server: " + text);
             }
 
             @Override
@@ -203,7 +219,8 @@ public class DefaultClient implements Client {
                 try {
                     envelope = com.heroiclabs.nakama.Api.Envelope.parseFrom(bytes.toByteArray());
                 } catch (IOException e) {
-                    // TODO notify a listener about error reading incoming message?
+                    // TODO onError callback
+                    log.error("Error decoding incoming message from server: " + e.getMessage());
                     return;
                 }
 
@@ -211,7 +228,7 @@ public class DefaultClient implements Client {
                 if (collationId == null) {
                     switch (envelope.getPayloadCase()) {
                         case PAYLOAD_NOT_SET:
-                            // TODO log an error for incoming uncollated message with no payload?
+                            log.error("No payload in incoming uncollated message from server: " + envelope.toString());
                             break;
                         case HEARTBEAT:
                             final long newServerTime = envelope.getHeartbeat().getTimestamp();
@@ -228,7 +245,7 @@ public class DefaultClient implements Client {
 
                 final Deferred def = collationIds.get(collationId);
                 if (def == null) {
-                    // TODO notify a listener about not finding the deferred caller to respond to, or log a warning?
+                    log.warn("No matching deferred receiver for incoming collation ID: " + collationId);
                     return;
                 }
 
@@ -286,19 +303,28 @@ public class DefaultClient implements Client {
             public void onClosed(WebSocket webSocket, int code, String reason) {
                 super.onClosed(webSocket, code, reason);
                 // Graceful socket disconnect is complete, clean up.
-                // TODO callback any leftover deferred items with a disconnect error message?
-                collationIds.clear();
-                socket = null;
+                synchronized (lock) {
+                    socket = null;
+                    // TODO callback any leftover deferred items with a disconnect error message?
+                    collationIds.clear();
+                }
+                if (listener != null) {
+                    listener.onDisconnect();
+                }
             }
 
             @Override
             public void onFailure(WebSocket webSocket, Throwable t, Response response) {
                 super.onFailure(webSocket, t, response);
                 // Socket has failed and is no longer connected, clean up.
-                // TODO callback any leftover deferred items with a disconnect error message?
-                collationIds.clear();
-                // TODO notify a listener about unexpected disconnect?
-                socket = null;
+                synchronized (lock) {
+                    socket = null;
+                    // TODO callback any leftover deferred items with a disconnect error message?
+                    collationIds.clear();
+                }
+                if (listener != null) {
+                    listener.onDisconnect();
+                }
             }
         });
 
@@ -385,11 +411,11 @@ public class DefaultClient implements Client {
         private boolean ssl = false;
         private int connectTimeout = 3000;
         private int timeout = 5000;
-        private boolean noDelay = true;
         private boolean trace = false;
+        private ClientListener listener;
 
         public Client build() {
-            return new DefaultClient(serverKey, host, port, lang, ssl, connectTimeout, timeout, noDelay, trace);
+            return new DefaultClient(serverKey, host, port, lang, ssl, connectTimeout, timeout, trace, listener);
         }
 
         public Builder host(final @NonNull String host) {
@@ -422,13 +448,13 @@ public class DefaultClient implements Client {
             return this;
         }
 
-        public Builder noDelay(final boolean noDelay) {
-            this.noDelay = noDelay;
+        public Builder trace(final boolean trace) {
+            this.trace = trace;
             return this;
         }
 
-        public Builder trace(final boolean trace) {
-            this.trace = trace;
+        public Builder listener(final ClientListener listener) {
+            this.listener = listener;
             return this;
         }
     }
