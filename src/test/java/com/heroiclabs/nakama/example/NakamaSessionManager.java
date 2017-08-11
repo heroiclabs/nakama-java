@@ -16,7 +16,7 @@
 
 package com.heroiclabs.nakama.example;
 
-import android.content.SharedPreferences;
+//import android.content.SharedPreferences;
 
 import com.heroiclabs.nakama.Client;
 import com.heroiclabs.nakama.DefaultClient;
@@ -46,9 +46,9 @@ public class NakamaSessionManager {
     }
 
     private void restoreSessionAndConnect() {
-        SharedPreferences pref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        //SharedPreferences pref = getActivity().getPreferences(Context.MODE_PRIVATE);
         // Lets check if we can restore a cached session.
-        String sessionString = pref.getString("nk.session");
+        String sessionString = ""; //pref.getString("nk.session");
         if (sessionString == null || sessionString.isEmpty()) {
             return; // We have no session to restore.
         }

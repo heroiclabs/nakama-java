@@ -1,7 +1,7 @@
 Nakama Java
 ===========
 
-> Android optimised Java client for Nakama server.
+> Android optimized Java client for Nakama server.
 
 Nakama is an [open-source](https://github.com/heroiclabs/nakama) distributed server for social and realtime games and apps. For more information have a look at the [documentation](https://heroiclabs.com/docs/).
 

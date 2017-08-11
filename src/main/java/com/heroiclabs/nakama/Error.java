@@ -79,5 +79,5 @@ public abstract class Error extends Exception {
     /**
      * @return The code for the error.
      */
-    abstract ErrorCode getCode();
+    public abstract ErrorCode getCode();
 }

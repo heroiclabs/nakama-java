@@ -17,15 +17,68 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '2.0.1'
     id 'com.google.protobuf' version '0.8.2'
+    id 'com.jfrog.bintray' version '1.7.3'
     id 'java'
     id 'idea'
+    id 'maven-publish'
 }
 
 group = 'com.heroiclabs.nakama'
-version = '0.1.0'
+version = '0.0.1'
+def description = 'Android optimized Java client for Nakama server.'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
+
+def pomConfig = {
+    licenses {
+        license {
+            name 'The Apache Software License, Version 2.0'
+            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            distribution 'repo'
+        }
+    }
+    developers {
+        developer {
+            id 'andreimihu'
+            name 'Andrei Mihu'
+            email 'andrei@heroiclabs.com'
+        }
+        developer {
+            id 'cmolozian'
+            name 'Chris Molozian'
+            email 'chris@heroiclabs.com'
+        }
+        developer {
+            id 'mofirouz'
+            name 'Mo Firouz'
+            email 'mo@heroiclabs.com'
+        }
+    }
+    scm {
+        url 'https://github.com/heroiclabs/nakama-java'
+    }
+}
+
+bintray {
+    user = bintrayUser
+    key = bintrayKey
+    publications = ['mavenJava']
+    pkg {
+        repo = 'default'
+        name = 'nakama-client'
+        desc = description
+        userOrg = 'heroiclabs'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/heroiclabs/nakama-java.git'
+        publicDownloadNumbers = true
+        version {
+            name = "$project.version"
+            released = new Date()
+            vcsTag = project.findProperty('vcsTag')
+        }
+    }
+}
 
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.16.18'
@@ -46,7 +99,7 @@ idea {
 jar {
     manifest {
         attributes 'Implementation-Title': 'Nakama client',
-                   'Implementation-Version': version
+                   'Implementation-Version': "$project.version"
     }
 }
 
@@ -72,6 +125,33 @@ protobuf {
     }
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourcesJar {
+                classifier 'sources'
+            }
+            artifact javadocJar {
+                classifier 'javadoc'
+            }
+
+            groupId "$project.group"
+            artifactId 'client'
+            version "$project.version"
+
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', description)
+                root.appendNode('name', 'Nakama client')
+                root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -85,4 +165,12 @@ sourceSets {
             srcDir "$projectDir/server/server"
         }
     }
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
 }
