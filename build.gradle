@@ -90,6 +90,35 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+task("deployGhPages") {
+    dependsOn javadoc
+    doLast {
+        exec {
+            commandLine 'git', 'fetch', 'origin', '+gh-pages:gh-pages'
+        }
+        exec {
+            commandLine 'git', 'checkout', 'gh-pages'
+        }
+        exec {
+            commandLine 'git', 'rm', '-r', 'docs/current', '-q'
+        }
+        project.copy {
+          from "$buildDir/javadoc"
+          into "docs/$project.version"
+        }
+        project.copy {
+          from "$buildDir/javadoc"
+          into 'docs/current'
+        }
+        exec {
+            commandLine 'git', 'add', 'docs'
+        }
+        exec {
+            commandLine 'git', 'commit', '-m', "Refresh javadoc '$project.version' by Gradle $gradleVersion.", '-q'
+        }
+    }
+}
+
 idea {
     module {
         sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/java");

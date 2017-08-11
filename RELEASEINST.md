@@ -44,7 +44,13 @@ The development team use these steps to build and upload a release.
 
 5. Login and create a [new draft release](https://github.com/heroiclabs/nakama-java/releases/new) on GitHub. Repeat the changelog in the release description. Then publish the release.
 
-6. Add new `## [Unreleased]` section to start of `CHANGELOG.md`. Increment version in `build.gradle` and commit. i.e. `version = '0.2.0'` should now become `version = '0.3.0'`.
+6. Deploy the latest Javadoc to GitHub Pages.
+
+   ```
+   gradle deployGhPages
+   ```
+
+7. Add new `## [Unreleased]` section to start of `CHANGELOG.md`. Increment version in `build.gradle` and commit. i.e. `version = '0.2.0'` should now become `version = '0.3.0'`.
 
    ```
    git add build.gradle CHANGELOG.md
