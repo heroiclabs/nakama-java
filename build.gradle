@@ -18,6 +18,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '2.0.1'
     id 'com.google.protobuf' version '0.8.2'
     id 'com.jfrog.bintray' version '1.7.3'
+    id 'org.ajoberstar.git-publish' version '0.3.0'
     id 'java'
     id 'idea'
     id 'maven-publish'
@@ -90,33 +91,21 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-task("deployGhPages") {
-    dependsOn javadoc
-    doLast {
-        exec {
-            commandLine 'git', 'fetch', 'origin', '+gh-pages:gh-pages'
+gitPublish {
+    repoUri = 'git@github.com:heroiclabs/nakama-java.git'
+    branch = 'gh-pages'
+    contents {
+        from(javadoc) {
+            into "$project.version"
         }
-        exec {
-            commandLine 'git', 'checkout', 'gh-pages'
-        }
-        exec {
-            commandLine 'git', 'rm', '-r', 'docs/current', '-q'
-        }
-        project.copy {
-          from "$buildDir/javadoc"
-          into "docs/$project.version"
-        }
-        project.copy {
-          from "$buildDir/javadoc"
-          into 'docs/current'
-        }
-        exec {
-            commandLine 'git', 'add', 'docs'
-        }
-        exec {
-            commandLine 'git', 'commit', '-m', "Refresh javadoc '$project.version' by Gradle $gradleVersion.", '-q'
+        from(javadoc) {
+            into 'current'
         }
     }
+    preserve {
+        include '0.1.0/**'
+    }
+    commitMessage = "Published javadoc '$project.version' via Gradle ${GradleVersion.current().version}."
 }
 
 idea {
