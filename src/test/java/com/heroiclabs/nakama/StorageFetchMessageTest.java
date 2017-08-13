@@ -42,18 +42,15 @@ public class StorageFetchMessageTest {
     public void testFetchNotFound() throws Exception {
         final String deviceId = UUID.randomUUID().toString();
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
-
         final String bucket = UUID.randomUUID().toString();
 
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
                 return client.connect(session);
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<ResultSet<StorageRecord>>, Session>() {
+        }).addCallbackDeferring(new Callback<Deferred<ResultSet<StorageRecord>>, Session>() {
             @Override
             public Deferred<ResultSet<StorageRecord>> call(Session session) throws Exception {
                 final CollatedMessage<ResultSet<StorageRecord>> fetch = StorageFetchMessage.Builder.newBuilder()
@@ -61,15 +58,13 @@ public class StorageFetchMessageTest {
                         .build();
                 return client.send(fetch);
             }
-        })
-        .addCallback(new Callback<ResultSet<StorageRecord>, ResultSet<StorageRecord>>() {
+        }).addCallback(new Callback<ResultSet<StorageRecord>, ResultSet<StorageRecord>>() {
             @Override
             public ResultSet<StorageRecord> call(ResultSet<StorageRecord> records) throws Exception {
                 Assert.assertEquals(0, records.getResults().size());
                 return records;
             }
         });
-
         deferred.join(2000);
     }
 
@@ -82,14 +77,12 @@ public class StorageFetchMessageTest {
         final byte[] value = "{\"foo\":\"bar\"}".getBytes();
 
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
                 return client.connect(session);
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<ResultSet<RecordId>>, Session>() {
+        }).addCallbackDeferring(new Callback<Deferred<ResultSet<RecordId>>, Session>() {
             @Override
             public Deferred<ResultSet<RecordId>> call(Session session) throws Exception {
                 final CollatedMessage<ResultSet<RecordId>> write = StorageWriteMessage.Builder.newBuilder()
@@ -97,16 +90,14 @@ public class StorageFetchMessageTest {
                         .build();
                 return client.send(write);
             }
-        })
-        .addCallback(new Callback<ResultSet<RecordId>, ResultSet<RecordId>>() {
+        }).addCallback(new Callback<ResultSet<RecordId>, ResultSet<RecordId>>() {
             @Override
             public ResultSet<RecordId> call(ResultSet<RecordId> records) throws Exception {
                 Assert.assertEquals(1, records.getResults().size());
                 Assert.assertEquals(bucket, records.getResults().get(0).getBucket());
                 return records;
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<ResultSet<StorageRecord>>, ResultSet<RecordId>>() {
+        }).addCallbackDeferring(new Callback<Deferred<ResultSet<StorageRecord>>, ResultSet<RecordId>>() {
             @Override
             public Deferred<ResultSet<StorageRecord>> call(ResultSet<RecordId> records) throws Exception {
                 final CollatedMessage<ResultSet<StorageRecord>> fetch = StorageFetchMessage.Builder.newBuilder()
@@ -114,15 +105,13 @@ public class StorageFetchMessageTest {
                         .build();
                 return client.send(fetch);
             }
-        })
-        .addCallback(new Callback<ResultSet<StorageRecord>, ResultSet<StorageRecord>>() {
+        }).addCallback(new Callback<ResultSet<StorageRecord>, ResultSet<StorageRecord>>() {
             @Override
             public ResultSet<StorageRecord> call(ResultSet<StorageRecord> records) throws Exception {
                 Assert.assertEquals(0, records.getResults().size());
                 return records;
             }
         });
-
         deferred.join(2000);
     }
 
@@ -135,15 +124,13 @@ public class StorageFetchMessageTest {
         final byte[] value = "{\"foo\":\"bar\"}".getBytes();
 
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
                 userId = session.getId();
                 return client.connect(session);
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<ResultSet<RecordId>>, Session>() {
+        }).addCallbackDeferring(new Callback<Deferred<ResultSet<RecordId>>, Session>() {
             @Override
             public Deferred<ResultSet<RecordId>> call(Session session) throws Exception {
                 final CollatedMessage<ResultSet<RecordId>> write = StorageWriteMessage.Builder.newBuilder()
@@ -152,16 +139,14 @@ public class StorageFetchMessageTest {
                         .build();
                 return client.send(write);
             }
-        })
-        .addCallback(new Callback<ResultSet<RecordId>, ResultSet<RecordId>>() {
+        }).addCallback(new Callback<ResultSet<RecordId>, ResultSet<RecordId>>() {
             @Override
             public ResultSet<RecordId> call(ResultSet<RecordId> records) throws Exception {
                 Assert.assertEquals(1, records.getResults().size());
                 Assert.assertEquals(bucket, records.getResults().get(0).getBucket());
                 return records;
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<ResultSet<StorageRecord>>, ResultSet<RecordId>>() {
+        }).addCallbackDeferring(new Callback<Deferred<ResultSet<StorageRecord>>, ResultSet<RecordId>>() {
             @Override
             public Deferred<ResultSet<StorageRecord>> call(ResultSet<RecordId> records) throws Exception {
                 final CollatedMessage<ResultSet<StorageRecord>> fetch = StorageFetchMessage.Builder.newBuilder()
@@ -169,8 +154,7 @@ public class StorageFetchMessageTest {
                         .build();
                 return client.send(fetch);
             }
-        })
-        .addCallback(new Callback<ResultSet<StorageRecord>, ResultSet<StorageRecord>>() {
+        }).addCallback(new Callback<ResultSet<StorageRecord>, ResultSet<StorageRecord>>() {
             @Override
             public ResultSet<StorageRecord> call(ResultSet<StorageRecord> records) throws Exception {
                 Assert.assertEquals(1, records.getResults().size());
@@ -178,7 +162,6 @@ public class StorageFetchMessageTest {
                 return records;
             }
         });
-
         deferred.join(2000);
     }
 

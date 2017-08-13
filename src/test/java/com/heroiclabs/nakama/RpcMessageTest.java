@@ -43,28 +43,24 @@ public class RpcMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
                 return client.connect(session);
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<RpcResult>, Session>() {
+        }).addCallbackDeferring(new Callback<Deferred<RpcResult>, Session>() {
             @Override
             public Deferred<RpcResult> call(Session session) throws Exception {
                 final CollatedMessage<RpcResult> rpc = RpcMessage.Builder.newBuilder("NOT_FOUND").build();
                 return client.send(rpc);
             }
-        })
-        .addErrback(new Callback<Error, Error>() {
+        }).addErrback(new Callback<Error, Error>() {
             @Override
             public Error call(Error error) throws Exception {
                 Assert.assertEquals(Error.ErrorCode.RUNTIME_FUNCTION_NOT_FOUND, error.getCode());
                 return error;
             }
         });
-
         deferred.join(2000);
         Assert.fail("Should not reach this point.");
     }
@@ -75,28 +71,24 @@ public class RpcMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
                 return client.connect(session);
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<RpcResult>, Session>() {
+        }).addCallbackDeferring(new Callback<Deferred<RpcResult>, Session>() {
             @Override
             public Deferred<RpcResult> call(Session session) throws Exception {
-                final CollatedMessage<RpcResult> rpc = RpcMessage.Builder.newBuilder("client_rpc_test_fail").build();
+                final CollatedMessage<RpcResult> rpc = RpcMessage.Builder.newBuilder("client_rpc_fail").build();
                 return client.send(rpc);
             }
-        })
-        .addErrback(new Callback<Error, Error>() {
+        }).addErrback(new Callback<Error, Error>() {
             @Override
             public Error call(Error error) throws Exception {
                 Assert.assertEquals(Error.ErrorCode.RUNTIME_FUNCTION_EXCEPTION, error.getCode());
                 return error;
             }
         });
-
         deferred.join(2000);
         Assert.fail("Should not reach this point.");
     }
@@ -107,32 +99,27 @@ public class RpcMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
         final byte[] payload = "foo".getBytes();
-
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
                 return client.connect(session);
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<RpcResult>, Session>() {
+        }).addCallbackDeferring(new Callback<Deferred<RpcResult>, Session>() {
             @Override
             public Deferred<RpcResult> call(Session session) throws Exception {
-                final CollatedMessage<RpcResult> rpc = RpcMessage.Builder.newBuilder("client_rpc_test_echo")
+                final CollatedMessage<RpcResult> rpc = RpcMessage.Builder.newBuilder("client_rpc_echo")
                         .payload(payload)
                         .build();
                 return client.send(rpc);
             }
-        })
-        .addErrback(new Callback<RpcResult, RpcResult>() {
+        }).addErrback(new Callback<RpcResult, RpcResult>() {
             @Override
             public RpcResult call(RpcResult result) throws Exception {
                 Assert.assertArrayEquals(payload, result.getPayload());
                 return result;
             }
         });
-
         deferred.join(2000);
     }
 

@@ -80,7 +80,6 @@ public class StorageUpdateMessageTest {
                 return Boolean.FALSE;
             }
         });
-
         deferred.join(2000);
     }
 

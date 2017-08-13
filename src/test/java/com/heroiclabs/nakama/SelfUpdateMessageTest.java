@@ -42,18 +42,15 @@ public class SelfUpdateMessageTest {
     public void testUpdate() throws Exception {
         final String deviceId = UUID.randomUUID().toString();
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
-
-        final Deferred<Session> deferred = client.register(auth);
-
         final String newHandle = UUID.randomUUID().toString().substring(0, 20);
 
+        final Deferred<Session> deferred = client.register(auth);
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
                 return client.connect(session);
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<Boolean>, Session>() {
+        }).addCallbackDeferring(new Callback<Deferred<Boolean>, Session>() {
             @Override
             public Deferred<Boolean> call(Session session) throws Exception {
                 final CollatedMessage<Boolean> update = SelfUpdateMessage.Builder.newBuilder()
@@ -61,8 +58,7 @@ public class SelfUpdateMessageTest {
                         .build();
                 return client.send(update);
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<Self>, Boolean>() {
+        }).addCallbackDeferring(new Callback<Deferred<Self>, Boolean>() {
             @Override
             public Deferred<Self> call(Boolean result) throws Exception {
                 Assert.assertEquals(true, result);
@@ -70,8 +66,7 @@ public class SelfUpdateMessageTest {
                 final CollatedMessage<Self> fetch = SelfFetchMessage.Builder.build();
                 return client.send(fetch);
             }
-        })
-        .addCallback(new Callback<Self, Self>() {
+        }).addCallback(new Callback<Self, Self>() {
             @Override
             public Self call(Self self) throws Exception {
                 Assert.assertEquals(newHandle, self.getHandle());
@@ -86,18 +81,15 @@ public class SelfUpdateMessageTest {
     public void testUpdateHandleTooLong() throws Exception {
         final String deviceId = UUID.randomUUID().toString();
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
-
-        final Deferred<Session> deferred = client.register(auth);
-
         final String newHandle = UUID.randomUUID().toString();
 
+        final Deferred<Session> deferred = client.register(auth);
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
                 return client.connect(session);
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<Boolean>, Session>() {
+        }).addCallbackDeferring(new Callback<Deferred<Boolean>, Session>() {
             @Override
             public Deferred<Boolean> call(Session session) throws Exception {
                 final CollatedMessage<Boolean> update = SelfUpdateMessage.Builder.newBuilder()
@@ -105,8 +97,7 @@ public class SelfUpdateMessageTest {
                         .build();
                 return client.send(update);
             }
-        })
-        .addErrback(new Callback<Error, Error>() {
+        }).addErrback(new Callback<Error, Error>() {
             @Override
             public Error call(Error error) throws Exception {
                 Assert.assertEquals(Error.ErrorCode.BAD_INPUT, error.getCode());
@@ -124,21 +115,18 @@ public class SelfUpdateMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
                 return client.connect(session);
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<Self>, Session>() {
+        }).addCallbackDeferring(new Callback<Deferred<Self>, Session>() {
             @Override
             public Deferred<Self> call(Session session) throws Exception {
                 final CollatedMessage<Self> fetch = SelfFetchMessage.Builder.build();
                 return client.send(fetch);
             }
-        })
-        .addCallback(new Callback<Self, Self>() {
+        }).addCallback(new Callback<Self, Self>() {
             @Override
             public Self call(Self self) throws Exception {
                 handle = self.getHandle();
@@ -149,22 +137,19 @@ public class SelfUpdateMessageTest {
             public Deferred<Boolean> call(Self self) throws Exception {
                 return client.disconnect();
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<Session>, Boolean>() {
+        }).addCallbackDeferring(new Callback<Deferred<Session>, Boolean>() {
             @Override
             public Deferred<Session> call(Boolean result) throws Exception {
                 final String otherDeviceId = UUID.randomUUID().toString();
                 final AuthenticateMessage otherAuth = AuthenticateMessage.Builder.device(otherDeviceId);
                 return client.register(otherAuth);
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
+        }).addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
                 return client.connect(session);
             }
-        })
-        .addCallback(new Callback<Deferred<Boolean>, Session>() {
+        }).addCallback(new Callback<Deferred<Boolean>, Session>() {
             @Override
             public Deferred<Boolean> call(Session session) throws Exception {
                 final CollatedMessage<Boolean> update = SelfUpdateMessage.Builder.newBuilder()

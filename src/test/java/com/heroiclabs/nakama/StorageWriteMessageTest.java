@@ -46,7 +46,6 @@ public class StorageWriteMessageTest {
         final byte[] value = "{\"foo\":\"bar\"}".getBytes();
 
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
@@ -70,7 +69,6 @@ public class StorageWriteMessageTest {
                 return records;
             }
         });
-
         deferred.join(2000);
     }
 
@@ -83,7 +81,6 @@ public class StorageWriteMessageTest {
         final byte[] value = "{\"foo\":\"bar\"}".getBytes();
 
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
@@ -107,7 +104,6 @@ public class StorageWriteMessageTest {
                 return records;
             }
         });
-
         deferred.join(2000);
     }
 
@@ -120,7 +116,6 @@ public class StorageWriteMessageTest {
         final byte[] value = "{\"foo\":\"bar\"}".getBytes();
 
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
@@ -160,8 +155,8 @@ public class StorageWriteMessageTest {
                 return error;
             }
         });
-
         deferred.join(2000);
+
         Assert.fail("Should not reach this point.");
     }
 
@@ -174,7 +169,6 @@ public class StorageWriteMessageTest {
         final byte[] value = "{\"foo\":\"bar\"}".getBytes();
 
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
@@ -216,7 +210,6 @@ public class StorageWriteMessageTest {
                 return records;
             }
         });
-
         deferred.join(2000);
     }
 
@@ -229,14 +222,12 @@ public class StorageWriteMessageTest {
         final byte[] value = "{\"foo\":\"bar\"}".getBytes();
 
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
                 return client.connect(session);
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<ResultSet<RecordId>>, Session>() {
+        }).addCallbackDeferring(new Callback<Deferred<ResultSet<RecordId>>, Session>() {
             @Override
             public Deferred<ResultSet<RecordId>> call(Session session) throws Exception {
                 final CollatedMessage<ResultSet<RecordId>> write = StorageWriteMessage.Builder.newBuilder()
@@ -244,16 +235,14 @@ public class StorageWriteMessageTest {
                         .build();
                 return client.send(write);
             }
-        })
-        .addCallback(new Callback<ResultSet<RecordId>, ResultSet<RecordId>>() {
+        }).addCallback(new Callback<ResultSet<RecordId>, ResultSet<RecordId>>() {
             @Override
             public ResultSet<RecordId> call(ResultSet<RecordId> records) throws Exception {
                 Assert.assertEquals(1, records.getResults().size());
                 Assert.assertEquals(bucket, records.getResults().get(0).getBucket());
                 return records;
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<ResultSet<RecordId>>, ResultSet<RecordId>>() {
+        }).addCallbackDeferring(new Callback<Deferred<ResultSet<RecordId>>, ResultSet<RecordId>>() {
             @Override
             public Deferred<ResultSet<RecordId>> call(ResultSet<RecordId> records) throws Exception {
                 final CollatedMessage<ResultSet<RecordId>> write = StorageWriteMessage.Builder.newBuilder()
@@ -261,16 +250,15 @@ public class StorageWriteMessageTest {
                         .build();
                 return client.send(write);
             }
-        })
-        .addErrback(new Callback<Error, Error>() {
+        }).addErrback(new Callback<Error, Error>() {
             @Override
             public Error call(Error error) throws Exception {
                 Assert.assertEquals(Error.ErrorCode.STORAGE_REJECTED, error.getCode());
                 return error;
             }
         });
-
         deferred.join(2000);
+
         Assert.fail("Should not reach this point.");
     }
 

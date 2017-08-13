@@ -44,7 +44,6 @@ public class SelfLinkMessageTest {
 
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
@@ -91,7 +90,6 @@ public class SelfLinkMessageTest {
                 return Boolean.FALSE;
             }
         });
-
         deferred.join(2000);
     }
 

@@ -45,7 +45,6 @@ public class UsersFetchMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
@@ -70,7 +69,6 @@ public class UsersFetchMessageTest {
                 return results;
             }
         });
-
         deferred.join(2000);
     }
 
@@ -80,29 +78,25 @@ public class UsersFetchMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
                 userId = session.getId();
                 return client.connect(session);
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<Self>, Session>() {
+        }).addCallbackDeferring(new Callback<Deferred<Self>, Session>() {
             @Override
             public Deferred<Self> call(Session session) throws Exception {
                 final CollatedMessage<Self> fetch = SelfFetchMessage.Builder.build();
                 return client.send(fetch);
             }
-        })
-        .addCallback(new Callback<Self, Self>() {
+        }).addCallback(new Callback<Self, Self>() {
             @Override
             public Self call(Self self) throws Exception {
                 handle = self.getHandle();
                 return self;
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<ResultSet<User>>, Self>() {
+        }).addCallbackDeferring(new Callback<Deferred<ResultSet<User>>, Self>() {
             @Override
             public Deferred<ResultSet<User>> call(Self self) throws Exception {
                 final CollatedMessage<ResultSet<User>> fetch = UsersFetchMessage.Builder.newBuilder()
@@ -110,8 +104,7 @@ public class UsersFetchMessageTest {
                         .build();
                 return client.send(fetch);
             }
-        })
-        .addCallback(new Callback<ResultSet<User>, ResultSet<User>>() {
+        }).addCallback(new Callback<ResultSet<User>, ResultSet<User>>() {
             @Override
             public ResultSet<User> call(ResultSet<User> results) throws Exception {
                 Assert.assertEquals(1, results.getResults().size());
@@ -121,7 +114,6 @@ public class UsersFetchMessageTest {
                 return results;
             }
         });
-
         deferred.join(2000);
     }
 
@@ -131,29 +123,25 @@ public class UsersFetchMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
         final Deferred<Session> deferred = client.register(auth);
-
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
             public Deferred<Session> call(Session session) throws Exception {
                 userId = session.getId();
                 return client.connect(session);
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<Self>, Session>() {
+        }).addCallbackDeferring(new Callback<Deferred<Self>, Session>() {
             @Override
             public Deferred<Self> call(Session session) throws Exception {
                 final CollatedMessage<Self> fetch = SelfFetchMessage.Builder.build();
                 return client.send(fetch);
             }
-        })
-        .addCallback(new Callback<Self, Self>() {
+        }).addCallback(new Callback<Self, Self>() {
             @Override
             public Self call(Self self) throws Exception {
                 handle = self.getHandle();
                 return self;
             }
-        })
-        .addCallbackDeferring(new Callback<Deferred<ResultSet<User>>, Self>() {
+        }).addCallbackDeferring(new Callback<Deferred<ResultSet<User>>, Self>() {
             @Override
             public Deferred<ResultSet<User>> call(Self self) throws Exception {
                 final CollatedMessage<ResultSet<User>> fetch = UsersFetchMessage.Builder.newBuilder()
@@ -161,8 +149,7 @@ public class UsersFetchMessageTest {
                         .build();
                 return client.send(fetch);
             }
-        })
-        .addCallback(new Callback<ResultSet<User>, ResultSet<User>>() {
+        }).addCallback(new Callback<ResultSet<User>, ResultSet<User>>() {
             @Override
             public ResultSet<User> call(ResultSet<User> results) throws Exception {
                 Assert.assertEquals(1, results.getResults().size());
@@ -172,7 +159,6 @@ public class UsersFetchMessageTest {
                 return results;
             }
         });
-
         deferred.join(2000);
     }
 

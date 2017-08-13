@@ -46,44 +46,39 @@ public class AuthenticateMessageTest {
     public void loginOrRegister() throws Exception {
         final String id = UUID.randomUUID().toString();
         final AuthenticateMessage message = AuthenticateMessage.Builder.device(id);
-        client.login(message)
-                .addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
-                    @Override
-                    public Deferred<Session> call(Session session) throws Exception {
-                        return client.connect(session);
-                    }
-                })
-                .addErrback(new Callback<Deferred<Session>, Error>() {
-                    @Override
-                    public Deferred<Session> call(Error err) throws Exception {
-                        if (err.getCode() == Error.ErrorCode.USER_NOT_FOUND) {
-                            System.out.println("User not found, registering.");
-                            return client.register(message);
-                        }
-                        throw err;
-                    }
-                })
-                .addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
-                    @Override
-                    public Deferred<Session> call(Session session) throws Exception {
-                        return client.connect(session);
-                    }
-                })
-                .addCallback(new Callback<Void, Session>() {
-                    @Override
-                    public Void call(Session arg) throws Exception {
-                        System.out.println("Connected!");
-                        return null;
-                    }
-                })
-                .addErrback(new Callback<Error, Error>() {
-                    @Override
-                    public Error call(Error err) throws Exception {
-                        System.out.format("Error: code '%s' with '%s'.", err.getCode(), err.getMessage());
-                        return err;
-                    }
-                })
-                .join(2000);
+        final Deferred<Session> deferred = client.login(message);
+        deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
+            @Override
+            public Deferred<Session> call(Session session) throws Exception {
+                return client.connect(session);
+            }
+        }).addErrback(new Callback<Deferred<Session>, Error>() {
+            @Override
+            public Deferred<Session> call(Error err) throws Exception {
+                if (err.getCode() == Error.ErrorCode.USER_NOT_FOUND) {
+                    System.out.println("User not found, registering.");
+                    return client.register(message);
+                }
+                throw err;
+            }
+        }).addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
+            @Override
+            public Deferred<Session> call(Session session) throws Exception {
+                return client.connect(session);
+            }
+        }).addCallback(new Callback<Session, Session>() {
+            @Override
+            public Session call(Session session) throws Exception {
+                System.out.println("Connected!");
+                return session;
+            }
+        }).addErrback(new Callback<Error, Error>() {
+            @Override
+            public Error call(Error err) throws Exception {
+                System.out.format("Error: code '%s' with '%s'.", err.getCode(), err.getMessage());
+                return err;
+            }
+        }).join(2000);
     }
 
 }

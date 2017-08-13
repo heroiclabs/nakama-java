@@ -41,21 +41,26 @@ public class SelfFetchMessageTest {
     public void testSelfFetch() throws Exception {
         final String customId = UUID.randomUUID().toString();
         final AuthenticateMessage auth = AuthenticateMessage.Builder.custom(customId);
-        final Self self = client.register(auth)
-                .addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
-                        @Override
-                        public Deferred<Session> call(Session session) throws Exception {
-                            return client.connect(session);
-                        }
-                    })
-                .addCallbackDeferring(new Callback<Deferred<Self>, Session>() {
-                        @Override
-                        public Deferred<Self> call(Session arg) throws Exception {
-                            final CollatedMessage<Self> selfFetch = SelfFetchMessage.Builder.build();
-                            return client.send(selfFetch);
-                        }
-                    })
-                .join(2000);
+        final Deferred<Session> deferred = client.register(auth);
+        Deferred<Self> selfDeferred = deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
+            @Override
+            public Deferred<Session> call(Session session) throws Exception {
+                return client.connect(session);
+            }
+        }).addErrback(new Callback<Error, Error>() {
+            @Override
+            public Error call(Error err) throws Exception {
+                Assert.fail(err.getMessage());
+                return err;
+            }
+        }).addCallbackDeferring(new Callback<Deferred<Self>, Session>() {
+            @Override
+            public Deferred<Self> call(Session arg) throws Exception {
+                final CollatedMessage<Self> selfFetch = SelfFetchMessage.Builder.build();
+                return client.send(selfFetch);
+            }
+        });
+        final Self self = selfDeferred.join(2000);
         Assert.assertNotNull(self);
         Assert.assertEquals(customId, self.getCustomId());
     }
