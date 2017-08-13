@@ -19,6 +19,7 @@ package com.heroiclabs.nakama;
 import com.stumbleupon.async.Callback;
 import com.stumbleupon.async.Deferred;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -26,10 +27,10 @@ import java.util.UUID;
 
 public class AuthenticateMessageTest {
 
-    private static Client client;
+    private Client client;
 
-    @BeforeClass
-    public static void init() {
+    @Before
+    public void init() {
         client = DefaultClient.builder("defaultkey").build();
         Assert.assertNotNull(client);
     }

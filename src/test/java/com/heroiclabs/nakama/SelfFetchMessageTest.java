@@ -24,10 +24,10 @@ import java.util.UUID;
 
 public class SelfFetchMessageTest {
 
-    private static Client client;
+    private Client client;
 
-    @BeforeClass
-    public static void init() {
+    @Before
+    public void init() {
         client = DefaultClient.builder("defaultkey").build();
         Assert.assertNotNull(client);
     }

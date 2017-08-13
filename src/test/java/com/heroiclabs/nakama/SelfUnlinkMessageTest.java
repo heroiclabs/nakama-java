@@ -18,19 +18,16 @@ package com.heroiclabs.nakama;
 
 import com.stumbleupon.async.Callback;
 import com.stumbleupon.async.Deferred;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.UUID;
 
 public class SelfUnlinkMessageTest {
 
-    private static Client client;
+    private Client client;
 
-    @BeforeClass
-    public static void init() {
+    @Before
+    public void init() {
         client = DefaultClient.builder("defaultkey").build();
         Assert.assertNotNull(client);
     }

@@ -18,19 +18,16 @@ package com.heroiclabs.nakama;
 
 import com.stumbleupon.async.Callback;
 import com.stumbleupon.async.Deferred;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.UUID;
 
 public class StorageUpdateMessageTest {
 
-    private static Client client;
+    private Client client;
 
-    @BeforeClass
-    public static void init() {
+    @Before
+    public void init() {
         client = DefaultClient.builder("defaultkey").build();
         Assert.assertNotNull(client);
     }
@@ -48,6 +45,7 @@ public class StorageUpdateMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
         final Deferred<Session> deferred = client.register(auth);
 
+        final String bucket = UUID.randomUUID().toString();
         final String jsonString = "{\"coins\": 100, \"gems\": 10, \"artifacts\": 0}";
 
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
@@ -59,7 +57,7 @@ public class StorageUpdateMessageTest {
             @Override
             public Deferred<ResultSet<RecordId>> call(Session session) throws Exception {
                 final StorageUpdateMessage message = StorageUpdateMessage.Builder.newBuilder()
-                        .record("bucket", "collection", "key", StorageUpdateMessage.OpBuilder.newBuilder()
+                        .record(bucket, "collection", "key", StorageUpdateMessage.OpBuilder.newBuilder()
                         .init("/foo", jsonString.getBytes())
                         .incr("/foo/coins", -10))
                         .build();
@@ -70,7 +68,7 @@ public class StorageUpdateMessageTest {
             public ResultSet<RecordId> call(ResultSet<RecordId> records) throws Exception {
                 Assert.assertNotNull(records);
                 Assert.assertEquals(1, records.getResults().size());
-                Assert.assertEquals("bucket", records.getResults().get(0).getBucket());
+                Assert.assertEquals(bucket, records.getResults().get(0).getBucket());
                 Assert.assertEquals("collection", records.getResults().get(0).getBucket());
                 Assert.assertEquals("key", records.getResults().get(0).getKey());
                 return records;

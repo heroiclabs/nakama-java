@@ -19,6 +19,9 @@ package com.heroiclabs.nakama;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.ByteBuffer;
+import java.util.UUID;
+
 public final class DefaultSessionTest {
 
     private static final String JWT_TOKEN =
@@ -28,7 +31,7 @@ public final class DefaultSessionTest {
 
     private static final String JWT_TOKEN_HANDLE = "XaFTAVsJQf";
 
-    private static final byte[] JWT_TOKEN_ID = "f13ac73a-904a-45ce-87f6-ef2db37ff91a".getBytes();
+    private static final UUID JWT_TOKEN_ID = UUID.fromString("f13ac73a-904a-45ce-87f6-ef2db37ff91a");
 
     @Test
     public void sessionRestore() {
@@ -36,7 +39,11 @@ public final class DefaultSessionTest {
 
         Assert.assertEquals(JWT_TOKEN, session.getToken());
         Assert.assertEquals(JWT_TOKEN_HANDLE, session.getHandle());
-        Assert.assertArrayEquals(JWT_TOKEN_ID, session.getId());
+
+        ByteBuffer byteBuffer = ByteBuffer.wrap(session.getId());
+        Long high = byteBuffer.getLong();
+        Long low = byteBuffer.getLong();
+        Assert.assertEquals(JWT_TOKEN_ID, new UUID(high, low));
     }
 
     @Test

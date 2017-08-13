@@ -16,15 +16,15 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import lombok.Data;
 import lombok.ToString;
 
 import java.lang.reflect.Type;
+import java.nio.ByteBuffer;
 import java.util.Base64;
 import java.util.Map;
+import java.util.UUID;
 
 @Data
 @ToString(includeFieldNames = true)
@@ -46,15 +46,19 @@ public class DefaultSession implements Session {
             throw new IllegalArgumentException("Not a valid token.");
         }
         final String decodedJson = new String(Base64.getDecoder().decode(decoded[1]));
-        // TODO move to static type.
-        Gson gson = new GsonBuilder().create();
         Type type = new TypeToken<Map<String, Object>>(){}.getType();
-        Map<String, Object> jsonMap = gson.fromJson(decodedJson, type);
+        Map<String, Object> jsonMap = DefaultClient.GSON.fromJson(decodedJson, type);
 
         createdAt = System.currentTimeMillis();
         expiresAt = Math.round(((Double) jsonMap.get("exp")) * 1000L);
         handle = jsonMap.get("han").toString();
-        id = jsonMap.get("uid").toString().getBytes();
+
+        final UUID uid = UUID.fromString(jsonMap.get("uid").toString());
+        final ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+        bb.putLong(uid.getMostSignificantBits());
+        bb.putLong(uid.getLeastSignificantBits());
+        id = bb.array();
+
         this.token = token;
     }
 
