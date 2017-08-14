@@ -16,6 +16,12 @@ The client can be downloaded from [GitHub releases](https://github.com/heroiclab
 If you use a build tool like Gradle you can skip the download and fetch it from the central repository.
 
 ```groovy
+repositories {
+    maven {
+        url 'https://dl.bintray.com/heroiclabs/default/'
+    }
+}
+
 dependencies {
   compile(group: 'com.heroiclabs.nakama', name: 'client', version: '+')
 }
