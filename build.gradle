@@ -104,6 +104,7 @@ gitPublish {
     }
     preserve {
         include '0.1.0/**'
+        include '0.1.1/**'
     }
     commitMessage = "Published javadoc '$project.version' via Gradle ${GradleVersion.current().version}."
 }
