@@ -6,6 +6,10 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [0.1.1] - 2017-08-14
+### Fixed
+- Correctly expose
+
 ## [0.1.0] - 2017-08-13
 ### Added
 - Initial public release.
