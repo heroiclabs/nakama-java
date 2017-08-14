@@ -25,21 +25,21 @@ public interface AuthenticateMessage extends CollatedMessage<Session> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        static AuthenticateMessage custom(final @NonNull String id) {
+        public static AuthenticateMessage custom(final @NonNull String id) {
             final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
                     com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
                             .setCustom(id);
             return new DefaultAuthenticateMessage(payload);
         }
 
-        static AuthenticateMessage device(final @NonNull String id) {
+        public static AuthenticateMessage device(final @NonNull String id) {
             final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
                     com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
                             .setDevice(id);
             return new DefaultAuthenticateMessage(payload);
         }
 
-        static AuthenticateMessage email(final @NonNull String email, final @NonNull String password) {
+        public static AuthenticateMessage email(final @NonNull String email, final @NonNull String password) {
             final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
                     com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
                             .setEmail(com.heroiclabs.nakama.Api.AuthenticateRequest.Email.newBuilder()
@@ -49,14 +49,14 @@ public interface AuthenticateMessage extends CollatedMessage<Session> {
             return new DefaultAuthenticateMessage(payload);
         }
 
-        static AuthenticateMessage facebook(final @NonNull String oauthToken) {
+        public static AuthenticateMessage facebook(final @NonNull String oauthToken) {
             final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
                     com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
                             .setFacebook(oauthToken);
             return new DefaultAuthenticateMessage(payload);
         }
 
-        static AuthenticateMessage gameCenter(final @NonNull String playerId, final @NonNull String bundleId,
+        public static AuthenticateMessage gameCenter(final @NonNull String playerId, final @NonNull String bundleId,
                                               final long timestamp, final @NonNull String salt,
                                               final @NonNull String signature, final @NonNull String publicKeyUrl) {
             final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
@@ -72,14 +72,14 @@ public interface AuthenticateMessage extends CollatedMessage<Session> {
             return new DefaultAuthenticateMessage(payload);
         }
 
-        static AuthenticateMessage google(final @NonNull String oauthToken) {
+        public static AuthenticateMessage google(final @NonNull String oauthToken) {
             final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
                     com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
                             .setGoogle(oauthToken);
             return new DefaultAuthenticateMessage(payload);
         }
 
-        static AuthenticateMessage steam(final @NonNull String sessionToken) {
+        public static AuthenticateMessage steam(final @NonNull String sessionToken) {
             final com.heroiclabs.nakama.Api.AuthenticateRequest.Builder payload =
                     com.heroiclabs.nakama.Api.AuthenticateRequest.newBuilder()
                             .setSteam(sessionToken);

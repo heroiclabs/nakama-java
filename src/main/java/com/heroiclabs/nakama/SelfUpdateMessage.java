@@ -26,7 +26,7 @@ public interface SelfUpdateMessage extends CollatedMessage<Boolean> {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        static Builder newBuilder() {
+        public static Builder newBuilder() {
             return new Builder(com.heroiclabs.nakama.Api.TSelfUpdate.newBuilder());
         }
 

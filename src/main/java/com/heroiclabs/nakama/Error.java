@@ -40,7 +40,7 @@ public abstract class Error extends Exception {
      * The error code for the problem.
      */
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    enum ErrorCode {
+    public enum ErrorCode {
         UNKNOWN(0),
         RUNTIME_EXCEPTION(1),
         UNRECOGNISED_PAYLOAD(2),
@@ -62,17 +62,45 @@ public abstract class Error extends Exception {
 
         private final int code;
 
-        // Static helpers to transform wire protocol int codes into their enum equivalents.
-        private static final Map<Integer, ErrorCode> codeMappings;
-        static {
-            Map<Integer, ErrorCode> codes = new HashMap<>();
-            for (ErrorCode code : ErrorCode.values()) {
-                codes.put(code.code, code);
-            }
-            codeMappings = Collections.unmodifiableMap(codes);
-        }
         static ErrorCode fromInt(final int code) {
-            return codeMappings.getOrDefault(code + 1, ErrorCode.UNKNOWN);
+            switch (code) {
+                case 0:
+                    return RUNTIME_EXCEPTION;
+                case 1:
+                    return UNRECOGNISED_PAYLOAD;
+                case 2:
+                    return MISSING_PAYLOAD;
+                case 3:
+                    return BAD_INPUT;
+                case 4:
+                    return AUTH_ERROR;
+                case 5:
+                    return USER_NOT_FOUND;
+                case 6:
+                    return USER_REGISTER_INUSE;
+                case 7:
+                    return USER_LINK_INUSE;
+                case 8:
+                    return USER_LINK_PROVIDER_UNAVAILABLE;
+                case 9:
+                    return USER_UNLINK_DISALLOWED;
+                case 10:
+                    return USER_HANDLE_INUSE;
+                case 11:
+                    return GROUP_NAME_INUSE;
+                case 12:
+                    return GROUP_LAST_ADMIN;
+                case 13:
+                    return STORAGE_REJECTED;
+                case 14:
+                    return MATCH_NOT_FOUND;
+                case 15:
+                    return RUNTIME_FUNCTION_NOT_FOUND;
+                case 16:
+                    return RUNTIME_FUNCTION_EXCEPTION;
+                default:
+                    return UNKNOWN;
+            }
         }
     }
 

@@ -24,7 +24,7 @@ public interface SelfFetchMessage extends CollatedMessage<Self> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        static SelfFetchMessage build() {
+        public static SelfFetchMessage build() {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
                             .setSelfFetch(com.heroiclabs.nakama.Api.TSelfFetch.newBuilder());

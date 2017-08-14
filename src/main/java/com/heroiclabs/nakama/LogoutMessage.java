@@ -24,7 +24,7 @@ public interface LogoutMessage extends Message {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        static LogoutMessage build() {
+        public static LogoutMessage build() {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
                             .setLogout(com.heroiclabs.nakama.Api.Logout.newBuilder());

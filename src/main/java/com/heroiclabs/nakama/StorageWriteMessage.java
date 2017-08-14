@@ -26,7 +26,7 @@ public interface StorageWriteMessage extends CollatedMessage<ResultSet<RecordId>
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        static Builder newBuilder() {
+        public static Builder newBuilder() {
             return new Builder(com.heroiclabs.nakama.Api.TStorageWrite.newBuilder());
         }
 

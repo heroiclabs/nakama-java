@@ -25,7 +25,7 @@ public interface SelfLinkMessage extends CollatedMessage<Boolean> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        static SelfLinkMessage custom(final @NonNull String id) {
+        public static SelfLinkMessage custom(final @NonNull String id) {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
                             .setLink(com.heroiclabs.nakama.Api.TLink.newBuilder()
@@ -33,7 +33,7 @@ public interface SelfLinkMessage extends CollatedMessage<Boolean> {
             return new DefaultSelfLinkMessage(payload);
         }
 
-        static SelfLinkMessage device(final @NonNull String id) {
+        public static SelfLinkMessage device(final @NonNull String id) {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
                             .setLink(com.heroiclabs.nakama.Api.TLink.newBuilder()
@@ -41,7 +41,7 @@ public interface SelfLinkMessage extends CollatedMessage<Boolean> {
             return new DefaultSelfLinkMessage(payload);
         }
 
-        static SelfLinkMessage email(final @NonNull String email, final @NonNull String password) {
+        public static SelfLinkMessage email(final @NonNull String email, final @NonNull String password) {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
                             .setLink(com.heroiclabs.nakama.Api.TLink.newBuilder()
@@ -52,7 +52,7 @@ public interface SelfLinkMessage extends CollatedMessage<Boolean> {
             return new DefaultSelfLinkMessage(payload);
         }
 
-        static SelfLinkMessage facebook(final @NonNull String oauthToken) {
+        public static SelfLinkMessage facebook(final @NonNull String oauthToken) {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
                             .setLink(com.heroiclabs.nakama.Api.TLink.newBuilder()
@@ -60,7 +60,7 @@ public interface SelfLinkMessage extends CollatedMessage<Boolean> {
             return new DefaultSelfLinkMessage(payload);
         }
 
-        static SelfLinkMessage gameCenter(final @NonNull String playerId, final @NonNull String bundleId,
+        public static SelfLinkMessage gameCenter(final @NonNull String playerId, final @NonNull String bundleId,
                                           final long timestamp, final @NonNull String salt,
                                           final @NonNull String signature, final @NonNull String publicKeyUrl) {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
@@ -77,7 +77,7 @@ public interface SelfLinkMessage extends CollatedMessage<Boolean> {
             return new DefaultSelfLinkMessage(payload);
         }
 
-        static SelfLinkMessage google(final @NonNull String oauthToken) {
+        public static SelfLinkMessage google(final @NonNull String oauthToken) {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
                             .setLink(com.heroiclabs.nakama.Api.TLink.newBuilder()
@@ -85,7 +85,7 @@ public interface SelfLinkMessage extends CollatedMessage<Boolean> {
             return new DefaultSelfLinkMessage(payload);
         }
 
-        static SelfLinkMessage steam(final @NonNull String sessionToken) {
+        public static SelfLinkMessage steam(final @NonNull String sessionToken) {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
                             .setLink(com.heroiclabs.nakama.Api.TLink.newBuilder()

@@ -26,7 +26,7 @@ public interface StorageUpdateMessage extends CollatedMessage<ResultSet<RecordId
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        static Builder newBuilder() {
+        public static Builder newBuilder() {
             return new Builder(com.heroiclabs.nakama.Api.TStorageUpdate.newBuilder());
         }
 
@@ -86,7 +86,7 @@ public interface StorageUpdateMessage extends CollatedMessage<ResultSet<RecordId
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     class OpBuilder {
 
-        static OpBuilder newBuilder() {
+        public static OpBuilder newBuilder() {
             return new OpBuilder(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder());
         }
 

@@ -25,7 +25,7 @@ public interface SelfUnlinkMessage extends CollatedMessage<Boolean> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        static SelfUnlinkMessage custom(final @NonNull String id) {
+        public static SelfUnlinkMessage custom(final @NonNull String id) {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
                             .setUnlink(com.heroiclabs.nakama.Api.TUnlink.newBuilder()
@@ -33,7 +33,7 @@ public interface SelfUnlinkMessage extends CollatedMessage<Boolean> {
             return new DefaultSelfUnlinkMessage(payload);
         }
 
-        static SelfUnlinkMessage device(final @NonNull String id) {
+        public static SelfUnlinkMessage device(final @NonNull String id) {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
                             .setUnlink(com.heroiclabs.nakama.Api.TUnlink.newBuilder()
@@ -41,7 +41,7 @@ public interface SelfUnlinkMessage extends CollatedMessage<Boolean> {
             return new DefaultSelfUnlinkMessage(payload);
         }
 
-        static SelfUnlinkMessage email(final @NonNull String email) {
+        public static SelfUnlinkMessage email(final @NonNull String email) {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
                             .setUnlink(com.heroiclabs.nakama.Api.TUnlink.newBuilder()
@@ -49,7 +49,7 @@ public interface SelfUnlinkMessage extends CollatedMessage<Boolean> {
             return new DefaultSelfUnlinkMessage(payload);
         }
 
-        static SelfUnlinkMessage facebook(final @NonNull String id) {
+        public static SelfUnlinkMessage facebook(final @NonNull String id) {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
                             .setUnlink(com.heroiclabs.nakama.Api.TUnlink.newBuilder()
@@ -57,7 +57,7 @@ public interface SelfUnlinkMessage extends CollatedMessage<Boolean> {
             return new DefaultSelfUnlinkMessage(payload);
         }
 
-        static SelfUnlinkMessage gameCenter(final @NonNull String playerId) {
+        public static SelfUnlinkMessage gameCenter(final @NonNull String playerId) {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
                             .setUnlink(com.heroiclabs.nakama.Api.TUnlink.newBuilder()
@@ -65,7 +65,7 @@ public interface SelfUnlinkMessage extends CollatedMessage<Boolean> {
             return new DefaultSelfUnlinkMessage(payload);
         }
 
-        static SelfUnlinkMessage google(final @NonNull String id) {
+        public static SelfUnlinkMessage google(final @NonNull String id) {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
                             .setUnlink(com.heroiclabs.nakama.Api.TUnlink.newBuilder()
@@ -73,7 +73,7 @@ public interface SelfUnlinkMessage extends CollatedMessage<Boolean> {
             return new DefaultSelfUnlinkMessage(payload);
         }
 
-        static SelfUnlinkMessage steam(final @NonNull String id) {
+        public static SelfUnlinkMessage steam(final @NonNull String id) {
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
                             .setUnlink(com.heroiclabs.nakama.Api.TUnlink.newBuilder()
