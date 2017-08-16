@@ -79,7 +79,7 @@ public class RpcMessageTest {
         }).addCallbackDeferring(new Callback<Deferred<RpcResult>, Session>() {
             @Override
             public Deferred<RpcResult> call(Session session) throws Exception {
-                final CollatedMessage<RpcResult> rpc = RpcMessage.Builder.newBuilder("client_rpc_test_fail").build();
+                final CollatedMessage<RpcResult> rpc = RpcMessage.Builder.newBuilder("client_rpc_fail").build();
                 return client.send(rpc);
             }
         }).addErrback(new Callback<Error, Error>() {
@@ -108,7 +108,7 @@ public class RpcMessageTest {
         }).addCallbackDeferring(new Callback<Deferred<RpcResult>, Session>() {
             @Override
             public Deferred<RpcResult> call(Session session) throws Exception {
-                final CollatedMessage<RpcResult> rpc = RpcMessage.Builder.newBuilder("client_rpc_test_echo")
+                final CollatedMessage<RpcResult> rpc = RpcMessage.Builder.newBuilder("client_rpc_echo")
                         .payload(payload)
                         .build();
                 return client.send(rpc);
