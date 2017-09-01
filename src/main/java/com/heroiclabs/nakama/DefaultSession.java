@@ -22,7 +22,9 @@ import lombok.ToString;
 
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
-import java.util.Base64;
+import okio.*;
+
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,7 +47,7 @@ public class DefaultSession implements Session {
         if (decoded.length != 3) {
             throw new IllegalArgumentException("Not a valid token.");
         }
-        final String decodedJson = new String(Base64.getDecoder().decode(decoded[1]));
+        final String decodedJson = ByteString.decodeBase64(decoded[1]).string(Charset.defaultCharset());
         Type type = new TypeToken<Map<String, Object>>(){}.getType();
         Map<String, Object> jsonMap = DefaultClient.GSON.fromJson(decodedJson, type);
 
