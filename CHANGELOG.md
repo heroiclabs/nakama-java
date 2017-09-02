@@ -4,7 +4,10 @@ All notable changes to this project are documented below.
 
 The format is based on [keep a changelog](http://keepachangelog.com/) and this project uses [semantic versioning](http://semver.org/).
 
-## [Unreleased]
+## [0.1.2] - 2017-09-02
+### Fixed
+- Pin transitive SLF4J dependency on 1.7.* stable release.
+- Use "okio.ByteString" rather than "java.util.Base64" for base64 support.
 
 ## [0.1.1] - 2017-08-14
 ### Fixed
