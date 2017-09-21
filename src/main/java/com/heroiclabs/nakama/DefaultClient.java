@@ -57,6 +57,8 @@ public class DefaultClient implements Client {
 
     private final TopicListener topicListener;
 
+    private final MatchListener matchListener;
+
     private final Map<String, Deferred> collationIds;
 
     private final OkHttpClient client;
@@ -66,7 +68,7 @@ public class DefaultClient implements Client {
 
     private DefaultClient(final String serverKey, final String host, final int port, final String lang,
                           final boolean ssl, final int connectTimeout, final int timeout, final boolean trace,
-                          final ClientListener listener, final TopicListener topicListener) {
+                          final ClientListener listener, final TopicListener topicListener, final MatchListener matchListener) {
         this.host = host;
         this.port = port;
         this.serverKey = serverKey;
@@ -77,6 +79,7 @@ public class DefaultClient implements Client {
         this.trace = trace;
         this.listener = listener;
         this.topicListener = topicListener;
+        this.matchListener = matchListener;
 
         collationIds = new ConcurrentHashMap<>();
 
@@ -250,6 +253,21 @@ public class DefaultClient implements Client {
                                 topicListener.onTopicPresence(DefaultTopicPresence.fromProto(envelope.getTopicPresence()));
                             }
                             break;
+                        case MATCH_DATA:
+                            if (matchListener != null) {
+                                matchListener.onMatchData(DefaultMatchData.fromProto(envelope.getMatchData()));
+                            }
+                            break;
+                        case MATCH_PRESENCE:
+                            if (matchListener != null) {
+                                matchListener.onMatchPresence(DefaultMatchPresence.fromProto(envelope.getMatchPresence()));
+                            }
+                            break;
+                        case MATCHMAKE_MATCHED:
+                            if (matchListener != null) {
+                                matchListener.onMatchmakeMatched(DefaultMatchmakeMatched.fromProto(envelope.getMatchmakeMatched()));
+                            }
+                            break;
                         default:
                             break;
                     }
@@ -317,6 +335,17 @@ public class DefaultClient implements Client {
                         }
                         def.callback(new DefaultResultSet<TopicMessage>(new DefaultCursor(envelope.getTopicMessages().getCursor().toByteArray()), messages));
                         break;
+                    case MATCH:
+                        def.callback(DefaultMatch.fromProto(envelope.getMatch()));
+                    case MATCHES:
+                        final List<Match> matches = new ArrayList<>();
+                        for (final com.heroiclabs.nakama.Api.Match m : envelope.getMatches().getMatchesList()) {
+                            matches.add(DefaultMatch.fromProto(m));
+                        }
+                        def.callback(new DefaultResultSet<Match>(null, matches));
+                        break;
+                    case MATCHMAKE_TICKET:
+                        def.callback(DefaultMatchmakeTicket.fromProto(envelope.getMatchmakeTicket()));
                     default:
                         def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode()));
                         break;
@@ -444,9 +473,10 @@ public class DefaultClient implements Client {
         private boolean trace = false;
         private ClientListener listener;
         private TopicListener topicListener;
+        private MatchListener matchListener;
 
         public Client build() {
-            return new DefaultClient(serverKey, host, port, lang, ssl, connectTimeout, timeout, trace, listener, topicListener);
+            return new DefaultClient(serverKey, host, port, lang, ssl, connectTimeout, timeout, trace, listener, topicListener, matchListener);
         }
 
         public Builder host(final @NonNull String host) {
@@ -491,6 +521,11 @@ public class DefaultClient implements Client {
 
         public Builder topicListener(final TopicListener topicListener) {
             this.topicListener = topicListener;
+            return this;
+        }
+
+        public Builder matchListener(final MatchListener matchListener) {
+            this.matchListener = matchListener;
             return this;
         }
     }
