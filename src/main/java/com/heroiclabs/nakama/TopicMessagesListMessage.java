@@ -33,7 +33,7 @@ public interface TopicMessagesListMessage extends CollatedMessage<ResultSet<Topi
         private final @NonNull
         com.heroiclabs.nakama.Api.TTopicMessagesList.Builder lists;
 
-        public TopicMessagesListMessage.Builder forward(final @NonNull boolean forward) {
+        public TopicMessagesListMessage.Builder forward(final boolean forward) {
             lists.setForward(forward);
             return this;
         }
@@ -43,7 +43,7 @@ public interface TopicMessagesListMessage extends CollatedMessage<ResultSet<Topi
             return this;
         }
 
-        public TopicMessagesListMessage.Builder limit(final @NonNull long limit) {
+        public TopicMessagesListMessage.Builder limit(final long limit) {
             lists.setLimit(limit);
             return this;
         }

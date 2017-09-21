@@ -433,6 +433,11 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public Deferred<Boolean> send(final @NonNull UncollatedMessage message) {
+        return send(message);
+    }
+
+    @Override
     public Deferred<Boolean> send(final @NonNull Message message) {
         final Deferred<Boolean> deferred = new Deferred<>();
 
