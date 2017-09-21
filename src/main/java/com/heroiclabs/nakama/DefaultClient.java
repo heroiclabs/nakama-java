@@ -55,6 +55,8 @@ public class DefaultClient implements Client {
 
     private final ClientListener listener;
 
+    private final TopicListener topicListener;
+
     private final Map<String, Deferred> collationIds;
 
     private final OkHttpClient client;
@@ -64,7 +66,7 @@ public class DefaultClient implements Client {
 
     private DefaultClient(final String serverKey, final String host, final int port, final String lang,
                           final boolean ssl, final int connectTimeout, final int timeout, final boolean trace,
-                          final ClientListener listener) {
+                          final ClientListener listener, final TopicListener topicListener) {
         this.host = host;
         this.port = port;
         this.serverKey = serverKey;
@@ -74,6 +76,7 @@ public class DefaultClient implements Client {
         this.timeout = timeout;
         this.trace = trace;
         this.listener = listener;
+        this.topicListener = topicListener;
 
         collationIds = new ConcurrentHashMap<>();
 
@@ -237,6 +240,16 @@ public class DefaultClient implements Client {
                                 serverTime = newServerTime;
                             }
                             break;
+                        case TOPIC_MESSAGE:
+                            if (topicListener != null) {
+                                topicListener.onTopicMessage(DefaultTopicMessage.fromProto(envelope.getTopicMessage()));
+                            }
+                            break;
+                        case TOPIC_PRESENCE:
+                            if (topicListener != null) {
+                                topicListener.onTopicPresence(DefaultTopicPresence.fromProto(envelope.getTopicPresence()));
+                            }
+                            break;
                         default:
                             break;
                     }
@@ -286,6 +299,23 @@ public class DefaultClient implements Client {
                         break;
                     case RPC:
                         def.callback(DefaultRpcResult.fromProto(envelope.getRpc()));
+                        break;
+                    case TOPICS:
+                        final List<Topic> topics = new ArrayList<>();
+                        for (final com.heroiclabs.nakama.Api.TTopics.Topic topic : envelope.getTopics().getTopicsList()) {
+                            topics.add(DefaultTopic.fromProto(topic));
+                        }
+                        def.callback(new DefaultResultSet<Topic>(null, topics));
+                        break;
+                    case TOPIC_MESSAGE_ACK:
+                        def.callback(DefaultTopicMessageAck.fromProto(envelope.getTopicMessageAck()));
+                        break;
+                    case TOPIC_MESSAGES:
+                        final List<TopicMessage> messages = new ArrayList<>();
+                        for (final com.heroiclabs.nakama.Api.TopicMessage m : envelope.getTopicMessages().getMessagesList()) {
+                            messages.add(DefaultTopicMessage.fromProto(m));
+                        }
+                        def.callback(new DefaultResultSet<TopicMessage>(new DefaultCursor(envelope.getTopicMessages().getCursor().toByteArray()), messages));
                         break;
                     default:
                         def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode()));
@@ -413,9 +443,10 @@ public class DefaultClient implements Client {
         private int timeout = 5000;
         private boolean trace = false;
         private ClientListener listener;
+        private TopicListener topicListener;
 
         public Client build() {
-            return new DefaultClient(serverKey, host, port, lang, ssl, connectTimeout, timeout, trace, listener);
+            return new DefaultClient(serverKey, host, port, lang, ssl, connectTimeout, timeout, trace, listener, topicListener);
         }
 
         public Builder host(final @NonNull String host) {
@@ -455,6 +486,11 @@ public class DefaultClient implements Client {
 
         public Builder listener(final ClientListener listener) {
             this.listener = listener;
+            return this;
+        }
+
+        public Builder topicListener(final TopicListener topicListener) {
+            this.topicListener = topicListener;
             return this;
         }
     }
