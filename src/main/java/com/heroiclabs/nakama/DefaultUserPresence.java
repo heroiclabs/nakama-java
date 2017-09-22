@@ -29,7 +29,7 @@ class DefaultUserPresence implements UserPresence {
     private final byte[] sessionId;
     private final String handle;
 
-    static DefaultUserPresence fromProto(final @NonNull com.heroiclabs.nakama.Api.UserPresence presence) {
+    static UserPresence fromProto(final @NonNull com.heroiclabs.nakama.Api.UserPresence presence) {
         return new DefaultUserPresence(presence.getUserId().toByteArray(), presence.getSessionId().toByteArray(), presence.getHandle());
     }
 }

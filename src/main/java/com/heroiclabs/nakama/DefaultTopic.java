@@ -29,7 +29,7 @@ class DefaultTopic implements Topic {
     private final List<UserPresence> presences;
     private final UserPresence self;
 
-    static DefaultTopic fromProto(final @NonNull com.heroiclabs.nakama.Api.TTopics.Topic topic) {
+    static Topic fromProto(final @NonNull com.heroiclabs.nakama.Api.TTopics.Topic topic) {
         List<UserPresence> userPresences = new ArrayList<UserPresence>();
         for (com.heroiclabs.nakama.Api.UserPresence u : topic.getPresencesList()) {
             userPresences.add(DefaultUserPresence.fromProto(u));

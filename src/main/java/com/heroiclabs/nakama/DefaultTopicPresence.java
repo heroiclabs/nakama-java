@@ -30,7 +30,7 @@ public class DefaultTopicPresence implements TopicPresence {
     private final List<UserPresence> join;
     private final List<UserPresence> leave;
 
-    static DefaultTopicPresence fromProto(final @NonNull com.heroiclabs.nakama.Api.TopicPresence topicPresence) {
+    static TopicPresence fromProto(final @NonNull com.heroiclabs.nakama.Api.TopicPresence topicPresence) {
         List<UserPresence> joins = new ArrayList<UserPresence>();
         for (com.heroiclabs.nakama.Api.UserPresence u : topicPresence.getJoinsList()) {
             joins.add(DefaultUserPresence.fromProto(u));

@@ -27,7 +27,7 @@ class DefaultTopicMessageAck implements TopicMessageAck {
     private final long createdAt;
     private final long expiresAt;
 
-    static DefaultTopicMessageAck fromProto(final @NonNull com.heroiclabs.nakama.Api.TTopicMessageAck ack) {
+    static TopicMessageAck fromProto(final @NonNull com.heroiclabs.nakama.Api.TTopicMessageAck ack) {
         return new DefaultTopicMessageAck(ack.getMessageId().toByteArray(), ack.getHandle(), ack.getCreatedAt(), ack.getExpiresAt());
     }
 }

@@ -337,6 +337,7 @@ public class DefaultClient implements Client {
                         break;
                     case MATCH:
                         def.callback(DefaultMatch.fromProto(envelope.getMatch()));
+                        break;
                     case MATCHES:
                         final List<Match> matches = new ArrayList<>();
                         for (final com.heroiclabs.nakama.Api.Match m : envelope.getMatches().getMatchesList()) {
@@ -346,6 +347,21 @@ public class DefaultClient implements Client {
                         break;
                     case MATCHMAKE_TICKET:
                         def.callback(DefaultMatchmakeTicket.fromProto(envelope.getMatchmakeTicket()));
+                        break;
+                    case LEADERBOARDS:
+                        final List<Leaderboard> leaderboards = new ArrayList<>();
+                        for (final com.heroiclabs.nakama.Api.Leaderboard l : envelope.getLeaderboards().getLeaderboardsList()) {
+                            leaderboards.add(DefaultLeaderboard.fromProto(l));
+                        }
+                        def.callback(new DefaultResultSet<Leaderboard>(new DefaultCursor(envelope.getLeaderboards().getCursor().toByteArray()), leaderboards));
+                        break;
+                    case LEADERBOARD_RECORDS:
+                        final List<LeaderboardRecord> leaderboardRecords = new ArrayList<>();
+                        for (final com.heroiclabs.nakama.Api.LeaderboardRecord r : envelope.getLeaderboardRecords().getRecordsList()) {
+                            leaderboardRecords.add(DefaultLeaderboardRecord.fromProto(r));
+                        }
+                        def.callback(new DefaultResultSet<LeaderboardRecord>(new DefaultCursor(envelope.getLeaderboardRecords().getCursor().toByteArray()), leaderboardRecords));
+                        break;
                     default:
                         def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode()));
                         break;

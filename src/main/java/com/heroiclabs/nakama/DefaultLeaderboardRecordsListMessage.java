@@ -16,5 +16,17 @@
 
 package com.heroiclabs.nakama;
 
-public class TopicJoinMessageTest {
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
+@Data
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+class DefaultLeaderboardRecordsListMessage implements LeaderboardRecordsListMessage {
+    private final com.heroiclabs.nakama.Api.Envelope.Builder payload;
+
+    public byte[] asBytes(final @NonNull String collationId) {
+        return payload.clone().setCollationId(collationId).build().toByteArray();
+    }
 }

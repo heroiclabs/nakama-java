@@ -31,7 +31,7 @@ public class DefaultTopicMessage implements TopicMessage {
     private final TopicMessageType type;
     private final byte[] data;
 
-    static DefaultTopicMessage fromProto(final @NonNull com.heroiclabs.nakama.Api.TopicMessage message) {
+    static TopicMessage fromProto(final @NonNull com.heroiclabs.nakama.Api.TopicMessage message) {
         return new DefaultTopicMessage(
                 DefaultTopicId.fromProto(message.getTopic()),
                 message.getUserId().toByteArray(),

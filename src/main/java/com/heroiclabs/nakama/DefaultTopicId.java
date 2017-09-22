@@ -25,7 +25,7 @@ class DefaultTopicId implements TopicId {
     private final byte[] Id;
     private final TopicType topicType;
 
-    static DefaultTopicId fromProto(final @NonNull com.heroiclabs.nakama.Api.TopicId topicId) {
+    static TopicId fromProto(final @NonNull com.heroiclabs.nakama.Api.TopicId topicId) {
         switch (topicId.getIdCase()) {
             case DM:
                 return new DefaultTopicId(topicId.getDm().toByteArray(), TopicType.DirectMessage);
