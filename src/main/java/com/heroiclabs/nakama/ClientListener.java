@@ -27,26 +27,36 @@ public interface ClientListener {
 
     /**
      * Called when a new topic message has been received.
+     *
+     * @param message The {@code TopicMessage} received.
      */
     void onTopicMessage(TopicMessage message);
 
     /**
      * Called when a new topic presence update has been received.
+     *
+     * @param presence The {@code TopicPresence} received.
      */
     void onTopicPresence(TopicPresence presence);
 
     /**
      * Called when a matchmaking has found a match.
+     *
+     * @param matched The {@code MatchmakeMatched} received.
      */
     void onMatchmakeMatched(MatchmakeMatched matched);
 
     /**
      * Called when a new match data is received.
+     *
+     * @param matchData The {@code MatchData} received.
      */
     void onMatchData(MatchData matchData);
 
     /**
      * Called when a new match presence update is received.
+     *
+     * @param matchPresence The {@code MatchPresence} received.
      */
     void onMatchPresence(MatchPresence matchPresence);
 }

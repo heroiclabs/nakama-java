@@ -24,32 +24,32 @@ import java.util.List;
 public interface LeaderboardRecord {
 
     /**
-     * @returns Leaderboard ID.
+     * @return Leaderboard ID.
      */
     byte[] getLeaderboardId();
 
     /**
-     * @returns User ID that owns this record.
+     * @return User ID that owns this record.
      */
     byte[] getOwnerId();
 
     /**
-     * @returns User handle.
+     * @return User handle.
      */
     String getHandle();
 
     /**
-     * @returns Language associated with the record.
+     * @return Language associated with the record.
      */
     String getLang();
 
     /**
-     * @returns Location associated with the record.
+     * @return Location associated with the record.
      */
     String getLocation();
 
     /**
-     * @returns Timezone associated with the record.
+     * @return Timezone associated with the record.
      */
     String getTimezone();
 
@@ -60,7 +60,7 @@ public interface LeaderboardRecord {
     long getNumScore();
 
     /**
-     * @returns Metadata associated with the leaderboard record.
+     * @return Metadata associated with the leaderboard record.
      */
     byte[] getMetadata();
 
@@ -74,12 +74,12 @@ public interface LeaderboardRecord {
     long getRankedAt();
 
     /**
-     * @returns When the record was last updated
+     * @return When the record was last updated
      */
     long getUpdatedAt();
 
     /**
-     * @returns When the record expires.
+     * @return When the record expires.
      */
     long getExpiresAt();
 

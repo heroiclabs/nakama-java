@@ -21,32 +21,32 @@ package com.heroiclabs.nakama;
  */
 public interface Leaderboard {
     /**
-     * @returns Leaderboard ID
+     * @return Leaderboard ID.
      */
     byte[] getId();
 
     /**
-     * @returns Whether leaderboard is server authoritative or not.
+     * @return Whether leaderboard is server authoritative or not.
      */
     boolean isAuthoritative();
 
     /**
-     * @returns Sort order for the record
+     * @return Sort order for the record.
      */
     long getSort();
 
     /**
-     * @returns Record count
+     * @return Record count.
      */
     long getCount();
 
     /**
-     * @returns Reset schedule
+     * @return Reset schedule.
      */
     String getResetSchedule();
 
     /**
-     * @returns Metadata associated with the leaderboard
+     * @return Metadata associated with the leaderboard.
      */
     byte[] getMetadata();
 

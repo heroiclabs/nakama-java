@@ -19,26 +19,26 @@ package com.heroiclabs.nakama;
 import java.util.List;
 
 /**
- * The object which represents a match data object.
+ * The object which represents match data.
  */
 public interface MatchData {
     /**
-     * @returns Match ID
+     * @return Match ID.
      */
     byte[] getId();
 
     /**
-     * @returns Match Data
+     * @return Match Data.
      */
     byte[] getData();
 
     /**
-     * @returns Data opcode
+     * @return Data opcode.
      */
     long getOpCode();
 
     /**
-     * @returns Presence for the current match data.
+     * @return Presence for the current match data.
      */
     UserPresence getPresence();
 }

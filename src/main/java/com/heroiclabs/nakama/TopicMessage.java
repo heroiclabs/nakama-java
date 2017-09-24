@@ -46,42 +46,42 @@ public interface TopicMessage {
     }
 
     /**
-     * @returns Topic ID associated with this message
+     * @return Topic ID associated with this message.
      */
     TopicId getTopic();
 
     /**
-     * @returns User ID associcated with this message
+     * @return User ID associated with this message.
      */
     byte[] getUserId();
 
     /**
-     * @returns Message ID
+     * @return Message ID.
      */
     byte[] getMessageId();
 
     /**
-     * @returns When message was created
+     * @return When message was created.
      */
     long getCreatedAt();
 
     /**
-     * @returns When message expires
+     * @return When message expires.
      */
     long getExpiresAt();
 
     /**
-     * @returns User Handle associated with this message
+     * @return User Handle associated with this message.
      */
     String getHandle();
 
     /**
-     * @returns Message Type
+     * @return Message Type.
      */
     TopicMessageType getType();
 
     /**
-     * @returns Data in the message
+     * @return Data in the message.
      */
     byte[] getData();
 }

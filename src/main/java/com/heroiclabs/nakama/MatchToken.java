@@ -17,11 +17,11 @@
 package com.heroiclabs.nakama;
 
 /**
- * The object which represents a match token object.
+ * The object which represents a match token.
  */
 public interface MatchToken {
     /**
-     * @returns Match Token
+     * @return Match Token.
      */
     byte[] getToken();
 }

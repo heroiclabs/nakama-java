@@ -19,21 +19,21 @@ package com.heroiclabs.nakama;
 import java.util.List;
 
 /**
- * The object which represents a match object.
+ * The object which represents a match.
  */
 public interface Match {
     /**
-     * @returns Match ID
+     * @return Match ID.
      */
     byte[] getId();
 
     /**
-     * @returns List of presences in this match.
+     * @return List of presences in this match.
      */
     List<UserPresence> getPresence();
 
     /**
-     * @returns Match presence for the current user.
+     * @return Match presence for the current user.
      */
     UserPresence getSelf();
 }

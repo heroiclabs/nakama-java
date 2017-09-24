@@ -17,11 +17,11 @@
 package com.heroiclabs.nakama;
 
 /**
- * The object which represents a matchmake object.
+ * The object which represents a matchmake.
  */
 public interface MatchmakeTicket {
     /**
-     * @returns Matchmake Ticket
+     * @return Matchmake Ticket
      */
     byte[] getTicket();
 }

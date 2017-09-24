@@ -19,26 +19,26 @@ package com.heroiclabs.nakama;
 import java.util.List;
 
 /**
- * The object which represents a matchmake matched object.
+ * The object which represents a matchmake matched.
  */
 public interface MatchmakeMatched {
     /**
-     * @returns Matchmaking Ticket.
+     * @return Matchmaking Ticket.
      */
     MatchmakeTicket getTicket();
 
     /**
-     * @returns List of presences in this match.
+     * @return List of presences in this match.
      */
     List<UserPresence> getPresence();
 
     /**
-     * @returns Match token.
+     * @return Match token.
      */
     MatchToken getToken();
 
     /**
-     * @returns Match presence for the current user.
+     * @return Match presence for the current user.
      */
     UserPresence getSelf();
 }
