@@ -16,21 +16,16 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+public interface TopicId {
+    enum TopicType { DirectMessage, Room, Group }
 
-public interface LogoutMessage extends UncollatedMessage {
+    /**
+     * @return Topic ID
+     */
+    byte[] getId();
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    class Builder {
-
-        public static LogoutMessage build() {
-            final com.heroiclabs.nakama.Api.Envelope.Builder payload =
-                    com.heroiclabs.nakama.Api.Envelope.newBuilder()
-                            .setLogout(com.heroiclabs.nakama.Api.Logout.newBuilder());
-            return new DefaultLogoutMessage(payload);
-        }
-
-    }
-
+    /**
+     * @return Type of Topic this is - DM, Group, Room
+     */
+    TopicType getTopicType();
 }

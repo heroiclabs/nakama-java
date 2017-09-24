@@ -16,21 +16,22 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
-public interface LogoutMessage extends UncollatedMessage {
+import java.util.ArrayList;
+import java.util.List;
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    class Builder {
+@Data
+@ToString(includeFieldNames = true)
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+class DefaultMatchData implements MatchData {
+    private final byte[] id;
+    private final byte[] data;
+    private final long opCode;
+    private final UserPresence presence;
 
-        public static LogoutMessage build() {
-            final com.heroiclabs.nakama.Api.Envelope.Builder payload =
-                    com.heroiclabs.nakama.Api.Envelope.newBuilder()
-                            .setLogout(com.heroiclabs.nakama.Api.Logout.newBuilder());
-            return new DefaultLogoutMessage(payload);
-        }
-
+    static MatchData fromProto(final @NonNull com.heroiclabs.nakama.Api.MatchData matchData) {
+        return new DefaultMatchData(matchData.getMatchId().toByteArray(), matchData.getData().toByteArray(), matchData.getOpCode(), DefaultUserPresence.fromProto(matchData.getPresence()));
     }
 
 }

@@ -17,20 +17,20 @@
 package com.heroiclabs.nakama;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-public interface LogoutMessage extends UncollatedMessage {
+public interface MatchCreateMessage extends CollatedMessage<Match> {
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        public static LogoutMessage build() {
+        public static MatchCreateMessage build() {
+            com.heroiclabs.nakama.Api.TMatchCreate.Builder builder = com.heroiclabs.nakama.Api.TMatchCreate.newBuilder();
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
-                            .setLogout(com.heroiclabs.nakama.Api.Logout.newBuilder());
-            return new DefaultLogoutMessage(payload);
+                            .setMatchCreate(builder);
+            return new DefaultMatchCreateMessage(payload);
         }
 
     }
-
 }

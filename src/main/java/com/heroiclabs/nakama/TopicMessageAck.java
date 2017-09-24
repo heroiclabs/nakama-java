@@ -16,21 +16,24 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+public interface TopicMessageAck {
+    /**
+     * @return ID of this message acked;
+     */
+    byte[] getMessageId();
 
-public interface LogoutMessage extends UncollatedMessage {
+    /**
+     * @return User Handle;
+     */
+    String getHandle();
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    class Builder {
+    /**
+     * @return When the message was created;
+     */
+    long getCreatedAt();
 
-        public static LogoutMessage build() {
-            final com.heroiclabs.nakama.Api.Envelope.Builder payload =
-                    com.heroiclabs.nakama.Api.Envelope.newBuilder()
-                            .setLogout(com.heroiclabs.nakama.Api.Logout.newBuilder());
-            return new DefaultLogoutMessage(payload);
-        }
-
-    }
-
+    /**
+     * @return When the message expires;
+     */
+    long getExpiresAt();
 }

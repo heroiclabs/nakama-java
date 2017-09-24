@@ -16,12 +16,19 @@
 
 package com.heroiclabs.nakama;
 
-/**
- * A message which requires no acknowledgement by the server.
- */
-public interface Message {
-    /**
-     * @return The serialized format of the message.
-     */
-    byte[] asBytes();
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
+@Data
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+class DefaultMatchmakeAddMessage implements MatchmakeAddMessage {
+
+    private final com.heroiclabs.nakama.Api.Envelope.Builder payload;
+
+    public byte[] asBytes(final @NonNull String collationId) {
+        return payload.clone().setCollationId(collationId).build().toByteArray();
+    }
+
 }

@@ -5,6 +5,13 @@ All notable changes to this project are documented below.
 The format is based on [keep a changelog](http://keepachangelog.com/) and this project uses [semantic versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Leaderboard messages.
+- Matchmaking messages.
+- Match messsages.
+- Match presence updates.
+- Topic messages.
+- Topic presence updates.
 
 ## [0.1.2] - 2017-09-02
 ### Fixed

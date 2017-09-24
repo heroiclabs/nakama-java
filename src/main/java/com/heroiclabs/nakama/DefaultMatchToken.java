@@ -16,21 +16,15 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
-public interface LogoutMessage extends UncollatedMessage {
+@Data
+@ToString(includeFieldNames = true)
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+class DefaultMatchToken implements MatchToken {
+    private final byte[] token;
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    class Builder {
-
-        public static LogoutMessage build() {
-            final com.heroiclabs.nakama.Api.Envelope.Builder payload =
-                    com.heroiclabs.nakama.Api.Envelope.newBuilder()
-                            .setLogout(com.heroiclabs.nakama.Api.Logout.newBuilder());
-            return new DefaultLogoutMessage(payload);
-        }
-
+    static MatchToken fromProto(final @NonNull byte[] token) {
+        return new DefaultMatchToken(token);
     }
-
 }

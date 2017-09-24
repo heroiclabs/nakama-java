@@ -16,21 +16,12 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-
-public interface LogoutMessage extends UncollatedMessage {
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    class Builder {
-
-        public static LogoutMessage build() {
-            final com.heroiclabs.nakama.Api.Envelope.Builder payload =
-                    com.heroiclabs.nakama.Api.Envelope.newBuilder()
-                            .setLogout(com.heroiclabs.nakama.Api.Logout.newBuilder());
-            return new DefaultLogoutMessage(payload);
-        }
-
-    }
-
+/**
+ * A message which requires no acknowledgement by the server.
+ */
+public interface UncollatedMessage {
+    /**
+     * @return The serialized format of the message.
+     */
+    byte[] asBytes();
 }

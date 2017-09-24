@@ -16,21 +16,14 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-
-public interface LogoutMessage extends UncollatedMessage {
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    class Builder {
-
-        public static LogoutMessage build() {
-            final com.heroiclabs.nakama.Api.Envelope.Builder payload =
-                    com.heroiclabs.nakama.Api.Envelope.newBuilder()
-                            .setLogout(com.heroiclabs.nakama.Api.Logout.newBuilder());
-            return new DefaultLogoutMessage(payload);
-        }
-
-    }
-
+/**
+ * Default implementation of client listener, all operations are no-op.
+ */
+public class NoopClientListener implements ClientListener {
+    @Override public void onDisconnect() {}
+    @Override public void onTopicMessage(TopicMessage message) {}
+    @Override public void onTopicPresence(TopicPresence presence) {}
+    @Override public void onMatchmakeMatched(MatchmakeMatched matched) {}
+    @Override public void onMatchData(MatchData matchData) {}
+    @Override public void onMatchPresence(MatchPresence matchPresence) {}
 }

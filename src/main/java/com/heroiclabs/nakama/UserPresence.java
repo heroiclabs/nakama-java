@@ -16,21 +16,19 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+public interface UserPresence {
+    /**
+     * @return User ID
+     */
+    byte[] getUserId();
 
-public interface LogoutMessage extends UncollatedMessage {
+    /**
+     * @return Session ID associated with this presence
+     */
+    byte[] getSessionId();
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    class Builder {
-
-        public static LogoutMessage build() {
-            final com.heroiclabs.nakama.Api.Envelope.Builder payload =
-                    com.heroiclabs.nakama.Api.Envelope.newBuilder()
-                            .setLogout(com.heroiclabs.nakama.Api.Logout.newBuilder());
-            return new DefaultLogoutMessage(payload);
-        }
-
-    }
-
+    /**
+     * @return User Handle
+     */
+    String getHandle();
 }

@@ -16,21 +16,24 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import java.util.List;
 
-public interface LogoutMessage extends UncollatedMessage {
+/**
+ * The object which represents a chat topic in the server.
+ */
+public interface Topic {
+    /**
+     * @return the ID associated with this topic.
+     */
+    TopicId getTopicId();
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    class Builder {
+    /**
+     * @return list of users currently active on this topic.
+     */
+    List<UserPresence> getPresences();
 
-        public static LogoutMessage build() {
-            final com.heroiclabs.nakama.Api.Envelope.Builder payload =
-                    com.heroiclabs.nakama.Api.Envelope.newBuilder()
-                            .setLogout(com.heroiclabs.nakama.Api.Logout.newBuilder());
-            return new DefaultLogoutMessage(payload);
-        }
-
-    }
-
+    /**
+     * @return presence information of the current user.
+     */
+    UserPresence getSelf();
 }

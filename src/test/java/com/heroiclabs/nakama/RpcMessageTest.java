@@ -113,11 +113,17 @@ public class RpcMessageTest {
                         .build();
                 return client.send(rpc);
             }
-        }).addErrback(new Callback<RpcResult, RpcResult>() {
+        }).addCallback(new Callback<RpcResult, RpcResult>() {
             @Override
             public RpcResult call(RpcResult result) throws Exception {
                 Assert.assertArrayEquals(payload, result.getPayload());
                 return result;
+            }
+        }).addErrback(new Callback<Error, Error>() {
+            @Override
+            public Error call(Error error) throws Exception {
+                Assert.fail("Should not reach this point.");
+                return error;
             }
         });
         deferred.join(2000);

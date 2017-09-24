@@ -16,21 +16,25 @@
 
 package com.heroiclabs.nakama;
 
+import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-public interface LogoutMessage extends UncollatedMessage {
+public interface MatchmakeRemoveMessage extends CollatedMessage<Boolean> {
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        public static LogoutMessage build() {
+        public static MatchmakeRemoveMessage build(@NonNull MatchmakeTicket ticket) {
+            com.heroiclabs.nakama.Api.TMatchmakeRemove.Builder remove = com.heroiclabs.nakama.Api.TMatchmakeRemove.newBuilder();
+            remove.setTicket(ByteString.copyFrom(ticket.getTicket()));
+
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()
-                            .setLogout(com.heroiclabs.nakama.Api.Logout.newBuilder());
-            return new DefaultLogoutMessage(payload);
+                            .setMatchmakeRemove(remove);
+            return new DefaultMatchmakeRemoveMessage(payload);
         }
 
     }
-
 }
