@@ -69,10 +69,4 @@ public interface Client {
      * @return Placeholder return type to allow chaining operations.
      */
     Deferred<Boolean> send(UncollatedMessage message);
-
-    /**
-     * @param message The message to send.
-     * @return Placeholder return type to allow chaining operations.
-     */
-    Deferred<Boolean> send(Message message);
 }

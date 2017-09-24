@@ -19,7 +19,7 @@ package com.heroiclabs.nakama;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
-public interface LogoutMessage extends Message {
+public interface LogoutMessage extends UncollatedMessage {
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {

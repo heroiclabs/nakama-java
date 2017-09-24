@@ -17,8 +17,11 @@
 package com.heroiclabs.nakama;
 
 /**
- * A message which returns a response from the server.
+ * A message which requires no acknowledgement by the server.
  */
 public interface UncollatedMessage {
-    public byte[] asBytes();
+    /**
+     * @return The serialized format of the message.
+     */
+    byte[] asBytes();
 }

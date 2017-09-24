@@ -61,7 +61,7 @@ public interface LeaderboardRecordsListMessage extends CollatedMessage<ResultSet
             return this;
         }
 
-        public LeaderboardRecordsListMessage.Builder limit(final @NonNull long limit) {
+        public LeaderboardRecordsListMessage.Builder limit(final long limit) {
             listing.setLimit(limit);
             return this;
         }

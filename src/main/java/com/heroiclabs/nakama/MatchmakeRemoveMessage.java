@@ -26,7 +26,7 @@ public interface MatchmakeRemoveMessage extends CollatedMessage<Boolean> {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        public MatchmakeRemoveMessage build(@NonNull MatchmakeTicket ticket) {
+        public static MatchmakeRemoveMessage build(@NonNull MatchmakeTicket ticket) {
             com.heroiclabs.nakama.Api.TMatchmakeRemove.Builder remove = com.heroiclabs.nakama.Api.TMatchmakeRemove.newBuilder();
             remove.setTicket(ByteString.copyFrom(ticket.getTicket()));
 

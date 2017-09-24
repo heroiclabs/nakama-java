@@ -55,10 +55,6 @@ public class DefaultClient implements Client {
 
     private final ClientListener listener;
 
-    private final TopicListener topicListener;
-
-    private final MatchListener matchListener;
-
     private final Map<String, Deferred> collationIds;
 
     private final OkHttpClient client;
@@ -66,9 +62,9 @@ public class DefaultClient implements Client {
 
     private long serverTime;
 
-    private DefaultClient(final String serverKey, final String host, final int port, final String lang,
-                          final boolean ssl, final int connectTimeout, final int timeout, final boolean trace,
-                          final ClientListener listener, final TopicListener topicListener, final MatchListener matchListener) {
+    private DefaultClient(final @NonNull String serverKey, final @NonNull String host, final int port,
+                          final @NonNull String lang, final boolean ssl, final int connectTimeout, final int timeout,
+                          final boolean trace, final @NonNull ClientListener listener) {
         this.host = host;
         this.port = port;
         this.serverKey = serverKey;
@@ -78,8 +74,6 @@ public class DefaultClient implements Client {
         this.timeout = timeout;
         this.trace = trace;
         this.listener = listener;
-        this.topicListener = topicListener;
-        this.matchListener = matchListener;
 
         collationIds = new ConcurrentHashMap<>();
 
@@ -231,7 +225,7 @@ public class DefaultClient implements Client {
                 }
 
                 final String collationId = envelope.getCollationId();
-                if (collationId == null) {
+                if (collationId == null || "".equals(collationId)) {
                     switch (envelope.getPayloadCase()) {
                         case PAYLOAD_NOT_SET:
                             log.error("No payload in incoming uncollated message from server: " + envelope.toString());
@@ -244,29 +238,19 @@ public class DefaultClient implements Client {
                             }
                             break;
                         case TOPIC_MESSAGE:
-                            if (topicListener != null) {
-                                topicListener.onTopicMessage(DefaultTopicMessage.fromProto(envelope.getTopicMessage()));
-                            }
+                            listener.onTopicMessage(DefaultTopicMessage.fromProto(envelope.getTopicMessage()));
                             break;
                         case TOPIC_PRESENCE:
-                            if (topicListener != null) {
-                                topicListener.onTopicPresence(DefaultTopicPresence.fromProto(envelope.getTopicPresence()));
-                            }
+                            listener.onTopicPresence(DefaultTopicPresence.fromProto(envelope.getTopicPresence()));
                             break;
                         case MATCH_DATA:
-                            if (matchListener != null) {
-                                matchListener.onMatchData(DefaultMatchData.fromProto(envelope.getMatchData()));
-                            }
+                            listener.onMatchData(DefaultMatchData.fromProto(envelope.getMatchData()));
                             break;
                         case MATCH_PRESENCE:
-                            if (matchListener != null) {
-                                matchListener.onMatchPresence(DefaultMatchPresence.fromProto(envelope.getMatchPresence()));
-                            }
+                            listener.onMatchPresence(DefaultMatchPresence.fromProto(envelope.getMatchPresence()));
                             break;
                         case MATCHMAKE_MATCHED:
-                            if (matchListener != null) {
-                                matchListener.onMatchmakeMatched(DefaultMatchmakeMatched.fromProto(envelope.getMatchmakeMatched()));
-                            }
+                            listener.onMatchmakeMatched(DefaultMatchmakeMatched.fromProto(envelope.getMatchmakeMatched()));
                             break;
                         default:
                             break;
@@ -383,9 +367,7 @@ public class DefaultClient implements Client {
                     // TODO callback any leftover deferred items with a disconnect error message?
                     collationIds.clear();
                 }
-                if (listener != null) {
-                    listener.onDisconnect();
-                }
+                listener.onDisconnect();
             }
 
             @Override
@@ -397,9 +379,7 @@ public class DefaultClient implements Client {
                     // TODO callback any leftover deferred items with a disconnect error message?
                     collationIds.clear();
                 }
-                if (listener != null) {
-                    listener.onDisconnect();
-                }
+                listener.onDisconnect();
             }
         });
 
@@ -450,11 +430,6 @@ public class DefaultClient implements Client {
 
     @Override
     public Deferred<Boolean> send(final @NonNull UncollatedMessage message) {
-        return send(message);
-    }
-
-    @Override
-    public Deferred<Boolean> send(final @NonNull Message message) {
         final Deferred<Boolean> deferred = new Deferred<>();
 
         if (socket == null) {
@@ -492,12 +467,10 @@ public class DefaultClient implements Client {
         private int connectTimeout = 3000;
         private int timeout = 5000;
         private boolean trace = false;
-        private ClientListener listener;
-        private TopicListener topicListener;
-        private MatchListener matchListener;
+        private ClientListener listener = new NoopClientListener();
 
         public Client build() {
-            return new DefaultClient(serverKey, host, port, lang, ssl, connectTimeout, timeout, trace, listener, topicListener, matchListener);
+            return new DefaultClient(serverKey, host, port, lang, ssl, connectTimeout, timeout, trace, listener);
         }
 
         public Builder host(final @NonNull String host) {
@@ -535,18 +508,8 @@ public class DefaultClient implements Client {
             return this;
         }
 
-        public Builder listener(final ClientListener listener) {
+        public Builder listener(final @NonNull ClientListener listener) {
             this.listener = listener;
-            return this;
-        }
-
-        public Builder topicListener(final TopicListener topicListener) {
-            this.topicListener = topicListener;
-            return this;
-        }
-
-        public Builder matchListener(final MatchListener matchListener) {
-            this.matchListener = matchListener;
             return this;
         }
     }

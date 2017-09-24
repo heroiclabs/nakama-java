@@ -24,9 +24,9 @@ public interface MatchmakeAddMessage extends CollatedMessage<MatchmakeTicket> {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        public MatchmakeAddMessage build(long requiredCount) {
-            com.heroiclabs.nakama.Api.TMatchmakeAdd.Builder add = com.heroiclabs.nakama.Api.TMatchmakeAdd.newBuilder();
-            add.setRequiredCount(requiredCount);
+        public static MatchmakeAddMessage build(long requiredCount) {
+            com.heroiclabs.nakama.Api.TMatchmakeAdd.Builder add = com.heroiclabs.nakama.Api.TMatchmakeAdd.newBuilder()
+                    .setRequiredCount(requiredCount);
 
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()

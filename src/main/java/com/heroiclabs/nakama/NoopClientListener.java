@@ -17,21 +17,13 @@
 package com.heroiclabs.nakama;
 
 /**
- * A listener for receiving Match related events.
+ * Default implementation of client listener, all operations are no-op.
  */
-public interface MatchListener {
-    /**
-     * Called when a matchmaking has found a new opponent.
-     */
-    void onMatchmakeMatched(MatchmakeMatched matchedUser);
-
-    /**
-     * Called when a new Match data is received.
-     */
-    void onMatchData(MatchData matchData);
-
-    /**
-     * Called when a new Match presence update is received.
-     */
-    void onMatchPresence(MatchPresence matchPresence);
+public class NoopClientListener implements ClientListener {
+    @Override public void onDisconnect() {}
+    @Override public void onTopicMessage(TopicMessage message) {}
+    @Override public void onTopicPresence(TopicPresence presence) {}
+    @Override public void onMatchmakeMatched(MatchmakeMatched matched) {}
+    @Override public void onMatchData(MatchData matchData) {}
+    @Override public void onMatchPresence(MatchPresence matchPresence) {}
 }

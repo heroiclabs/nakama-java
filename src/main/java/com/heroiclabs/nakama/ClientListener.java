@@ -24,4 +24,29 @@ public interface ClientListener {
      * Called when the client socket disconnects.
      */
     void onDisconnect();
+
+    /**
+     * Called when a new topic message has been received.
+     */
+    void onTopicMessage(TopicMessage message);
+
+    /**
+     * Called when a new topic presence update has been received.
+     */
+    void onTopicPresence(TopicPresence presence);
+
+    /**
+     * Called when a matchmaking has found a match.
+     */
+    void onMatchmakeMatched(MatchmakeMatched matched);
+
+    /**
+     * Called when a new match data is received.
+     */
+    void onMatchData(MatchData matchData);
+
+    /**
+     * Called when a new match presence update is received.
+     */
+    void onMatchPresence(MatchPresence matchPresence);
 }

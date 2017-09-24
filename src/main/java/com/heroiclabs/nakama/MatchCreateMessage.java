@@ -24,7 +24,7 @@ public interface MatchCreateMessage extends CollatedMessage<Match> {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        public MatchCreateMessage build() {
+        public static MatchCreateMessage build() {
             com.heroiclabs.nakama.Api.TMatchCreate.Builder builder = com.heroiclabs.nakama.Api.TMatchCreate.newBuilder();
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()

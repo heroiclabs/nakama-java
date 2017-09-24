@@ -25,6 +25,7 @@ public interface TopicMessageSendMessage extends CollatedMessage<TopicMessageAck
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
+
         public static TopicMessageSendMessage build(final @NonNull TopicId topicId, final @NonNull byte[] data) {
             com.heroiclabs.nakama.Api.TTopicMessageSend.Builder msg = com.heroiclabs.nakama.Api.TTopicMessageSend.newBuilder();
 

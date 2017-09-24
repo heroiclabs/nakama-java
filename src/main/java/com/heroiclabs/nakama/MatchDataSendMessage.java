@@ -25,17 +25,13 @@ public interface MatchDataSendMessage extends UncollatedMessage {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        public static MatchDataSendMessage.Builder newBuilder() {
-            return new DefaultMatchDataSendMessage.Builder(com.heroiclabs.nakama.Api.MatchDataSend.newBuilder());
+        public static MatchDataSendMessage.Builder newBuilder(final @NonNull byte[] matchId) {
+            return new DefaultMatchDataSendMessage.Builder(com.heroiclabs.nakama.Api.MatchDataSend.newBuilder()
+                    .setMatchId(ByteString.copyFrom(matchId)));
         }
 
         private final @NonNull
         com.heroiclabs.nakama.Api.MatchDataSend.Builder matchData;
-
-        public MatchDataSendMessage.Builder matchId(final @NonNull byte[] matchId) {
-            matchData.setMatchId(ByteString.copyFrom(matchId));
-            return this;
-        }
 
         public MatchDataSendMessage.Builder opCode(final long opcode) {
             matchData.setOpCode(opcode);
