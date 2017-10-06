@@ -19,25 +19,13 @@ package com.heroiclabs.nakama;
 import lombok.*;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @ToString(includeFieldNames = true)
-class DefaultError extends Error {
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+class DefaultMatchmakeRangeFilter implements MatchmakeRangeFilter {
+    private final long lowerbound;
+    private final long upperbound;
 
-    private final ErrorCode code;
-
-    DefaultError(final @NonNull String message, final @NonNull ErrorCode code) {
-        super(message);
-        this.code = code;
+    static MatchmakeRangeFilter fromProto(final @NonNull com.heroiclabs.nakama.Api.MatchmakeFilter.RangeFilter filter) {
+        return new DefaultMatchmakeRangeFilter(filter.getLowerBound(), filter.getUpperBound());
     }
-
-    DefaultError(final @NonNull String message, final @NonNull Throwable cause) {
-        super(message, cause);
-        this.code = ErrorCode.UNKNOWN;
-    }
-
-    DefaultError(final @NonNull String message, final int code) {
-        super(message);
-        this.code = ErrorCode.fromInt(code);
-    }
-
 }

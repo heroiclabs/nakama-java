@@ -41,4 +41,9 @@ public interface MatchmakeMatched {
      * @return Match presence for the current user.
      */
     UserPresence getSelf();
+
+    /**
+     * @return Match properties for matched users.
+     */
+    List<MatchmakeUserProperty> getProperties();
 }

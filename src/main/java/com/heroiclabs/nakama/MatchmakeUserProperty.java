@@ -16,28 +16,25 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.*;
+import java.util.List;
+import java.util.Map;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(includeFieldNames = true)
-class DefaultError extends Error {
+/**
+ * Properties associated with each matched user
+ */
+public interface MatchmakeUserProperty {
+    /**
+     * @return Matchmake user ID
+     */
+    byte[] getUserId();
 
-    private final ErrorCode code;
+    /**
+     * @return Matchmake user properties
+     */
+    Map<String, Object> getProperties();
 
-    DefaultError(final @NonNull String message, final @NonNull ErrorCode code) {
-        super(message);
-        this.code = code;
-    }
-
-    DefaultError(final @NonNull String message, final @NonNull Throwable cause) {
-        super(message, cause);
-        this.code = ErrorCode.UNKNOWN;
-    }
-
-    DefaultError(final @NonNull String message, final int code) {
-        super(message);
-        this.code = ErrorCode.fromInt(code);
-    }
-
+    /**
+     * @return Matchmake user filters
+     */
+    Map<String, MatchmakeFilter> getFilters();
 }

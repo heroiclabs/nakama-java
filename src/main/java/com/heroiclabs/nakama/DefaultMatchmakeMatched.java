@@ -29,6 +29,7 @@ class DefaultMatchmakeMatched implements MatchmakeMatched {
     private final List<UserPresence> presence;
     private final MatchToken token;
     private final UserPresence self;
+    private final List<MatchmakeUserProperty> properties;
 
     static MatchmakeMatched fromProto(final @NonNull com.heroiclabs.nakama.Api.MatchmakeMatched matched) {
         List<UserPresence> userPresences = new ArrayList<UserPresence>();
@@ -36,11 +37,17 @@ class DefaultMatchmakeMatched implements MatchmakeMatched {
             userPresences.add(DefaultUserPresence.fromProto(u));
         }
 
+        List<MatchmakeUserProperty> userProperties = new ArrayList<MatchmakeUserProperty>();
+        for (com.heroiclabs.nakama.Api.MatchmakeMatched.UserProperty u : matched.getPropertiesList()) {
+            userProperties.add(DefaultMatchmakeUserProperty.fromProto(u));
+        }
+
         return new DefaultMatchmakeMatched(
                 DefaultMatchmakeTicket.fromProto(matched.getTicket().toByteArray()),
                 userPresences,
                 DefaultMatchToken.fromProto(matched.getToken().toByteArray()),
-                DefaultUserPresence.fromProto(matched.getSelf())
+                DefaultUserPresence.fromProto(matched.getSelf()),
+                userProperties
         );
     }
 

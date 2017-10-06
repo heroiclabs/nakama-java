@@ -19,25 +19,9 @@ package com.heroiclabs.nakama;
 import lombok.*;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @ToString(includeFieldNames = true)
-class DefaultError extends Error {
-
-    private final ErrorCode code;
-
-    DefaultError(final @NonNull String message, final @NonNull ErrorCode code) {
-        super(message);
-        this.code = code;
-    }
-
-    DefaultError(final @NonNull String message, final @NonNull Throwable cause) {
-        super(message, cause);
-        this.code = ErrorCode.UNKNOWN;
-    }
-
-    DefaultError(final @NonNull String message, final int code) {
-        super(message);
-        this.code = ErrorCode.fromInt(code);
-    }
-
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+class DefaultMatchmakeCheckFilter implements MatchmakeCheckFilter {
+    private final boolean value;
 }
+

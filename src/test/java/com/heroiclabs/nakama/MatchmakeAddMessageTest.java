@@ -23,6 +23,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +42,9 @@ public class MatchmakeAddMessageTest {
     private CountDownLatch latch3;
     private MatchData data;
 
+    private MatchmakeMatched matched1;
+    private MatchmakeMatched matched2;
+
     @Before
     public void init() {
         client1 = DefaultClient.builder("defaultkey").listener(new ClientListener() {
@@ -48,6 +53,7 @@ public class MatchmakeAddMessageTest {
             @Override public void onTopicPresence(TopicPresence presence) {}
             @Override public void onMatchmakeMatched(MatchmakeMatched matched) {
                 token1 = matched.getToken();
+                matched1 = matched;
                 latch1.countDown();
             }
             @Override public void onMatchData(MatchData matchData) {
@@ -65,6 +71,7 @@ public class MatchmakeAddMessageTest {
             @Override public void onTopicPresence(TopicPresence presence) {}
             @Override public void onMatchmakeMatched(MatchmakeMatched matched) {
                 token2 = matched.getToken();
+                matched2 = matched;
                 latch2.countDown();
             }
             @Override public void onMatchData(MatchData matchData) {}
@@ -108,13 +115,27 @@ public class MatchmakeAddMessageTest {
         }).addCallbackDeferring(new Callback<Deferred<MatchmakeTicket>, Session>() {
             @Override
             public Deferred<MatchmakeTicket> call(Session session) throws Exception {
-                final CollatedMessage<MatchmakeTicket> add = MatchmakeAddMessage.Builder.build(2);
+                final CollatedMessage<MatchmakeTicket> add = MatchmakeAddMessage.Builder.newBuilder(2)
+                    .addProperty("rank", 12)
+                    .addProperty("modes", new HashSet<>(Arrays.asList("tdm", "ffa")))
+                    .addProperty("divisions", new HashSet<>(Arrays.asList("silver1")))
+                    .addRangeFilter("rank", 10, 15)
+                    .addTermFilter("modes", new HashSet<>(Arrays.asList("tdm", "ffa")), false)
+                    .addTermFilter("divisions", new HashSet<>(Arrays.asList("bronze3","silver1", "silver2")), false) // like RocketLeague
+                    .build();
                 return client1.send(add);
             }
         }).addCallbackDeferring(new Callback<Deferred<MatchmakeTicket>, MatchmakeTicket>() {
             @Override
             public Deferred<MatchmakeTicket> call(MatchmakeTicket ticket) throws Exception {
-                final CollatedMessage<MatchmakeTicket> add = MatchmakeAddMessage.Builder.build(2);
+                final CollatedMessage<MatchmakeTicket> add = MatchmakeAddMessage.Builder.newBuilder(2)
+                        .addProperty("rank", 10)
+                        .addProperty("modes", new HashSet<>(Arrays.asList("tdm", "ffa")))
+                        .addProperty("divisions", new HashSet<>(Arrays.asList("bronze3")))
+                        .addRangeFilter("rank", 8, 12)
+                        .addTermFilter("modes", new HashSet<>(Arrays.asList("tdm", "ffa")), false)
+                        .addTermFilter("divisions", new HashSet<>(Arrays.asList("bronze2","bronze3", "silver1")), false)
+                        .build();
                 return client2.send(add);
             }
         });
@@ -123,6 +144,15 @@ public class MatchmakeAddMessageTest {
         latch2.await(2, TimeUnit.SECONDS);
         Assert.assertNotNull(token1);
         Assert.assertNotNull(token2);
+
+        MatchmakeUserProperty c1Props = matched1.getProperties().get(0);
+        if (!Arrays.equals(matched1.getSelf().getUserId(), matched1.getProperties().get(0).getUserId()))
+        {
+            c1Props = matched1.getProperties().get(1);
+        }
+
+        Assert.assertEquals(((long)c1Props.getProperties().get("rank")), 12);
+        Assert.assertEquals(((MatchmakeRangeFilter)c1Props.getFilters().get("rank")).getLowerbound(), 10);
 
         final CollatedMessage<ResultSet<Match>> matchJoin = MatchesJoinMessage.Builder.newBuilder().token(token1).build();
         final Deferred<ResultSet<Match>> deferred2 = client1.send(matchJoin);

@@ -126,7 +126,7 @@ public class DefaultClient implements Client {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                deferred.callback(new DefaultError("Error sending message to server", Error.ErrorCode.UNKNOWN));
+                deferred.callback(new DefaultError("Error sending message to server", e));
             }
 
             @Override
@@ -140,7 +140,7 @@ public class DefaultClient implements Client {
                 try {
                     authResponse = com.heroiclabs.nakama.Api.AuthenticateResponse.parseFrom(body.byteStream());
                 } catch (IOException e) {
-                    deferred.callback(new DefaultError("Error reading response from server", Error.ErrorCode.UNKNOWN));
+                    deferred.callback(new DefaultError("Error reading response from server", e));
                     return;
                 } finally {
                     response.close();

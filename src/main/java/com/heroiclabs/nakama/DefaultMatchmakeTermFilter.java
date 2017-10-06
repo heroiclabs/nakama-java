@@ -18,26 +18,16 @@ package com.heroiclabs.nakama;
 
 import lombok.*;
 
+import java.util.List;
+
 @Data
-@EqualsAndHashCode(callSuper = true)
 @ToString(includeFieldNames = true)
-class DefaultError extends Error {
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+class DefaultMatchmakeTermFilter implements MatchmakeTermFilter {
+    private final List<String> terms;
+    private final boolean matchingAllTerms;
 
-    private final ErrorCode code;
-
-    DefaultError(final @NonNull String message, final @NonNull ErrorCode code) {
-        super(message);
-        this.code = code;
+    static MatchmakeTermFilter fromProto(final @NonNull com.heroiclabs.nakama.Api.MatchmakeFilter.TermFilter filter) {
+        return new DefaultMatchmakeTermFilter(filter.getTermsList(), filter.getMatchAllTerms());
     }
-
-    DefaultError(final @NonNull String message, final @NonNull Throwable cause) {
-        super(message, cause);
-        this.code = ErrorCode.UNKNOWN;
-    }
-
-    DefaultError(final @NonNull String message, final int code) {
-        super(message);
-        this.code = ErrorCode.fromInt(code);
-    }
-
 }
