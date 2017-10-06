@@ -16,34 +16,14 @@
 
 package com.heroiclabs.nakama;
 
-import java.util.List;
-
-/**
- * The object which represents a matchmake matched.
- */
-public interface MatchmakeMatched {
+public interface MatchmakeRangeFilter extends MatchmakeFilter {
     /**
-     * @return Matchmaking Ticket.
+     * @return Range lower bound
      */
-    MatchmakeTicket getTicket();
+    long getLowerbound();
 
     /**
-     * @return List of presences in this match.
+     * @return Range upper bound
      */
-    List<UserPresence> getPresence();
-
-    /**
-     * @return Match token.
-     */
-    MatchToken getToken();
-
-    /**
-     * @return Match presence for the current user.
-     */
-    UserPresence getSelf();
-
-    /**
-     * @return Match properties for matched users.
-     */
-    List<MatchmakeUserProperty> getProperties();
+    long getUpperbound();
 }

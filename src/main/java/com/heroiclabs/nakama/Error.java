@@ -37,6 +37,13 @@ public abstract class Error extends Exception {
     }
 
     /**
+     * @param message The error message to construct with.
+     */
+    public Error(final @NonNull String message, final @NonNull Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
      * The error code for the problem.
      */
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -108,4 +115,9 @@ public abstract class Error extends Exception {
      * @return The code for the error.
      */
     public abstract ErrorCode getCode();
+
+    /**
+     * @return The collation ID associated with this error. Could be null.
+     */
+    public abstract String getCollationId();
 }

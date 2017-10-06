@@ -6,6 +6,13 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [0.3.0] - 2017-10-05
+### Added
+- Advanced Matchmaking with custom filters and user properties.
+
+### Fixed
+- Improved errors to contain the underlying error.
+
 ## [0.2.0] - 2017-09-24
 ### Added
 - Leaderboard messages.
