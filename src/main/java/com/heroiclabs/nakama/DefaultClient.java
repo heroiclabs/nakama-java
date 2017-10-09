@@ -152,13 +152,13 @@ public class DefaultClient implements Client {
 
                 switch (authResponse.getIdCase()) {
                     case ERROR:
-                        deferred.callback(new DefaultError(authResponse.getError().getMessage(), authResponse.getError().getCode()));
+                        deferred.callback(new DefaultError(authResponse.getError().getMessage(), authResponse.getError().getCode(), authResponse.getCollationId()));
                         break;
                     case SESSION:
                         deferred.callback(DefaultSession.restore(authResponse.getSession().getToken()));
                         break;
                     default:
-                        deferred.callback(new DefaultError("Unknown response format from server for message (collation_id=" + authResponse.getCollationId() + ")", Error.ErrorCode.UNKNOWN));
+                        deferred.callback(new DefaultError("Unknown response format from server for message", Error.ErrorCode.UNKNOWN, authResponse.getCollationId()));
                         break;
                 }
             }
@@ -269,7 +269,7 @@ public class DefaultClient implements Client {
                         def.callback(Boolean.TRUE);
                         break;
                     case ERROR:
-                        def.callback(new DefaultError(envelope.getError().getMessage() + "(collation_id=" + collationId + ")", envelope.getError().getCode()));
+                        def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode(), collationId));
                         break;
                     case SELF:
                         def.callback(DefaultSelf.fromProto(envelope.getSelf().getSelf()));
@@ -347,7 +347,7 @@ public class DefaultClient implements Client {
                         def.callback(new DefaultResultSet<LeaderboardRecord>(new DefaultCursor(envelope.getLeaderboardRecords().getCursor().toByteArray()), leaderboardRecords));
                         break;
                     default:
-                        def.callback(new DefaultError(envelope.getError().getMessage() + "(collation_id=" + collationId + ")", envelope.getError().getCode()));
+                        def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode(), collationId));
                         break;
                 }
             }
@@ -420,7 +420,7 @@ public class DefaultClient implements Client {
 
         final boolean isEnqueued = socket.send(ByteString.of(payload));
         if (!isEnqueued) {
-            deferred.callback(new DefaultError("Failed to send message, make sure the client is connected (collation_id=" + collationId + ")", Error.ErrorCode.UNKNOWN));
+            deferred.callback(new DefaultError("Failed to send message, make sure the client is connected", Error.ErrorCode.UNKNOWN, collationId));
             return deferred;
         }
 

@@ -115,4 +115,9 @@ public abstract class Error extends Exception {
      * @return The code for the error.
      */
     public abstract ErrorCode getCode();
+
+    /**
+     * @return The collation ID associated with this error. Could be null.
+     */
+    public abstract String getCollationId();
 }

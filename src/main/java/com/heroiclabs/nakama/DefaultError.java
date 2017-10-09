@@ -24,20 +24,30 @@ import lombok.*;
 class DefaultError extends Error {
 
     private final ErrorCode code;
+    private final String collationId;
 
     DefaultError(final @NonNull String message, final @NonNull ErrorCode code) {
         super(message);
         this.code = code;
+        this.collationId = null;
+    }
+
+    DefaultError(final @NonNull String message, final @NonNull ErrorCode code, final String collationId) {
+        super(message);
+        this.code = code;
+        this.collationId = collationId;
     }
 
     DefaultError(final @NonNull String message, final @NonNull Throwable cause) {
         super(message, cause);
         this.code = ErrorCode.UNKNOWN;
+        this.collationId = null;
     }
 
-    DefaultError(final @NonNull String message, final int code) {
+    DefaultError(final @NonNull String message, final int code, final String collationId) {
         super(message);
         this.code = ErrorCode.fromInt(code);
+        this.collationId = collationId;
     }
 
 }
