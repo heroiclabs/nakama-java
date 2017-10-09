@@ -158,7 +158,7 @@ public class DefaultClient implements Client {
                         deferred.callback(DefaultSession.restore(authResponse.getSession().getToken()));
                         break;
                     default:
-                        deferred.callback(new DefaultError("Unknown response format from server", Error.ErrorCode.UNKNOWN));
+                        deferred.callback(new DefaultError("Unknown response format from server for message (collation_id=" + authResponse.getCollationId() + ")", Error.ErrorCode.UNKNOWN));
                         break;
                 }
             }
@@ -269,7 +269,7 @@ public class DefaultClient implements Client {
                         def.callback(Boolean.TRUE);
                         break;
                     case ERROR:
-                        def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode()));
+                        def.callback(new DefaultError(envelope.getError().getMessage() + "(collation_id=" + collationId + ")", envelope.getError().getCode()));
                         break;
                     case SELF:
                         def.callback(DefaultSelf.fromProto(envelope.getSelf().getSelf()));
@@ -347,7 +347,7 @@ public class DefaultClient implements Client {
                         def.callback(new DefaultResultSet<LeaderboardRecord>(new DefaultCursor(envelope.getLeaderboardRecords().getCursor().toByteArray()), leaderboardRecords));
                         break;
                     default:
-                        def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode()));
+                        def.callback(new DefaultError(envelope.getError().getMessage() + "(collation_id=" + collationId + ")", envelope.getError().getCode()));
                         break;
                 }
             }
@@ -420,7 +420,7 @@ public class DefaultClient implements Client {
 
         final boolean isEnqueued = socket.send(ByteString.of(payload));
         if (!isEnqueued) {
-            deferred.callback(new DefaultError("Failed to send message, make sure the client is connected", Error.ErrorCode.UNKNOWN));
+            deferred.callback(new DefaultError("Failed to send message, make sure the client is connected (collation_id=" + collationId + ")", Error.ErrorCode.UNKNOWN));
             return deferred;
         }
 
