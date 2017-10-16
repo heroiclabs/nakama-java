@@ -81,7 +81,9 @@ public class SelfUpdateMessageTest {
     public void testUpdateHandleTooLong() throws Exception {
         final String deviceId = UUID.randomUUID().toString();
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
-        final String newHandle = UUID.randomUUID().toString();
+        final String newHandle = UUID.randomUUID().toString() + UUID.randomUUID().toString() +
+                UUID.randomUUID().toString() + UUID.randomUUID().toString() +
+                UUID.randomUUID().toString();
 
         final Deferred<Session> deferred = client.register(auth);
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
