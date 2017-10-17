@@ -4,14 +4,12 @@ All notable changes to this project are documented below.
 
 The format is based on [keep a changelog](http://keepachangelog.com/) and this project uses [semantic versioning](http://semver.org/).
 
-## [Unreleased]
-
-## [0.3.0] - 2017-10-05
+## [0.3.0] - 2017-10-17
 ### Added
 - Advanced Matchmaking with custom filters and user properties.
 
 ### Fixed
-- Improved errors to contain the underlying error.
+- Improved errors to contain the underlying error reason.
 
 ## [0.2.0] - 2017-09-24
 ### Added
