@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -33,7 +32,7 @@ public interface StorageUpdateMessage extends CollatedMessage<ResultSet<RecordId
         private final @NonNull com.heroiclabs.nakama.Api.TStorageUpdate.Builder updates;
 
         public Builder record(final @NonNull String bucket, final @NonNull String collection, final @NonNull String key,
-                              final @NonNull OpBuilder ops, final byte[] version,
+                              final @NonNull OpBuilder ops, final String version,
                               final StorageRecord.PermissionRead read,
                               final StorageRecord.PermissionWrite write) {
             com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.StorageKey.Builder updateKey =
@@ -42,7 +41,7 @@ public interface StorageUpdateMessage extends CollatedMessage<ResultSet<RecordId
                             .setCollection(collection)
                             .setRecord(key);
             if (version != null) {
-                updateKey = updateKey.setVersion(ByteString.copyFrom(version));
+                updateKey = updateKey.setVersion(version);
             }
             com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.Builder record =
                     com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.newBuilder()
@@ -70,7 +69,7 @@ public interface StorageUpdateMessage extends CollatedMessage<ResultSet<RecordId
         }
 
         public Builder record(final @NonNull String bucket, final @NonNull String collection, final @NonNull String key,
-                              final @NonNull OpBuilder ops, final byte[] version) {
+                              final @NonNull OpBuilder ops, final String version) {
             return record(bucket, collection, key, ops, version, null, null);
         }
 
@@ -92,19 +91,19 @@ public interface StorageUpdateMessage extends CollatedMessage<ResultSet<RecordId
 
         final @NonNull com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.Builder ops;
 
-        public OpBuilder add(final @NonNull String path, final @NonNull byte[] value) {
+        public OpBuilder add(final @NonNull String path, final @NonNull String value) {
             ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.ADD.getNumber())
                     .setPath(path)
-                    .setValue(ByteString.copyFrom(value)));
+                    .setValue(value));
             return this;
         }
 
-        public OpBuilder append(final @NonNull String path, final @NonNull byte[] value) {
+        public OpBuilder append(final @NonNull String path, final @NonNull String value) {
             ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.APPEND.getNumber())
                     .setPath(path)
-                    .setValue(ByteString.copyFrom(value)));
+                    .setValue(value));
             return this;
         }
 
@@ -120,23 +119,23 @@ public interface StorageUpdateMessage extends CollatedMessage<ResultSet<RecordId
             ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.INCR.getNumber())
                     .setPath(path)
-                    .setValue(ByteString.copyFrom(Long.toString(value).getBytes())));
+                    .setValue(Long.toString(value)));
             return this;
         }
 
-        public OpBuilder init(final @NonNull String path, final @NonNull byte[] value) {
+        public OpBuilder init(final @NonNull String path, final @NonNull String value) {
             ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.INIT.getNumber())
                     .setPath(path)
-                    .setValue(ByteString.copyFrom(value)));
+                    .setValue(value));
             return this;
         }
 
-        public OpBuilder merge(final @NonNull String path, final @NonNull byte[] value) {
+        public OpBuilder merge(final @NonNull String path, final @NonNull String value) {
             ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.MERGE.getNumber())
                     .setPath(path)
-                    .setValue(ByteString.copyFrom(value)));
+                    .setValue(value));
             return this;
         }
 
@@ -158,27 +157,27 @@ public interface StorageUpdateMessage extends CollatedMessage<ResultSet<RecordId
             return this;
         }
 
-        public OpBuilder replace(final @NonNull String path, final @NonNull byte[] value) {
+        public OpBuilder replace(final @NonNull String path, final @NonNull String value) {
             ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.REPLACE.getNumber())
                     .setPath(path)
-                    .setValue(ByteString.copyFrom(value)));
+                    .setValue(value));
             return this;
         }
 
-        public OpBuilder test(final @NonNull String path, final @NonNull byte[] value) {
+        public OpBuilder test(final @NonNull String path, final @NonNull String value) {
             ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.TEST.getNumber())
                     .setPath(path)
-                    .setValue(ByteString.copyFrom(value)));
+                    .setValue(value));
             return this;
         }
 
-        public OpBuilder compare(final @NonNull String path, final @NonNull byte[] value, final long assertValue) {
+        public OpBuilder compare(final @NonNull String path, final @NonNull String value, final long assertValue) {
             ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.COMPARE.getNumber())
                     .setPath(path)
-                    .setValue(ByteString.copyFrom(value))
+                    .setValue(value)
                     .setAssert(assertValue));
             return this;
         }

@@ -23,5 +23,5 @@ public interface MatchmakeTicket {
     /**
      * @return Matchmake Ticket
      */
-    byte[] getTicket();
+    String getTicket();
 }

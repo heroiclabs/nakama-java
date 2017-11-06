@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -26,19 +25,19 @@ public interface TopicMessageSendMessage extends CollatedMessage<TopicMessageAck
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        public static TopicMessageSendMessage build(final @NonNull TopicId topicId, final @NonNull byte[] data) {
+        public static TopicMessageSendMessage build(final @NonNull TopicId topicId, final @NonNull String data) {
             com.heroiclabs.nakama.Api.TTopicMessageSend.Builder msg = com.heroiclabs.nakama.Api.TTopicMessageSend.newBuilder();
 
-            msg.setData(ByteString.copyFrom(data));
+            msg.setData(data);
             switch (topicId.getTopicType()) {
                 case Room:
-                    msg.setTopic(com.heroiclabs.nakama.Api.TopicId.newBuilder().setRoom(ByteString.copyFrom(topicId.getId())));
+                    msg.setTopic(com.heroiclabs.nakama.Api.TopicId.newBuilder().setRoom(topicId.getId()));
                     break;
                 case Group:
-                    msg.setTopic(com.heroiclabs.nakama.Api.TopicId.newBuilder().setGroupId(ByteString.copyFrom(topicId.getId())));
+                    msg.setTopic(com.heroiclabs.nakama.Api.TopicId.newBuilder().setGroupId(topicId.getId()));
                     break;
                 case DirectMessage:
-                    msg.setTopic(com.heroiclabs.nakama.Api.TopicId.newBuilder().setDm(ByteString.copyFrom(topicId.getId())));
+                    msg.setTopic(com.heroiclabs.nakama.Api.TopicId.newBuilder().setDm(topicId.getId()));
                     break;
             }
 

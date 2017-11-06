@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -26,20 +25,20 @@ public interface StorageListMessage extends CollatedMessage<ResultSet<StorageRec
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        public static Builder newBuilder(final @NonNull byte[] userId) {
+        public static Builder newBuilderUserId(final @NonNull String userId) {
             return new Builder(com.heroiclabs.nakama.Api.TStorageList.newBuilder()
-                    .setUserId(ByteString.copyFrom(userId)));
+                    .setUserId(userId));
         }
 
-        public static Builder newBuilder(final @NonNull String bucket) {
+        public static Builder newBuilderBucket(final @NonNull String bucket) {
             return new Builder(com.heroiclabs.nakama.Api.TStorageList.newBuilder()
                     .setBucket(bucket));
         }
 
         private final @NonNull com.heroiclabs.nakama.Api.TStorageList.Builder list;
 
-        public Builder userId(final @NonNull byte[] userId) {
-            list.setUserId(ByteString.copyFrom(userId));
+        public Builder userId(final @NonNull String userId) {
+            list.setUserId(userId);
             return this;
         }
 
@@ -59,7 +58,7 @@ public interface StorageListMessage extends CollatedMessage<ResultSet<StorageRec
         }
 
         public Builder cursor(final @NonNull Cursor cursor) {
-            list.setCursor(ByteString.copyFrom(cursor.getValue()));
+            list.setCursor(cursor.getValue());
             return this;
         }
 

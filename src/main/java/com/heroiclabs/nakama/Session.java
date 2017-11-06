@@ -38,7 +38,7 @@ public interface Session {
     /**
      * @return The ID of the user.
      */
-    byte[] getId();
+    String getId();
 
     /**
      * @return The session token returned by the server after register or login.

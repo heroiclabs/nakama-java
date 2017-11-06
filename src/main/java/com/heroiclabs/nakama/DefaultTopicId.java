@@ -22,17 +22,17 @@ import lombok.*;
 @ToString(includeFieldNames = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 class DefaultTopicId implements TopicId {
-    private final byte[] Id;
+    private final String Id;
     private final TopicType topicType;
 
     static TopicId fromProto(final @NonNull com.heroiclabs.nakama.Api.TopicId topicId) {
         switch (topicId.getIdCase()) {
             case DM:
-                return new DefaultTopicId(topicId.getDm().toByteArray(), TopicType.DirectMessage);
+                return new DefaultTopicId(topicId.getDm(), TopicType.DirectMessage);
             case ROOM:
-                return new DefaultTopicId(topicId.getRoom().toByteArray(), TopicType.Room);
+                return new DefaultTopicId(topicId.getRoom(), TopicType.Room);
             case GROUP_ID:
-                return new DefaultTopicId(topicId.getGroupId().toByteArray(), TopicType.Group);
+                return new DefaultTopicId(topicId.getGroupId(), TopicType.Group);
             default:
                 return null;
         }

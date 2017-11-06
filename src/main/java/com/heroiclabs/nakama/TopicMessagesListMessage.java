@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +38,7 @@ public interface TopicMessagesListMessage extends CollatedMessage<ResultSet<Topi
         }
 
         public TopicMessagesListMessage.Builder cursor(final @NonNull Cursor cursor) {
-            lists.setCursor(ByteString.copyFrom(cursor.getValue()));
+            lists.setCursor(cursor.getValue());
             return this;
         }
 
@@ -48,18 +47,18 @@ public interface TopicMessagesListMessage extends CollatedMessage<ResultSet<Topi
             return this;
         }
 
-        public TopicMessagesListMessage.Builder topicDirectMessage(final @NonNull byte[] userId) {
-            lists.setUserId(ByteString.copyFrom(userId));
+        public TopicMessagesListMessage.Builder topicDirectMessage(final @NonNull String userId) {
+            lists.setUserId(userId);
             return this;
         }
 
-        public TopicMessagesListMessage.Builder topicRoom(final @NonNull byte[] room) {
-            lists.setRoom(ByteString.copyFrom(room));
+        public TopicMessagesListMessage.Builder topicRoom(final @NonNull String room) {
+            lists.setRoom(room);
             return this;
         }
 
-        public TopicMessagesListMessage.Builder topicGroup(final @NonNull byte[] groupId) {
-            lists.setGroupId(ByteString.copyFrom(groupId));
+        public TopicMessagesListMessage.Builder topicGroup(final @NonNull String groupId) {
+            lists.setGroupId(groupId);
             return this;
         }
 

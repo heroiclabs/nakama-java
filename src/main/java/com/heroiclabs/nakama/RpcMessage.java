@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +31,8 @@ public interface RpcMessage extends CollatedMessage<RpcResult> {
 
         private final @NonNull com.heroiclabs.nakama.Api.TRpc.Builder rpc;
 
-        public Builder payload(final @NonNull byte[] payload) {
-            rpc.setPayload(ByteString.copyFrom(payload));
+        public Builder payload(final @NonNull String payload) {
+            rpc.setPayload(payload);
             return this;
         }
 

@@ -18,18 +18,15 @@ package com.heroiclabs.nakama;
 
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @ToString(includeFieldNames = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 class DefaultUserPresence implements UserPresence {
-    private final byte[] userId;
-    private final byte[] sessionId;
+    private final String userId;
+    private final String sessionId;
     private final String handle;
 
     static UserPresence fromProto(final @NonNull com.heroiclabs.nakama.Api.UserPresence presence) {
-        return new DefaultUserPresence(presence.getUserId().toByteArray(), presence.getSessionId().toByteArray(), presence.getHandle());
+        return new DefaultUserPresence(presence.getUserId(), presence.getSessionId(), presence.getHandle());
     }
 }

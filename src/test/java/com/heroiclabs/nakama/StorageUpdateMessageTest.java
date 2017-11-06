@@ -58,7 +58,7 @@ public class StorageUpdateMessageTest {
             public Deferred<ResultSet<RecordId>> call(Session session) throws Exception {
                 final StorageUpdateMessage message = StorageUpdateMessage.Builder.newBuilder()
                         .record(bucket, "collection", "key", StorageUpdateMessage.OpBuilder.newBuilder()
-                        .init("/foo", jsonString.getBytes())
+                        .init("/foo", jsonString)
                         .incr("/foo/coins", -10))
                         .build();
                 return client.send(message);

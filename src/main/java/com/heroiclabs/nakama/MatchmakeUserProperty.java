@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,7 +25,7 @@ public interface MatchmakeUserProperty {
     /**
      * @return Matchmake user ID
      */
-    byte[] getUserId();
+    String getUserId();
 
     /**
      * @return Matchmake user properties

@@ -25,7 +25,7 @@ import java.util.List;
 @ToString(includeFieldNames = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 class DefaultMatch implements Match {
-    private final byte[] id;
+    private final String id;
     private final List<UserPresence> presence;
     private final UserPresence self;
 
@@ -39,7 +39,7 @@ class DefaultMatch implements Match {
             userPresences.add(DefaultUserPresence.fromProto(u));
         }
 
-        return new DefaultMatch(match.getMatchId().toByteArray(), userPresences, DefaultUserPresence.fromProto(match.getSelf()));
+        return new DefaultMatch(match.getMatchId(), userPresences, DefaultUserPresence.fromProto(match.getSelf()));
     }
 
 }

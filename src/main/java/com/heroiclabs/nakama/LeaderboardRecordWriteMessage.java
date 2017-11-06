@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +27,9 @@ public interface LeaderboardRecordWriteMessage extends CollatedMessage<ResultSet
         private final @NonNull
         com.heroiclabs.nakama.Api.TLeaderboardRecordsWrite.LeaderboardRecordWrite.Builder write;
 
-        public static LeaderboardRecordWriteMessage.LeaderboardRecordWrite newBuilder(final @NonNull byte[] leaderboardId) {
+        public static LeaderboardRecordWriteMessage.LeaderboardRecordWrite newBuilder(final @NonNull String leaderboardId) {
             com.heroiclabs.nakama.Api.TLeaderboardRecordsWrite.LeaderboardRecordWrite.Builder b = com.heroiclabs.nakama.Api.TLeaderboardRecordsWrite.LeaderboardRecordWrite.newBuilder();
-            b.setLeaderboardId(ByteString.copyFrom(leaderboardId));
+            b.setLeaderboardId(leaderboardId);
             return new LeaderboardRecordWriteMessage.LeaderboardRecordWrite(b);
         }
 
@@ -44,8 +43,8 @@ public interface LeaderboardRecordWriteMessage extends CollatedMessage<ResultSet
             return this;
         }
 
-        public LeaderboardRecordWriteMessage.LeaderboardRecordWrite metadata(final @NonNull byte[] metadata) {
-            write.setMetadata(ByteString.copyFrom(metadata));
+        public LeaderboardRecordWriteMessage.LeaderboardRecordWrite metadata(final @NonNull String metadata) {
+            write.setMetadata(metadata);
             return this;
         }
 

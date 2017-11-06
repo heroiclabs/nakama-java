@@ -23,7 +23,7 @@ public interface Cursor {
     /**
      * @return The encoded pointer which represents a position in the database records.
      */
-    byte[] getValue();
+    String getValue();
 
     /**
      * @return Encode the cursor so it can be cached.

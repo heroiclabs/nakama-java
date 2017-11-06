@@ -43,7 +43,7 @@ public interface User {
     /**
      * @return The ID of the user.
      */
-    byte[] getId();
+    String getId();
 
     /**
      * @return The (BCP-47) lang tag set by the user.
@@ -63,7 +63,7 @@ public interface User {
     /**
      * @return The metadata stored for the user.
      */
-    byte[] getMetadata();
+    String getMetadata();
 
     /**
      * @param clazz A hint for the type of the class.

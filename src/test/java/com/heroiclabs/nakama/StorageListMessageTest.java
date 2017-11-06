@@ -25,7 +25,7 @@ import java.util.UUID;
 public class StorageListMessageTest {
 
     private Client client;
-    private byte[] userId;
+    private String userId;
 
     @Before
     public void init() {
@@ -53,7 +53,7 @@ public class StorageListMessageTest {
         }).addCallbackDeferring(new Callback<Deferred<ResultSet<StorageRecord>>, Session>() {
             @Override
             public Deferred<ResultSet<StorageRecord>> call(Session session) throws Exception {
-                final CollatedMessage<ResultSet<StorageRecord>> list = StorageListMessage.Builder.newBuilder(bucket)
+                final CollatedMessage<ResultSet<StorageRecord>> list = StorageListMessage.Builder.newBuilderBucket(bucket)
                         .collection("collection")
                         .build();
                 return client.send(list);
@@ -75,7 +75,7 @@ public class StorageListMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
         final String bucket = UUID.randomUUID().toString();
-        final byte[] value = "{\"foo\":\"bar\"}".getBytes();
+        final String value = "{\"foo\":\"bar\"}";
 
         final Deferred<Session> deferred = client.register(auth);
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
@@ -106,7 +106,7 @@ public class StorageListMessageTest {
         }).addCallbackDeferring(new Callback<Deferred<ResultSet<StorageRecord>>, ResultSet<RecordId>>() {
             @Override
             public Deferred<ResultSet<StorageRecord>> call(ResultSet<RecordId> records) throws Exception {
-                final CollatedMessage<ResultSet<StorageRecord>> list = StorageListMessage.Builder.newBuilder(userId)
+                final CollatedMessage<ResultSet<StorageRecord>> list = StorageListMessage.Builder.newBuilderUserId(userId)
                         .bucket(bucket)
                         .collection("collection")
                         .build();
@@ -122,8 +122,8 @@ public class StorageListMessageTest {
                 for (StorageRecord record : results.getResults()) {
                     Assert.assertEquals(bucket, record.getBucket());
                     Assert.assertEquals("collection", record.getCollection());
-                    Assert.assertArrayEquals(userId, record.getUserId());
-                    Assert.assertArrayEquals(value, record.getValue());
+                    Assert.assertEquals(userId, record.getUserId());
+                    Assert.assertEquals(value, record.getValue());
                 }
                 Assert.assertNull(results.getCursor());
                 return results;

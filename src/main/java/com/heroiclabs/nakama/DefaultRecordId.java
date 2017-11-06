@@ -29,9 +29,9 @@ class DefaultRecordId implements RecordId {
 
     private final String key;
 
-    private final byte[] version;
+    private final String version;
 
     static RecordId fromProto(final @NonNull com.heroiclabs.nakama.Api.TStorageKeys.StorageKey key) {
-        return new DefaultRecordId(key.getBucket(), key.getCollection(), key.getRecord(), key.getVersion().toByteArray());
+        return new DefaultRecordId(key.getBucket(), key.getCollection(), key.getRecord(), key.getVersion());
     }
 }

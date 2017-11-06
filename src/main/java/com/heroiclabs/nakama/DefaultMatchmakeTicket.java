@@ -22,13 +22,13 @@ import lombok.*;
 @ToString(includeFieldNames = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 class DefaultMatchmakeTicket implements MatchmakeTicket {
-    private final byte[] ticket;
+    private final String ticket;
 
     static MatchmakeTicket fromProto(final @NonNull com.heroiclabs.nakama.Api.TMatchmakeTicket matchmakeTicket) {
-        return new DefaultMatchmakeTicket(matchmakeTicket.getTicket().toByteArray());
+        return new DefaultMatchmakeTicket(matchmakeTicket.getTicket());
     }
 
-    static MatchmakeTicket fromProto(final @NonNull byte[] matchmakeTicket) {
+    static MatchmakeTicket fromProto(final @NonNull String matchmakeTicket) {
         return new DefaultMatchmakeTicket(matchmakeTicket);
     }
 }

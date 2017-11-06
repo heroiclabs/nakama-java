@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,7 @@ public interface MatchmakeRemoveMessage extends CollatedMessage<Boolean> {
 
         public static MatchmakeRemoveMessage build(@NonNull MatchmakeTicket ticket) {
             com.heroiclabs.nakama.Api.TMatchmakeRemove.Builder remove = com.heroiclabs.nakama.Api.TMatchmakeRemove.newBuilder();
-            remove.setTicket(ByteString.copyFrom(ticket.getTicket()));
+            remove.setTicket(ticket.getTicket());
 
             final com.heroiclabs.nakama.Api.Envelope.Builder payload =
                     com.heroiclabs.nakama.Api.Envelope.newBuilder()

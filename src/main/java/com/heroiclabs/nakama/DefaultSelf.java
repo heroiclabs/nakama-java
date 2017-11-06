@@ -33,7 +33,7 @@ class DefaultSelf implements Self {
 
     private final String handle;
 
-    private final byte[] id;
+    private final String id;
 
     private final String lang;
 
@@ -41,7 +41,7 @@ class DefaultSelf implements Self {
 
     private final String location;
 
-    private final byte[] metadata;
+    private final String metadata;
 
     private final String timezone;
 
@@ -64,14 +64,14 @@ class DefaultSelf implements Self {
     private final boolean verified;
 
     public <T> T getMetadata(final Class<T> clazz) {
-        return DefaultClient.GSON.fromJson(new String(metadata), clazz);
+        return DefaultClient.GSON.fromJson(metadata, clazz);
     }
 
     static Self fromProto(final @NonNull com.heroiclabs.nakama.Api.Self self) {
         return new DefaultSelf(self.getUser().getAvatarUrl(), self.getUser().getCreatedAt(),
-                self.getUser().getFullname(), self.getUser().getHandle(), self.getUser().getId().toByteArray(),
+                self.getUser().getFullname(), self.getUser().getHandle(), self.getUser().getId(),
                 self.getUser().getLang(), self.getUser().getLastOnlineAt(), self.getUser().getLocation(),
-                self.getUser().getMetadata().toByteArray(), self.getUser().getTimezone(), self.getUser().getUpdatedAt(),
+                self.getUser().getMetadata(), self.getUser().getTimezone(), self.getUser().getUpdatedAt(),
                 self.getCustomId(), self.getDeviceIdsList(), self.getEmail(), self.getFacebookId(),
                 self.getGamecenterId(), self.getGoogleId(), self.getSteamId(), self.getVerified());
     }

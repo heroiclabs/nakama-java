@@ -43,9 +43,9 @@ class DefaultMatchmakeMatched implements MatchmakeMatched {
         }
 
         return new DefaultMatchmakeMatched(
-                DefaultMatchmakeTicket.fromProto(matched.getTicket().toByteArray()),
+                DefaultMatchmakeTicket.fromProto(matched.getTicket()),
                 userPresences,
-                DefaultMatchToken.fromProto(matched.getToken().toByteArray()),
+                DefaultMatchToken.fromProto(matched.getToken()),
                 DefaultUserPresence.fromProto(matched.getSelf()),
                 userProperties
         );

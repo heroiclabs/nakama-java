@@ -18,20 +18,17 @@ package com.heroiclabs.nakama;
 
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @ToString(includeFieldNames = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 class DefaultMatchData implements MatchData {
-    private final byte[] id;
+    private final String id;
     private final byte[] data;
     private final long opCode;
     private final UserPresence presence;
 
     static MatchData fromProto(final @NonNull com.heroiclabs.nakama.Api.MatchData matchData) {
-        return new DefaultMatchData(matchData.getMatchId().toByteArray(), matchData.getData().toByteArray(), matchData.getOpCode(), DefaultUserPresence.fromProto(matchData.getPresence()));
+        return new DefaultMatchData(matchData.getMatchId(), matchData.getData().toByteArray(), matchData.getOpCode(), DefaultUserPresence.fromProto(matchData.getPresence()));
     }
 
 }

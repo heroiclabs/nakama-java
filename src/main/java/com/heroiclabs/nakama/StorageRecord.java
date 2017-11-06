@@ -20,10 +20,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * A record from the storage engine in the server.
  */
@@ -102,7 +98,7 @@ public interface StorageRecord extends RecordId {
     /**
      * @return The value (content) of the record.
      */
-    byte[] getValue();
+    String getValue();
 
     /**
      * @param clazz A hint for the type of the class.
@@ -119,5 +115,5 @@ public interface StorageRecord extends RecordId {
     /**
      * @return The Id of the user who owns the record.
      */
-    byte[] getUserId();
+    String getUserId();
 }

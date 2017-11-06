@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -33,16 +32,16 @@ public interface MatchesJoinMessage extends CollatedMessage<ResultSet<Match>> {
         private final @NonNull
         com.heroiclabs.nakama.Api.TMatchesJoin.Builder joins;
 
-        public MatchesJoinMessage.Builder matchId(final @NonNull byte[] matchId) {
+        public MatchesJoinMessage.Builder matchId(final @NonNull String matchId) {
             com.heroiclabs.nakama.Api.TMatchesJoin.MatchJoin.Builder topicJoinBuilder = com.heroiclabs.nakama.Api.TMatchesJoin.MatchJoin.newBuilder();
-            topicJoinBuilder.setMatchId(ByteString.copyFrom(matchId));
+            topicJoinBuilder.setMatchId(matchId);
             joins.addMatches(topicJoinBuilder);
             return this;
         }
 
         public MatchesJoinMessage.Builder token(final @NonNull MatchToken token) {
             com.heroiclabs.nakama.Api.TMatchesJoin.MatchJoin.Builder topicJoinBuilder = com.heroiclabs.nakama.Api.TMatchesJoin.MatchJoin.newBuilder();
-            topicJoinBuilder.setToken(ByteString.copyFrom(token.getToken()));
+            topicJoinBuilder.setToken(token.getToken());
             joins.addMatches(topicJoinBuilder);
             return this;
         }

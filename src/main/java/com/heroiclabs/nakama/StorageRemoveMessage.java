@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -43,14 +42,14 @@ public interface StorageRemoveMessage extends CollatedMessage<Boolean> {
         }
 
         public Builder record(final @NonNull String bucket, final @NonNull String collection, final @NonNull String key,
-                              final byte[] version) {
+                              final String version) {
             com.heroiclabs.nakama.Api.TStorageRemove.StorageKey.Builder record =
                     com.heroiclabs.nakama.Api.TStorageRemove.StorageKey.newBuilder()
                             .setBucket(bucket)
                             .setCollection(collection)
                             .setRecord(key);
             if (version != null) {
-                record = record.setVersion(ByteString.copyFrom(version));
+                record = record.setVersion(version);
             }
             remove.addKeys(record);
             return this;

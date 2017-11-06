@@ -23,7 +23,7 @@ public interface Leaderboard {
     /**
      * @return Leaderboard ID.
      */
-    byte[] getId();
+    String getId();
 
     /**
      * @return Whether leaderboard is server authoritative or not.
@@ -48,7 +48,7 @@ public interface Leaderboard {
     /**
      * @return Metadata associated with the leaderboard.
      */
-    byte[] getMetadata();
+    String getMetadata();
 
     /**
      * @param clazz A hint for the type of the class.
@@ -57,7 +57,7 @@ public interface Leaderboard {
      */
     <T> T getMetadata(final Class<T> clazz);
 
-    byte[] getNextId();
+    String getNextId();
 
-    byte[] getPrevId();
+    String getPrevId();
 }

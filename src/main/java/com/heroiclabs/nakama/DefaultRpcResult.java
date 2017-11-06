@@ -25,15 +25,15 @@ class DefaultRpcResult implements RpcResult {
 
     private final String id;
 
-    private final byte[] payload;
+    private final String payload;
 
     @Override
     public <T> T getPayload(Class<T> clazz) {
-        return DefaultClient.GSON.fromJson(new String(payload), clazz);
+        return DefaultClient.GSON.fromJson(payload, clazz);
     }
 
     static RpcResult fromProto(final @NonNull com.heroiclabs.nakama.Api.TRpc rpc) {
-        return new DefaultRpcResult(rpc.getId(), rpc.getPayload().toByteArray());
+        return new DefaultRpcResult(rpc.getId(), rpc.getPayload());
     }
 
 }

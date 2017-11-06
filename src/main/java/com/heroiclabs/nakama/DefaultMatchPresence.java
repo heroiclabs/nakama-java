@@ -26,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class DefaultMatchPresence implements MatchPresence {
 
-    private final byte[] id;
+    private final String id;
     private final List<UserPresence> join;
     private final List<UserPresence> leave;
 
@@ -41,6 +41,6 @@ public class DefaultMatchPresence implements MatchPresence {
             leaves.add(DefaultUserPresence.fromProto(u));
         }
 
-        return new DefaultMatchPresence(matchPresence.getMatchId().toByteArray(), joins, leaves);
+        return new DefaultMatchPresence(matchPresence.getMatchId(), joins, leaves);
     }
 }

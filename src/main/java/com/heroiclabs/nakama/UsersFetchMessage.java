@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +31,9 @@ public interface UsersFetchMessage extends CollatedMessage<ResultSet<User>> {
 
         private final @NonNull com.heroiclabs.nakama.Api.TUsersFetch.Builder usersFetches;
 
-        public Builder id(final @NonNull byte[] id) {
+        public Builder id(final @NonNull String id) {
             usersFetches.addUsers(com.heroiclabs.nakama.Api.TUsersFetch.UsersFetch.newBuilder()
-                            .setUserId(ByteString.copyFrom(id)));
+                            .setUserId(id));
             return this;
         }
 

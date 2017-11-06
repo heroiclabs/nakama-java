@@ -18,16 +18,14 @@ package com.heroiclabs.nakama;
 
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Data
 @ToString(includeFieldNames = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 class DefaultMatchmakeUserProperty implements MatchmakeUserProperty {
-    private final byte[] userId;
+    private final String userId;
     private final Map<String, Object> properties;
     private final Map<String, MatchmakeFilter> filters;
 
@@ -62,6 +60,6 @@ class DefaultMatchmakeUserProperty implements MatchmakeUserProperty {
             }
         }
 
-        return new DefaultMatchmakeUserProperty(p.getUserId().toByteArray(), props, filters);
+        return new DefaultMatchmakeUserProperty(p.getUserId(), props, filters);
     }
 }

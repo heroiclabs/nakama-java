@@ -287,8 +287,8 @@ public class DefaultClient implements Client {
                             records.add(DefaultStorageRecord.fromProto(data));
                         }
                         Cursor cursor = null;
-                        if (envelope.getStorageData().getCursor() != null && envelope.getStorageData().getCursor().size() > 0) {
-                            cursor = new DefaultCursor(envelope.getStorageData().getCursor().toByteArray());
+                        if (envelope.getStorageData().getCursor() != null && envelope.getStorageData().getCursor().length() > 0) {
+                            cursor = new DefaultCursor(envelope.getStorageData().getCursor());
                         }
                         def.callback(new DefaultResultSet<StorageRecord>(cursor, records));
                         break;
@@ -317,7 +317,7 @@ public class DefaultClient implements Client {
                         for (final com.heroiclabs.nakama.Api.TopicMessage m : envelope.getTopicMessages().getMessagesList()) {
                             messages.add(DefaultTopicMessage.fromProto(m));
                         }
-                        def.callback(new DefaultResultSet<TopicMessage>(new DefaultCursor(envelope.getTopicMessages().getCursor().toByteArray()), messages));
+                        def.callback(new DefaultResultSet<TopicMessage>(new DefaultCursor(envelope.getTopicMessages().getCursor()), messages));
                         break;
                     case MATCH:
                         def.callback(DefaultMatch.fromProto(envelope.getMatch()));
@@ -337,14 +337,14 @@ public class DefaultClient implements Client {
                         for (final com.heroiclabs.nakama.Api.Leaderboard l : envelope.getLeaderboards().getLeaderboardsList()) {
                             leaderboards.add(DefaultLeaderboard.fromProto(l));
                         }
-                        def.callback(new DefaultResultSet<Leaderboard>(new DefaultCursor(envelope.getLeaderboards().getCursor().toByteArray()), leaderboards));
+                        def.callback(new DefaultResultSet<Leaderboard>(new DefaultCursor(envelope.getLeaderboards().getCursor()), leaderboards));
                         break;
                     case LEADERBOARD_RECORDS:
                         final List<LeaderboardRecord> leaderboardRecords = new ArrayList<>();
                         for (final com.heroiclabs.nakama.Api.LeaderboardRecord r : envelope.getLeaderboardRecords().getRecordsList()) {
                             leaderboardRecords.add(DefaultLeaderboardRecord.fromProto(r));
                         }
-                        def.callback(new DefaultResultSet<LeaderboardRecord>(new DefaultCursor(envelope.getLeaderboardRecords().getCursor().toByteArray()), leaderboardRecords));
+                        def.callback(new DefaultResultSet<LeaderboardRecord>(new DefaultCursor(envelope.getLeaderboardRecords().getCursor()), leaderboardRecords));
                         break;
                     default:
                         def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode(), collationId));

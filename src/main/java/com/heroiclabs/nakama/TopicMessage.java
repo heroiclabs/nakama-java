@@ -53,12 +53,12 @@ public interface TopicMessage {
     /**
      * @return User ID associated with this message.
      */
-    byte[] getUserId();
+    String getUserId();
 
     /**
      * @return Message ID.
      */
-    byte[] getMessageId();
+    String getMessageId();
 
     /**
      * @return When message was created.
@@ -83,5 +83,5 @@ public interface TopicMessage {
     /**
      * @return Data in the message.
      */
-    byte[] getData();
+    String getData();
 }

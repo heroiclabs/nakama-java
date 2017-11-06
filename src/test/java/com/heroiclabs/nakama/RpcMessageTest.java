@@ -98,7 +98,7 @@ public class RpcMessageTest {
         final String deviceId = UUID.randomUUID().toString();
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
-        final byte[] payload = "foo".getBytes();
+        final String payload = "foo";
         final Deferred<Session> deferred = client.register(auth);
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
             @Override
@@ -116,7 +116,7 @@ public class RpcMessageTest {
         }).addCallback(new Callback<RpcResult, RpcResult>() {
             @Override
             public RpcResult call(RpcResult result) throws Exception {
-                Assert.assertArrayEquals(payload, result.getPayload());
+                Assert.assertEquals(payload, result.getPayload());
                 return result;
             }
         }).addErrback(new Callback<Error, Error>() {

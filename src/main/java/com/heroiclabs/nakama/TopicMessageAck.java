@@ -20,7 +20,7 @@ public interface TopicMessageAck {
     /**
      * @return ID of this message acked;
      */
-    byte[] getMessageId();
+    String getMessageId();
 
     /**
      * @return User Handle;

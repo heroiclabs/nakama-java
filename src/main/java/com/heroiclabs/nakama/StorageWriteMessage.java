@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,7 @@ public interface StorageWriteMessage extends CollatedMessage<ResultSet<RecordId>
         private final @NonNull com.heroiclabs.nakama.Api.TStorageWrite.Builder writes;
 
         public Builder record(final @NonNull String bucket, final @NonNull String collection, final @NonNull String key,
-                              final @NonNull byte[] value, final byte[] version,
+                              final @NonNull String value, final String version,
                               final StorageRecord.PermissionRead read,
                               final StorageRecord.PermissionWrite write) {
             com.heroiclabs.nakama.Api.TStorageWrite.StorageData.Builder record =
@@ -41,9 +40,9 @@ public interface StorageWriteMessage extends CollatedMessage<ResultSet<RecordId>
                             .setBucket(bucket)
                             .setCollection(collection)
                             .setRecord(key)
-                            .setValue(ByteString.copyFrom(value));
+                            .setValue(value);
             if (version != null) {
-                record = record.setVersion(ByteString.copyFrom(version));
+                record = record.setVersion(version);
             }
             if (read != null) {
                 record = record.setPermissionRead(read.getCode());
@@ -56,18 +55,18 @@ public interface StorageWriteMessage extends CollatedMessage<ResultSet<RecordId>
         }
 
         public Builder record(final @NonNull String bucket, final @NonNull String collection, final @NonNull String key,
-                              final @NonNull byte[] value) {
+                              final @NonNull String value) {
             return record(bucket, collection, key, value, null, null, null);
         }
 
         public Builder record(final @NonNull String bucket, final @NonNull String collection, final @NonNull String key,
-                              final @NonNull byte[] value, final StorageRecord.PermissionRead read,
+                              final @NonNull String value, final StorageRecord.PermissionRead read,
                               final StorageRecord.PermissionWrite write) {
             return record(bucket, collection, key, value, null, read, write);
         }
 
         public Builder record(final @NonNull String bucket, final @NonNull String collection, final @NonNull String key,
-                              final @NonNull byte[] value, final byte[] version) {
+                              final @NonNull String value, final String version) {
             return record(bucket, collection, key, value, version, null, null);
         }
 

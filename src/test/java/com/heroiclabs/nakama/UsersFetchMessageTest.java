@@ -25,7 +25,7 @@ import java.util.UUID;
 public class UsersFetchMessageTest {
 
     private Client client;
-    private byte[] userId;
+    private String userId;
     private String handle;
 
     @Before
@@ -56,7 +56,7 @@ public class UsersFetchMessageTest {
             public Deferred<ResultSet<User>> call(Session session) throws Exception {
                 final CollatedMessage<ResultSet<User>> fetch = UsersFetchMessage.Builder.newBuilder()
                         .handle("not found")
-                        .id(new byte[]{})
+                        .id("")
                         .build();
                 return client.send(fetch);
             }
@@ -109,7 +109,7 @@ public class UsersFetchMessageTest {
             public ResultSet<User> call(ResultSet<User> results) throws Exception {
                 Assert.assertEquals(1, results.getResults().size());
                 Assert.assertEquals(handle, results.getResults().get(0).getHandle());
-                Assert.assertArrayEquals(userId, results.getResults().get(0).getId());
+                Assert.assertEquals(userId, results.getResults().get(0).getId());
                 Assert.assertNull(results.getCursor());
                 return results;
             }
@@ -153,7 +153,7 @@ public class UsersFetchMessageTest {
             @Override
             public ResultSet<User> call(ResultSet<User> results) throws Exception {
                 Assert.assertEquals(1, results.getResults().size());
-                Assert.assertArrayEquals(userId, results.getResults().get(0).getId());
+                Assert.assertEquals(userId, results.getResults().get(0).getId());
                 Assert.assertEquals(handle, results.getResults().get(0).getHandle());
                 Assert.assertNull(results.getCursor());
                 return results;
