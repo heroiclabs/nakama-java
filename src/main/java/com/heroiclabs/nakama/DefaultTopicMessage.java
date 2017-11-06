@@ -23,24 +23,24 @@ import lombok.*;
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class DefaultTopicMessage implements TopicMessage {
     private final TopicId topic;
-    private final byte[] userId;
-    private final byte[] messageId;
+    private final String userId;
+    private final String messageId;
     private final long createdAt;
     private final long expiresAt;
     private final String handle;
     private final TopicMessageType type;
-    private final byte[] data;
+    private final String data;
 
     static TopicMessage fromProto(final @NonNull com.heroiclabs.nakama.Api.TopicMessage message) {
         return new DefaultTopicMessage(
                 DefaultTopicId.fromProto(message.getTopic()),
-                message.getUserId().toByteArray(),
-                message.getMessageId().toByteArray(),
+                message.getUserId(),
+                message.getMessageId(),
                 message.getCreatedAt(),
                 message.getExpiresAt(),
                 message.getHandle(),
                 TopicMessageType.fromProto((int)message.getType()),
-                message.getData().toByteArray()
+                message.getData()
         );
     }
 }

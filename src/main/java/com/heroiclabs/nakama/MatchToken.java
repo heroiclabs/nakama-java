@@ -23,5 +23,5 @@ public interface MatchToken {
     /**
      * @return Match Token.
      */
-    byte[] getToken();
+    String getToken();
 }

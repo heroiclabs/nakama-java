@@ -20,17 +20,16 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import okio.ByteString;
 
 @Data
 @ToString(includeFieldNames = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class DefaultCursor implements Cursor {
 
-    private final byte[] value;
+    private final String value;
 
     public String serialize() {
-        return ByteString.of(value).base64();
+        return value;
     }
 
     /**
@@ -38,7 +37,6 @@ public class DefaultCursor implements Cursor {
      * @return A new cursor which was stored.
      */
     public static Cursor restore(final String serializedCursor) {
-        final byte[] cursor = ByteString.decodeBase64(serializedCursor).toByteArray();
-        return new DefaultCursor(cursor);
+        return new DefaultCursor(serializedCursor);
     }
 }

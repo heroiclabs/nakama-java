@@ -5,6 +5,8 @@ All notable changes to this project are documented below.
 The format is based on [keep a changelog](http://keepachangelog.com/) and this project uses [semantic versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Expose more simpler interface for identifier fields.
 
 ## [0.3.0] - 2017-10-17
 ### Added

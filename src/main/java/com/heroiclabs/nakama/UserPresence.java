@@ -20,12 +20,12 @@ public interface UserPresence {
     /**
      * @return User ID
      */
-    byte[] getUserId();
+    String getUserId();
 
     /**
      * @return Session ID associated with this presence
      */
-    byte[] getSessionId();
+    String getSessionId();
 
     /**
      * @return User Handle

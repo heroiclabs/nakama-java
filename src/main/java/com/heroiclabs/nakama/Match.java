@@ -25,7 +25,7 @@ public interface Match {
     /**
      * @return Match ID.
      */
-    byte[] getId();
+    String getId();
 
     /**
      * @return List of presences in this match.

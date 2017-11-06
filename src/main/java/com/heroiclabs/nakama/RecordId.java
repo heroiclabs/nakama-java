@@ -38,5 +38,5 @@ public interface RecordId {
     /**
      * @return The version of the record which has been fetched.
      */
-    byte[] getVersion();
+    String getVersion();
 }

@@ -43,7 +43,7 @@ public class StorageWriteMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
         final String bucket = UUID.randomUUID().toString();
-        final byte[] value = "{\"foo\":\"bar\"}".getBytes();
+        final String value = "{\"foo\":\"bar\"}";
 
         final Deferred<Session> deferred = client.register(auth);
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
@@ -78,7 +78,7 @@ public class StorageWriteMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
         final String bucket = UUID.randomUUID().toString();
-        final byte[] value = "{\"foo\":\"bar\"}".getBytes();
+        final String value = "{\"foo\":\"bar\"}";
 
         final Deferred<Session> deferred = client.register(auth);
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
@@ -91,7 +91,7 @@ public class StorageWriteMessageTest {
             @Override
             public Deferred<ResultSet<RecordId>> call(Session session) throws Exception {
                 final CollatedMessage<ResultSet<RecordId>> write = StorageWriteMessage.Builder.newBuilder()
-                        .record(bucket, "collection", "record", value, "*".getBytes())
+                        .record(bucket, "collection", "record", value, "*")
                         .build();
                 return client.send(write);
             }
@@ -113,7 +113,7 @@ public class StorageWriteMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
         final String bucket = UUID.randomUUID().toString();
-        final byte[] value = "{\"foo\":\"bar\"}".getBytes();
+        final String value = "{\"foo\":\"bar\"}";
 
         final Deferred<Session> deferred = client.register(auth);
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
@@ -143,7 +143,7 @@ public class StorageWriteMessageTest {
             @Override
             public Deferred<ResultSet<RecordId>> call(ResultSet<RecordId> records) throws Exception {
                 final CollatedMessage<ResultSet<RecordId>> write = StorageWriteMessage.Builder.newBuilder()
-                        .record(bucket, "collection", "record", value, "*".getBytes())
+                        .record(bucket, "collection", "record", value, "*")
                         .build();
                 return client.send(write);
             }
@@ -166,7 +166,7 @@ public class StorageWriteMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
         final String bucket = UUID.randomUUID().toString();
-        final byte[] value = "{\"foo\":\"bar\"}".getBytes();
+        final String value = "{\"foo\":\"bar\"}";
 
         final Deferred<Session> deferred = client.register(auth);
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
@@ -219,7 +219,7 @@ public class StorageWriteMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
         final String bucket = UUID.randomUUID().toString();
-        final byte[] value = "{\"foo\":\"bar\"}".getBytes();
+        final String value = "{\"foo\":\"bar\"}";
 
         final Deferred<Session> deferred = client.register(auth);
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
@@ -246,7 +246,7 @@ public class StorageWriteMessageTest {
             @Override
             public Deferred<ResultSet<RecordId>> call(ResultSet<RecordId> records) throws Exception {
                 final CollatedMessage<ResultSet<RecordId>> write = StorageWriteMessage.Builder.newBuilder()
-                        .record(bucket, "collection", "record", value, "bad version".getBytes())
+                        .record(bucket, "collection", "record", value, "bad version")
                         .build();
                 return client.send(write);
             }

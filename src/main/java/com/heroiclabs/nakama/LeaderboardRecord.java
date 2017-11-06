@@ -26,12 +26,12 @@ public interface LeaderboardRecord {
     /**
      * @return Leaderboard ID.
      */
-    byte[] getLeaderboardId();
+    String getLeaderboardId();
 
     /**
      * @return User ID that owns this record.
      */
-    byte[] getOwnerId();
+    String getOwnerId();
 
     /**
      * @return User handle.
@@ -62,7 +62,7 @@ public interface LeaderboardRecord {
     /**
      * @return Metadata associated with the leaderboard record.
      */
-    byte[] getMetadata();
+    String getMetadata();
 
     /**
      * @param clazz A hint for the type of the class.

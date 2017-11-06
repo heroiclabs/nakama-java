@@ -22,12 +22,12 @@ import lombok.*;
 @ToString(includeFieldNames = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 class DefaultTopicMessageAck implements TopicMessageAck {
-    private final byte[] messageId;
+    private final String messageId;
     private final String handle;
     private final long createdAt;
     private final long expiresAt;
 
     static TopicMessageAck fromProto(final @NonNull com.heroiclabs.nakama.Api.TTopicMessageAck ack) {
-        return new DefaultTopicMessageAck(ack.getMessageId().toByteArray(), ack.getHandle(), ack.getCreatedAt(), ack.getExpiresAt());
+        return new DefaultTopicMessageAck(ack.getMessageId(), ack.getHandle(), ack.getCreatedAt(), ack.getExpiresAt());
     }
 }

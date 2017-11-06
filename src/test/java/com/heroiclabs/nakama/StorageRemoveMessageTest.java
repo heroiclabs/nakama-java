@@ -25,7 +25,7 @@ import java.util.UUID;
 public class StorageRemoveMessageTest {
 
     private Client client;
-    private byte[] userId;
+    private String userId;
 
     @Before
     public void init() {
@@ -77,7 +77,7 @@ public class StorageRemoveMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
         final String bucket = UUID.randomUUID().toString();
-        final byte[] value = "{\"foo\":\"bar\"}".getBytes();
+        final String value = "{\"foo\":\"bar\"}";
 
         final Deferred<Session> deferred = client.register(auth);
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {
@@ -126,7 +126,7 @@ public class StorageRemoveMessageTest {
         final AuthenticateMessage auth = AuthenticateMessage.Builder.device(deviceId);
 
         final String bucket = UUID.randomUUID().toString();
-        final byte[] value = "{\"foo\":\"bar\"}".getBytes();
+        final String value = "{\"foo\":\"bar\"}";
 
         final Deferred<Session> deferred = client.register(auth);
         deferred.addCallbackDeferring(new Callback<Deferred<Session>, Session>() {

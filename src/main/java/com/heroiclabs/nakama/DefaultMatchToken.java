@@ -22,9 +22,9 @@ import lombok.*;
 @ToString(includeFieldNames = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 class DefaultMatchToken implements MatchToken {
-    private final byte[] token;
+    private final String token;
 
-    static MatchToken fromProto(final @NonNull byte[] token) {
+    static MatchToken fromProto(final @NonNull String token) {
         return new DefaultMatchToken(token);
     }
 }

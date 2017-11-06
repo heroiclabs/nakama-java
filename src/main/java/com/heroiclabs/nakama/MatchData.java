@@ -16,8 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import java.util.List;
-
 /**
  * The object which represents match data.
  */
@@ -25,7 +23,7 @@ public interface MatchData {
     /**
      * @return Match ID.
      */
-    byte[] getId();
+    String getId();
 
     /**
      * @return Match Data.

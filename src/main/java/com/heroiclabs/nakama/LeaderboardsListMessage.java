@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -38,13 +37,13 @@ public interface LeaderboardsListMessage extends CollatedMessage<ResultSet<Leade
             return this;
         }
 
-        public LeaderboardsListMessage.Builder addFilter(final @NonNull byte[] leaderboardId) {
-            listing.addFilterLeaderboardId(ByteString.copyFrom(leaderboardId));
+        public LeaderboardsListMessage.Builder addFilter(final @NonNull String leaderboardId) {
+            listing.addFilterLeaderboardId(leaderboardId);
             return this;
         }
 
-        public LeaderboardsListMessage.Builder cursor(final @NonNull byte[] cursor) {
-            listing.setCursor(ByteString.copyFrom(cursor));
+        public LeaderboardsListMessage.Builder cursor(final @NonNull String cursor) {
+            listing.setCursor(cursor);
             return this;
         }
 

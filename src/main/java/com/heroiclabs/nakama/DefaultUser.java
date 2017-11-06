@@ -31,7 +31,7 @@ class DefaultUser implements User {
 
     private final String handle;
 
-    private final byte[] id;
+    private final String id;
 
     private final String lang;
 
@@ -39,21 +39,21 @@ class DefaultUser implements User {
 
     private final String location;
 
-    private final byte[] metadata;
+    private final String metadata;
 
     private final String timezone;
 
     private final long updatedAt;
 
     public <T> T getMetadata(final Class<T> clazz) {
-        return DefaultClient.GSON.fromJson(new String(metadata), clazz);
+        return DefaultClient.GSON.fromJson(metadata, clazz);
     }
 
     static User fromProto(final @NonNull com.heroiclabs.nakama.Api.User user) {
         return new DefaultUser(user.getAvatarUrl(), user.getCreatedAt(),
-                user.getFullname(), user.getHandle(), user.getId().toByteArray(),
+                user.getFullname(), user.getHandle(), user.getId(),
                 user.getLang(), user.getLastOnlineAt(), user.getLocation(),
-                user.getMetadata().toByteArray(), user.getTimezone(), user.getUpdatedAt());
+                user.getMetadata(), user.getTimezone(), user.getUpdatedAt());
     }
 
 }

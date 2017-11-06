@@ -28,7 +28,7 @@ public interface RpcResult {
     /**
      * @return The payload result sent back from the function call. May be {@code null}.
      */
-    byte[] getPayload();
+    String getPayload();
 
     /**
      * @param clazz A hint for the type of the class.

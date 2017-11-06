@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -57,8 +56,8 @@ public interface SelfUpdateMessage extends CollatedMessage<Boolean> {
             return this;
         }
 
-        public Builder metadata(final @NonNull byte[] metadata) {
-            update.setMetadata(ByteString.copyFrom(metadata));
+        public Builder metadata(final @NonNull String metadata) {
+            update.setMetadata(metadata);
             return this;
         }
 

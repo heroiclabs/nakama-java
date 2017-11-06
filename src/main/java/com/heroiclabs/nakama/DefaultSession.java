@@ -21,12 +21,10 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.lang.reflect.Type;
-import java.nio.ByteBuffer;
 import okio.*;
 
 import java.nio.charset.Charset;
 import java.util.Map;
-import java.util.UUID;
 
 @Data
 @ToString(includeFieldNames = true)
@@ -38,7 +36,7 @@ public class DefaultSession implements Session {
 
     private final String handle;
 
-    private final byte[] id;
+    private final String id;
 
     private final String token;
 
@@ -54,12 +52,7 @@ public class DefaultSession implements Session {
         createdAt = System.currentTimeMillis();
         expiresAt = Math.round(((Double) jsonMap.get("exp")) * 1000L);
         handle = jsonMap.get("han").toString();
-
-        final UUID uid = UUID.fromString(jsonMap.get("uid").toString());
-        final ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
-        bb.putLong(uid.getMostSignificantBits());
-        bb.putLong(uid.getLeastSignificantBits());
-        id = bb.array();
+        id = jsonMap.get("uid").toString();
 
         this.token = token;
     }

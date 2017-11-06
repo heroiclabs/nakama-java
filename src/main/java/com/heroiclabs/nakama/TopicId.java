@@ -22,7 +22,7 @@ public interface TopicId {
     /**
      * @return Topic ID
      */
-    byte[] getId();
+    String getId();
 
     /**
      * @return Type of Topic this is - DM, Group, Room

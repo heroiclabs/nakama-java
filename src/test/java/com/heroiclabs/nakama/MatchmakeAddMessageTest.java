@@ -146,7 +146,7 @@ public class MatchmakeAddMessageTest {
         Assert.assertNotNull(token2);
 
         MatchmakeUserProperty c1Props = matched1.getProperties().get(0);
-        if (!Arrays.equals(matched1.getSelf().getUserId(), matched1.getProperties().get(0).getUserId()))
+        if (!matched1.getSelf().getUserId().equals(matched1.getProperties().get(0).getUserId()))
         {
             c1Props = matched1.getProperties().get(1);
         }

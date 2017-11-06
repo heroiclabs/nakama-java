@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -33,14 +32,14 @@ public interface StorageFetchMessage extends CollatedMessage<ResultSet<StorageRe
         private final @NonNull com.heroiclabs.nakama.Api.TStorageFetch.Builder fetch;
 
         public Builder record(final @NonNull String bucket, final @NonNull String collection, final @NonNull String key,
-                              final byte[] userId) {
+                              final String userId) {
             com.heroiclabs.nakama.Api.TStorageFetch.StorageKey.Builder record =
                     com.heroiclabs.nakama.Api.TStorageFetch.StorageKey.newBuilder()
                             .setBucket(bucket)
                             .setCollection(collection)
                             .setRecord(key);
             if (userId != null) {
-                record = record.setUserId(ByteString.copyFrom(userId));
+                record = record.setUserId(userId);
             }
             fetch.addKeys(record);
             return this;

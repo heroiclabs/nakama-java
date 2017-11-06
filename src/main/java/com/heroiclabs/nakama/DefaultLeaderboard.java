@@ -22,29 +22,29 @@ import lombok.*;
 @ToString(includeFieldNames = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 class DefaultLeaderboard implements Leaderboard {
-    private final byte[] id;
+    private final String id;
     private final boolean authoritative;
     private final long sort;
     private final long count;
     private final String resetSchedule;
-    private final byte[] metadata;
-    private final byte[] nextId;
-    private final byte[] prevId;
+    private final String metadata;
+    private final String nextId;
+    private final String prevId;
 
     public <T> T getMetadata(final Class<T> clazz) {
-        return DefaultClient.GSON.fromJson(new String(metadata), clazz);
+        return DefaultClient.GSON.fromJson(metadata, clazz);
     }
 
     static Leaderboard fromProto(final @NonNull com.heroiclabs.nakama.Api.Leaderboard leaderboard) {
         return new DefaultLeaderboard(
-                leaderboard.getId().toByteArray(),
+                leaderboard.getId(),
                 leaderboard.getAuthoritative(),
                 leaderboard.getSort(),
                 leaderboard.getCount(),
                 leaderboard.getResetSchedule(),
-                leaderboard.getMetadata().toByteArray(),
-                leaderboard.getNextId().toByteArray(),
-                leaderboard.getPrevId().toByteArray()
+                leaderboard.getMetadata(),
+                leaderboard.getNextId(),
+                leaderboard.getPrevId()
         );
     }
 

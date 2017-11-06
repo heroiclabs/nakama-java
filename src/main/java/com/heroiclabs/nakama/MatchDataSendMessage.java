@@ -25,9 +25,9 @@ public interface MatchDataSendMessage extends UncollatedMessage {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        public static MatchDataSendMessage.Builder newBuilder(final @NonNull byte[] matchId) {
+        public static MatchDataSendMessage.Builder newBuilder(final @NonNull String matchId) {
             return new DefaultMatchDataSendMessage.Builder(com.heroiclabs.nakama.Api.MatchDataSend.newBuilder()
-                    .setMatchId(ByteString.copyFrom(matchId)));
+                    .setMatchId(matchId));
         }
 
         private final @NonNull
@@ -47,8 +47,8 @@ public interface MatchDataSendMessage extends UncollatedMessage {
             for (UserPresence p : presences) {
                 com.heroiclabs.nakama.Api.UserPresence.Builder up = com.heroiclabs.nakama.Api.UserPresence.newBuilder();
                 up.setHandle(p.getHandle());
-                up.setSessionId(ByteString.copyFrom(p.getSessionId()));
-                up.setUserId(ByteString.copyFrom(p.getUserId()));
+                up.setSessionId(p.getSessionId());
+                up.setUserId(p.getUserId());
                 matchData.addPresences(up);
             }
 

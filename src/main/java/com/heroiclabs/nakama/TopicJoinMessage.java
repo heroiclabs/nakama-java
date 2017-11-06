@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -33,23 +32,23 @@ public interface TopicJoinMessage extends CollatedMessage<ResultSet<Topic>> {
         private final @NonNull
         com.heroiclabs.nakama.Api.TTopicsJoin.Builder joins;
 
-        public TopicJoinMessage.Builder topicDirectMessage(final @NonNull byte[] userId) {
+        public TopicJoinMessage.Builder topicDirectMessage(final @NonNull String userId) {
             com.heroiclabs.nakama.Api.TTopicsJoin.TopicJoin.Builder topicJoinBuilder = com.heroiclabs.nakama.Api.TTopicsJoin.TopicJoin.newBuilder();
-            topicJoinBuilder.setUserId(ByteString.copyFrom(userId));
+            topicJoinBuilder.setUserId(userId);
             joins.addJoins(topicJoinBuilder);
             return this;
         }
 
-        public TopicJoinMessage.Builder topicRoom(final @NonNull byte[] room) {
+        public TopicJoinMessage.Builder topicRoom(final @NonNull String room) {
             com.heroiclabs.nakama.Api.TTopicsJoin.TopicJoin.Builder topicJoinBuilder = com.heroiclabs.nakama.Api.TTopicsJoin.TopicJoin.newBuilder();
-            topicJoinBuilder.setRoom(ByteString.copyFrom(room));
+            topicJoinBuilder.setRoom(room);
             joins.addJoins(topicJoinBuilder);
             return this;
         }
 
-        public TopicJoinMessage.Builder topicGroup(final @NonNull byte[] group) {
+        public TopicJoinMessage.Builder topicGroup(final @NonNull String groupId) {
             com.heroiclabs.nakama.Api.TTopicsJoin.TopicJoin.Builder topicJoinBuilder = com.heroiclabs.nakama.Api.TTopicsJoin.TopicJoin.newBuilder();
-            topicJoinBuilder.setGroupId(ByteString.copyFrom(group));
+            topicJoinBuilder.setGroupId(groupId);
             joins.addJoins(topicJoinBuilder);
             return this;
         }

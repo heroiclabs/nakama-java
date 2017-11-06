@@ -37,23 +37,23 @@ class DefaultStorageRecord implements StorageRecord {
 
     private final PermissionWrite permissionWrite;
 
-    private final byte[] value;
+    private final String value;
 
-    private final byte[] version;
+    private final String version;
 
     private final long updatedAt;
 
-    private final byte[] userId;
+    private final String userId;
 
     @Override
     public <T> T getValue(Class<T> clazz) {
-        return DefaultClient.GSON.fromJson(new String(value), clazz);
+        return DefaultClient.GSON.fromJson(value, clazz);
     }
 
     static StorageRecord fromProto(final @NonNull com.heroiclabs.nakama.Api.TStorageData.StorageData data) {
         return new DefaultStorageRecord(data.getBucket(), data.getCreatedAt(), data.getCollection(),
                 data.getExpiresAt(), data.getRecord(), PermissionRead.fromInt(data.getPermissionRead()),
-                PermissionWrite.fromInt(data.getPermissionWrite()), data.getValue().toByteArray(),
-                data.getVersion().toByteArray(), data.getUpdatedAt(), data.getUserId().toByteArray());
+                PermissionWrite.fromInt(data.getPermissionWrite()), data.getValue(),
+                data.getVersion(), data.getUpdatedAt(), data.getUserId());
     }
 }

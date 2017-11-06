@@ -22,8 +22,8 @@ import lombok.*;
 @ToString(includeFieldNames = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 class DefaultLeaderboardRecord implements LeaderboardRecord {
-    private final byte[] leaderboardId;
-    private final byte[] ownerId;
+    private final String leaderboardId;
+    private final String ownerId;
     private final String handle;
     private final String lang;
     private final String location;
@@ -31,15 +31,15 @@ class DefaultLeaderboardRecord implements LeaderboardRecord {
     private final long rank;
     private final long score;
     private final long numScore;
-    private final byte[] metadata;
+    private final String metadata;
     private final long rankedAt;
     private final long updatedAt;
     private final long expiresAt;
 
     static LeaderboardRecord fromProto(final @NonNull com.heroiclabs.nakama.Api.LeaderboardRecord record) {
         return new DefaultLeaderboardRecord(
-                record.getLeaderboardId().toByteArray(),
-                record.getOwnerId().toByteArray(),
+                record.getLeaderboardId(),
+                record.getOwnerId(),
                 record.getHandle(),
                 record.getLang(),
                 record.getLocation(),
@@ -47,7 +47,7 @@ class DefaultLeaderboardRecord implements LeaderboardRecord {
                 record.getRank(),
                 record.getScore(),
                 record.getNumScore(),
-                record.getMetadata().toByteArray(),
+                record.getMetadata(),
                 record.getRankedAt(),
                 record.getUpdatedAt(),
                 record.getExpiresAt()
@@ -55,7 +55,7 @@ class DefaultLeaderboardRecord implements LeaderboardRecord {
     }
 
     public <T> T getMetadata(final Class<T> clazz) {
-        return DefaultClient.GSON.fromJson(new String(metadata), clazz);
+        return DefaultClient.GSON.fromJson(metadata, clazz);
     }
 
 }

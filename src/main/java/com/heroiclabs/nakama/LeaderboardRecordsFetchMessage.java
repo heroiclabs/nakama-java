@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +32,8 @@ public interface LeaderboardRecordsFetchMessage extends CollatedMessage<ResultSe
         private final @NonNull
         com.heroiclabs.nakama.Api.TLeaderboardRecordsFetch.Builder fetch;
 
-        public LeaderboardRecordsFetchMessage.Builder fetch(final @NonNull byte[] leaderboardId) {
-            fetch.addLeaderboardIds(ByteString.copyFrom(leaderboardId));
+        public LeaderboardRecordsFetchMessage.Builder fetch(final @NonNull String leaderboardId) {
+            fetch.addLeaderboardIds(leaderboardId);
             return this;
         }
 
@@ -43,8 +42,8 @@ public interface LeaderboardRecordsFetchMessage extends CollatedMessage<ResultSe
             return this;
         }
 
-        public LeaderboardRecordsFetchMessage.Builder cursor(final @NonNull byte[] cursor) {
-            fetch.setCursor(ByteString.copyFrom(cursor));
+        public LeaderboardRecordsFetchMessage.Builder cursor(final @NonNull String cursor) {
+            fetch.setCursor(cursor);
             return this;
         }
 

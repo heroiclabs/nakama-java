@@ -16,7 +16,6 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.protobuf.ByteString;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -28,24 +27,24 @@ public interface LeaderboardRecordsListMessage extends CollatedMessage<ResultSet
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class Builder {
 
-        public static LeaderboardRecordsListMessage.Builder newBuilder(final @NonNull byte[] leaderboardId) {
+        public static LeaderboardRecordsListMessage.Builder newBuilder(final @NonNull String leaderboardId) {
             com.heroiclabs.nakama.Api.TLeaderboardRecordsList.Builder b = com.heroiclabs.nakama.Api.TLeaderboardRecordsList.newBuilder();
-            b.setLeaderboardId(ByteString.copyFrom(leaderboardId));
+            b.setLeaderboardId(leaderboardId);
             return new DefaultLeaderboardRecordsListMessage.Builder(b);
         }
 
         private final @NonNull
         com.heroiclabs.nakama.Api.TLeaderboardRecordsList.Builder listing;
 
-        public LeaderboardRecordsListMessage.Builder filterByPagingToOwnerId(final @NonNull byte[] ownerId) {
-            listing.setOwnerId(ByteString.copyFrom(ownerId));
+        public LeaderboardRecordsListMessage.Builder filterByPagingToOwnerId(final @NonNull String ownerId) {
+            listing.setOwnerId(ownerId);
             return this;
         }
 
-        public LeaderboardRecordsListMessage.Builder filterByPagingToOwnerIds(final @NonNull List<byte[]> ownerIds) {
+        public LeaderboardRecordsListMessage.Builder filterByPagingToOwnerIds(final @NonNull List<String> ownerIds) {
             com.heroiclabs.nakama.Api.TLeaderboardRecordsList.Owners.Builder o = com.heroiclabs.nakama.Api.TLeaderboardRecordsList.Owners.newBuilder();
-            for (byte[] b : ownerIds) {
-                o.addOwnerIds(ByteString.copyFrom(b));
+            for (String b : ownerIds) {
+                o.addOwnerIds(b);
             }
             listing.setOwnerIds(o);
             return this;
@@ -66,8 +65,8 @@ public interface LeaderboardRecordsListMessage extends CollatedMessage<ResultSet
             return this;
         }
 
-        public LeaderboardRecordsListMessage.Builder cursor(final @NonNull byte[] cursor) {
-            listing.setCursor(ByteString.copyFrom(cursor));
+        public LeaderboardRecordsListMessage.Builder cursor(final @NonNull String cursor) {
+            listing.setCursor(cursor);
             return this;
         }
 

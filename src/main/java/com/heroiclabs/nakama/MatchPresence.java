@@ -22,7 +22,7 @@ public interface MatchPresence {
     /**
      * @return The ID associated with this presence update
      */
-    byte[] getId();
+    String getId();
 
     /**
      * @return Users that have joined
