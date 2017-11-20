@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -61,6 +62,7 @@ public class MatchmakeAddMessageTest {
                 latch3.countDown();
             }
             @Override public void onMatchPresence(MatchPresence matchPresence) {}
+            @Override public void onNotifications(List<Notification> notifications) {}
         }).build();
         Assert.assertNotNull(client1);
         latch1 = new CountDownLatch(1);
@@ -76,6 +78,7 @@ public class MatchmakeAddMessageTest {
             }
             @Override public void onMatchData(MatchData matchData) {}
             @Override public void onMatchPresence(MatchPresence matchPresence) {}
+            @Override public void onNotifications(List<Notification> notifications) {}
         }).build();
         Assert.assertNotNull(client2);
         latch2 = new CountDownLatch(1);
@@ -180,7 +183,5 @@ public class MatchmakeAddMessageTest {
         latch3.await(2, TimeUnit.SECONDS);
         Assert.assertNotNull(data);
     }
-
-
 
 }

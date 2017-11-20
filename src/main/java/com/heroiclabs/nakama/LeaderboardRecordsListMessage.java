@@ -65,8 +65,8 @@ public interface LeaderboardRecordsListMessage extends CollatedMessage<ResultSet
             return this;
         }
 
-        public LeaderboardRecordsListMessage.Builder cursor(final @NonNull String cursor) {
-            listing.setCursor(cursor);
+        public LeaderboardRecordsListMessage.Builder cursor(final @NonNull Cursor cursor) {
+            listing.setCursor(cursor.getValue());
             return this;
         }
 

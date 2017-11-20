@@ -16,17 +16,20 @@
 
 package com.heroiclabs.nakama;
 
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
-/**
- * Default implementation of client listener, all operations are no-op.
- */
-public class NoopClientListener implements ClientListener {
-    @Override public void onDisconnect() {}
-    @Override public void onTopicMessage(TopicMessage message) {}
-    @Override public void onTopicPresence(TopicPresence presence) {}
-    @Override public void onMatchmakeMatched(MatchmakeMatched matched) {}
-    @Override public void onMatchData(MatchData matchData) {}
-    @Override public void onMatchPresence(MatchPresence matchPresence) {}
-    @Override public void onNotifications(List<Notification> notifications) {}
+public interface GroupsSelfListMessage extends CollatedMessage<ResultSet<GroupSelf>> {
+
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    class Builder {
+
+        public static GroupsSelfListMessage build() {
+            final com.heroiclabs.nakama.Api.Envelope.Builder payload =
+                    com.heroiclabs.nakama.Api.Envelope.newBuilder()
+                            .setGroupsSelfList(com.heroiclabs.nakama.Api.TGroupsSelfList.newBuilder().build());
+            return new DefaultGroupsSelfListMessage(payload);
+        }
+    }
+
 }

@@ -32,7 +32,7 @@ public interface TopicLeaveMessage extends CollatedMessage<Boolean> {
         private final @NonNull
         com.heroiclabs.nakama.Api.TTopicsLeave.Builder leaves;
 
-        public TopicLeaveMessage.Builder Leave(final @NonNull TopicId topicId) {
+        public TopicLeaveMessage.Builder leave(final @NonNull TopicId topicId) {
             com.heroiclabs.nakama.Api.TTopicsLeave.Builder topicLeave = com.heroiclabs.nakama.Api.TTopicsLeave.newBuilder();
             com.heroiclabs.nakama.Api.TopicId.Builder topicBuilder = null;
             switch (topicId.getTopicType()) {

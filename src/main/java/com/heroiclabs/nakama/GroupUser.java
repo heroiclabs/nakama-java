@@ -16,17 +16,14 @@
 
 package com.heroiclabs.nakama;
 
-import java.util.List;
-
 /**
- * Default implementation of client listener, all operations are no-op.
+ * Represents details about a user belonging to a group.
  */
-public class NoopClientListener implements ClientListener {
-    @Override public void onDisconnect() {}
-    @Override public void onTopicMessage(TopicMessage message) {}
-    @Override public void onTopicPresence(TopicPresence presence) {}
-    @Override public void onMatchmakeMatched(MatchmakeMatched matched) {}
-    @Override public void onMatchData(MatchData matchData) {}
-    @Override public void onMatchPresence(MatchPresence matchPresence) {}
-    @Override public void onNotifications(List<Notification> notifications) {}
+public interface GroupUser extends User {
+
+    /**
+     * @return An enum representing the user's relationship to the group.
+     */
+    Group.MembershipType getState();
+
 }
