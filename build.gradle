@@ -83,14 +83,15 @@ bintray {
 
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.16.18'
-    compile 'com.google.code.gson:gson:2.8.1'
+    compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.google.protobuf:protobuf-lite:3.0.1'
-    compile 'com.squareup.okhttp3:okhttp:3.8.1'
+    compile 'com.squareup.okhttp3:okhttp:3.9.0'
     compile 'com.stumbleupon:async:1.4.1'
     compile ('org.slf4j:slf4j-api:1.7.25') {
         force = true // don't upgrade to "1.8.0-alpha2"
     }
     testCompile 'junit:junit:4.12'
+    testCompile 'ch.qos.logback:logback-classic:1.2.3'
 }
 
 gitPublish {

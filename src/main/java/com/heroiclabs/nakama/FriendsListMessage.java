@@ -16,17 +16,20 @@
 
 package com.heroiclabs.nakama;
 
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
-/**
- * Default implementation of client listener, all operations are no-op.
- */
-public class NoopClientListener implements ClientListener {
-    @Override public void onDisconnect() {}
-    @Override public void onTopicMessage(TopicMessage message) {}
-    @Override public void onTopicPresence(TopicPresence presence) {}
-    @Override public void onMatchmakeMatched(MatchmakeMatched matched) {}
-    @Override public void onMatchData(MatchData matchData) {}
-    @Override public void onMatchPresence(MatchPresence matchPresence) {}
-    @Override public void onNotifications(List<Notification> notifications) {}
+public interface FriendsListMessage extends CollatedMessage<ResultSet<Friend>> {
+
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    class Builder {
+
+        public static FriendsListMessage build() {
+            final com.heroiclabs.nakama.Api.Envelope.Builder payload =
+                    com.heroiclabs.nakama.Api.Envelope.newBuilder()
+                            .setFriendsList(com.heroiclabs.nakama.Api.TFriendsList.newBuilder().build());
+            return new DefaultFriendsListMessage(payload);
+        }
+    }
+
 }

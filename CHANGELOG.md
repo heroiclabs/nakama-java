@@ -5,6 +5,16 @@ All notable changes to this project are documented below.
 The format is based on [keep a changelog](http://keepachangelog.com/) and this project uses [semantic versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Support for In-App Notifications feature.
+- Support for Friends feature.
+- Support for Groups feature.
+
+### Changed
+- Leaderboard sort order is now exposed as an enum rather than a number.
+
+### Fixed
+- Use correct name for inconsistently defined topic leave message builder method.
 
 ## [0.4.0] - 2017-11-07
 ### Changed

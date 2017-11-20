@@ -16,6 +16,8 @@
 
 package com.heroiclabs.nakama;
 
+import java.util.List;
+
 /**
  * A listener for receiving {@code Client} events.
  */
@@ -59,4 +61,11 @@ public interface ClientListener {
      * @param matchPresence The {@code MatchPresence} received.
      */
     void onMatchPresence(MatchPresence matchPresence);
+
+    /**
+     * Called when the client receives new notifications.
+     *
+     * @param notifications The list of {@code Notification} received.
+     */
+    void onNotifications(List<Notification> notifications);
 }

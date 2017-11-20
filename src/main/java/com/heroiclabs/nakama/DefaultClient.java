@@ -252,6 +252,13 @@ public class DefaultClient implements Client {
                         case MATCHMAKE_MATCHED:
                             listener.onMatchmakeMatched(DefaultMatchmakeMatched.fromProto(envelope.getMatchmakeMatched()));
                             break;
+                        case LIVE_NOTIFICATIONS:
+                            final List<Notification> notifications = new ArrayList<>();
+                            for (final com.heroiclabs.nakama.Api.Notification notification : envelope.getLiveNotifications().getNotificationsList()) {
+                                notifications.add(DefaultNotification.fromProto(notification));
+                            }
+                            listener.onNotifications(notifications);
+                            break;
                         default:
                             break;
                     }
@@ -280,6 +287,34 @@ public class DefaultClient implements Client {
                             users.add(DefaultUser.fromProto(user));
                         }
                         def.callback(new DefaultResultSet<User>(null, users));
+                        break;
+                    case FRIENDS:
+                        final List<Friend> friends = new ArrayList<>();
+                        for (final com.heroiclabs.nakama.Api.Friend friend : envelope.getFriends().getFriendsList()) {
+                            friends.add(DefaultFriend.fromProto(friend));
+                        }
+                        def.callback(new DefaultResultSet<Friend>(null, friends));
+                        break;
+                    case GROUPS:
+                        final List<Group> groups = new ArrayList<>();
+                        for (final com.heroiclabs.nakama.Api.Group group : envelope.getGroups().getGroupsList()) {
+                            groups.add(DefaultGroup.fromProto(group));
+                        }
+                        def.callback(new DefaultResultSet<Group>(new DefaultCursor(envelope.getGroups().getCursor()), groups));
+                        break;
+                    case GROUPS_SELF:
+                        final List<GroupSelf> groupsSelf = new ArrayList<>();
+                        for (final com.heroiclabs.nakama.Api.TGroupsSelf.GroupSelf groupSelf : envelope.getGroupsSelf().getGroupsSelfList()) {
+                            groupsSelf.add(DefaultGroupSelf.fromProto(groupSelf));
+                        }
+                        def.callback(new DefaultResultSet<GroupSelf>(null, groupsSelf));
+                        break;
+                    case GROUP_USERS:
+                        final List<GroupUser> groupUsers = new ArrayList<>();
+                        for (final com.heroiclabs.nakama.Api.GroupUser groupUser : envelope.getGroupUsers().getUsersList()) {
+                            groupUsers.add(DefaultGroupUser.fromProto(groupUser));
+                        }
+                        def.callback(new DefaultResultSet<GroupUser>(null, groupUsers));
                         break;
                     case STORAGE_DATA:
                         final List<StorageRecord> records = new ArrayList<>();
@@ -345,6 +380,13 @@ public class DefaultClient implements Client {
                             leaderboardRecords.add(DefaultLeaderboardRecord.fromProto(r));
                         }
                         def.callback(new DefaultResultSet<LeaderboardRecord>(new DefaultCursor(envelope.getLeaderboardRecords().getCursor()), leaderboardRecords));
+                        break;
+                    case NOTIFICATIONS:
+                        final List<Notification> notifications = new ArrayList<>();
+                        for (final com.heroiclabs.nakama.Api.Notification notification : envelope.getNotifications().getNotificationsList()) {
+                            notifications.add(DefaultNotification.fromProto(notification));
+                        }
+                        def.callback(new DefaultResultSet<Notification>(new DefaultCursor(envelope.getNotifications().getResumableCursor()), notifications));
                         break;
                     default:
                         def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode(), collationId));

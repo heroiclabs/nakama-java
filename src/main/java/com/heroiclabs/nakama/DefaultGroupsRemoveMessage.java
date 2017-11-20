@@ -16,17 +16,19 @@
 
 package com.heroiclabs.nakama;
 
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-/**
- * Default implementation of client listener, all operations are no-op.
- */
-public class NoopClientListener implements ClientListener {
-    @Override public void onDisconnect() {}
-    @Override public void onTopicMessage(TopicMessage message) {}
-    @Override public void onTopicPresence(TopicPresence presence) {}
-    @Override public void onMatchmakeMatched(MatchmakeMatched matched) {}
-    @Override public void onMatchData(MatchData matchData) {}
-    @Override public void onMatchPresence(MatchPresence matchPresence) {}
-    @Override public void onNotifications(List<Notification> notifications) {}
+@Data
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+class DefaultGroupsRemoveMessage implements GroupsRemoveMessage {
+
+    private final com.heroiclabs.nakama.Api.Envelope.Builder payload;
+
+    public byte[] asBytes(final @NonNull String collationId) {
+        return payload.clone().setCollationId(collationId).build().toByteArray();
+    }
+
 }

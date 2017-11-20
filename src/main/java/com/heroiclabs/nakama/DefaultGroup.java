@@ -21,31 +21,34 @@ import lombok.*;
 @Data
 @ToString(includeFieldNames = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-class DefaultLeaderboard implements Leaderboard {
+public class DefaultGroup implements Group {
+
     private final String id;
-    private final boolean authoritative;
-    private final SortOrder sort;
-    private final long count;
-    private final String resetSchedule;
+    @Getter(AccessLevel.PRIVATE)
+    private final boolean priv;
+    private final String creatorId;
+    private final String name;
+    private final String description;
+    private final String avatarUrl;
+    private final String lang;
+    private final long utcOffsetMs;
     private final String metadata;
-    private final String nextId;
-    private final String prevId;
+    private final long count;
+    private final long createdAt;
+    private final long updatedAt;
+
+    public boolean isPrivate() {
+        return priv;
+    }
 
     public <T> T getMetadata(final Class<T> clazz) {
         return DefaultClient.GSON.fromJson(metadata, clazz);
     }
 
-    static Leaderboard fromProto(final @NonNull com.heroiclabs.nakama.Api.Leaderboard leaderboard) {
-        return new DefaultLeaderboard(
-                leaderboard.getId(),
-                leaderboard.getAuthoritative(),
-                Leaderboard.SortOrder.fromLong(leaderboard.getSort()),
-                leaderboard.getCount(),
-                leaderboard.getResetSchedule(),
-                leaderboard.getMetadata(),
-                leaderboard.getNextId(),
-                leaderboard.getPrevId()
-        );
+    static Group fromProto(final @NonNull com.heroiclabs.nakama.Api.Group group) {
+        return new DefaultGroup(group.getId(), group.getPrivate(), group.getCreatorId(), group.getName(),
+                group.getDescription(), group.getAvatarUrl(), group.getLang(), group.getUtcOffsetMs(),
+                group.getMetadata(), group.getCount(), group.getCreatedAt(), group.getUpdatedAt());
     }
 
 }
