@@ -69,7 +69,7 @@ public class StorageUpdateMessageTest {
                 Assert.assertNotNull(records);
                 Assert.assertEquals(1, records.getResults().size());
                 Assert.assertEquals(bucket, records.getResults().get(0).getBucket());
-                Assert.assertEquals("collection", records.getResults().get(0).getBucket());
+                Assert.assertEquals("collection", records.getResults().get(0).getCollection());
                 Assert.assertEquals("key", records.getResults().get(0).getKey());
                 return records;
             }
