@@ -5,6 +5,8 @@ All notable changes to this project are documented below.
 The format is based on [keep a changelog](http://keepachangelog.com/) and this project uses [semantic versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- Build storage update messages with valid operations.
 
 ## [0.5.0] - 2017-11-21
 ### Added
