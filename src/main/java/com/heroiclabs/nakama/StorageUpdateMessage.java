@@ -20,6 +20,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public interface StorageUpdateMessage extends CollatedMessage<ResultSet<RecordId>> {
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -46,7 +49,7 @@ public interface StorageUpdateMessage extends CollatedMessage<ResultSet<RecordId
             com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.Builder record =
                     com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.newBuilder()
                             .setKey(updateKey)
-                            .addOps(ops.ops);
+                            .addAllOps(ops.ops);
             if (read != null) {
                 record = record.setPermissionRead(read.getCode());
             }
@@ -86,64 +89,71 @@ public interface StorageUpdateMessage extends CollatedMessage<ResultSet<RecordId
     class OpBuilder {
 
         public static OpBuilder newBuilder() {
-            return new OpBuilder(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder());
+            return new OpBuilder(new ArrayList<Api.TStorageUpdate.StorageUpdate.UpdateOp>());
         }
 
-        final @NonNull com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.Builder ops;
+        final @NonNull List<Api.TStorageUpdate.StorageUpdate.UpdateOp> ops;
 
         public OpBuilder add(final @NonNull String path, final @NonNull String value) {
-            ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
+            ops.add(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.ADD.getNumber())
                     .setPath(path)
-                    .setValue(value));
+                    .setValue(value)
+                    .build());
             return this;
         }
 
         public OpBuilder append(final @NonNull String path, final @NonNull String value) {
-            ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
+            ops.add(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.APPEND.getNumber())
                     .setPath(path)
-                    .setValue(value));
+                    .setValue(value)
+                    .build());
             return this;
         }
 
         public OpBuilder copy(final @NonNull String path, final @NonNull String from) {
-            ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
+            ops.add(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.COPY.getNumber())
                     .setPath(path)
-                    .setFrom(from));
+                    .setFrom(from)
+                    .build());
             return this;
         }
 
         public OpBuilder incr(final @NonNull String path, final long value) {
-            ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
+            ops.add(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.INCR.getNumber())
                     .setPath(path)
-                    .setValue(Long.toString(value)));
+                    .setValue(Long.toString(value))
+                    .build());
             return this;
         }
 
         public OpBuilder init(final @NonNull String path, final @NonNull String value) {
-            ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
+            ops.add(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.INIT.getNumber())
                     .setPath(path)
-                    .setValue(value));
+                    .setValue(value)
+                    .build());
             return this;
         }
 
         public OpBuilder merge(final @NonNull String path, final @NonNull String value) {
-            ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
+            ops.add(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.MERGE.getNumber())
                     .setPath(path)
-                    .setValue(value));
+                    .setValue(value)
+                    .build());
             return this;
         }
 
         public OpBuilder move(final @NonNull String path, final @NonNull String from) {
-            ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
+            ops.add(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.MOVE.getNumber())
                     .setPath(path)
-                    .setFrom(from));
+                    .setFrom(from)
+                    .build());
             return this;
         }
 
@@ -151,34 +161,38 @@ public interface StorageUpdateMessage extends CollatedMessage<ResultSet<RecordId
         // public OpBuilder patch(final @NonNull String path, final @NonNull byte[] value) {}
 
         public OpBuilder remove(final @NonNull String path) {
-            ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
+            ops.add(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.REMOVE.getNumber())
-                    .setPath(path));
+                    .setPath(path)
+                    .build());
             return this;
         }
 
         public OpBuilder replace(final @NonNull String path, final @NonNull String value) {
-            ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
+            ops.add(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.REPLACE.getNumber())
                     .setPath(path)
-                    .setValue(value));
+                    .setValue(value)
+                    .build());
             return this;
         }
 
         public OpBuilder test(final @NonNull String path, final @NonNull String value) {
-            ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
+            ops.add(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.TEST.getNumber())
                     .setPath(path)
-                    .setValue(value));
+                    .setValue(value)
+                    .build());
             return this;
         }
 
         public OpBuilder compare(final @NonNull String path, final @NonNull String value, final long assertValue) {
-            ops.addOps(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
+            ops.add(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.newBuilder()
                     .setOp(com.heroiclabs.nakama.Api.TStorageUpdate.StorageUpdate.UpdateOp.UpdateOpCode.COMPARE.getNumber())
                     .setPath(path)
                     .setValue(value)
-                    .setAssert(assertValue));
+                    .setAssert(assertValue)
+                    .build());
             return this;
         }
 
