@@ -25,7 +25,7 @@ plugins {
 }
 
 group = 'com.heroiclabs.nakama'
-version = '0.5.1'
+version = '0.6.0-SNAPSHOT'
 def description = 'Android optimized Java client for Nakama server.'
 
 sourceCompatibility = 1.7
@@ -113,6 +113,7 @@ gitPublish {
         include '0.3.0/**'
         include '0.4.0/**'
         include '0.5.0/**'
+        include '0.5.1/**'
     }
     commitMessage = "Published javadoc '$project.version' via Gradle ${GradleVersion.current().version}."
 }
