@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 The Nakama Authors
+ * Copyright 2018 The Nakama Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,19 @@
 
 package com.heroiclabs.nakama;
 
+import lombok.*;
+
 import java.util.List;
 
-/**
- * The object which represents a match.
- */
-public interface Match {
-    /**
-     * @return Match ID.
-     */
-    String getId();
-
-    /**
-     * @return List of presences in this match.
-     */
-    List<UserPresence> getPresence();
-
-    /**
-     * @return Match presence for the current user.
-     */
-    UserPresence getSelf();
+@Getter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
+public class Match {
+    private boolean authoritative;
+    private String matchId;
+    private String label;
+    private List<UserPresence> presences;
+    private int size;
+    private UserPresence self;
 }

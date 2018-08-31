@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 The Nakama Authors
+ * Copyright 2018 The Nakama Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,15 @@
 
 package com.heroiclabs.nakama;
 
-/**
- * The object which represents match data.
- */
-public interface MatchData {
-    /**
-     * @return Match ID.
-     */
-    String getId();
+import lombok.*;
 
-    /**
-     * @return Match Data.
-     */
-    byte[] getData();
-
-    /**
-     * @return Data opcode.
-     */
-    long getOpCode();
-
-    /**
-     * @return Presence for the current match data.
-     */
-    UserPresence getPresence();
+@Getter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
+public class MatchData {
+    private String matchId;
+    private long opCode;
+    private byte[] data;
+    private UserPresence userPresence;
 }

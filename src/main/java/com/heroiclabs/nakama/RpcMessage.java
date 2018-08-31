@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 The Nakama Authors
+ * Copyright 2018 The Nakama Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,33 +16,14 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.AccessLevel;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.Data;
 
-public interface RpcMessage extends CollatedMessage<RpcResult> {
+@Data
+class RpcMessage {
+    private String id;
+    private String payload;
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    class Builder {
-
-        public static Builder newBuilder(final @NonNull String id) {
-            return new Builder(com.heroiclabs.nakama.Api.TRpc.newBuilder().setId(id));
-        }
-
-        private final @NonNull com.heroiclabs.nakama.Api.TRpc.Builder rpc;
-
-        public Builder payload(final @NonNull String payload) {
-            rpc.setPayload(payload);
-            return this;
-        }
-
-        public RpcMessage build() {
-            final com.heroiclabs.nakama.Api.Envelope.Builder payload =
-                    com.heroiclabs.nakama.Api.Envelope.newBuilder()
-                            .setRpc(rpc);
-            return new DefaultRpcMessage(payload);
-        }
-
+    public <T> T getPayload(Class<T> clazz) {
+        return WebSocketClient.GSON.fromJson(payload, clazz);
     }
-
 }

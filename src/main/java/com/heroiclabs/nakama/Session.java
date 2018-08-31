@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 The Nakama Authors
+ * Copyright 2018 The Nakama Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,38 +16,15 @@
 
 package com.heroiclabs.nakama;
 
-/**
- * A session connects a user to the server.
- */
+import java.util.Date;
+
 public interface Session {
-    /**
-     * @return UTC timestamp when the session was restored.
-     */
-    long getCreatedAt();
-
-    /**
-     * @return UTC timestamp when the session expires.
-     */
-    long getExpiresAt();
-
-    /**
-     * @return The handle (nickname) of the user.
-     */
-    String getHandle();
-
-    /**
-     * @return The ID of the user.
-     */
-    String getId();
-
-    /**
-     * @return The session token returned by the server after register or login.
-     */
-    String getToken();
-
-    /**
-     * @param currentTimeMillis The current time in milliseconds to compare with token.
-     * @return True if the session has expired.
-     */
-    boolean isExpired(long currentTimeMillis);
+    String getAuthToken();
+    boolean isCreated();
+    long getCreateTime();
+    long getExpireTime();
+    boolean IsExpired();
+    String getUsername();
+    String getUserId();
+    boolean isExpired(Date dateTime);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Heroic Labs
+ * Copyright 2018 Heroic Labs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,115 @@
  * limitations under the License.
  */
 
+buildscript {
+    repositories {
+        maven {
+            url "https://maven-central.storage-download.googleapis.com/repos/central/data/"
+        }
+    }
+    dependencies {
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.6'
+    }
+}
+
 plugins {
-    id 'com.github.johnrengelman.shadow' version '2.0.1'
-    id 'com.google.protobuf' version '0.8.2'
-    id 'com.jfrog.bintray' version '1.7.3'
-    id 'org.ajoberstar.git-publish' version '0.3.0'
     id 'java'
     id 'idea'
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
+    id 'org.ajoberstar.git-publish' version '1.0.1'
+    id 'com.jfrog.bintray' version '1.8.4'
     id 'maven-publish'
+    id 'com.google.protobuf' version '0.8.6'
 }
 
 group = 'com.heroiclabs.nakama'
-version = '0.6.0-SNAPSHOT'
+version = '2.0.0-SNAPSHOT'
 def description = 'Android optimized Java client for Nakama server.'
-
+def gopath = System.getenv('GOPATH')
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
+
+repositories {
+    maven {
+        url "https://maven-central.storage-download.googleapis.com/repos/central/data/"
+    }
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.2'
+    compile 'com.google.code.gson:gson:2.8.5'
+    compile 'com.google.protobuf:protobuf-lite:3.0.1'
+    compile 'io.grpc:grpc-okhttp:1.14.0'
+    compile 'com.squareup.okhttp3:okhttp:3.11.0'
+    compile 'io.grpc:grpc-protobuf-lite:1.14.0'
+    compile 'io.grpc:grpc-stub:1.14.0'
+    compile 'javax.annotation:javax.annotation-api:1.3.2'
+    compile 'com.google.api.grpc:googleapis-common-protos:0.0.3'
+    compile ('org.slf4j:slf4j-api:1.7.25') {
+        force = true // don't upgrade to "1.8.0-alpha2"
+    }
+    testCompile 'junit:junit:4.12'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/javalite'
+        }
+        proto {
+            srcDir 'src/main/proto'
+            include '/Users/mo/Documents/go/src/github.com/grpc-ecosystem/grpc-gateway/'
+            include '/Users/mo/Documents/go/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/'
+            include "${gopath}/src/github.com/grpc-ecosystem/grpc-gateway/"
+            include "${gopath}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/"
+        }
+    }
+}
+
+idea {
+    module {
+        sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/grpc");
+        sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/javalite");
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.6.0'
+    }
+    plugins {
+        javalite {
+            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
+        }
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:1.14.0"
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                remove java // Don't generate a copy with "protobuf-java".
+            }
+            task.plugins {
+                javalite { // Must activate "javalite" plugin.
+                }
+                grpc { // Must activate "grpc" plugin.
+                    option 'lite'
+                }
+            }
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Nakama client',
+                   'Implementation-Version': "$project.version"
+    }
+}
 
 def pomConfig = {
     licenses {
@@ -61,138 +154,75 @@ def pomConfig = {
     }
 }
 
-bintray {
-    user = bintrayUser
-    key = bintrayKey
-    publications = ['mavenJava']
-    pkg {
-        repo = 'default'
-        name = 'nakama-client'
-        desc = description
-        userOrg = 'heroiclabs'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/heroiclabs/nakama-java.git'
-        publicDownloadNumbers = true
-        version {
-            name = "$project.version"
-            released = new Date()
-            vcsTag = project.findProperty('vcsTag')
-        }
-    }
-}
+ bintray {
+     user = bintrayUser
+     key = bintrayKey
+     publications = ['mavenJava']
+     pkg {
+         repo = 'default'
+         name = 'nakama-client'
+         desc = description
+         userOrg = 'heroiclabs'
+         licenses = ['Apache-2.0']
+         vcsUrl = 'https://github.com/heroiclabs/nakama-java.git'
+         publicDownloadNumbers = true
+         version {
+             name = "$project.version"
+             released = new Date()
+             vcsTag = project.findProperty('vcsTag')
+         }
+     }
+ }
 
-dependencies {
-    compileOnly 'org.projectlombok:lombok:1.16.18'
-    compile 'com.google.code.gson:gson:2.8.2'
-    compile 'com.google.protobuf:protobuf-lite:3.0.1'
-    compile 'com.squareup.okhttp3:okhttp:3.9.0'
-    compile 'com.stumbleupon:async:1.4.1'
-    compile ('org.slf4j:slf4j-api:1.7.25') {
-        force = true // don't upgrade to "1.8.0-alpha2"
-    }
-    testCompile 'junit:junit:4.12'
-    testCompile 'ch.qos.logback:logback-classic:1.2.3'
-}
+ gitPublish {
+     repoUri = 'git@github.com:heroiclabs/nakama-java.git'
+     branch = 'gh-pages'
+     contents {
+         from(javadoc) {
+             into "$project.version"
+         }
+         from(javadoc) {
+             into 'current'
+         }
+     }
+     preserve {
+         include '0.1.0/**'
+         include '0.1.1/**'
+         include '0.1.2/**'
+         include '0.2.0/**'
+         include '0.3.0/**'
+     }
+     commitMessage = "Published javadoc" + project.version + "via Gradle " + GradleVersion.current().version + "."
+ }
 
-gitPublish {
-    repoUri = 'git@github.com:heroiclabs/nakama-java.git'
-    branch = 'gh-pages'
-    contents {
-        from(javadoc) {
-            into "$project.version"
-        }
-        from(javadoc) {
-            into 'current'
-        }
-    }
-    preserve {
-        include '0.1.0/**'
-        include '0.1.1/**'
-        include '0.1.2/**'
-        include '0.2.0/**'
-        include '0.3.0/**'
-        include '0.4.0/**'
-        include '0.5.0/**'
-        include '0.5.1/**'
-    }
-    commitMessage = "Published javadoc '$project.version' via Gradle ${GradleVersion.current().version}."
-}
+ publishing {
+     publications {
+         mavenJava(MavenPublication) {
+             from components.java
 
-idea {
-    module {
-        sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/java");
-    }
-}
+             artifact sourcesJar {
+                 classifier 'sources'
+             }
+             artifact javadocJar {
+                 classifier 'javadoc'
+             }
 
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'Nakama client',
-                   'Implementation-Version': "$project.version"
-    }
-}
+             groupId "$project.group"
+             artifactId 'client'
+             version "$project.version"
 
-protobuf {
-    generateProtoTasks {
-        all().each { task ->
-            task.builtins {
-                remove java // Don't generate a copy with "protobuf-java".
-            }
-            task.plugins {
-                javalite { // Must activate "javalite" plugin.
-                }
-            }
-        }
-    }
-    plugins {
-        javalite {
-            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
-        }
-    }
-    protoc {
-        artifact = 'com.google.protobuf:protoc:3.3.0'
-    }
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-
-            artifact sourcesJar {
-                classifier 'sources'
-            }
-            artifact javadocJar {
-                classifier 'javadoc'
-            }
-
-            groupId "$project.group"
-            artifactId 'client'
-            version "$project.version"
-
-            pom.withXml {
-                def root = asNode()
-                root.appendNode('description', description)
-                root.appendNode('name', 'Nakama client')
-                root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/')
-                root.children().last() + pomConfig
-            }
-        }
-    }
-}
-
-repositories {
-    mavenCentral()
-}
+             pom.withXml {
+                 def root = asNode()
+                 root.appendNode('description', description)
+                 root.appendNode('name', 'Nakama client')
+                 root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/')
+                 root.children().last() + pomConfig
+             }
+         }
+     }
+ }
 
 shadowJar {
-}
-
-sourceSets {
-    main {
-        proto {
-            srcDir "$projectDir/server/server"
-        }
-    }
 }
 
 task sourcesJar(type: Jar) {

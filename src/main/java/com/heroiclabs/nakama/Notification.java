@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 The Nakama Authors
+ * Copyright 2018 The Nakama Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,48 +16,18 @@
 
 package com.heroiclabs.nakama;
 
-/**
- * Represents a notification aimed at a particular user.
- */
-public interface Notification {
-    /**
-     * @return The unique ID of the notification.
-     */
-    String getId();
+import lombok.*;
 
-    /**
-     * @return The subject text.
-     */
-    String getSubject();
-
-    /**
-     * @return The notification body.
-     */
-    String getContent();
-
-    /**
-     * @return The notification code.
-     */
-    long getCode();
-
-    /**
-     * @return The user ID of the sender, or an empty string if it's a system notification.
-     */
-    String getSenderId();
-
-    /**
-     * @return The UTC milliseconds timestamp when the notification was created.
-     */
-    long getCreatedAt();
-
-    /**
-     * @return The UTC milliseconds timestamp when the notification expires.
-     */
-    long getExpiresAt();
-
-    /**
-     * @return true if the notification was persisted and may be retrieved later, false if
-     *         the notification was only delivered and not stored.
-     */
-    boolean isPersistent();
+@Getter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
+class Notification {
+    private String id;
+    private String subject;
+    private String content;
+    private int code;
+    private String senderId;
+    private String createTime;
+    private boolean persistent;
 }

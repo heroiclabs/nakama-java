@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 The Nakama Authors
+ * Copyright 2018 The Nakama Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,36 +18,21 @@ package com.heroiclabs.nakama;
 
 import lombok.*;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(includeFieldNames = true)
+@Getter
+@ToString
 class DefaultError extends Error {
-
     private final ErrorCode code;
     private final String collationId;
 
-    DefaultError(final @NonNull String message, final @NonNull ErrorCode code) {
+    DefaultError(@NonNull final String message) {
         super(message);
-        this.code = code;
-        this.collationId = null;
-    }
-
-    DefaultError(final @NonNull String message, final @NonNull ErrorCode code, final String collationId) {
-        super(message);
-        this.code = code;
-        this.collationId = collationId;
-    }
-
-    DefaultError(final @NonNull String message, final @NonNull Throwable cause) {
-        super(message, cause);
         this.code = ErrorCode.UNKNOWN;
         this.collationId = null;
     }
 
-    DefaultError(final @NonNull String message, final int code, final String collationId) {
-        super(message);
-        this.code = ErrorCode.fromInt(code);
+    DefaultError(@NonNull final String collationId, @NonNull final WebSocketError error) {
+        super(error.getMessage());
+        this.code = ErrorCode.fromInt(error.getCode());
         this.collationId = collationId;
     }
-
 }

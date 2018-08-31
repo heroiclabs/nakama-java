@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 The Nakama Authors
+ * Copyright 2018 The Nakama Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,13 @@
 
 package com.heroiclabs.nakama;
 
-public interface UserPresence {
-    /**
-     * @return User ID
-     */
-    String getUserId();
+import lombok.*;
 
-    /**
-     * @return Session ID associated with this presence
-     */
-    String getSessionId();
-
-    /**
-     * @return User Handle
-     */
-    String getHandle();
+@Data
+public class UserPresence {
+    private boolean persistence;
+    private String sessionId;
+    private String status;
+    private String username;
+    private String userId;
 }

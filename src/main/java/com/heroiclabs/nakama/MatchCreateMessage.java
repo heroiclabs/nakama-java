@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 The Nakama Authors
+ * Copyright 2018 The Nakama Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,8 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import lombok.Data;
 
-public interface MatchCreateMessage extends CollatedMessage<Match> {
-
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    class Builder {
-
-        public static MatchCreateMessage build() {
-            com.heroiclabs.nakama.Api.TMatchCreate.Builder builder = com.heroiclabs.nakama.Api.TMatchCreate.newBuilder();
-            final com.heroiclabs.nakama.Api.Envelope.Builder payload =
-                    com.heroiclabs.nakama.Api.Envelope.newBuilder()
-                            .setMatchCreate(builder);
-            return new DefaultMatchCreateMessage(payload);
-        }
-
-    }
+@Data
+class MatchCreateMessage {
 }

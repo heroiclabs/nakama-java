@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 The Nakama Authors
+ * Copyright 2018 The Nakama Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 
 package com.heroiclabs.nakama;
 
-import java.util.List;
+import com.heroiclabs.nakama.api.ChannelMessage;
+import com.heroiclabs.nakama.api.NotificationList;
 
 /**
  * A listener for receiving {@code Client} events.
@@ -30,23 +31,23 @@ public interface ClientListener {
     /**
      * Called when a new topic message has been received.
      *
-     * @param message The {@code TopicMessage} received.
+     * @param message The {@code ChannelMessage} received.
      */
-    void onTopicMessage(TopicMessage message);
+    void onChannelMessage(ChannelMessage message);
 
     /**
      * Called when a new topic presence update has been received.
      *
-     * @param presence The {@code TopicPresence} received.
+     * @param presence The {@code ChannelPresenceEvent} received.
      */
-    void onTopicPresence(TopicPresence presence);
+    void onChannelPresence(ChannelPresenceEvent presence);
 
     /**
      * Called when a matchmaking has found a match.
      *
-     * @param matched The {@code MatchmakeMatched} received.
+     * @param matched The {@code MatchmakerMatched} received.
      */
-    void onMatchmakeMatched(MatchmakeMatched matched);
+    void onMatchmakeMatched(MatchmakerMatched matched);
 
     /**
      * Called when a new match data is received.
@@ -58,14 +59,35 @@ public interface ClientListener {
     /**
      * Called when a new match presence update is received.
      *
-     * @param matchPresence The {@code MatchPresence} received.
+     * @param matchPresence The {@code MatchPresenceEvent} received.
      */
-    void onMatchPresence(MatchPresence matchPresence);
+    void onMatchPresence(MatchPresenceEvent matchPresence);
 
     /**
      * Called when the client receives new notifications.
      *
      * @param notifications The list of {@code Notification} received.
      */
-    void onNotifications(List<Notification> notifications);
+    void onNotifications(NotificationList notifications);
+
+    /**
+     * Called when the client receives status presence updates.
+     *
+     * @param presence Updated {@code StatusPresenceEvent} presence.
+     */
+    void onStatusPresence(StatusPresenceEvent presence);
+
+    /**
+     * Called when the client receives stream presence updates.
+     *
+     * @param presence Updated {@code StreamPresenceEvent} presence.
+     */
+    void onStreamPresence(StreamPresenceEvent presence);
+
+    /**
+     * Called when the client receives stream data.
+     *
+     * @param data Stream {@code StreamData} data received.
+     */
+    void onStreamData(StreamData data);
 }

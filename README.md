@@ -43,11 +43,7 @@ public class NakamaSessionManager {
   private final Client client;
 
   public NakamaSessionManager() {
-    client = DefaultClient.builder("defaultkey")
-        .host("127.0.0.1")
-        .port(7350)
-        .ssl(false)
-        .build();
+    client = new DefaultClient("defaultkey", "127.0.0.1", 7349, false);
   }
 }
 ```
@@ -67,6 +63,13 @@ To build the codebase you will need to install these dependencies:
 * Java Runtime Environment 1.7+
 * Java Development Kit 1.7+
 * Gradle build tool
+
+* Protoc v3.6.0+
+* [Protoc Java Lite compiler](https://github.com/google/protobuf/blob/master/java/lite.md)
+
+```shell
+protoc -I./ -I/usr/local/include -I$GOPATH/src -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway --javalite_out=./ --plugin=grpc api.proto
+```
 
 The Gradle project is setup to download and manage the Google Protocol buffers compiler toolchain automatically and generate Protobuf Lite definitions required by the source code.
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 The Nakama Authors
+ * Copyright 2018 The Nakama Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,543 +16,1197 @@
 
 package com.heroiclabs.nakama;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.stumbleupon.async.Deferred;
+import com.google.common.io.BaseEncoding;
+import com.google.common.util.concurrent.*;
+import com.google.protobuf.BoolValue;
+import com.google.protobuf.Empty;
+import com.google.protobuf.Int32Value;
+import com.google.protobuf.StringValue;
+import com.heroiclabs.nakama.api.*;
+import io.grpc.*;
+import io.grpc.okhttp.OkHttpChannelBuilder;
+import io.grpc.stub.MetadataUtils;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
-import okio.ByteString;
+import lombok.var;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class DefaultClient implements Client {
 
-    static final Gson GSON = new GsonBuilder()
-            .enableComplexMapKeySerialization()
-            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            .create();
+    private static final String USERAGENT = "nakama-java-client";
 
-    private final String serverKey;
     private final String host;
     private final int port;
-    private final String lang;
-
     private final boolean ssl;
-    private final int connectTimeout;
-    private final int timeout;
 
+    private final int deadlineAfterMs;
     private final boolean trace;
 
-    private final ClientListener listener;
+    private final ManagedChannel managedChannel;
+    private final NakamaGrpc.NakamaFutureStub stub;
+    private final Metadata basicAuthMetadata;
 
-    private final Map<String, Deferred> collationIds;
+    public DefaultClient(@NonNull final String serverKey) {
+        this(serverKey, "127.0.0.1", 7349, false);
+    }
 
-    private final OkHttpClient client;
-    private WebSocket socket;
+    public DefaultClient(@NonNull final String serverKey, @NonNull final String host, @NonNull final int port, @NonNull final boolean ssl) {
+        this(serverKey, host, port, ssl, 0, Long.MAX_VALUE, 0L, false);
+    }
 
-    private long serverTime;
-
-    private DefaultClient(final @NonNull String serverKey, final @NonNull String host, final int port,
-                          final @NonNull String lang, final boolean ssl, final int connectTimeout, final int timeout,
-                          final boolean trace, final @NonNull ClientListener listener) {
+    public DefaultClient(@NonNull final String serverKey, @NonNull final String host, @NonNull final int port, @NonNull final boolean ssl,
+                         final int deadlineAfterMs, @NonNull final long keepAliveTimeMs, @NonNull final long keepAliveTimeoutMs,  @NonNull final boolean trace) {
         this.host = host;
         this.port = port;
-        this.serverKey = serverKey;
-        this.lang = lang;
         this.ssl = ssl;
-        this.connectTimeout = connectTimeout;
-        this.timeout = timeout;
+        this.deadlineAfterMs = deadlineAfterMs;
         this.trace = trace;
-        this.listener = listener;
 
-        collationIds = new ConcurrentHashMap<>();
+        // TODO investigate executor
+        // TODO investigate disconnect errors
+        ManagedChannelBuilder builder = OkHttpChannelBuilder
+                .forAddress(host, port)
+                .userAgent(USERAGENT);
 
-        client = new OkHttpClient.Builder()
-                .connectTimeout(connectTimeout, TimeUnit.MILLISECONDS)
-                .readTimeout(timeout, TimeUnit.MILLISECONDS)
-                .writeTimeout(timeout, TimeUnit.MILLISECONDS)
-                .build();
+        builder = ssl ? builder.useTransportSecurity() : builder.usePlaintext();
+        builder = keepAliveTimeMs < Long.MAX_VALUE ? builder.keepAliveTime(keepAliveTimeMs, TimeUnit.MILLISECONDS) : builder;
+        builder = keepAliveTimeoutMs > 0L ? builder.keepAliveTimeout(keepAliveTimeoutMs, TimeUnit.MILLISECONDS) : builder;
+        this.managedChannel = builder.build();
+        this.stub = NakamaGrpc.newFutureStub(this.managedChannel);
+
+        final String base64Auth = BaseEncoding.base64().encode((serverKey + ":").getBytes());
+        final String basicAuth = "Basic " + base64Auth;
+        this.basicAuthMetadata = new Metadata();
+        basicAuthMetadata.put(Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER), basicAuth);
+    }
+
+    private NakamaGrpc.NakamaFutureStub getStub() {
+        return getStub(null);
+    }
+
+    private NakamaGrpc.NakamaFutureStub getStub(final Session session) {
+        Metadata metadata = this.basicAuthMetadata;
+        if (session != null) {
+            metadata = new Metadata();
+            metadata.put(Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER), "Bearer " + session.getAuthToken());
+        }
+
+        NakamaGrpc.NakamaFutureStub newStub = MetadataUtils.attachHeaders(this.stub, metadata);
+        if (this.deadlineAfterMs > 0) {
+            newStub = newStub.withDeadlineAfter(deadlineAfterMs, TimeUnit.MILLISECONDS);
+        }
+
+        return newStub;
+    }
+
+    private ListenableFuture<Session> convertSession(final ListenableFuture<com.heroiclabs.nakama.api.Session> future) {
+      return Futures.transformAsync(future, new AsyncFunction<com.heroiclabs.nakama.api.Session, Session>() {
+          @Override
+          public ListenableFuture<Session> apply(@Nullable final com.heroiclabs.nakama.api.Session input) {
+              final Session result = new DefaultSession(input.getToken(), input.getCreated());
+              return Futures.immediateFuture(result);
+          }
+      });
     }
 
     @Override
-    public long serverTime() {
-        return serverTime != 0 ? serverTime : System.currentTimeMillis();
+    public SocketClient createSocket(final String host, final int port, final boolean ssl) {
+        return createSocket(host, port, ssl, 5000);
     }
 
     @Override
-    public Deferred<Session> login(final @NonNull AuthenticateMessage auth) {
-        return authenticate(auth, "/user/login");
+    public SocketClient createSocket(final String host, final int port, final boolean ssl, final int socketTimeoutMs) {
+        return new WebSocketClient(host, port, ssl, socketTimeoutMs, this.trace);
     }
 
     @Override
-    public Deferred<Session> register(final @NonNull AuthenticateMessage auth) {
-        return authenticate(auth, "/user/register");
-    }
-
-    private Deferred<Session> authenticate(final AuthenticateMessage auth, final String path) {
-        final Deferred<Session> deferred = new Deferred<>();
-
-        final byte[] payload = auth.asBytes(UUID.randomUUID().toString());
-
-        final HttpUrl url = new HttpUrl.Builder()
-                .scheme(ssl ? "https" : "http")
-                .host(host)
-                .port(port)
-                .encodedPath(path)
-                .build();
-
-        final Request request = new Request.Builder()
-                .url(url)
-                .method("POST", RequestBody.create(MediaType.parse("application/octet-stream;"), payload))
-                .header("Authorization", "Basic " + ByteString.of((serverKey + ":").getBytes()).base64())
-                .header("Accept-Language", lang)
-                .header("User-Agent", "nakama-java/0.1.0") // TODO set user-agent based on build version.
-                .build();
-
-        if (trace) {
-            log.debug("Authenticate request: " + request.toString());
-        }
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                deferred.callback(new DefaultError("Error sending message to server", e));
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final ResponseBody body = response.body();
-                if (body == null) {
-                    deferred.callback(new DefaultError("Error in response body from server", Error.ErrorCode.UNKNOWN));
-                    return;
-                }
-                final com.heroiclabs.nakama.Api.AuthenticateResponse authResponse;
-                try {
-                    authResponse = com.heroiclabs.nakama.Api.AuthenticateResponse.parseFrom(body.byteStream());
-                } catch (IOException e) {
-                    deferred.callback(new DefaultError("Error reading response from server", e));
-                    return;
-                } finally {
-                    response.close();
-                }
-
-                if (trace) {
-                    log.debug("Authenticate response: " + response.toString());
-                }
-
-                switch (authResponse.getIdCase()) {
-                    case ERROR:
-                        deferred.callback(new DefaultError(authResponse.getError().getMessage(), authResponse.getError().getCode(), authResponse.getCollationId()));
-                        break;
-                    case SESSION:
-                        deferred.callback(DefaultSession.restore(authResponse.getSession().getToken()));
-                        break;
-                    default:
-                        deferred.callback(new DefaultError("Unknown response format from server for message", Error.ErrorCode.UNKNOWN, authResponse.getCollationId()));
-                        break;
-                }
-            }
-        });
-
-        return deferred;
+    public ListenableFuture<Empty> addFriends(@NonNull final Session session, @NonNull final String... ids) {
+        return getStub(session).addFriends(AddFriendsRequest.newBuilder().addAllIds(Arrays.asList(ids)).build());
     }
 
     @Override
-    public synchronized Deferred<Session> connect(final @NonNull Session session) {
-        final Deferred<Session> deferred = new Deferred<>();
-
-        if (socket != null) {
-            deferred.callback(new DefaultError("Client is already connected", Error.ErrorCode.UNKNOWN));
-            return deferred;
+    public ListenableFuture<Empty> addFriends(@NonNull final Session session, @NonNull final Iterable<String> ids, @NonNull final String... usernames) {
+        final var builder = AddFriendsRequest.newBuilder();
+        if (ids != null) {
+            builder.addAllIds(ids);
         }
-
-        final String url = new HttpUrl.Builder()
-                .scheme(ssl ? "https" : "http")
-                .host(host)
-                .port(port)
-                .encodedPath("/api")
-                .addQueryParameter("token", session.getToken())
-                .addQueryParameter("lang", lang)
-                .build()
-                .toString()
-                .replaceFirst("http", "ws");
-
-        final Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        if (trace) {
-            log.debug("Connect: " + request.toString());
+        if (usernames != null) {
+            builder.addAllUsernames(Arrays.asList(usernames));
         }
-
-        final Object lock = this;
-        socket = client.newWebSocket(request, new WebSocketListener() {
-            @Override
-            public void onOpen(WebSocket webSocket, Response response) {
-                super.onOpen(webSocket, response);
-                // Notify the deferred caller that the client has connected and is ready to use.
-                deferred.callback(session);
-            }
-
-            @Override
-            public void onMessage(WebSocket webSocket, String text) {
-                super.onMessage(webSocket, text);
-                // No text messages are expected.
-                log.warn("Unexpected string message from server: " + text);
-            }
-
-            @Override
-            public void onMessage(WebSocket webSocket, ByteString bytes) {
-                super.onMessage(webSocket, bytes);
-
-                final com.heroiclabs.nakama.Api.Envelope envelope;
-                try {
-                    envelope = com.heroiclabs.nakama.Api.Envelope.parseFrom(bytes.toByteArray());
-                } catch (IOException e) {
-                    // TODO onError callback
-                    log.error("Error decoding incoming message from server: " + e.getMessage());
-                    return;
-                }
-
-                final String collationId = envelope.getCollationId();
-                if (collationId == null || "".equals(collationId)) {
-                    switch (envelope.getPayloadCase()) {
-                        case PAYLOAD_NOT_SET:
-                            log.error("No payload in incoming uncollated message from server: " + envelope.toString());
-                            break;
-                        case HEARTBEAT:
-                            final long newServerTime = envelope.getHeartbeat().getTimestamp();
-                            if (newServerTime > serverTime) {
-                                // Don't let server time go backwards.
-                                serverTime = newServerTime;
-                            }
-                            break;
-                        case TOPIC_MESSAGE:
-                            listener.onTopicMessage(DefaultTopicMessage.fromProto(envelope.getTopicMessage()));
-                            break;
-                        case TOPIC_PRESENCE:
-                            listener.onTopicPresence(DefaultTopicPresence.fromProto(envelope.getTopicPresence()));
-                            break;
-                        case MATCH_DATA:
-                            listener.onMatchData(DefaultMatchData.fromProto(envelope.getMatchData()));
-                            break;
-                        case MATCH_PRESENCE:
-                            listener.onMatchPresence(DefaultMatchPresence.fromProto(envelope.getMatchPresence()));
-                            break;
-                        case MATCHMAKE_MATCHED:
-                            listener.onMatchmakeMatched(DefaultMatchmakeMatched.fromProto(envelope.getMatchmakeMatched()));
-                            break;
-                        case LIVE_NOTIFICATIONS:
-                            final List<Notification> notifications = new ArrayList<>();
-                            for (final com.heroiclabs.nakama.Api.Notification notification : envelope.getLiveNotifications().getNotificationsList()) {
-                                notifications.add(DefaultNotification.fromProto(notification));
-                            }
-                            listener.onNotifications(notifications);
-                            break;
-                        default:
-                            break;
-                    }
-                    return;
-                }
-
-                final Deferred def = collationIds.get(collationId);
-                if (def == null) {
-                    log.warn("No matching deferred receiver for incoming collation ID: " + collationId);
-                    return;
-                }
-
-                switch (envelope.getPayloadCase()) {
-                    case PAYLOAD_NOT_SET:
-                        def.callback(Boolean.TRUE);
-                        break;
-                    case ERROR:
-                        def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode(), collationId));
-                        break;
-                    case SELF:
-                        def.callback(DefaultSelf.fromProto(envelope.getSelf().getSelf()));
-                        break;
-                    case USERS:
-                        final List<User> users = new ArrayList<>();
-                        for (final com.heroiclabs.nakama.Api.User user : envelope.getUsers().getUsersList()) {
-                            users.add(DefaultUser.fromProto(user));
-                        }
-                        def.callback(new DefaultResultSet<User>(null, users));
-                        break;
-                    case FRIENDS:
-                        final List<Friend> friends = new ArrayList<>();
-                        for (final com.heroiclabs.nakama.Api.Friend friend : envelope.getFriends().getFriendsList()) {
-                            friends.add(DefaultFriend.fromProto(friend));
-                        }
-                        def.callback(new DefaultResultSet<Friend>(null, friends));
-                        break;
-                    case GROUPS:
-                        final List<Group> groups = new ArrayList<>();
-                        for (final com.heroiclabs.nakama.Api.Group group : envelope.getGroups().getGroupsList()) {
-                            groups.add(DefaultGroup.fromProto(group));
-                        }
-                        def.callback(new DefaultResultSet<Group>(new DefaultCursor(envelope.getGroups().getCursor()), groups));
-                        break;
-                    case GROUPS_SELF:
-                        final List<GroupSelf> groupsSelf = new ArrayList<>();
-                        for (final com.heroiclabs.nakama.Api.TGroupsSelf.GroupSelf groupSelf : envelope.getGroupsSelf().getGroupsSelfList()) {
-                            groupsSelf.add(DefaultGroupSelf.fromProto(groupSelf));
-                        }
-                        def.callback(new DefaultResultSet<GroupSelf>(null, groupsSelf));
-                        break;
-                    case GROUP_USERS:
-                        final List<GroupUser> groupUsers = new ArrayList<>();
-                        for (final com.heroiclabs.nakama.Api.GroupUser groupUser : envelope.getGroupUsers().getUsersList()) {
-                            groupUsers.add(DefaultGroupUser.fromProto(groupUser));
-                        }
-                        def.callback(new DefaultResultSet<GroupUser>(null, groupUsers));
-                        break;
-                    case STORAGE_DATA:
-                        final List<StorageRecord> records = new ArrayList<>();
-                        for (final com.heroiclabs.nakama.Api.TStorageData.StorageData data : envelope.getStorageData().getDataList()) {
-                            records.add(DefaultStorageRecord.fromProto(data));
-                        }
-                        Cursor cursor = null;
-                        if (envelope.getStorageData().getCursor() != null && envelope.getStorageData().getCursor().length() > 0) {
-                            cursor = new DefaultCursor(envelope.getStorageData().getCursor());
-                        }
-                        def.callback(new DefaultResultSet<StorageRecord>(cursor, records));
-                        break;
-                    case STORAGE_KEYS:
-                        final List<RecordId> recordIds = new ArrayList<>();
-                        for (final com.heroiclabs.nakama.Api.TStorageKeys.StorageKey key : envelope.getStorageKeys().getKeysList()) {
-                            recordIds.add(DefaultRecordId.fromProto(key));
-                        }
-                        def.callback(new DefaultResultSet<RecordId>(null, recordIds));
-                        break;
-                    case RPC:
-                        def.callback(DefaultRpcResult.fromProto(envelope.getRpc()));
-                        break;
-                    case TOPICS:
-                        final List<Topic> topics = new ArrayList<>();
-                        for (final com.heroiclabs.nakama.Api.TTopics.Topic topic : envelope.getTopics().getTopicsList()) {
-                            topics.add(DefaultTopic.fromProto(topic));
-                        }
-                        def.callback(new DefaultResultSet<Topic>(null, topics));
-                        break;
-                    case TOPIC_MESSAGE_ACK:
-                        def.callback(DefaultTopicMessageAck.fromProto(envelope.getTopicMessageAck()));
-                        break;
-                    case TOPIC_MESSAGES:
-                        final List<TopicMessage> messages = new ArrayList<>();
-                        for (final com.heroiclabs.nakama.Api.TopicMessage m : envelope.getTopicMessages().getMessagesList()) {
-                            messages.add(DefaultTopicMessage.fromProto(m));
-                        }
-                        def.callback(new DefaultResultSet<TopicMessage>(new DefaultCursor(envelope.getTopicMessages().getCursor()), messages));
-                        break;
-                    case MATCH:
-                        def.callback(DefaultMatch.fromProto(envelope.getMatch()));
-                        break;
-                    case MATCHES:
-                        final List<Match> matches = new ArrayList<>();
-                        for (final com.heroiclabs.nakama.Api.Match m : envelope.getMatches().getMatchesList()) {
-                            matches.add(DefaultMatch.fromProto(m));
-                        }
-                        def.callback(new DefaultResultSet<Match>(null, matches));
-                        break;
-                    case MATCHMAKE_TICKET:
-                        def.callback(DefaultMatchmakeTicket.fromProto(envelope.getMatchmakeTicket()));
-                        break;
-                    case LEADERBOARDS:
-                        final List<Leaderboard> leaderboards = new ArrayList<>();
-                        for (final com.heroiclabs.nakama.Api.Leaderboard l : envelope.getLeaderboards().getLeaderboardsList()) {
-                            leaderboards.add(DefaultLeaderboard.fromProto(l));
-                        }
-                        def.callback(new DefaultResultSet<Leaderboard>(new DefaultCursor(envelope.getLeaderboards().getCursor()), leaderboards));
-                        break;
-                    case LEADERBOARD_RECORDS:
-                        final List<LeaderboardRecord> leaderboardRecords = new ArrayList<>();
-                        for (final com.heroiclabs.nakama.Api.LeaderboardRecord r : envelope.getLeaderboardRecords().getRecordsList()) {
-                            leaderboardRecords.add(DefaultLeaderboardRecord.fromProto(r));
-                        }
-                        def.callback(new DefaultResultSet<LeaderboardRecord>(new DefaultCursor(envelope.getLeaderboardRecords().getCursor()), leaderboardRecords));
-                        break;
-                    case NOTIFICATIONS:
-                        final List<Notification> notifications = new ArrayList<>();
-                        for (final com.heroiclabs.nakama.Api.Notification notification : envelope.getNotifications().getNotificationsList()) {
-                            notifications.add(DefaultNotification.fromProto(notification));
-                        }
-                        def.callback(new DefaultResultSet<Notification>(new DefaultCursor(envelope.getNotifications().getResumableCursor()), notifications));
-                        break;
-                    default:
-                        def.callback(new DefaultError(envelope.getError().getMessage(), envelope.getError().getCode(), collationId));
-                        break;
-                }
-            }
-
-            @Override
-            public void onClosing(WebSocket webSocket, int code, String reason) {
-                super.onClosing(webSocket, code, reason);
-                // No action needed here.
-            }
-
-            @Override
-            public void onClosed(WebSocket webSocket, int code, String reason) {
-                super.onClosed(webSocket, code, reason);
-                // Graceful socket disconnect is complete, clean up.
-                synchronized (lock) {
-                    socket = null;
-                    // TODO callback any leftover deferred items with a disconnect error message?
-                    collationIds.clear();
-                }
-                listener.onDisconnect();
-            }
-
-            @Override
-            public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-                super.onFailure(webSocket, t, response);
-                // Socket has failed and is no longer connected, clean up.
-                synchronized (lock) {
-                    socket = null;
-                    // TODO callback any leftover deferred items with a disconnect error message?
-                    collationIds.clear();
-                }
-                listener.onDisconnect();
-            }
-        });
-
-        return deferred;
+        return getStub(session).addFriends(builder.build());
     }
 
     @Override
-    public synchronized Deferred<Boolean> disconnect() {
-        final Deferred<Boolean> deferred = new Deferred<>();
-
-        if (socket != null) {
-            // Returns true if a shutdown was initiated, false if already shutting down or disconnected.
-            // Either result is acceptable here.
-            // Socket reference will be set to null when disconnect is completed.
-            socket.close(1000, null);
-        }
-
-        deferred.callback(Boolean.TRUE);
-        return deferred;
+    public ListenableFuture<Empty> addGroupUsers(@NonNull final Session session, @NonNull final String groupId, @NonNull final String... ids) {
+        return getStub(session).addGroupUsers(AddGroupUsersRequest.newBuilder()
+                .setGroupId(groupId)
+                .addAllUserIds(Arrays.asList(ids))
+                .build());
     }
 
     @Override
-    public Deferred<Boolean> logout() {
-        return send(LogoutMessage.Builder.build());
+    public ListenableFuture<Session> authenticateCustom(@NonNull final String id) {
+        return authenticateCustom(AuthenticateCustomRequest.newBuilder()
+                .setAccount(AccountCustom.newBuilder()
+                        .setId(id)
+                        .build())
+                .build());
     }
 
     @Override
-    public <T> Deferred<T> send(final @NonNull CollatedMessage<T> message) {
-        final Deferred<T> deferred = new Deferred<>();
-
-        if (socket == null) {
-            deferred.callback(new DefaultError("Client is not connected", Error.ErrorCode.UNKNOWN));
-            return deferred;
-        }
-
-        final String collationId = UUID.randomUUID().toString();
-        final byte[] payload = message.asBytes(collationId);
-
-        final boolean isEnqueued = socket.send(ByteString.of(payload));
-        if (!isEnqueued) {
-            deferred.callback(new DefaultError("Failed to send message, make sure the client is connected", Error.ErrorCode.UNKNOWN, collationId));
-            return deferred;
-        }
-
-        collationIds.put(collationId, deferred);
-        return deferred;
+    public ListenableFuture<Session> authenticateCustom(@NonNull final String id, @NonNull final String username) {
+        return authenticateCustom(AuthenticateCustomRequest.newBuilder()
+                .setAccount(AccountCustom.newBuilder()
+                        .setId(id)
+                        .build())
+                .setUsername(username)
+                .build());
     }
 
     @Override
-    public Deferred<Boolean> send(final @NonNull UncollatedMessage message) {
-        final Deferred<Boolean> deferred = new Deferred<>();
-
-        if (socket == null) {
-            deferred.callback(new DefaultError("Client is not connected", Error.ErrorCode.UNKNOWN));
-            return deferred;
-        }
-
-        final byte[] payload = message.asBytes();
-
-        final boolean isEnqueued = socket.send(ByteString.of(payload));
-        if (!isEnqueued) {
-            deferred.callback(new DefaultError("Failed to send message, make sure the client is connected", Error.ErrorCode.UNKNOWN));
-            return deferred;
-        }
-
-        deferred.callback(Boolean.TRUE);
-        return deferred;
+    public ListenableFuture<Session> authenticateCustom(@NonNull final String id, @NonNull final boolean create) {
+        return authenticateCustom(AuthenticateCustomRequest.newBuilder()
+                .setAccount(AccountCustom.newBuilder()
+                        .setId(id)
+                        .build())
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
     }
 
-    public static Client defaults(String serverKey) {
-        return builder(serverKey).build();
+    @Override
+    public ListenableFuture<Session> authenticateCustom(@NonNull final String id, @NonNull final boolean create, @NonNull final String username) {
+        return authenticateCustom(AuthenticateCustomRequest.newBuilder()
+                .setAccount(AccountCustom.newBuilder()
+                        .setId(id)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
     }
 
-    public static Builder builder(String serverKey) {
-        return new Builder(serverKey);
+    private ListenableFuture<Session> authenticateCustom(@NonNull final AuthenticateCustomRequest request) {
+        return convertSession(getStub().authenticateCustom(request));
     }
 
-    @RequiredArgsConstructor
-    public static class Builder {
-        private final @NonNull String serverKey;
-        private String host = "127.0.0.1";
-        private int port = 7350;
-        private String lang = "en";
-        private boolean ssl = false;
-        private int connectTimeout = 3000;
-        private int timeout = 5000;
-        private boolean trace = false;
-        private ClientListener listener = new NoopClientListener();
+    @Override
+    public ListenableFuture<Session> authenticateDevice(@NonNull final String id) {
+        return authenticateDevice(AuthenticateDeviceRequest.newBuilder()
+                .setAccount(AccountDevice.newBuilder()
+                        .setId(id)
+                        .build())
+                .build());
+    }
 
-        public Client build() {
-            return new DefaultClient(serverKey, host, port, lang, ssl, connectTimeout, timeout, trace, listener);
+    @Override
+    public ListenableFuture<Session> authenticateDevice(@NonNull final String id, @NonNull final String username) {
+        return authenticateDevice(AuthenticateDeviceRequest.newBuilder()
+                .setAccount(AccountDevice.newBuilder()
+                        .setId(id)
+                        .build())
+                .setUsername(username)
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateDevice(@NonNull final String id, @NonNull final boolean create) {
+        return authenticateDevice(AuthenticateDeviceRequest.newBuilder()
+                .setAccount(AccountDevice.newBuilder()
+                        .setId(id)
+                        .build())
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateDevice(@NonNull final String id, @NonNull final boolean create, @NonNull final String username) {
+        return authenticateDevice(AuthenticateDeviceRequest.newBuilder()
+                .setAccount(AccountDevice.newBuilder()
+                        .setId(id)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    private ListenableFuture<Session> authenticateDevice(@NonNull final AuthenticateDeviceRequest request) {
+        return convertSession(getStub().authenticateDevice(request));
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password) {
+        return authenticateEmail(AuthenticateEmailRequest.newBuilder()
+                .setAccount(AccountEmail.newBuilder()
+                        .setEmail(email)
+                        .setPassword(password)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, @NonNull final String username) {
+        return authenticateEmail(AuthenticateEmailRequest.newBuilder()
+                .setAccount(AccountEmail.newBuilder()
+                        .setEmail(email)
+                        .setPassword(password)
+                        .build())
+                .setUsername(username)
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, @NonNull final boolean create) {
+        return authenticateEmail(AuthenticateEmailRequest.newBuilder()
+                .setAccount(AccountEmail.newBuilder()
+                        .setEmail(email)
+                        .setPassword(password)
+                        .build())
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, @NonNull final boolean create, @NonNull final String username) {
+        return authenticateEmail(AuthenticateEmailRequest.newBuilder()
+                .setAccount(AccountEmail.newBuilder()
+                        .setEmail(email)
+                        .setPassword(password)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    private ListenableFuture<Session> authenticateEmail(@NonNull final AuthenticateEmailRequest request) {
+        return convertSession(getStub().authenticateEmail(request));
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken) {
+        return authenticateFacebook(AuthenticateFacebookRequest.newBuilder()
+                .setAccount(AccountFacebook.newBuilder()
+                        .setToken(accessToken)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, @NonNull final String username) {
+        return authenticateFacebook(AuthenticateFacebookRequest.newBuilder()
+                .setAccount(AccountFacebook.newBuilder()
+                        .setToken(accessToken)
+                        .build())
+                .setUsername(username)
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, @NonNull final boolean create) {
+        return authenticateFacebook(AuthenticateFacebookRequest.newBuilder()
+                .setAccount(AccountFacebook.newBuilder()
+                        .setToken(accessToken)
+                        .build())
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, @NonNull final boolean create, @NonNull final String username) {
+        return authenticateFacebook(AuthenticateFacebookRequest.newBuilder()
+                .setAccount(AccountFacebook.newBuilder()
+                        .setToken(accessToken)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    private ListenableFuture<Session> authenticateFacebook(@NonNull final AuthenticateFacebookRequest request) {
+        return convertSession(getStub().authenticateFacebook(request));
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken) {
+        return authenticateGoogle(AuthenticateGoogleRequest.newBuilder()
+                .setAccount(AccountGoogle.newBuilder()
+                        .setToken(accessToken)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, @NonNull final String username) {
+        return authenticateGoogle(AuthenticateGoogleRequest.newBuilder()
+                .setAccount(AccountGoogle.newBuilder()
+                        .setToken(accessToken)
+                        .build())
+                .setUsername(username)
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, @NonNull final boolean create) {
+        return authenticateGoogle(AuthenticateGoogleRequest.newBuilder()
+                .setAccount(AccountGoogle.newBuilder()
+                        .setToken(accessToken)
+                        .build())
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, @NonNull final boolean create, @NonNull final String username) {
+        return authenticateGoogle(AuthenticateGoogleRequest.newBuilder()
+                .setAccount(AccountGoogle.newBuilder()
+                        .setToken(accessToken)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    private ListenableFuture<Session> authenticateGoogle(@NonNull final AuthenticateGoogleRequest request) {
+        return convertSession(getStub().authenticateGoogle(request));
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateSteam(@NonNull final String token) {
+        return authenticateSteam(AuthenticateSteamRequest.newBuilder()
+                .setAccount(AccountSteam.newBuilder()
+                        .setToken(token)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateSteam(@NonNull final String token, @NonNull final String username) {
+        return authenticateSteam(AuthenticateSteamRequest.newBuilder()
+                .setAccount(AccountSteam.newBuilder()
+                        .setToken(token)
+                        .build())
+                .setUsername(username)
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateSteam(@NonNull final String token, @NonNull final boolean create) {
+        return authenticateSteam(AuthenticateSteamRequest.newBuilder()
+                .setAccount(AccountSteam.newBuilder()
+                        .setToken(token)
+                        .build())
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateSteam(@NonNull final String token, @NonNull final boolean create, @NonNull final String username) {
+        return authenticateSteam(AuthenticateSteamRequest.newBuilder()
+                .setAccount(AccountSteam.newBuilder()
+                        .setToken(token)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    private ListenableFuture<Session> authenticateSteam(@NonNull final AuthenticateSteamRequest request) {
+        return convertSession(getStub().authenticateSteam(request));
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl) {
+        return authenticateGameCenter(AuthenticateGameCenterRequest.newBuilder()
+                .setAccount(AccountGameCenter.newBuilder()
+                        .setPlayerId(playerId)
+                        .setBundleId(bundleId)
+                        .setTimestampSeconds(timestampSeconds)
+                        .setSalt(salt)
+                        .setPublicKeyUrl(publicKeyUrl)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, @NonNull final String username) {
+        return authenticateGameCenter(AuthenticateGameCenterRequest.newBuilder()
+                .setAccount(AccountGameCenter.newBuilder()
+                        .setPlayerId(playerId)
+                        .setBundleId(bundleId)
+                        .setTimestampSeconds(timestampSeconds)
+                        .setSalt(salt)
+                        .setPublicKeyUrl(publicKeyUrl)
+                        .build())
+                .setUsername(username)
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, @NonNull final boolean create) {
+        return authenticateGameCenter(AuthenticateGameCenterRequest.newBuilder()
+                .setAccount(AccountGameCenter.newBuilder()
+                        .setPlayerId(playerId)
+                        .setBundleId(bundleId)
+                        .setTimestampSeconds(timestampSeconds)
+                        .setSalt(salt)
+                        .setPublicKeyUrl(publicKeyUrl)
+                        .build())
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, @NonNull final boolean create, @NonNull final String username) {
+        return authenticateGameCenter(AuthenticateGameCenterRequest.newBuilder()
+                .setAccount(AccountGameCenter.newBuilder()
+                        .setPlayerId(playerId)
+                        .setBundleId(bundleId)
+                        .setTimestampSeconds(timestampSeconds)
+                        .setSalt(salt)
+                        .setPublicKeyUrl(publicKeyUrl)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    private ListenableFuture<Session> authenticateGameCenter(@NonNull final AuthenticateGameCenterRequest request) {
+        return convertSession(getStub().authenticateGameCenter(request));
+    }
+
+    @Override
+    public ListenableFuture<Empty> blockFriends(@NonNull final Session session, @NonNull final String... ids) {
+        return getStub(session).blockFriends(BlockFriendsRequest.newBuilder().addAllIds(Arrays.asList(ids)).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> blockFriends(@NonNull final Session session, @NonNull final Iterable<String> ids, @NonNull final String... usernames) {
+        final var builder = BlockFriendsRequest.newBuilder();
+        if (ids != null) {
+            builder.addAllIds(ids);
+        }
+        if (usernames != null) {
+            builder.addAllUsernames(Arrays.asList(usernames));
+        }
+        return getStub(session).blockFriends(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name) {
+        return createGroup(session, name, null, null, null);
+    }
+
+    @Override
+    public ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, @NonNull final String description) {
+        return createGroup(session, name, description, null, null);
+    }
+
+    @Override
+    public ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl) {
+        return createGroup(session, name, description, avatarUrl, null);
+    }
+
+    @Override
+    public ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl, @NonNull final String langTag) {
+        final var builder = CreateGroupRequest.newBuilder().setName(name);
+
+        if (description != null) {
+            builder.setDescription(description);
+        }
+        if (avatarUrl != null) {
+            builder.setAvatarUrl(avatarUrl);
+        }
+        if (langTag != null) {
+            builder.setLangTag(langTag);
         }
 
-        public Builder host(final @NonNull String host) {
-            this.host = host;
-            return this;
+        return getStub(session).createGroup(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl, @NonNull final String langTag, @NonNull final boolean open) {
+        final var builder = CreateGroupRequest.newBuilder().setName(name).setOpen(open);
+
+        if (description != null) {
+            builder.setDescription(description);
+        }
+        if (avatarUrl != null) {
+            builder.setAvatarUrl(avatarUrl);
+        }
+        if (langTag != null) {
+            builder.setLangTag(langTag);
         }
 
-        public Builder port(final int port) {
-            this.port = port;
-            return this;
-        }
+        return getStub(session).createGroup(builder.build());
+    }
 
-        public Builder lang(final @NonNull String lang) {
-            this.lang = lang;
-            return this;
-        }
+    @Override
+    public ListenableFuture<Empty> deleteFriends(@NonNull final Session session, @NonNull final String... ids) {
+        return getStub(session).deleteFriends(DeleteFriendsRequest.newBuilder().addAllIds(Arrays.asList(ids)).build());
+    }
 
-        public Builder ssl(final boolean ssl) {
-            this.ssl = ssl;
-            return this;
+    @Override
+    public ListenableFuture<Empty> deleteFriends(@NonNull final Session session, @NonNull final Iterable<String> ids, @NonNull final String... usernames) {
+        final var builder = DeleteFriendsRequest.newBuilder();
+        if (ids != null) {
+            builder.addAllIds(ids);
         }
+        if (usernames != null) {
+            builder.addAllUsernames(Arrays.asList(usernames));
+        }
+        return getStub(session).deleteFriends(builder.build());
+    }
 
-        public Builder connectTimeout(final int connectTimeout) {
-            this.connectTimeout = connectTimeout;
-            return this;
-        }
+    @Override
+    public ListenableFuture<Empty> deleteGroup(@NonNull final Session session, @NonNull final String groupId) {
+        return getStub(session).deleteGroup(DeleteGroupRequest.newBuilder().setGroupId(groupId).build());
+    }
 
-        public Builder timeout(final int timeout) {
-            this.timeout = timeout;
-            return this;
-        }
+    @Override
+    public ListenableFuture<Empty> deleteLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId) {
+        return getStub(session).deleteLeaderboardRecord(DeleteLeaderboardRecordRequest.newBuilder().setLeaderboardId(leaderboardId).build());
+    }
 
-        public Builder trace(final boolean trace) {
-            this.trace = trace;
-            return this;
-        }
+    @Override
+    public ListenableFuture<Empty> deleteNotifications(@NonNull final Session session, @NonNull final String... notificationIds) {
+        return getStub(session).deleteNotifications(DeleteNotificationsRequest.newBuilder().addAllIds(Arrays.asList(notificationIds)).build());
+    }
 
-        public Builder listener(final @NonNull ClientListener listener) {
-            this.listener = listener;
-            return this;
+    @Override
+    public ListenableFuture<Empty> deleteStorageObjects(@NonNull final Session session, @NonNull final StorageObjectId... objectIds) {
+        final DeleteStorageObjectsRequest.Builder builder = DeleteStorageObjectsRequest.newBuilder();
+        for (@NonNull final StorageObjectId id : objectIds) {
+            final DeleteStorageObjectId.Builder b = DeleteStorageObjectId.newBuilder()
+                    .setCollection(id.getCollection());
+
+            if (id.getKey() != null) {
+                b.setKey(id.getKey());
+            }
+
+            if (id.getVersion() != null) {
+                b.setVersion(id.getVersion());
+            }
+
+            builder.addObjectIds(b.build());
         }
+        return getStub(session).deleteStorageObjects(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<Account> getAccount(@NonNull final Session session) {
+        return getStub(session).getAccount(Empty.getDefaultInstance());
+    }
+
+    @Override
+    public ListenableFuture<Users> getUsers(@NonNull final Session session, @NonNull final String... ids) {
+        final var builder = GetUsersRequest.newBuilder().addAllIds(Arrays.asList(ids));
+        return getStub(session).getUsers(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<Users> getUsers(@NonNull final Session session, @NonNull final Iterable<String> ids, @NonNull final String... usernames) {
+        final var builder = GetUsersRequest.newBuilder();
+        if (ids != null) {
+            builder.addAllIds(ids);
+        }
+        if (usernames != null) {
+            builder.addAllUsernames(Arrays.asList(usernames));
+        }
+        return getStub(session).getUsers(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<Users> getUsers(@NonNull final Session session, @NonNull final Iterable<String> ids, @NonNull final Iterable<String> usernames, @NonNull final String... facebookIds) {
+        final var builder = GetUsersRequest.newBuilder();
+        if (ids != null) {
+            builder.addAllIds(ids);
+        }
+        if (usernames != null) {
+            builder.addAllUsernames(usernames);
+        }
+        if (facebookIds != null) {
+            builder.addAllFacebookIds(Arrays.asList(facebookIds));
+        }
+        return getStub(session).getUsers(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> importFacebookFriends(@NonNull final Session session, @NonNull final String token) {
+        return getStub(session).importFacebookFriends(ImportFacebookFriendsRequest.newBuilder()
+                .setAccount(AccountFacebook.newBuilder().setToken(token).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> importFacebookFriends(@NonNull final Session session, @NonNull final String token, @NonNull final boolean reset) {
+        return getStub(session).importFacebookFriends(ImportFacebookFriendsRequest.newBuilder()
+                .setAccount(AccountFacebook.newBuilder().setToken(token).build())
+                .setReset(BoolValue.newBuilder().setValue(reset).getDefaultInstanceForType())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> joinGroup(@NonNull final Session session, @NonNull final String groupId) {
+        return getStub(session).joinGroup(JoinGroupRequest.newBuilder().setGroupId(groupId).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> kickGroupUsers(@NonNull final Session session, @NonNull final String groupId, @NonNull final String... ids) {
+        return getStub(session).kickGroupUsers(KickGroupUsersRequest.newBuilder()
+                .setGroupId(groupId)
+                .addAllUserIds(Arrays.asList(ids))
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> leaveGroup(@NonNull final Session session, @NonNull final String groupId) {
+        return getStub(session).leaveGroup(LeaveGroupRequest.newBuilder().setGroupId(groupId).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> linkCustom(@NonNull final Session session, @NonNull final String id) {
+        return getStub(session).linkCustom(AccountCustom.newBuilder().setId(id).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> linkDevice(@NonNull final Session session, @NonNull final String id) {
+        return getStub(session).linkDevice(AccountDevice.newBuilder().setId(id).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> linkEmail(@NonNull final Session session, @NonNull final String email, @NonNull final String password) {
+        return getStub(session).linkEmail(AccountEmail.newBuilder().setEmail(email).setPassword(password).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> linkFacebook(@NonNull final Session session, @NonNull final String accessToken) {
+        return getStub(session).linkFacebook(LinkFacebookRequest.newBuilder()
+                .setAccount(AccountFacebook.newBuilder().setToken(accessToken).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> linkFacebook(@NonNull final Session session, @NonNull final String accessToken, @NonNull final boolean importFriends) {
+        return getStub(session).linkFacebook(LinkFacebookRequest.newBuilder()
+                .setAccount(AccountFacebook.newBuilder().setToken(accessToken).build())
+                .setImport(BoolValue.newBuilder().setValue(importFriends).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> linkGoogle(@NonNull final Session session, @NonNull final String accessToken) {
+        return getStub(session).linkGoogle(AccountGoogle.newBuilder().setToken(accessToken).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> linkSteam(@NonNull final Session session, @NonNull final String token) {
+        return getStub(session).linkSteam(AccountSteam.newBuilder().setToken(token).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> linkGameCenter(@NonNull final Session session, @NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl) {
+        return getStub(session).linkGameCenter(AccountGameCenter.newBuilder()
+                .setPlayerId(playerId)
+                .setBundleId(bundleId)
+                .setTimestampSeconds(timestampSeconds)
+                .setSalt(salt)
+                .setSignature(signature)
+                .setPublicKeyUrl(publicKeyUrl)
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId) {
+        return listChannelMessages(session, channelId, 0, null);
+    }
+
+    @Override
+    public ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId, @NonNull final int limit) {
+        return listChannelMessages(session, channelId, limit, null);
+    }
+
+    @Override
+    public ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId, @NonNull final int limit, @NonNull final String cursor) {
+        final var builder = ListChannelMessagesRequest.newBuilder().setChannelId(channelId);
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+        return getStub(session).listChannelMessages(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId, @NonNull final int limit, @NonNull final String cursor, @NonNull final boolean forward) {
+        final var builder = ListChannelMessagesRequest.newBuilder().setChannelId(channelId);
+        builder.setForward(BoolValue.newBuilder().setValue(forward).getDefaultInstanceForType());
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+        return getStub(session).listChannelMessages(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<Friends> listFriends(@NonNull final Session session) {
+        return getStub(session).listFriends(Empty.newBuilder().build());
+    }
+
+    @Override
+    public ListenableFuture<GroupUserList> listGroupUsers(@NonNull final Session session, @NonNull final String groupId) {
+        return getStub(session).listGroupUsers(ListGroupUsersRequest.newBuilder().setGroupId(groupId).build());
+    }
+
+    @Override
+    public ListenableFuture<GroupList> listGroups(@NonNull final Session session, @NonNull final String name) {
+        return listGroups(session, name, 0, null);
+    }
+
+    @Override
+    public ListenableFuture<GroupList> listGroups(@NonNull final Session session, @NonNull final String name, @NonNull final int limit) {
+        return listGroups(session, name, limit, null);
+    }
+
+    @Override
+    public ListenableFuture<GroupList> listGroups(@NonNull final Session session, @NonNull final String name, @NonNull final int limit, @NonNull final String cursor) {
+        final var builder = ListGroupsRequest.newBuilder();
+        if (name != null) {
+            builder.setName(name);
+        }
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+        return getStub(session).listGroups(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId) {
+        return listLeaderboardRecords(session, leaderboardId, null, 0, null);
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final String... ownerIds) {
+        return listLeaderboardRecords(session, leaderboardId, Arrays.asList(ownerIds), 0, null);
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final Iterable<String> ownerIds, @NonNull final int limit) {
+        return listLeaderboardRecords(session, leaderboardId, ownerIds, limit, null);
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final Iterable<String> ownerIds, @NonNull final int limit, @NonNull final String cursor) {
+        final var builder = ListLeaderboardRecordsRequest.newBuilder().setLeaderboardId(leaderboardId);
+        if (ownerIds != null) {
+            builder.addAllOwnerIds(ownerIds);
+        }
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+        return getStub(session).listLeaderboardRecords(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<MatchList> listMatches(@NonNull final Session session) {
+        return listMatches(session, -1, -1, 0, null);
+    }
+
+    @Override
+    public ListenableFuture<MatchList> listMatches(@NonNull final Session session, @NonNull final int min) {
+        return listMatches(session, min, -1, 0, null);
+    }
+
+    @Override
+    public ListenableFuture<MatchList> listMatches(@NonNull final Session session, @NonNull final int min, @NonNull final int max) {
+        return listMatches(session, min, max, 0, null);
+    }
+
+    @Override
+    public ListenableFuture<MatchList> listMatches(@NonNull final Session session, @NonNull final int min, @NonNull final int max, @NonNull final int limit) {
+        return listMatches(session, min, max, limit, null);
+    }
+
+    @Override
+    public ListenableFuture<MatchList> listMatches(@NonNull final Session session, @NonNull final int min, @NonNull final int max, @NonNull final int limit, @NonNull final String label) {
+        final var builder = ListMatchesRequest.newBuilder();
+        if (min >= 0) {
+            builder.setMinSize(Int32Value.newBuilder().setValue(min).build());
+        }
+        if (max >= 0) {
+            builder.setMaxSize(Int32Value.newBuilder().setValue(max).build());
+        }
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (label != null) {
+            builder.setLabel(StringValue.newBuilder().setValue(label).build());
+        }
+        return getStub(session).listMatches(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<MatchList> listMatches(@NonNull final Session session, @NonNull final int min, @NonNull final int max, @NonNull final int limit, @NonNull final String label, @NonNull final boolean authoritative) {
+        final var builder = ListMatchesRequest.newBuilder();
+        if (min >= 0) {
+            builder.setMinSize(Int32Value.newBuilder().setValue(min).build());
+        }
+        if (max >= 0) {
+            builder.setMaxSize(Int32Value.newBuilder().setValue(max).build());
+        }
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (label != null) {
+            builder.setLabel(StringValue.newBuilder().setValue(label).build());
+        }
+        builder.setAuthoritative(BoolValue.newBuilder().setValue(authoritative).build());
+        return getStub(session).listMatches(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<com.heroiclabs.nakama.api.NotificationList> listNotifications(@NonNull final Session session) {
+        return listNotifications(session, 0, null);
+    }
+
+    @Override
+    public ListenableFuture<com.heroiclabs.nakama.api.NotificationList> listNotifications(@NonNull final Session session, @NonNull final int limit) {
+        return listNotifications(session, limit, null);
+    }
+
+    @Override
+    public ListenableFuture<com.heroiclabs.nakama.api.NotificationList> listNotifications(@NonNull final Session session, @NonNull final int limit, @NonNull final String cacheableCursor) {
+        final var builder = ListNotificationsRequest.newBuilder();
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (cacheableCursor != null) {
+            builder.setCacheableCursor(cacheableCursor);
+        }
+        return getStub(session).listNotifications(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection) {
+        return listStorageObjects(session, collection, 0, null);
+    }
+
+    @Override
+    public ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection, @NonNull final int limit) {
+        return listStorageObjects(session, collection, limit, null);
+    }
+
+    @Override
+    public ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection, @NonNull final int limit, @NonNull final String cursor) {
+        return listUsersStorageObjects(session, null, collection, 0, null);
+    }
+
+    @Override
+    public ListenableFuture<UserGroupList> listUserGroups(@NonNull final Session session) {
+        return listUserGroups(session, null);
+    }
+
+    @Override
+    public ListenableFuture<UserGroupList> listUserGroups(@NonNull final Session session, @NonNull final String userId) {
+        final var builder = ListUserGroupsRequest.newBuilder();
+        if (userId != null) {
+            builder.setUserId(userId);
+        }
+        return getStub(session).listUserGroups(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, @NonNull final String userId) {
+        return listUsersStorageObjects(session, userId, collection, 0, null);
+    }
+
+    @Override
+    public ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, @NonNull final String userId, @NonNull final int limit) {
+        return listUsersStorageObjects(session, userId, collection, limit, null);
+    }
+
+    @Override
+    public ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, @NonNull final String userId, @NonNull final int limit, @NonNull final String cursor) {
+        final var builder = ListStorageObjectsRequest.newBuilder().setCollection(collection);
+        if (userId != null) {
+            builder.setUserId(userId);
+        }
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+        return getStub(session).listStorageObjects(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> promoteGroupUsers(@NonNull final Session session, @NonNull final String groupId, @NonNull final String... ids) {
+        final var userIds = Arrays.asList(ids);
+        return getStub(session).promoteGroupUsers(PromoteGroupUsersRequest.newBuilder().setGroupId(groupId).addAllUserIds(userIds).build());
+    }
+
+    @Override
+    public ListenableFuture<StorageObjects> readStorageObjects(@NonNull final Session session, @NonNull final StorageObjectId... objectIds) {
+        final ReadStorageObjectsRequest.Builder builder = ReadStorageObjectsRequest.newBuilder();
+        for (@NonNull final StorageObjectId id : objectIds) {
+            final ReadStorageObjectId.Builder b = ReadStorageObjectId.newBuilder()
+                    .setCollection(id.getCollection());
+
+            if (id.getKey() != null) {
+                b.setKey(id.getKey());
+            }
+
+            if (id.getUserId() != null) {
+                b.setUserId(id.getUserId());
+            }
+
+            builder.addObjectIds(b.build());
+        }
+        return getStub(session).readStorageObjects(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<Rpc> rpc(@NonNull final Session session, @NonNull final String id) {
+        return rpc(session, id, null);
+    }
+
+    @Override
+    public ListenableFuture<Rpc> rpc(@NonNull final Session session, @NonNull final String id, final String payload) {
+        final var builder = Rpc.newBuilder().setId(id);
+        if (payload != null) {
+            builder.setPayload(payload);
+        }
+        return getStub(session).rpcFunc(builder.build());
+    }
+
+//    @Override
+//    public ListenableFuture<Rpc> rpc(@NonNull final String httpKey, @NonNull final String id) {
+//        return Rpc(httpKey, id, null);
+//    }
+//
+//    @Override
+//    public ListenableFuture<Rpc> rpc(@NonNull final String httpKey, @NonNull final String id, final String payload) {
+//        final var builder = Rpc.newBuilder().setHttpKey(httpKey).setId(id);
+//        if (payload != null) {
+//            builder.setPayload(payload);
+//        }
+//        return getStub().rpcFunc(builder.build());
+//    }
+
+    @Override
+    public ListenableFuture<Empty> unlinkCustom(@NonNull final Session session, @NonNull final String id) {
+        return getStub(session).unlinkCustom(AccountCustom.newBuilder().setId(id).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> unlinkDevice(@NonNull final Session session, @NonNull final String id) {
+        return getStub(session).unlinkDevice(AccountDevice.newBuilder().setId(id).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> unlinkEmail(@NonNull final Session session, @NonNull final String email, @NonNull final String password) {
+        return getStub(session).unlinkEmail(AccountEmail.newBuilder().setEmail(email).setPassword(password).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> unlinkFacebook(@NonNull final Session session, @NonNull final String accessToken) {
+        return getStub(session).unlinkFacebook(AccountFacebook.newBuilder().setToken(accessToken).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> unlinkGoogle(@NonNull final Session session, @NonNull final String accessToken) {
+        return getStub(session).unlinkGoogle(AccountGoogle.newBuilder().setToken(accessToken).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> unlinkSteam(@NonNull final Session session, @NonNull final String token) {
+        return getStub(session).unlinkSteam(AccountSteam.newBuilder().setToken(token).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> unlinkGameCenter(@NonNull final Session session, @NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl) {
+        return getStub(session).unlinkGameCenter(AccountGameCenter.newBuilder()
+                .setPlayerId(playerId)
+                .setBundleId(bundleId)
+                .setTimestampSeconds(timestampSeconds)
+                .setSalt(salt)
+                .setSignature(signature)
+                .setPublicKeyUrl(publicKeyUrl)
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username) {
+        return updateAccount(session, username, null, null, null, null, null);
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username, @NonNull final String displayName) {
+        return updateAccount(session, username, displayName, null, null, null, null);
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username, @NonNull final String displayName, @NonNull final String avatarUrl) {
+        return updateAccount(session, username, displayName, avatarUrl, null, null, null);
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username, @NonNull final String displayName, @NonNull final String avatarUrl, @NonNull final String langTag) {
+        return updateAccount(session, username, displayName, avatarUrl, langTag, null, null);
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username, @NonNull final String displayName, @NonNull final String avatarUrl, @NonNull final String langTag, @NonNull final String location) {
+        return updateAccount(session, username, displayName, avatarUrl, langTag, location, null);
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username, @NonNull final String displayName, @NonNull final String avatarUrl, @NonNull final String langTag, @NonNull final String location, @NonNull final String timezone) {
+        final var builder = UpdateAccountRequest.newBuilder();
+        if (username != null) {
+            builder.setUsername(StringValue.newBuilder().setValue(username).build());
+        }
+        if (displayName != null) {
+            builder.setDisplayName(StringValue.newBuilder().setValue(displayName).build());
+        }
+        if (avatarUrl != null) {
+            builder.setAvatarUrl(StringValue.newBuilder().setValue(avatarUrl).build());
+        }
+        if (langTag != null) {
+            builder.setLangTag(StringValue.newBuilder().setValue(langTag).build());
+        }
+        if (location != null) {
+            builder.setLocation(StringValue.newBuilder().setValue(location).build());
+        }
+        if (timezone != null) {
+            builder.setTimezone(StringValue.newBuilder().setValue(timezone).build());
+        }
+        return getStub(session).updateAccount(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, @NonNull final String name) {
+        return updateGroup(session, groupId, name, null, null, null);
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, @NonNull final String name, @NonNull final String description) {
+        return updateGroup(session, groupId, name, description, null, null);
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl) {
+        return updateGroup(session, groupId, name, description, avatarUrl, null);
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl, @NonNull final String langTag) {
+        final var builder = UpdateGroupRequest.newBuilder().setGroupId(groupId);
+        if (name != null) {
+            builder.setName(StringValue.newBuilder().setValue(name).build());
+        }
+        if (description != null) {
+            builder.setDescription(StringValue.newBuilder().setValue(description).build());
+        }
+        if (avatarUrl != null) {
+            builder.setAvatarUrl(StringValue.newBuilder().setValue(avatarUrl).build());
+        }
+        if (langTag != null) {
+            builder.setLangTag(StringValue.newBuilder().setValue(langTag).build());
+        }
+        return getStub(session).updateGroup(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl, @NonNull final String langTag, @NonNull final boolean open) {
+        final var builder = UpdateGroupRequest.newBuilder().setGroupId(groupId);
+        if (name != null) {
+            builder.setName(StringValue.newBuilder().setValue(name).build());
+        }
+        if (description != null) {
+            builder.setDescription(StringValue.newBuilder().setValue(description).build());
+        }
+        if (avatarUrl != null) {
+            builder.setAvatarUrl(StringValue.newBuilder().setValue(avatarUrl).build());
+        }
+        if (langTag != null) {
+            builder.setLangTag(StringValue.newBuilder().setValue(langTag).build());
+        }
+        builder.setOpen(BoolValue.newBuilder().setValue(open).build());
+        return getStub(session).updateGroup(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score) {
+        final var builder = WriteLeaderboardRecordRequest.newBuilder().setLeaderboardId(leaderboardId);
+        final var recordBuilder = WriteLeaderboardRecordRequest.LeaderboardRecordWrite.newBuilder().setScore(score);
+        builder.setRecord(recordBuilder.build());
+        return getStub(session).writeLeaderboardRecord(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score, @NonNull final long subscore) {
+        final var builder = WriteLeaderboardRecordRequest.newBuilder().setLeaderboardId(leaderboardId);
+        final var recordBuilder = WriteLeaderboardRecordRequest.LeaderboardRecordWrite.newBuilder()
+                .setScore(score)
+                .setSubscore(subscore);
+        builder.setRecord(recordBuilder.build());
+        return getStub(session).writeLeaderboardRecord(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score, @NonNull final String metadata) {
+        final var builder = WriteLeaderboardRecordRequest.newBuilder().setLeaderboardId(leaderboardId);
+        final var recordBuilder = WriteLeaderboardRecordRequest.LeaderboardRecordWrite.newBuilder()
+                .setScore(score)
+                .setMetadata(metadata);
+        builder.setRecord(recordBuilder.build());
+        return getStub(session).writeLeaderboardRecord(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score, @NonNull final long subscore, @NonNull final String metadata) {
+        final var builder = WriteLeaderboardRecordRequest.newBuilder().setLeaderboardId(leaderboardId);
+        final var recordBuilder = WriteLeaderboardRecordRequest.LeaderboardRecordWrite.newBuilder()
+                .setScore(score)
+                .setSubscore(subscore)
+                .setMetadata(metadata);
+        builder.setRecord(recordBuilder.build());
+        return getStub(session).writeLeaderboardRecord(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<StorageObjectAcks> writeStorageObjects(@NonNull final Session session, @NonNull final StorageObjectWrite... objects) {
+        final WriteStorageObjectsRequest.Builder builder = WriteStorageObjectsRequest.newBuilder();
+        for (@NonNull final StorageObjectWrite object : objects) {
+            final WriteStorageObject.Builder b = WriteStorageObject.newBuilder()
+                    .setCollection(object.getCollection())
+                    .setKey(object.getKey())
+                    .setValue(object.getValue());
+
+            if (object.getVersion() != null) {
+                b.setVersion(object.getVersion());
+            }
+
+            if (object.getPermissionRead() != null) {
+                b.setPermissionRead(Int32Value.newBuilder().setValue(object.getPermissionRead().getValue()).build());
+            }
+
+            if (object.getPermissionWrite() != null) {
+                b.setPermissionWrite(Int32Value.newBuilder().setValue(object.getPermissionWrite().getValue()).build());
+            }
+        }
+        return getStub(session).writeStorageObjects(builder.build());
     }
 }
