@@ -23,7 +23,7 @@ import com.heroiclabs.nakama.api.NotificationList;
  * A listener for receiving {@code Client} events.
  */
 public abstract class AbstractClientListener implements ClientListener {
-    @Override public void onDisconnect() {}
+    @Override public void onDisconnect(final Throwable t) {}
     @Override public void onChannelMessage(final ChannelMessage message) {}
     @Override public void onChannelPresence(final ChannelPresenceEvent presence) {}
     @Override public void onMatchmakeMatched(final MatchmakerMatched matched) {}

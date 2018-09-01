@@ -25,6 +25,6 @@ import lombok.*;
 public class Stream {
     private String descriptor;
     private String label;
-    int mode;
+    private int mode;
     private String subject;
 }

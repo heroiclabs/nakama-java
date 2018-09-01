@@ -22,8 +22,4 @@ import lombok.Data;
 class RpcMessage {
     private String id;
     private String payload;
-
-    public <T> T getPayload(Class<T> clazz) {
-        return WebSocketClient.GSON.fromJson(payload, clazz);
-    }
 }

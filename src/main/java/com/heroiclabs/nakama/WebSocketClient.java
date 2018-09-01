@@ -25,6 +25,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.Int32Value;
+import com.google.protobuf.Timestamp;
 import com.heroiclabs.nakama.api.NotificationList;
 import com.heroiclabs.nakama.api.Rpc;
 import lombok.NonNull;
@@ -42,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 public class WebSocketClient implements SocketClient {
     static final Gson GSON = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .setDateFormat("Y-M-d'T'H:m:s'Z'")
             .create();
 
     private final String host;
@@ -67,7 +69,13 @@ public class WebSocketClient implements SocketClient {
                 .build();
     }
 
+    @Override
     public ListenableFuture<Session> connect(@NonNull final Session session, @NonNull final ClientListener listener) {
+        return connect(session, listener, false);
+    }
+
+    @Override
+    public ListenableFuture<Session> connect(@NonNull final Session session, @NonNull final ClientListener listener, final boolean createStatus) {
         if (socket != null) {
             return Futures.immediateFailedFuture(new DefaultError("Client is already connected"));
         }
@@ -78,6 +86,7 @@ public class WebSocketClient implements SocketClient {
                 .port(port)
                 .encodedPath("/ws")
                 .addQueryParameter("token", session.getAuthToken())
+                .addQueryParameter("status", Boolean.toString(createStatus))
                 .build()
                 .toString()
                 .replaceFirst("http", "ws");
@@ -128,19 +137,31 @@ public class WebSocketClient implements SocketClient {
                 if (collationId == null || "".equals(collationId)) {
                     if (env.getChannelMessage() != null) {
                         final ChannelMessage m = env.getChannelMessage();
-
-                        final com.heroiclabs.nakama.api.ChannelMessage result = com.heroiclabs.nakama.api.ChannelMessage.newBuilder()
-                                .setMessageId(m.getMessageId())
-                                .setSenderId(m.getSenderId())
-                                .setUsername(m.getUsername())
-                                .setChannelId(m.getChannelId())
-                                .setContent(m.getContent())
-                                .setPersistent(BoolValue.newBuilder().setValue(m.isPersistent()).getDefaultInstanceForType())
-                                .setCode(Int32Value.newBuilder().setValue(m.getCode()).build())
-//                                .setCreateTime(Timestamp.newBuilder().setSeconds(m.getCreateTime()).build())
-//                                .setUpdateTime(Timestamp.newBuilder().setSeconds(m.getUpdateTime()).build())
-                                .build();
-                        listener.onChannelMessage(result);
+                        final com.heroiclabs.nakama.api.ChannelMessage.Builder builder = com.heroiclabs.nakama.api.ChannelMessage.newBuilder();
+                        if (m.getMessageId() != null) {
+                            builder.setMessageId(m.getMessageId());
+                        }
+                        if (m.getSenderId() != null) {
+                            builder.setSenderId(m.getSenderId());
+                        }
+                        if (m.getChannelId() != null) {
+                            builder.setChannelId(m.getChannelId());
+                        }
+                        if (m.getUsername() != null) {
+                            builder.setUsername(m.getUsername());
+                        }
+                        if (m.getContent() != null) {
+                            builder.setContent(m.getContent());
+                        }
+                        if (m.getCreateTime() != null) {
+                            builder.setCreateTime(Timestamp.newBuilder().setSeconds(m.getCreateTime().getTime() / 1000).build());
+                        }
+                        if (m.getUpdateTime() != null) {
+                            builder.setUpdateTime(Timestamp.newBuilder().setSeconds(m.getUpdateTime().getTime() / 1000).build());
+                        }
+                        builder.setPersistent(BoolValue.newBuilder().setValue(m.isPersistent()).getDefaultInstanceForType());
+                        builder.setCode(Int32Value.newBuilder().setValue(m.getCode()).build());
+                        listener.onChannelMessage(builder.build());
                     } else if (env.getChannelPresenceEvent() != null) {
                         listener.onChannelPresence(env.getChannelPresenceEvent());
                     } else if (env.getMatchData() != null) {
@@ -151,16 +172,27 @@ public class WebSocketClient implements SocketClient {
                         listener.onMatchmakeMatched(env.getMatchmakerMatched());
                     } else if (env.getNotifications() != null) {
                         final NotificationList.Builder resultBuilder = NotificationList.newBuilder();
-                        resultBuilder.setCacheableCursor(env.getNotifications().getCacheableCursor());
                         for (final Notification n : env.getNotifications().getNotifications()) {
-                            resultBuilder.addNotifications(com.heroiclabs.nakama.api.Notification.newBuilder()
-                                    .setCode(n.getCode())
-                                    .setContent(n.getContent())
-//                                    .setCreateTime(Timestamp.newBuilder().setSeconds(n.getCreateTime()).build())
-                                    .setId(n.getId())
-                                    .setSenderId(n.getSenderId())
-                                    .setSubject(n.getSubject())
-                                    .build());
+                            final com.heroiclabs.nakama.api.Notification.Builder builder = com.heroiclabs.nakama.api.Notification.newBuilder();
+                            if (n.getContent() != null) {
+                                builder.setContent(n.getContent());
+                            }
+                            if (n.getId() != null) {
+                                builder.setId(n.getId());
+                            }
+                            if (n.getSenderId() != null) {
+                                builder.setSenderId(n.getSenderId());
+                            }
+                            if (n.getSubject() != null) {
+                                builder.setSubject(n.getSubject());
+                            }
+                            if (n.getCreateTime() != null) {
+                                builder.setCreateTime(Timestamp.newBuilder().setSeconds(n.getCreateTime().getTime() / 1000).build());
+                            }
+                            builder.setCode(n.getCode());
+                            builder.setPersistent(n.isPersistent());
+
+                            resultBuilder.addNotifications(builder.build());
                         }
                         listener.onNotifications(resultBuilder.build());
                     } else if (env.getStatusPresenceEvent() != null) {
@@ -172,35 +204,37 @@ public class WebSocketClient implements SocketClient {
                     } else {
                         log.error("Unrecognised incoming uncollated message from server: " + env.toString());
                     }
-                    return;
-                }
-
-                final SettableFuture future = collationIds.get(collationId);
-                if (future == null) {
-                    log.warn("No matching future for incoming collation ID: " + collationId);
-                    return;
-                }
-
-                if (env.getError() != null) {
-                    future.setException(new DefaultError(collationId, env.getError()));
-                } else if (env.getRpc() != null) {
-                    final com.heroiclabs.nakama.api.Rpc apiRpc = com.heroiclabs.nakama.api.Rpc.newBuilder()
-                            .setId(env.getRpc().getId())
-                            .setPayload(env.getRpc().getPayload())
-                            .build();
-                    future.set(apiRpc);
-                } else if (env.getChannel() != null) {
-                    future.set(env.getChannel());
-                } else if (env.getChannelMessageAck() != null) {
-                    future.set(env.getChannelMessageAck());
-                } else if (env.getMatch() != null) {
-                    future.set(env.getMatch());
-                } else if (env.getMatchmakerTicket() != null) {
-                    future.set(env.getMatchmakerTicket());
-                } else if (env.getStatus() != null) {
-                    future.set(env.getStatus());
                 } else {
-                    future.set(null);
+                    final SettableFuture future = collationIds.remove(collationId);
+                    if (future == null) {
+                        log.warn("No matching future for incoming collation ID: " + collationId);
+                        return;
+                    }
+
+                    if (env.getError() != null) {
+                        future.setException(new DefaultError(collationId, env.getError()));
+                    } else if (env.getRpc() != null) {
+                        final com.heroiclabs.nakama.api.Rpc.Builder apiRpcBuilder = com.heroiclabs.nakama.api.Rpc.newBuilder();
+                        if (env.getRpc().getId() != null) {
+                            apiRpcBuilder.setId(env.getRpc().getId());
+                        }
+                        if (env.getRpc().getPayload() != null) {
+                            apiRpcBuilder.setPayload(env.getRpc().getPayload());
+                        }
+                        future.set(apiRpcBuilder.build());
+                    } else if (env.getChannel() != null) {
+                        future.set(env.getChannel());
+                    } else if (env.getChannelMessageAck() != null) {
+                        future.set(env.getChannelMessageAck());
+                    } else if (env.getMatch() != null) {
+                        future.set(env.getMatch());
+                    } else if (env.getMatchmakerTicket() != null) {
+                        future.set(env.getMatchmakerTicket());
+                    } else if (env.getStatus() != null) {
+                        future.set(env.getStatus());
+                    } else {
+                        future.set(null);
+                    }
                 }
             }
 
@@ -219,7 +253,7 @@ public class WebSocketClient implements SocketClient {
                     // TODO callback any leftover deferred items with a disconnect error message?
                     collationIds.clear();
                 }
-                listener.onDisconnect();
+                listener.onDisconnect(null);
             }
 
             @Override
@@ -231,7 +265,8 @@ public class WebSocketClient implements SocketClient {
                     // TODO callback any leftover deferred items with a disconnect error message?
                     collationIds.clear();
                 }
-                listener.onDisconnect();
+
+                listener.onDisconnect(t);
             }
         });
         return future;
@@ -259,7 +294,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Channel> channelJoin(@NonNull final String target, @NonNull final ChannelType type, @NonNull final boolean persistence) {
+    public ListenableFuture<Channel> channelJoin(@NonNull final String target, @NonNull final ChannelType type, final boolean persistence) {
         final ChannelJoinMessage msg = new ChannelJoinMessage(target, type.getValue());
         msg.setPersistence(persistence);
 
@@ -269,7 +304,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Channel> channelJoin(@NonNull final String target, @NonNull final ChannelType type, @NonNull final boolean persistence, @NonNull final boolean hidden) {
+    public ListenableFuture<Channel> channelJoin(@NonNull final String target, @NonNull final ChannelType type, final boolean persistence, final boolean hidden) {
         final ChannelJoinMessage msg = new ChannelJoinMessage(target, type.getValue());
         msg.setPersistence(persistence);
         msg.setHidden(hidden);

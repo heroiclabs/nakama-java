@@ -18,6 +18,8 @@ package com.heroiclabs.nakama;
 
 import lombok.*;
 
+import java.util.Date;
+
 @Getter
 @EqualsAndHashCode
 @ToString
@@ -28,6 +30,6 @@ class Notification {
     private String content;
     private int code;
     private String senderId;
-    private String createTime;
+    private Date createTime;
     private boolean persistent;
 }

@@ -24,11 +24,12 @@ import java.util.Map;
 
 public interface SocketClient {
     ListenableFuture<Session> connect(@NonNull final Session session, @NonNull final ClientListener listener);
+    ListenableFuture<Session> connect(@NonNull final Session session, @NonNull final ClientListener listener, final boolean createStatus);
     ListenableFuture<Boolean> disconnect();
 
     ListenableFuture<Channel> channelJoin(@NonNull final String target, @NonNull final ChannelType type);
-    ListenableFuture<Channel> channelJoin(@NonNull final String target, @NonNull final ChannelType type, @NonNull boolean persistence);
-    ListenableFuture<Channel> channelJoin(@NonNull final String target, @NonNull final ChannelType type, @NonNull boolean persistence, @NonNull boolean hidden);
+    ListenableFuture<Channel> channelJoin(@NonNull final String target, @NonNull final ChannelType type, boolean persistence);
+    ListenableFuture<Channel> channelJoin(@NonNull final String target, @NonNull final ChannelType type, boolean persistence, boolean hidden);
 
     ListenableFuture<Void> channelLeave(@NonNull final String channelId);
 

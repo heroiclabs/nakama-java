@@ -18,6 +18,8 @@ package com.heroiclabs.nakama;
 
 import lombok.*;
 
+import java.util.Date;
+
 @Getter
 @EqualsAndHashCode
 @ToString
@@ -29,7 +31,7 @@ class ChannelMessage {
     private String senderId;
     private String username;
     private String content;
-    private String createTime;
-    private String updateTime;
+    private Date createTime;
+    private Date updateTime;
     private boolean persistent;
 }

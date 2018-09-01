@@ -22,7 +22,7 @@ import java.util.Map;
 
 @Data
 class WebSocketError {
-    int code;
-    String message;
-    Map<String, String> context;
+    private int code;
+    private String message;
+    private Map<String, String> context;
 }

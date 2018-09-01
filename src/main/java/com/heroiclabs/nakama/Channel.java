@@ -40,7 +40,7 @@ enum ChannelType {
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Channel {
-    public String id;
-    public List<UserPresence> presences;
-    public UserPresence self;
+    private String id;
+    private List<UserPresence> presences;
+    private UserPresence self;
 }

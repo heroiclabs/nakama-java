@@ -24,6 +24,6 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class StreamData {
     private UserPresence sender;
-    private byte[] data;
+    private String data;
     private Stream stream;
 }

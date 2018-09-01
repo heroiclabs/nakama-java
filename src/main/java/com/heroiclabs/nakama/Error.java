@@ -28,14 +28,14 @@ public abstract class Error extends Exception {
     /**
      * @param message The error message to construct with.
      */
-    public Error(final @NonNull String message) {
+    Error(final @NonNull String message) {
         super(message);
     }
 
     /**
      * @param message The error message to construct with.
      */
-    public Error(final @NonNull String message, final @NonNull Throwable cause) {
+    Error(final @NonNull String message, final @NonNull Throwable cause) {
         super(message, cause);
     }
 

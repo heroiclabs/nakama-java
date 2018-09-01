@@ -36,7 +36,6 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class DefaultClient implements Client {
-
     private static final String USERAGENT = "nakama-java-client";
 
     private final String host;
@@ -129,7 +128,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Empty> addFriends(@NonNull final Session session, @NonNull final Iterable<String> ids, @NonNull final String... usernames) {
+    public ListenableFuture<Empty> addFriends(@NonNull final Session session, final Iterable<String> ids, final String... usernames) {
         final var builder = AddFriendsRequest.newBuilder();
         if (ids != null) {
             builder.addAllIds(ids);
@@ -482,7 +481,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Empty> blockFriends(@NonNull final Session session, @NonNull final Iterable<String> ids, @NonNull final String... usernames) {
+    public ListenableFuture<Empty> blockFriends(@NonNull final Session session, final Iterable<String> ids, final String... usernames) {
         final var builder = BlockFriendsRequest.newBuilder();
         if (ids != null) {
             builder.addAllIds(ids);
@@ -499,17 +498,17 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, @NonNull final String description) {
+    public ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, final String description) {
         return createGroup(session, name, description, null, null);
     }
 
     @Override
-    public ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl) {
+    public ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, final String description, final String avatarUrl) {
         return createGroup(session, name, description, avatarUrl, null);
     }
 
     @Override
-    public ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl, @NonNull final String langTag) {
+    public ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, final String description, final String avatarUrl, final String langTag) {
         final var builder = CreateGroupRequest.newBuilder().setName(name);
 
         if (description != null) {
@@ -526,7 +525,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl, @NonNull final String langTag, @NonNull final boolean open) {
+    public ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, final String description, final String avatarUrl, final String langTag, final boolean open) {
         final var builder = CreateGroupRequest.newBuilder().setName(name).setOpen(open);
 
         if (description != null) {
@@ -548,7 +547,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Empty> deleteFriends(@NonNull final Session session, @NonNull final Iterable<String> ids, @NonNull final String... usernames) {
+    public ListenableFuture<Empty> deleteFriends(@NonNull final Session session, final Iterable<String> ids, final String... usernames) {
         final var builder = DeleteFriendsRequest.newBuilder();
         if (ids != null) {
             builder.addAllIds(ids);
@@ -577,7 +576,7 @@ public class DefaultClient implements Client {
     @Override
     public ListenableFuture<Empty> deleteStorageObjects(@NonNull final Session session, @NonNull final StorageObjectId... objectIds) {
         final DeleteStorageObjectsRequest.Builder builder = DeleteStorageObjectsRequest.newBuilder();
-        for (@NonNull final StorageObjectId id : objectIds) {
+        for (final StorageObjectId id : objectIds) {
             final DeleteStorageObjectId.Builder b = DeleteStorageObjectId.newBuilder()
                     .setCollection(id.getCollection());
 
@@ -606,7 +605,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Users> getUsers(@NonNull final Session session, @NonNull final Iterable<String> ids, @NonNull final String... usernames) {
+    public ListenableFuture<Users> getUsers(@NonNull final Session session, final Iterable<String> ids, final String... usernames) {
         final var builder = GetUsersRequest.newBuilder();
         if (ids != null) {
             builder.addAllIds(ids);
@@ -618,7 +617,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Users> getUsers(@NonNull final Session session, @NonNull final Iterable<String> ids, @NonNull final Iterable<String> usernames, @NonNull final String... facebookIds) {
+    public ListenableFuture<Users> getUsers(@NonNull final Session session, final Iterable<String> ids, final Iterable<String> usernames, final String... facebookIds) {
         final var builder = GetUsersRequest.newBuilder();
         if (ids != null) {
             builder.addAllIds(ids);
@@ -723,12 +722,12 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId, @NonNull final int limit) {
+    public ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId, final int limit) {
         return listChannelMessages(session, channelId, limit, null);
     }
 
     @Override
-    public ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId, @NonNull final int limit, @NonNull final String cursor) {
+    public ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId, final int limit, final String cursor) {
         final var builder = ListChannelMessagesRequest.newBuilder().setChannelId(channelId);
         if (limit > 0) {
             builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
@@ -740,7 +739,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId, @NonNull final int limit, @NonNull final String cursor, @NonNull final boolean forward) {
+    public ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId, final int limit, final String cursor, final boolean forward) {
         final var builder = ListChannelMessagesRequest.newBuilder().setChannelId(channelId);
         builder.setForward(BoolValue.newBuilder().setValue(forward).getDefaultInstanceForType());
         if (limit > 0) {
@@ -768,12 +767,12 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<GroupList> listGroups(@NonNull final Session session, @NonNull final String name, @NonNull final int limit) {
+    public ListenableFuture<GroupList> listGroups(@NonNull final Session session, @NonNull final String name, final int limit) {
         return listGroups(session, name, limit, null);
     }
 
     @Override
-    public ListenableFuture<GroupList> listGroups(@NonNull final Session session, @NonNull final String name, @NonNull final int limit, @NonNull final String cursor) {
+    public ListenableFuture<GroupList> listGroups(@NonNull final Session session, final String name, final int limit, final String cursor) {
         final var builder = ListGroupsRequest.newBuilder();
         if (name != null) {
             builder.setName(name);
@@ -793,17 +792,17 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final String... ownerIds) {
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final String... ownerIds) {
         return listLeaderboardRecords(session, leaderboardId, Arrays.asList(ownerIds), 0, null);
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final Iterable<String> ownerIds, @NonNull final int limit) {
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds, final int limit) {
         return listLeaderboardRecords(session, leaderboardId, ownerIds, limit, null);
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final Iterable<String> ownerIds, @NonNull final int limit, @NonNull final String cursor) {
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds, final int limit, final String cursor) {
         final var builder = ListLeaderboardRecordsRequest.newBuilder().setLeaderboardId(leaderboardId);
         if (ownerIds != null) {
             builder.addAllOwnerIds(ownerIds);
@@ -823,22 +822,22 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<MatchList> listMatches(@NonNull final Session session, @NonNull final int min) {
+    public ListenableFuture<MatchList> listMatches(@NonNull final Session session, final int min) {
         return listMatches(session, min, -1, 0, null);
     }
 
     @Override
-    public ListenableFuture<MatchList> listMatches(@NonNull final Session session, @NonNull final int min, @NonNull final int max) {
+    public ListenableFuture<MatchList> listMatches(@NonNull final Session session, final int min, final int max) {
         return listMatches(session, min, max, 0, null);
     }
 
     @Override
-    public ListenableFuture<MatchList> listMatches(@NonNull final Session session, @NonNull final int min, @NonNull final int max, @NonNull final int limit) {
+    public ListenableFuture<MatchList> listMatches(@NonNull final Session session, final int min, final int max, final int limit) {
         return listMatches(session, min, max, limit, null);
     }
 
     @Override
-    public ListenableFuture<MatchList> listMatches(@NonNull final Session session, @NonNull final int min, @NonNull final int max, @NonNull final int limit, @NonNull final String label) {
+    public ListenableFuture<MatchList> listMatches(@NonNull final Session session, final int min, final int max, final int limit, final String label) {
         final var builder = ListMatchesRequest.newBuilder();
         if (min >= 0) {
             builder.setMinSize(Int32Value.newBuilder().setValue(min).build());
@@ -856,7 +855,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<MatchList> listMatches(@NonNull final Session session, @NonNull final int min, @NonNull final int max, @NonNull final int limit, @NonNull final String label, @NonNull final boolean authoritative) {
+    public ListenableFuture<MatchList> listMatches(@NonNull final Session session, final int min, final int max, final int limit, final String label, final boolean authoritative) {
         final var builder = ListMatchesRequest.newBuilder();
         if (min >= 0) {
             builder.setMinSize(Int32Value.newBuilder().setValue(min).build());
@@ -880,12 +879,12 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<com.heroiclabs.nakama.api.NotificationList> listNotifications(@NonNull final Session session, @NonNull final int limit) {
+    public ListenableFuture<com.heroiclabs.nakama.api.NotificationList> listNotifications(@NonNull final Session session, final int limit) {
         return listNotifications(session, limit, null);
     }
 
     @Override
-    public ListenableFuture<com.heroiclabs.nakama.api.NotificationList> listNotifications(@NonNull final Session session, @NonNull final int limit, @NonNull final String cacheableCursor) {
+    public ListenableFuture<com.heroiclabs.nakama.api.NotificationList> listNotifications(@NonNull final Session session, final int limit, final String cacheableCursor) {
         final var builder = ListNotificationsRequest.newBuilder();
         if (limit > 0) {
             builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
@@ -902,12 +901,12 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection, @NonNull final int limit) {
+    public ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection, final int limit) {
         return listStorageObjects(session, collection, limit, null);
     }
 
     @Override
-    public ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection, @NonNull final int limit, @NonNull final String cursor) {
+    public ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection, final int limit, final String cursor) {
         return listUsersStorageObjects(session, null, collection, 0, null);
     }
 
@@ -917,7 +916,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<UserGroupList> listUserGroups(@NonNull final Session session, @NonNull final String userId) {
+    public ListenableFuture<UserGroupList> listUserGroups(@NonNull final Session session, final String userId) {
         final var builder = ListUserGroupsRequest.newBuilder();
         if (userId != null) {
             builder.setUserId(userId);
@@ -926,17 +925,17 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, @NonNull final String userId) {
+    public ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, final String userId) {
         return listUsersStorageObjects(session, userId, collection, 0, null);
     }
 
     @Override
-    public ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, @NonNull final String userId, @NonNull final int limit) {
+    public ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, final String userId, final int limit) {
         return listUsersStorageObjects(session, userId, collection, limit, null);
     }
 
     @Override
-    public ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, @NonNull final String userId, @NonNull final int limit, @NonNull final String cursor) {
+    public ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, final String userId, final int limit, final String cursor) {
         final var builder = ListStorageObjectsRequest.newBuilder().setCollection(collection);
         if (userId != null) {
             builder.setUserId(userId);
@@ -1047,32 +1046,32 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username) {
+    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, final String username) {
         return updateAccount(session, username, null, null, null, null, null);
     }
 
     @Override
-    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username, @NonNull final String displayName) {
+    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, final String username, final String displayName) {
         return updateAccount(session, username, displayName, null, null, null, null);
     }
 
     @Override
-    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username, @NonNull final String displayName, @NonNull final String avatarUrl) {
+    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, final String username, final String displayName, final String avatarUrl) {
         return updateAccount(session, username, displayName, avatarUrl, null, null, null);
     }
 
     @Override
-    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username, @NonNull final String displayName, @NonNull final String avatarUrl, @NonNull final String langTag) {
+    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, final String username, final String displayName, final String avatarUrl, final String langTag) {
         return updateAccount(session, username, displayName, avatarUrl, langTag, null, null);
     }
 
     @Override
-    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username, @NonNull final String displayName, @NonNull final String avatarUrl, @NonNull final String langTag, @NonNull final String location) {
+    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, final String username, final String displayName, final String avatarUrl, final String langTag, final String location) {
         return updateAccount(session, username, displayName, avatarUrl, langTag, location, null);
     }
 
     @Override
-    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username, @NonNull final String displayName, @NonNull final String avatarUrl, @NonNull final String langTag, @NonNull final String location, @NonNull final String timezone) {
+    public ListenableFuture<Empty> updateAccount(@NonNull final Session session, final String username, final String displayName, final String avatarUrl, final String langTag, final String location, final String timezone) {
         final var builder = UpdateAccountRequest.newBuilder();
         if (username != null) {
             builder.setUsername(StringValue.newBuilder().setValue(username).build());
@@ -1096,22 +1095,22 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, @NonNull final String name) {
+    public ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, final String name) {
         return updateGroup(session, groupId, name, null, null, null);
     }
 
     @Override
-    public ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, @NonNull final String name, @NonNull final String description) {
+    public ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, final String name, final String description) {
         return updateGroup(session, groupId, name, description, null, null);
     }
 
     @Override
-    public ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl) {
+    public ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, final String name, final String description, final String avatarUrl) {
         return updateGroup(session, groupId, name, description, avatarUrl, null);
     }
 
     @Override
-    public ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl, @NonNull final String langTag) {
+    public ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, final String name, final String description, final String avatarUrl, final String langTag) {
         final var builder = UpdateGroupRequest.newBuilder().setGroupId(groupId);
         if (name != null) {
             builder.setName(StringValue.newBuilder().setValue(name).build());
@@ -1129,7 +1128,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl, @NonNull final String langTag, @NonNull final boolean open) {
+    public ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, final String name, final String description, final String avatarUrl, final String langTag, final boolean open) {
         final var builder = UpdateGroupRequest.newBuilder().setGroupId(groupId);
         if (name != null) {
             builder.setName(StringValue.newBuilder().setValue(name).build());
@@ -1148,7 +1147,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score) {
+    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score) {
         final var builder = WriteLeaderboardRecordRequest.newBuilder().setLeaderboardId(leaderboardId);
         final var recordBuilder = WriteLeaderboardRecordRequest.LeaderboardRecordWrite.newBuilder().setScore(score);
         builder.setRecord(recordBuilder.build());
@@ -1156,7 +1155,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score, @NonNull final long subscore) {
+    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score, final long subscore) {
         final var builder = WriteLeaderboardRecordRequest.newBuilder().setLeaderboardId(leaderboardId);
         final var recordBuilder = WriteLeaderboardRecordRequest.LeaderboardRecordWrite.newBuilder()
                 .setScore(score)
@@ -1166,7 +1165,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score, @NonNull final String metadata) {
+    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score, final String metadata) {
         final var builder = WriteLeaderboardRecordRequest.newBuilder().setLeaderboardId(leaderboardId);
         final var recordBuilder = WriteLeaderboardRecordRequest.LeaderboardRecordWrite.newBuilder()
                 .setScore(score)
@@ -1176,7 +1175,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score, @NonNull final long subscore, @NonNull final String metadata) {
+    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score, final long subscore, final String metadata) {
         final var builder = WriteLeaderboardRecordRequest.newBuilder().setLeaderboardId(leaderboardId);
         final var recordBuilder = WriteLeaderboardRecordRequest.LeaderboardRecordWrite.newBuilder()
                 .setScore(score)

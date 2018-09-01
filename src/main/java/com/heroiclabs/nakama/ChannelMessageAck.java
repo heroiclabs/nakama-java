@@ -18,16 +18,18 @@ package com.heroiclabs.nakama;
 
 import lombok.*;
 
+import java.util.Date;
+
 @Getter
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class ChannelMessageAck {
+    private String messageId;
     private String channelId;
     private int code;
-    private String createTime;
-    private String messageId;
-    private boolean persistent;
-    private String updateTime;
     private String username;
+    private boolean persistent;
+    private Date createTime;
+    private Date updateTime;
 }

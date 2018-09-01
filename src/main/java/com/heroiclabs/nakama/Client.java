@@ -26,7 +26,7 @@ public interface Client {
     SocketClient createSocket(@NonNull final String host, @NonNull final int port, @NonNull final boolean ssl, @NonNull final int socketTimeoutMs);
     
     ListenableFuture<Empty> addFriends(@NonNull final Session session, @NonNull final String... ids);
-    ListenableFuture<Empty> addFriends(@NonNull final Session session, @NonNull final Iterable<String> ids, @NonNull final String... usernames);
+    ListenableFuture<Empty> addFriends(@NonNull final Session session, final Iterable<String> ids, final String... usernames);
 
     ListenableFuture<Empty> addGroupUsers(@NonNull final Session session, @NonNull final String groupId, @NonNull final String... ids);
 
@@ -66,16 +66,16 @@ public interface Client {
     ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, @NonNull final boolean create, @NonNull final String username);
 
     ListenableFuture<Empty> blockFriends(@NonNull final Session session, @NonNull final String... ids);
-    ListenableFuture<Empty> blockFriends(@NonNull final Session session, @NonNull final Iterable<String> ids, @NonNull final String... usernames);
+    ListenableFuture<Empty> blockFriends(@NonNull final Session session, final Iterable<String> ids, final String... usernames);
 
     ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name);
-    ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, @NonNull final String description);
-    ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl);
-    ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl, @NonNull final String langTag);
-    ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl, @NonNull final String langTag, @NonNull final boolean open);
+    ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, final String description);
+    ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, final String description, final String avatarUrl);
+    ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, final String description, final String avatarUrl, final String langTag);
+    ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, final String description, final String avatarUrl, final String langTag, final boolean open);
 
     ListenableFuture<Empty> deleteFriends(@NonNull final Session session, @NonNull final String... ids);
-    ListenableFuture<Empty> deleteFriends(@NonNull final Session session, @NonNull final Iterable<String> ids, @NonNull final String... usernames);
+    ListenableFuture<Empty> deleteFriends(@NonNull final Session session, final Iterable<String> ids, final String... usernames);
 
     ListenableFuture<Empty> deleteGroup(@NonNull final Session session, @NonNull final String groupId);
 
@@ -87,8 +87,8 @@ public interface Client {
 
     ListenableFuture<Account> getAccount(@NonNull final Session session);
     ListenableFuture<Users> getUsers(@NonNull final Session session, @NonNull final String... ids);
-    ListenableFuture<Users> getUsers(@NonNull final Session session, @NonNull final Iterable<String> ids, @NonNull final String... usernames);
-    ListenableFuture<Users> getUsers(@NonNull final Session session, @NonNull final Iterable<String> ids, @NonNull final Iterable<String> usernames, @NonNull final String... facebookIds);
+    ListenableFuture<Users> getUsers(@NonNull final Session session, final Iterable<String> ids, final String... usernames);
+    ListenableFuture<Users> getUsers(@NonNull final Session session, final Iterable<String> ids, final Iterable<String> usernames, final String... facebookIds);
 
     ListenableFuture<Empty> importFacebookFriends(@NonNull final Session session, @NonNull final String token);
     ListenableFuture<Empty> importFacebookFriends(@NonNull final Session session, @NonNull final String token, @NonNull final boolean reset);
@@ -107,43 +107,43 @@ public interface Client {
     ListenableFuture<Empty> linkGameCenter(@NonNull final Session session, @NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl);
 
     ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId);
-    ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId, @NonNull final int limit);
-    ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId, @NonNull final int limit, @NonNull final String cursor);
-    ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId, @NonNull final int limit, @NonNull final String cursor, @NonNull final boolean forward);
+    ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId, final int limit);
+    ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId, final int limit, final String cursor);
+    ListenableFuture<ChannelMessageList> listChannelMessages(@NonNull final Session session, @NonNull final String channelId, final int limit, final String cursor, final boolean forward);
 
     ListenableFuture<Friends> listFriends(@NonNull final Session session);
 
     ListenableFuture<GroupUserList> listGroupUsers(@NonNull final Session session, @NonNull final String groupId);
     ListenableFuture<GroupList> listGroups(@NonNull final Session session, @NonNull final String name);
-    ListenableFuture<GroupList> listGroups(@NonNull final Session session, @NonNull final String name, @NonNull final int limit);
-    ListenableFuture<GroupList> listGroups(@NonNull final Session session, @NonNull final String name, @NonNull final int limit, @NonNull final String cursor);
+    ListenableFuture<GroupList> listGroups(@NonNull final Session session, @NonNull final String name, final int limit);
+    ListenableFuture<GroupList> listGroups(@NonNull final Session session, final String name, final int limit, final String cursor);
 
     ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId);
-    ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final String... ownerIds);
-    ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final Iterable<String> ownerIds, @NonNull final int limit);
-    ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final Iterable<String> ownerIds, @NonNull final int limit, @NonNull final String cursor);
+    ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final String... ownerIds);
+    ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds, final int limit);
+    ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds, final int limit, final String cursor);
 
     ListenableFuture<MatchList> listMatches(@NonNull final Session session);
-    ListenableFuture<MatchList> listMatches(@NonNull final Session session, @NonNull final int min);
-    ListenableFuture<MatchList> listMatches(@NonNull final Session session, @NonNull final int min, @NonNull final int max);
-    ListenableFuture<MatchList> listMatches(@NonNull final Session session, @NonNull final int min, @NonNull final int max, @NonNull final int limit);
-    ListenableFuture<MatchList> listMatches(@NonNull final Session session, @NonNull final int min, @NonNull final int max, @NonNull final int limit, @NonNull final String label);
-    ListenableFuture<MatchList> listMatches(@NonNull final Session session, @NonNull final int min, @NonNull final int max, @NonNull final int limit, @NonNull final String label, @NonNull final boolean authoritative);
+    ListenableFuture<MatchList> listMatches(@NonNull final Session session, final int min);
+    ListenableFuture<MatchList> listMatches(@NonNull final Session session, final int min, final int max);
+    ListenableFuture<MatchList> listMatches(@NonNull final Session session, final int min, final int max, final int limit);
+    ListenableFuture<MatchList> listMatches(@NonNull final Session session, final int min, final int max, final int limit, final String label);
+    ListenableFuture<MatchList> listMatches(@NonNull final Session session, final int min, final int max, final int limit, final String label, final boolean authoritative);
 
     ListenableFuture<com.heroiclabs.nakama.api.NotificationList> listNotifications(@NonNull final Session session);
-    ListenableFuture<com.heroiclabs.nakama.api.NotificationList> listNotifications(@NonNull final Session session, @NonNull final int limit);
-    ListenableFuture<com.heroiclabs.nakama.api.NotificationList> listNotifications(@NonNull final Session session, @NonNull final int limit, @NonNull final String cacheableCursor);
+    ListenableFuture<com.heroiclabs.nakama.api.NotificationList> listNotifications(@NonNull final Session session, final int limit);
+    ListenableFuture<com.heroiclabs.nakama.api.NotificationList> listNotifications(@NonNull final Session session, final int limit, final String cacheableCursor);
 
     ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection);
-    ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection, @NonNull final int limit);
-    ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection, @NonNull final int limit, @NonNull final String cursor);
+    ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection, final int limit);
+    ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection, final int limit, final String cursor);
 
     ListenableFuture<UserGroupList> listUserGroups(@NonNull final Session session);
-    ListenableFuture<UserGroupList> listUserGroups(@NonNull final Session session, @NonNull final String userId);
+    ListenableFuture<UserGroupList> listUserGroups(@NonNull final Session session, final String userId);
 
-    ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, @NonNull final String userId);
-    ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, @NonNull final String userId, @NonNull final int limit);
-    ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, @NonNull final String userId, @NonNull final int limit, @NonNull final String cursor);
+    ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, final String userId);
+    ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, final String userId, final int limit);
+    ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, final String userId, final int limit, final String cursor);
 
     ListenableFuture<Empty> promoteGroupUsers(@NonNull final Session session, @NonNull final String groupId, @NonNull final String... ids);
 
@@ -164,23 +164,23 @@ public interface Client {
     ListenableFuture<Empty> unlinkSteam(@NonNull final Session session, @NonNull final String token);
     ListenableFuture<Empty> unlinkGameCenter(@NonNull final Session session, @NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl);
 
-    ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username);
-    ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username, @NonNull final String displayName);
-    ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username, @NonNull final String displayName, @NonNull final String avatarUrl);
-    ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username, @NonNull final String displayName, @NonNull final String avatarUrl, @NonNull final String langTag);
-    ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username, @NonNull final String displayName, @NonNull final String avatarUrl, @NonNull final String langTag, @NonNull final String location);
-    ListenableFuture<Empty> updateAccount(@NonNull final Session session, @NonNull final String username, @NonNull final String displayName, @NonNull final String avatarUrl, @NonNull final String langTag, @NonNull final String location, @NonNull final String timezone);
+    ListenableFuture<Empty> updateAccount(@NonNull final Session session, final String username);
+    ListenableFuture<Empty> updateAccount(@NonNull final Session session, final String username, final String displayName);
+    ListenableFuture<Empty> updateAccount(@NonNull final Session session, final String username, final String displayName, final String avatarUrl);
+    ListenableFuture<Empty> updateAccount(@NonNull final Session session, final String username, final String displayName, final String avatarUrl, final String langTag);
+    ListenableFuture<Empty> updateAccount(@NonNull final Session session, final String username, final String displayName, final String avatarUrl, final String langTag, final String location);
+    ListenableFuture<Empty> updateAccount(@NonNull final Session session, final String username, final String displayName, final String avatarUrl, final String langTag, final String location, final String timezone);
 
-    ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, @NonNull final String name);
-    ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, @NonNull final String name, @NonNull final String description);
-    ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl);
-    ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl, @NonNull final String langTag);
-    ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, @NonNull final String name, @NonNull final String description, @NonNull final String avatarUrl, @NonNull final String langTag, @NonNull final boolean open);
+    ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, final String name);
+    ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, final String name, final String description);
+    ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, final String name, final String description, final String avatarUrl);
+    ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, final String name, final String description, final String avatarUrl, final String langTag);
+    ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, final String name, final String description, final String avatarUrl, final String langTag, final boolean open);
 
-    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score);
-    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score, @NonNull final long subscore);
-    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score, @NonNull final String metadata);
-    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score, @NonNull final long subscore, @NonNull final String metadata);
+    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score);
+    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score, final long subscore);
+    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score, final String metadata);
+    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score, final long subscore, final String metadata);
 
     ListenableFuture<StorageObjectAcks> writeStorageObjects(@NonNull final Session session, @NonNull final StorageObjectWrite... objects);
 

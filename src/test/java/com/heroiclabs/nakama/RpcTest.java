@@ -49,7 +49,8 @@ public class RpcTest {
     public void testPingRpcSocket() throws Exception {
         socket.connect(session, new AbstractClientListener() {
             @Override
-            public void onDisconnect() {
+            public void onDisconnect(final Throwable t) {
+                t.printStackTrace();
                 Assert.fail("Socket was disconnected");
             }
         });

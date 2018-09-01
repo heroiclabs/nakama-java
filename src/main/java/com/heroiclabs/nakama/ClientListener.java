@@ -25,69 +25,71 @@ import com.heroiclabs.nakama.api.NotificationList;
 public interface ClientListener {
     /**
      * Called when the client socket disconnects.
+     *
+     * Throwable t is set if an error caused the disconnect.
      */
-    void onDisconnect();
+    void onDisconnect(final Throwable t);
 
     /**
      * Called when a new topic message has been received.
      *
      * @param message The {@code ChannelMessage} received.
      */
-    void onChannelMessage(ChannelMessage message);
+    void onChannelMessage(final ChannelMessage message);
 
     /**
      * Called when a new topic presence update has been received.
      *
      * @param presence The {@code ChannelPresenceEvent} received.
      */
-    void onChannelPresence(ChannelPresenceEvent presence);
+    void onChannelPresence(final ChannelPresenceEvent presence);
 
     /**
      * Called when a matchmaking has found a match.
      *
      * @param matched The {@code MatchmakerMatched} received.
      */
-    void onMatchmakeMatched(MatchmakerMatched matched);
+    void onMatchmakeMatched(final MatchmakerMatched matched);
 
     /**
      * Called when a new match data is received.
      *
      * @param matchData The {@code MatchData} received.
      */
-    void onMatchData(MatchData matchData);
+    void onMatchData(final MatchData matchData);
 
     /**
      * Called when a new match presence update is received.
      *
      * @param matchPresence The {@code MatchPresenceEvent} received.
      */
-    void onMatchPresence(MatchPresenceEvent matchPresence);
+    void onMatchPresence(final MatchPresenceEvent matchPresence);
 
     /**
      * Called when the client receives new notifications.
      *
      * @param notifications The list of {@code Notification} received.
      */
-    void onNotifications(NotificationList notifications);
+    void onNotifications(final NotificationList notifications);
 
     /**
      * Called when the client receives status presence updates.
      *
      * @param presence Updated {@code StatusPresenceEvent} presence.
      */
-    void onStatusPresence(StatusPresenceEvent presence);
+    void onStatusPresence(final StatusPresenceEvent presence);
 
     /**
      * Called when the client receives stream presence updates.
      *
      * @param presence Updated {@code StreamPresenceEvent} presence.
      */
-    void onStreamPresence(StreamPresenceEvent presence);
+    void onStreamPresence(final StreamPresenceEvent presence);
 
     /**
      * Called when the client receives stream data.
      *
      * @param data Stream {@code StreamData} data received.
      */
-    void onStreamData(StreamData data);
+    void onStreamData(final StreamData data);
 }
