@@ -3,17 +3,19 @@ Nakama Java
 
 > Android optimized Java client for Nakama server.
 
-Nakama is an [open-source](https://github.com/heroiclabs/nakama) distributed server for social and realtime games and apps. For more information have a look at the [documentation](https://heroiclabs.com/docs/).
+[Nakama](https://github.com/heroiclabs/nakama) is an open-source server designed to power modern games and apps. Features include user accounts, chat, social, matchmaker, realtime multiplayer, and much [more](https://heroiclabs.com).
 
-This client implements the protocol and all features available in the server. It is compatible with Java 1.7+ and Android 2.3+. The [Javadocs](https://heroiclabs.github.io/nakama-java/current/) for the client are maintained on GitHub Pages.
+This client implements the full API and socket options with the server. It's written in C# with minimal dependencies to support Unity, Xamarin, Godot, XNA, and other engines and frameworks.
 
-If you encounter any issues with the server you can generate diagnostics for us with the [doctor](https://heroiclabs.com/docs/install-server-cli/#doctor) subcommand. Send these to support@heroiclabs.com or [open an issue](https://github.com/heroiclabs/nakama/issues). If you experience any issues with the client, it can be useful to [enable trace](https://heroiclabs.com/docs/android-java-client-guide/#logs-and-errors) to produce detailed logs and [open an issue](https://github.com/heroiclabs/nakama-java/issues).
+Full documentation is online - https://heroiclabs.com/docs
 
-## Usage
+## Getting Started
 
-The client can be downloaded from [GitHub releases](https://github.com/heroiclabs/nakama-java/releases). You can download "nakama-java-$version.jar" or "nakama-java-$version-all.jar" which includes a shadowed copy of all dependencies.
+You'll need to setup the server and database before you can connect with the client. The simplest way is to use Docker but have a look at the [server documentation](https://github.com/heroiclabs/nakama#getting-started) for other options.
 
-If you use a build tool like Gradle you can skip the download and fetch it from the central repository.
+1. Install and run the servers. Follow these [instructions](https://heroiclabs.com/docs/install-docker-quickstart).
+
+2. Download the client from the [releases page](https://github.com/heroiclabs/nakama-java/releases) and import it into your project. You can also [build from source](#source-builds). Alternatively, if you use a build tool like Gradle you can skip the download and fetch it from the central repository.
 
 ```groovy
 repositories {
@@ -30,11 +32,7 @@ dependencies {
 }
 ```
 
-We have a guide which covers how to use the client with lots of code examples:
-
-https://heroiclabs.com/docs/android-java-client-guide/
-
-To create a client which can connect to the Nakama server with the default settings.
+3. Use the connection credentials to build a client object.
 
 ```java
 import com.heroiclabs.nakama.Client;
@@ -46,6 +44,75 @@ public class NakamaSessionManager {
     client = new DefaultClient("defaultkey", "127.0.0.1", 7349, false);
   }
 }
+```
+
+## Usage
+
+The client object has many methods to execute various features in the server or open realtime socket connections with the server.
+
+### Authenticate
+
+There's a variety of ways to [authenticate](https://heroiclabs.com/docs/authentication) with the server. Authentication can create a user if they don't already exist with those credentials. It's also easy to authenticate with a social profile from Google Play Games, Facebook, Game Center, etc.
+
+```java
+String email = "super@heroes.com";
+String password = "batsignal";
+Session session = client.authenticateEmail(email, password).get();
+System.out.println(session);
+```
+
+### Sessions
+
+When authenticated the server responds with an auth token (JWT) which contains useful properties and gets deserialized into a `Session` object.
+
+```java
+System.out.println(session.getAuthToken()); // raw JWT token
+System.out.println(session.getUserId());
+System.out.println(session.getUsername());
+System.out.println("Session has expired: " + session.isExpired());
+System.out.println("Session expires at: " + session.getExpireTime());
+```
+
+It is recommended to store the auth token from the session and check at startup if it has expired. If the token has expired you must reauthenticate. The expiry time of the token can be changed as a setting in the server.
+
+```java
+String authtoken = "restored from somewhere";
+Session session = DefaultSession.restore(authtoken);
+if (session.isExpired()) {
+    System.out.println("Session has expired. Must reauthenticate!");
+}
+```
+
+### Requests
+
+The client includes lots of builtin APIs for various features of the game server. These can be accessed with the async methods. It can also call custom logic as RPC functions on the server. These can also be executed with a socket object.
+
+All requests are sent with a session object which authorizes the client.
+
+```java
+Account account = client.getAccount(session);
+System.out.println(account.getUser().getId());
+System.out.println(account.getUser().getUsername());
+System.out.println(account.getWallet());
+```
+
+### Socket
+
+The client can create one or more sockets with the server. Each socket can have it's own event listeners registered for responses received from the server.
+
+```java
+String host = "localhost";
+int port = 7350; // different port to the main API port
+boolean ssl = false;
+SocketClient socket = client.createSocket(host, port, ssl);
+ClientListener listener = new AbstractClientListener() {
+  @Override
+  public void onDisconnect(final Throwable t) {
+      System.out.println("Socket disconnected");
+  }
+};
+socket.connect(session, listener).get();
+System.out.println("Socket connected successfully.");
 ```
 
 ### For Android
@@ -67,10 +134,6 @@ To build the codebase you will need to install these dependencies:
 * Protoc v3.6.0+
 * [Protoc Java Lite compiler](https://github.com/google/protobuf/blob/master/java/lite.md)
 
-```shell
-protoc -I./ -I/usr/local/include -I$GOPATH/src -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway --javalite_out=./ --plugin=grpc api.proto
-```
-
 The Gradle project is setup to download and manage the Google Protocol buffers compiler toolchain automatically and generate Protobuf Lite definitions required by the source code.
 
 ```
@@ -78,3 +141,7 @@ $> gradle build
 ```
 
 Run "gradle tasks" for a list of available build tasks.
+
+### License
+
+This project is licensed under the [Apache-2 License](https://github.com/heroiclabs/nakama-dotnet/blob/master/LICENSE).
