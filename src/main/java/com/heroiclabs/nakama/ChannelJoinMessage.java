@@ -19,6 +19,9 @@ package com.heroiclabs.nakama;
 import lombok.*;
 
 @Data
+/**
+ * Send a channel join message to the server.
+ */
 class ChannelJoinMessage {
     private final String target;
     private final int type;

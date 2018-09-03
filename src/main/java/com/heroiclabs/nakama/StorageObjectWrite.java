@@ -48,11 +48,37 @@ enum PermissionWrite {
 }
 
 @Data
+/**
+ * An identifier and values for a storage object.
+ */
 public class StorageObjectWrite {
+    /**
+     * The collection which stores the object.
+     */
     private final String collection;
+
+    /**
+     * The key of the object within the collection.
+     */
     private final String key;
+
+    /**
+     * The actual content of the object. Must be JSON.
+     */
     private final String value;
+
+    /**
+     * Read permission of the object.
+     */
     private final PermissionRead permissionRead;
+
+    /**
+     * Write permission of the object.
+     */
     private final PermissionWrite permissionWrite;
+
+    /**
+     * The version hash of the object to check against the server.
+     */
     private String version;
 }

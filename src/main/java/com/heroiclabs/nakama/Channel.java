@@ -20,9 +20,23 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * The available channel types on the server.
+ */
 enum ChannelType {
+    /**
+     * A chat room which can be created dynamically with a name.
+     */
     ROOM(0),
+
+    /**
+     * A private chat between two users.
+     */
     DIRECT_MESSAGE(1),
+
+    /**
+     * A chat within a group on the server.
+     */
     GROUP(2);
 
     private final int value;
@@ -39,8 +53,20 @@ enum ChannelType {
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+/**
+ * A chat channel on the server.
+ */
 public class Channel {
+    /**
+     * The server-assigned channel ID.
+     */
     private String id;
+    /**
+     * The presences visible on the chat channel.
+     */
     private List<UserPresence> presences;
+    /**
+     * The presence of the current user. i.e. Your self.
+     */
     private UserPresence self;
 }

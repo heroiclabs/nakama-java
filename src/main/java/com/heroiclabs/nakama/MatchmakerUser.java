@@ -24,8 +24,20 @@ import java.util.Map;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+/**
+ * The user with the parameters they sent to the server when asking for opponents.
+ */
 public class MatchmakerUser {
+    /**
+     * The numeric properties which this user asked to matchmake with.
+     */
     private Map<String, Double> numericProperties;
+    /**
+     * The presence of the user.
+     */
     private UserPresence presence;
+    /**
+     * The string properties which this user asked to matchmake with.
+     */
     private Map<String, String> stringProperties;
 }

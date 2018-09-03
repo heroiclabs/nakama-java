@@ -19,6 +19,9 @@ package com.heroiclabs.nakama;
 import lombok.Data;
 
 @Data
+/**
+ * Realtime message envelope.
+ */
 class WebSocketEnvelope {
     private String cid;
     private WebSocketError error;

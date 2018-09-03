@@ -19,12 +19,14 @@ package com.heroiclabs.nakama;
 import com.google.gson.Gson;
 import com.heroiclabs.nakama.api.LeaderboardRecord;
 import com.heroiclabs.nakama.api.LeaderboardRecordList;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class LeaderboardTest {
     private Client client;
@@ -34,6 +36,11 @@ public class LeaderboardTest {
     public void init() throws Exception {
         client = new DefaultClient("defaultkey");
         session = client.authenticateCustom(UUID.randomUUID().toString()).get();
+    }
+
+    @After
+    public void shutdown() throws Exception {
+        client.disconnect(5000, TimeUnit.MILLISECONDS);
     }
 
     @Test

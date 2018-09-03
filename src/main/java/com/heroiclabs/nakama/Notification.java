@@ -24,6 +24,10 @@ import java.util.Date;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+/**
+ * A notification object.
+ */
+// This message type is only used for GSON, and not exposed to the Client interface.
 class Notification {
     private String id;
     private String subject;

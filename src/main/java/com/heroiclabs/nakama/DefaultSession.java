@@ -65,11 +65,12 @@ public class DefaultSession implements Session {
         return (expireTime - dateTime.getTime()) < 0L;
     }
 
+    /**
+     * Restore a session from an authentication token.
+     * @param token The authentication token from a <c>Session</c>.
+     * @return A session restored from the authentication token.
+     */
     public static Session restore(final String token) {
         return new DefaultSession(token, false);
-    }
-
-    public static Session restore(final String token, final boolean created) {
-        return new DefaultSession(token, created);
     }
 }

@@ -17,11 +17,13 @@
 package com.heroiclabs.nakama;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class SessionTest {
     private Client client;
@@ -29,6 +31,11 @@ public class SessionTest {
     @Before
     public void init() throws Exception {
         client = new DefaultClient("defaultkey");
+    }
+
+    @After
+    public void shutdown() throws Exception {
+        client.disconnect(5000, TimeUnit.MILLISECONDS);
     }
 
     @Test

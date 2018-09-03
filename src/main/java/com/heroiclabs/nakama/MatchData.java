@@ -22,9 +22,28 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+/**
+ * Some game state update in a match.
+ */
 public class MatchData {
+    /**
+     * The unique match identifier.
+     */
     private String matchId;
+
+    /**
+     * The operation code for the state change.
+     * This value can be used to mark the type of the contents of the state.
+     */
     private long opCode;
+
+    /**
+     * he byte contents of the state change.
+     */
     private byte[] data;
+
+    /**
+     * Information on the user who sent the state change.
+     */
     private UserPresence userPresence;
 }

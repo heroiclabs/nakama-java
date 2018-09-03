@@ -16,6 +16,7 @@
 
 package com.heroiclabs.nakama;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +32,11 @@ public class SocketTest {
         final Client client = new DefaultClient("defaultkey");
         session = client.authenticateCustom(UUID.randomUUID().toString()).get();
         socket = client.createSocket("localhost", 7350, false);
+    }
+
+    @After
+    public void shutdown() throws Exception {
+        socket.disconnect();
     }
 
     @Test(expected = Error.class)

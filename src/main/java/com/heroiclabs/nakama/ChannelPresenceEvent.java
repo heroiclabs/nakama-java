@@ -24,8 +24,22 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+/**
+ * A batch of join and leave presences on a chat channel.
+ */
 public class ChannelPresenceEvent {
+    /**
+     * The unique identifier of the chat channel.
+     */
     private String channelId;
+
+    /**
+     * The unique identifier of the chat channel.
+     */
     private List<UserPresence> joins;
+
+    /**
+     * Presences of users who left the channel.
+     */
     private List<UserPresence> leaves;
 }

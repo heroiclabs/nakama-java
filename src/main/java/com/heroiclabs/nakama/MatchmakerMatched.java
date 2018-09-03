@@ -24,10 +24,30 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+
+/**
+ * The result of a successful matchmaker operation sent to the server.
+ */
 public class MatchmakerMatched {
+    /**
+     * The id used to join the match.
+     * A match ID used to join the match.
+     */
     private String matchId;
+    /**
+     * The ticket sent by the server when the user requested to matchmake for other players.
+     */
     private String ticket;
+    /**
+     * The token used to join a match.
+     */
     private String token;
+    /**
+     * The other users matched with this user and the parameters they sent.
+     */
     private List<MatchmakerUser> users;
+    /**
+     * The current user who matched with opponents.
+     */
     private MatchmakerUser self;
 }

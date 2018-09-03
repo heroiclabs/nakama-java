@@ -19,6 +19,9 @@ package com.heroiclabs.nakama;
 import lombok.Data;
 
 @Data
+/**
+ * A remove message for a chat channel.
+ */
 class ChannelRemoveMessage {
     private final String channelId;
     private final String messageId;

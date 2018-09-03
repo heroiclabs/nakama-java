@@ -21,6 +21,9 @@ import lombok.Data;
 import java.util.Map;
 
 @Data
+/**
+ * Add the user to the matchmaker pool with properties.
+ */
 class MatchmakerAddMessage {
     private int MinCount;
     private int MaxCount;

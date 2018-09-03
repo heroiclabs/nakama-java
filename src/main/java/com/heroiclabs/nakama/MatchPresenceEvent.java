@@ -24,8 +24,22 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+/**
+ * A batch of join and leave presences for a match.
+ */
 public class MatchPresenceEvent {
+    /**
+     * The unique match identifier.
+     */
     private String matchId;
+
+    /**
+     * Presences of users who joined the match.
+     */
     private List<UserPresence> joins;
+
+    /**
+     * Presences of users who left the match.
+     */
     private List<UserPresence> leaves;
 }

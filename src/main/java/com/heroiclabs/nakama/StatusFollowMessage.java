@@ -21,6 +21,9 @@ import lombok.Data;
 import java.util.List;
 
 @Data
+/**
+ * Follow one or more other users for status updates.
+ */
 class StatusFollowMessage {
     private final List<String> userIds;
 }

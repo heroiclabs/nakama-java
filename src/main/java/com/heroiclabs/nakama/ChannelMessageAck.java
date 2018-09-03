@@ -24,12 +24,42 @@ import java.util.Date;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+/**
+ * An acknowledgement from the server when a chat message is delivered to a channel.
+ */
 public class ChannelMessageAck {
+    /**
+     * A unique ID for the chat message.
+     */
     private String messageId;
+
+    /**
+     * The server-assigned channel ID.
+     */
     private String channelId;
+
+    /**
+     * A user-defined code for the chat message.
+     */
     private int code;
+
+    /**
+     * The username of the sender of the message.
+     */
     private String username;
+
+    /**
+     * True if the chat message has been stored in history.
+     */
     private boolean persistent;
+
+    /**
+     * The UNIX time when the message was created.
+     */
     private Date createTime;
+
+    /**
+     * The UNIX time when the message was updated.
+     */
     private Date updateTime;
 }

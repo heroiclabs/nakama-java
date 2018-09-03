@@ -24,7 +24,20 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+/**
+ * A status update event about other users who've come online or gone offline.
+ */
 public class StatusPresenceEvent {
+
+    /**
+     * Presences of users who joined the server.
+     *This join information is in response to a subscription made to be notified when a user comes online.
+     */
     private List<UserPresence> joins;
+
+    /**
+     * Presences of users who left the server.
+     * This leave information is in response to a subscription made to be notified when a user goes offline.
+     */
     private List<UserPresence> leaves;
 }

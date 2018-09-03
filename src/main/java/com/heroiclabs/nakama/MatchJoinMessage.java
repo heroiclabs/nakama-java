@@ -19,6 +19,9 @@ package com.heroiclabs.nakama;
 import lombok.Data;
 
 @Data
+/**
+ * A join message for a match on the server.
+ */
 class MatchJoinMessage {
     private String matchId;
     private String token;

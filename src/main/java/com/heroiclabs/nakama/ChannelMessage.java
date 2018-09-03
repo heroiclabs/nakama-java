@@ -20,10 +20,12 @@ import lombok.*;
 
 import java.util.Date;
 
-@Getter
-@EqualsAndHashCode
-@ToString
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@Data
+/**
+ * A message sent on a channel.
+ *
+ */
+// This message type is only used for GSON, and not exposed to the Client interface.
 class ChannelMessage {
     private String channelId;
     private String messageId;
@@ -35,3 +37,4 @@ class ChannelMessage {
     private Date updateTime;
     private boolean persistent;
 }
+

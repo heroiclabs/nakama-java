@@ -18,13 +18,49 @@ package com.heroiclabs.nakama;
 
 import java.util.Date;
 
+/**
+ * A session used with requests sent to Nakama server.
+ */
 public interface Session {
+    /**
+     * @return The authentication token used to construct this session.
+     */
     String getAuthToken();
+
+    /**
+     * @return <c>True</c> if the user account for this session was just created.
+     */
     boolean isCreated();
+
+    /**
+     * @return The timestamp in seconds when this session object was created.
+     */
     long getCreateTime();
+
+    /**
+     * @return The timestamp in seconds when this session will expire.
+     */
     long getExpireTime();
+
+    /**
+     * @return <c>True</c> if the session has expired against the current time.
+     */
     boolean IsExpired();
+
+    /**
+     * @return The username of the user who owns this session.
+     */
     String getUsername();
+
+    /**
+     * @return The ID of the user who owns this session.
+     */
     String getUserId();
+
+    /**
+     * Check if the session has expired against the input time.
+     * @param dateTime The time to compare against the session.
+     * @return <c>true</c> if the session has expired.
+     */
     boolean isExpired(Date dateTime);
 }

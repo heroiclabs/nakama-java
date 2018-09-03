@@ -19,6 +19,9 @@ package com.heroiclabs.nakama;
 import lombok.Data;
 
 @Data
+/**
+ * Send a chat message to a channel on the server.
+ */
 class ChannelSendMessage {
     private final String channelId;
     private final String content;

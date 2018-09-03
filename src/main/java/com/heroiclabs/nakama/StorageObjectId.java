@@ -19,9 +19,27 @@ package com.heroiclabs.nakama;
 import lombok.Data;
 
 @Data
+/**
+ * An identifier for a storage object.
+ */
 public class StorageObjectId {
+    /**
+     * The collection which stores the object.
+     */
     private final String collection;
+
+    /**
+     * The key of the object within the collection.
+     */
     private String key;
+
+    /**
+     * The version hash of the object.
+     */
     private String version;
+
+    /**
+     * The user owner of the object.
+     */
     private String userId;
 }

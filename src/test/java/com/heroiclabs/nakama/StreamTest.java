@@ -16,12 +16,14 @@
 
 package com.heroiclabs.nakama;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class StreamTest {
     private Client client;
@@ -33,6 +35,12 @@ public class StreamTest {
         client = new DefaultClient("defaultkey");
         session = client.authenticateCustom(UUID.randomUUID().toString()).get();
         socket = client.createSocket("localhost", 7350, false);
+    }
+
+    @After
+    public void shutdown() throws Exception {
+        socket.disconnect();
+        client.disconnect(5000, TimeUnit.MILLISECONDS);
     }
 
     @Test

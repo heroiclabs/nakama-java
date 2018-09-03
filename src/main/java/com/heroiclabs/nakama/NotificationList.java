@@ -24,6 +24,10 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+/**
+ * List of notifications with cursor.
+ */
+// This message type is only used for GSON, and not exposed to the Client interface.
 class NotificationList {
     private List<Notification> notifications;
     private String cacheableCursor;

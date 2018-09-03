@@ -49,14 +49,46 @@ public class DefaultClient implements Client {
     private final NakamaGrpc.NakamaFutureStub stub;
     private final Metadata basicAuthMetadata;
 
+    /**
+     * A client to interact with Nakama server.
+     * @param serverKey The key used to authenticate with the server without a session. Defaults to "defaultkey".
+     */
     public DefaultClient(@NonNull final String serverKey) {
         this(serverKey, "127.0.0.1", 7349, false);
     }
 
+    /**
+     * A client to interact with Nakama server.
+     * @param serverKey The key used to authenticate with the server without a session. Defaults to "defaultkey".
+     * @param host The host address of the server. Defaults to "127.0.0.1".
+     * @param port The port number of the server. Defaults to 7349.
+     * @param ssl Set connection strings to use the secure mode with the server. Defaults to false. The server must be configured to make use of this option. With HTTP, GRPC, and WebSockets the server must
+     * be configured with an SSL certificate or use a load balancer which performs SSL termination. For rUDP you
+     * must configure the server to expose it's IP address so it can be bundled within session tokens. See the
+     * server documentation for more information.
+     */
     public DefaultClient(@NonNull final String serverKey, @NonNull final String host, @NonNull final int port, @NonNull final boolean ssl) {
         this(serverKey, host, port, ssl, 0, Long.MAX_VALUE, 0L, false);
     }
 
+    /**
+     * A client to interact with Nakama server.
+     * @param serverKey The key used to authenticate with the server without a session. Defaults to "defaultkey".
+     * @param host The host address of the server. Defaults to "127.0.0.1".
+     * @param port The port number of the server. Defaults to 7349.
+     * @param ssl Set connection strings to use the secure mode with the server. Defaults to false. The server must be configured to make use of this option. With HTTP, GRPC, and WebSockets the server must
+     * be configured with an SSL certificate or use a load balancer which performs SSL termination. For rUDP you
+     * must configure the server to expose it's IP address so it can be bundled within session tokens. See the
+     * server documentation for more information.
+     * @param deadlineAfterMs Timeout for the gRPC messages.
+     * @param keepAliveTimeMs Sets the time without read activity before sending a keepalive ping. An unreasonably small
+     * value might be increased, and {@code Long.MAX_VALUE} nano seconds or an unreasonably large
+     * value will disable keepalive. Defaults to infinite.
+     * @param keepAliveTimeoutMs Sets the time waiting for read activity after sending a keepalive ping. If the time expires
+     * without any read activity on the connection, the connection is considered dead. An unreasonably
+     * small value might be increased. Defaults to 20 seconds.
+     * @param trace Trace all actions performed by the client. Defaults to false.
+     */
     public DefaultClient(@NonNull final String serverKey, @NonNull final String host, @NonNull final int port, @NonNull final boolean ssl,
                          final int deadlineAfterMs, @NonNull final long keepAliveTimeMs, @NonNull final long keepAliveTimeoutMs,  @NonNull final boolean trace) {
         this.host = host;
@@ -110,6 +142,17 @@ public class DefaultClient implements Client {
               return Futures.immediateFuture(result);
           }
       });
+    }
+
+    @Override
+    public void disconnect() {
+        this.managedChannel.shutdownNow();
+    }
+
+    @Override
+    public void disconnect(@NonNull final long timeout, @NonNull final TimeUnit unit) throws InterruptedException {
+        this.managedChannel.shutdown();
+        this.managedChannel.awaitTermination(timeout, unit);
     }
 
     @Override
@@ -320,6 +363,18 @@ public class DefaultClient implements Client {
                         .build())
                 .setUsername(username)
                 .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, @NonNull final boolean create, @NonNull final String username, @NonNull final boolean importFriends) {
+        return authenticateFacebook(AuthenticateFacebookRequest.newBuilder()
+                .setAccount(AccountFacebook.newBuilder()
+                        .setToken(accessToken)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .setImport(BoolValue.newBuilder().setValue(importFriends).build())
                 .build());
     }
 

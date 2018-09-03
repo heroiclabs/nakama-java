@@ -18,11 +18,13 @@ package com.heroiclabs.nakama;
 
 import com.heroiclabs.nakama.api.Rpc;
 import io.grpc.StatusRuntimeException;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class RpcTest {
     private Client client;
@@ -34,6 +36,12 @@ public class RpcTest {
         client = new DefaultClient("defaultkey");
         session = client.authenticateCustom(UUID.randomUUID().toString()).get();
         socket = client.createSocket("localhost", 7350, false);
+    }
+
+    @After
+    public void shutdown() throws Exception {
+        socket.disconnect();
+        client.disconnect(5000, TimeUnit.MILLISECONDS);
     }
 
     @Test
@@ -49,10 +57,7 @@ public class RpcTest {
     public void testPingRpcSocket() throws Exception {
         socket.connect(session, new AbstractClientListener() {
             @Override
-            public void onDisconnect(final Throwable t) {
-                t.printStackTrace();
-                Assert.fail("Socket was disconnected");
-            }
+            public void onDisconnect(final Throwable t) { }
         });
         final String rpcId = "clientrpc.rpc_get";
         final String rpcPayload = "{ \"hello\": \"world\" }";

@@ -19,6 +19,9 @@ package com.heroiclabs.nakama;
 import lombok.Data;
 
 @Data
+/**
+ * A leave message for a match on the server.
+ */
 class MatchLeaveMessage {
     private final String matchId;
 }

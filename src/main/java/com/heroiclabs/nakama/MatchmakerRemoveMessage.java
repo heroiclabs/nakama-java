@@ -19,6 +19,9 @@ package com.heroiclabs.nakama;
 import lombok.Data;
 
 @Data
+/**
+ * Remove the user from the matchmaker pool by ticket.
+ */
 class MatchmakerRemoveMessage {
     private final String ticket;
 }

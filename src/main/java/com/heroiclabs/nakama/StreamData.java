@@ -22,8 +22,23 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+
+/**
+ * A state change received from a stream.
+ */
 public class StreamData {
+    /**
+     * The user who sent the state change. May be <c>null</c>.
+     */
     private UserPresence sender;
+
+    /**
+     * The contents of the state change.
+     */
     private String data;
+
+    /**
+     * The identifier for the stream.
+     */
     private Stream stream;
 }

@@ -19,5 +19,8 @@ package com.heroiclabs.nakama;
 import lombok.Data;
 
 @Data
+/**
+ * A create message for a match on the server.
+ */
 class MatchCreateMessage {
 }

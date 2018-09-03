@@ -22,9 +22,29 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+
+/**
+ * A realtime socket stream on the server.
+ */
 public class Stream {
+
+    /**
+     * The descriptor of the stream. Used with direct chat messages and contains a second user id.
+     */
     private String descriptor;
+
+    /**
+     * Identifies streams which have a context across users like a chat channel room.
+     */
     private String label;
+
+    /**
+     * The mode of the stream.
+     */
     private int mode;
+
+    /**
+     * The subject of the stream. This is usually a user id.
+     */
     private String subject;
 }
