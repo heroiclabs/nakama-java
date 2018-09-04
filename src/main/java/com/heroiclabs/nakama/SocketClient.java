@@ -54,7 +54,7 @@ public interface SocketClient {
      * @param type The type of channel to join.
      * @return A future which resolves to a Channel response.
      */
-    ListenableFuture<Channel> channelJoin(@NonNull final String target, @NonNull final ChannelType type);
+    ListenableFuture<Channel> joinChat(@NonNull final String target, @NonNull final ChannelType type);
 
     /**
      * Join a chat channel on the server.
@@ -64,7 +64,7 @@ public interface SocketClient {
      * @param persistence True if chat messages should be stored.
      * @return A future which resolves to a Channel response.
      */
-    ListenableFuture<Channel> channelJoin(@NonNull final String target, @NonNull final ChannelType type, boolean persistence);
+    ListenableFuture<Channel> joinChat(@NonNull final String target, @NonNull final ChannelType type, boolean persistence);
 
     /**
      * Join a chat channel on the server.
@@ -75,7 +75,7 @@ public interface SocketClient {
      * @param hidden True if the user should be hidden on the channel.
      * @return A future which resolves to a Channel response.
      */
-    ListenableFuture<Channel> channelJoin(@NonNull final String target, @NonNull final ChannelType type, boolean persistence, boolean hidden);
+    ListenableFuture<Channel> joinChat(@NonNull final String target, @NonNull final ChannelType type, boolean persistence, boolean hidden);
 
     /**
      * Leave a chat channel on the server.
@@ -83,7 +83,7 @@ public interface SocketClient {
      * @param channelId The channel to leave.
      * @return A future.
      */
-    ListenableFuture<Void> channelLeave(@NonNull final String channelId);
+    ListenableFuture<Void> leaveChat(@NonNull final String channelId);
 
     /**
      * Remove a chat message from a channel on the server.
@@ -92,7 +92,7 @@ public interface SocketClient {
      * @param messageId The ID of a chat message to update.
      * @return A future.
      */
-    ListenableFuture<ChannelMessageAck> channelMessageRemove(@NonNull final String channelId, @NonNull final String messageId);
+    ListenableFuture<ChannelMessageAck> removeChatMessage(@NonNull final String channelId, @NonNull final String messageId);
 
     /**
      * Send a chat message to a channel on the server.
@@ -101,7 +101,7 @@ public interface SocketClient {
      * @param content The content of the chat message.
      * @return A future which resolves to a Channel Ack response.
      */
-    ListenableFuture<ChannelMessageAck> channelMessageSend(@NonNull final String channelId, @NonNull final String content);
+    ListenableFuture<ChannelMessageAck> writeChatMessage(@NonNull final String channelId, @NonNull final String content);
 
     /**
      * Update a chat message to a channel on the server.
@@ -111,14 +111,14 @@ public interface SocketClient {
      * @param content The content update for the message.
      * @return A future.
      */
-    ListenableFuture<ChannelMessageAck> channelMessageUpdate(@NonNull final String channelId, @NonNull final String messageId, @NonNull final String content);
+    ListenableFuture<ChannelMessageAck> updateChatMessage(@NonNull final String channelId, @NonNull final String messageId, @NonNull final String content);
 
     /**
      * Create a multiplayer match on the server.
      *
      * @return A future.
      */
-    ListenableFuture<Match> matchCreate();
+    ListenableFuture<Match> createMatch();
 
     /**
      * Join a multiplayer match by ID.
@@ -126,7 +126,7 @@ public interface SocketClient {
      * @param matchId A match ID.
      * @return A future which resolves to the match joined.
      */
-    ListenableFuture<Match> matchJoin(@NonNull final String matchId);
+    ListenableFuture<Match> joinMatch(@NonNull final String matchId);
 
     /**
      * Join a multiplayer match with a matchmaker.
@@ -134,7 +134,7 @@ public interface SocketClient {
      * @param token A matchmaker ticket result object.
      * @return A future which resolves to the match joined.
      */
-    ListenableFuture<Match> matchJoinToken(@NonNull final String token);
+    ListenableFuture<Match> joinMatchToken(@NonNull final String token);
 
     /**
      * Leave a match on the server.
@@ -142,14 +142,14 @@ public interface SocketClient {
      * @param matchId The match to leave.
      * @return A future.
      */
-    ListenableFuture<Void> matchLeave(@NonNull final String matchId);
+    ListenableFuture<Void> leaveMatch(@NonNull final String matchId);
 
     /**
      * Join the matchmaker pool and search for opponents on the server.
      *
      * @return A future which resolves to a matchmaker ticket object.
      */
-    ListenableFuture<MatchmakerTicket> matchmakerAdd();
+    ListenableFuture<MatchmakerTicket> addMatchmaker();
 
     /**
      * Join the matchmaker pool and search for opponents on the server.
@@ -157,7 +157,7 @@ public interface SocketClient {
      * @param minCount The minimum number of players to compete against.
      * @return A future which resolves to a matchmaker ticket object.
      */
-    ListenableFuture<MatchmakerTicket> matchmakerAdd(final int minCount);
+    ListenableFuture<MatchmakerTicket> addMatchmaker(final int minCount);
 
     /**
      * Join the matchmaker pool and search for opponents on the server.
@@ -166,7 +166,7 @@ public interface SocketClient {
      * @param maxCount The maximum number of players to compete against.
      * @return A future which resolves to a matchmaker ticket object.
      */
-    ListenableFuture<MatchmakerTicket> matchmakerAdd(final int minCount, final int maxCount);
+    ListenableFuture<MatchmakerTicket> addMatchmaker(final int minCount, final int maxCount);
 
     /**
      * Join the matchmaker pool and search for opponents on the server.
@@ -176,7 +176,7 @@ public interface SocketClient {
      * @param maxCount The maximum number of players to compete against.
      * @return A future which resolves to a matchmaker ticket object.
      */
-    ListenableFuture<MatchmakerTicket> matchmakerAdd(final int minCount, final int maxCount, final String query);
+    ListenableFuture<MatchmakerTicket> addMatchmaker(final int minCount, final int maxCount, final String query);
 
     /**
      * Join the matchmaker pool and search for opponents on the server.
@@ -187,7 +187,7 @@ public interface SocketClient {
      * @param stringProperties A set of k/v properties to provide in searches.
      * @return A future which resolves to a matchmaker ticket object.
      */
-    ListenableFuture<MatchmakerTicket> matchmakerAdd(final int minCount, final int maxCount, final String query, final Map<String, String> stringProperties);
+    ListenableFuture<MatchmakerTicket> addMatchmaker(final int minCount, final int maxCount, final String query, final Map<String, String> stringProperties);
 
     /**
      * Join the matchmaker pool and search for opponents on the server.
@@ -199,7 +199,7 @@ public interface SocketClient {
      * @param numericProperties A set of k/v numeric properties to provide in searches.
      * @return A future which resolves to a matchmaker ticket object.
      */
-    ListenableFuture<MatchmakerTicket> matchmakerAdd(final int minCount, final int maxCount, final String query, final Map<String, String> stringProperties, final Map<String, Double> numericProperties);
+    ListenableFuture<MatchmakerTicket> addMatchmaker(final int minCount, final int maxCount, final String query, final Map<String, String> stringProperties, final Map<String, Double> numericProperties);
 
     /**
      * Leave the matchmaker pool by ticket.
@@ -207,7 +207,7 @@ public interface SocketClient {
      * @param ticket The ticket returned by the matchmaker on join. See <c>IMatchmakerTicket.Ticket</c>.
      * @return A future.
      */
-    ListenableFuture<Void> matchmakerRemove(@NonNull final String ticket);
+    ListenableFuture<Void> removeMatchmaker(@NonNull final String ticket);
 
     /**
      * Send a state change to a match on the server.
@@ -218,7 +218,7 @@ public interface SocketClient {
      * @param opCode An operation code for the match state.
      * @param data The new state to send to the match.
      */
-    ListenableFuture<Void> matchDataSend(@NonNull final String matchId, @NonNull final String opCode, @NonNull String data);
+    ListenableFuture<Void> sendMatchData(@NonNull final String matchId, @NonNull final String opCode, @NonNull String data);
 
     /**
      * Send a state change to a match on the server.
@@ -230,7 +230,7 @@ public interface SocketClient {
      * @param data The new state to send to the match.
      * @param presences The presences in the match to send the state.
      */
-    ListenableFuture<Void> matchDataSend(@NonNull final String matchId, @NonNull final String opCode, @NonNull String data, UserPresence... presences);
+    ListenableFuture<Void> sendMatchData(@NonNull final String matchId, @NonNull final String opCode, @NonNull String data, UserPresence... presences);
 
     /**
      * Send an RPC message to the server.
@@ -255,7 +255,7 @@ public interface SocketClient {
      * @param userIds The user Ids to follow.
      * @return A future.
      */
-    ListenableFuture<Status> statusFollow(@NonNull final String... userIds);
+    ListenableFuture<Status> followUsers(@NonNull final String... userIds);
 
     /**
      * Unfollow status updates for one or more users.
@@ -263,7 +263,7 @@ public interface SocketClient {
      * @param userIds The ids of users to unfollow.
      * @return A future.
      */
-    ListenableFuture<Void> statusUnfollow(@NonNull final String... userIds);
+    ListenableFuture<Void> unfollowUsers(@NonNull final String... userIds);
 
     /**
      * Update the user's status online.
@@ -271,5 +271,5 @@ public interface SocketClient {
      * @param status The new status of the user.
      * @return A future.
      */
-    ListenableFuture<Void> statusUpdate(@NonNull final String status);
+    ListenableFuture<Void> updateStatus(@NonNull final String status);
 }

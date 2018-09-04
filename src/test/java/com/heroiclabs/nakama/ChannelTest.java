@@ -47,13 +47,13 @@ public class ChannelTest {
     @Test
     public void testCreateRoom() throws Exception {
         socket.connect(session, new AbstractClientListener() {});
-        final Channel channel = socket.channelJoin("myroom", ChannelType.ROOM).get();
+        final Channel channel = socket.joinChat("myroom", ChannelType.ROOM).get();
         Assert.assertNotNull(channel);
         Assert.assertNotNull(channel.getId());
         Assert.assertNotNull(channel.getPresences());
         Assert.assertNotNull(channel.getSelf());
         Assert.assertEquals(session.getUserId(), channel.getSelf().getUserId());
-        socket.channelLeave(channel.getId()).get();
+        socket.leaveChat(channel.getId()).get();
         socket.disconnect();
     }
 
@@ -86,9 +86,9 @@ public class ChannelTest {
                 latch.countDown();
             }
         });
-        final Channel channel = socket.channelJoin("myroom2", ChannelType.ROOM).get();
+        final Channel channel = socket.joinChat("myroom2", ChannelType.ROOM).get();
         Assert.assertNotNull(channel);
-        final ChannelMessageAck ack = socket.channelMessageSend(channel.getId(), content).get();
+        final ChannelMessageAck ack = socket.writeChatMessage(channel.getId(), content).get();
         Assert.assertNotNull(ack);
         Assert.assertNotNull(ack.getMessageId());
         Assert.assertEquals(channel.getId(), ack.getChannelId());

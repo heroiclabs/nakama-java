@@ -285,7 +285,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Channel> channelJoin(@NonNull final String target, @NonNull final ChannelType type) {
+    public ListenableFuture<Channel> joinChat(@NonNull final String target, @NonNull final ChannelType type) {
         final ChannelJoinMessage msg = new ChannelJoinMessage(target, type.getValue());
 
         final WebSocketEnvelope env = new WebSocketEnvelope();
@@ -294,7 +294,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Channel> channelJoin(@NonNull final String target, @NonNull final ChannelType type, final boolean persistence) {
+    public ListenableFuture<Channel> joinChat(@NonNull final String target, @NonNull final ChannelType type, final boolean persistence) {
         final ChannelJoinMessage msg = new ChannelJoinMessage(target, type.getValue());
         msg.setPersistence(persistence);
 
@@ -304,7 +304,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Channel> channelJoin(@NonNull final String target, @NonNull final ChannelType type, final boolean persistence, final boolean hidden) {
+    public ListenableFuture<Channel> joinChat(@NonNull final String target, @NonNull final ChannelType type, final boolean persistence, final boolean hidden) {
         final ChannelJoinMessage msg = new ChannelJoinMessage(target, type.getValue());
         msg.setPersistence(persistence);
         msg.setHidden(hidden);
@@ -315,7 +315,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Void> channelLeave(@NonNull final String channelId) {
+    public ListenableFuture<Void> leaveChat(@NonNull final String channelId) {
         final ChannelLeaveMessage msg = new ChannelLeaveMessage(channelId);
 
         final WebSocketEnvelope env = new WebSocketEnvelope();
@@ -324,7 +324,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<ChannelMessageAck> channelMessageRemove(@NonNull final String channelId, @NonNull final String messageId) {
+    public ListenableFuture<ChannelMessageAck> removeChatMessage(@NonNull final String channelId, @NonNull final String messageId) {
         final ChannelRemoveMessage msg = new ChannelRemoveMessage(channelId, messageId);
 
         final WebSocketEnvelope env = new WebSocketEnvelope();
@@ -333,7 +333,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<ChannelMessageAck> channelMessageSend(@NonNull final String channelId, @NonNull final String content) {
+    public ListenableFuture<ChannelMessageAck> writeChatMessage(@NonNull final String channelId, @NonNull final String content) {
         final ChannelSendMessage msg = new ChannelSendMessage(channelId, content);
 
         final WebSocketEnvelope env = new WebSocketEnvelope();
@@ -342,7 +342,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<ChannelMessageAck> channelMessageUpdate(@NonNull final String channelId, @NonNull final String messageId, @NonNull final String content) {
+    public ListenableFuture<ChannelMessageAck> updateChatMessage(@NonNull final String channelId, @NonNull final String messageId, @NonNull final String content) {
         final ChannelUpdateMessage msg = new ChannelUpdateMessage(channelId, messageId, content);
 
         final WebSocketEnvelope env = new WebSocketEnvelope();
@@ -351,14 +351,14 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Match> matchCreate() {
+    public ListenableFuture<Match> createMatch() {
         final WebSocketEnvelope env = new WebSocketEnvelope();
         env.setMatchCreate(new MatchCreateMessage());
         return send(env);
     }
 
     @Override
-    public ListenableFuture<Match> matchJoin(@NonNull final String matchId) {
+    public ListenableFuture<Match> joinMatch(@NonNull final String matchId) {
         final MatchJoinMessage msg = new MatchJoinMessage();
         msg.setMatchId(matchId);
 
@@ -368,7 +368,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Match> matchJoinToken(@NonNull final String token) {
+    public ListenableFuture<Match> joinMatchToken(@NonNull final String token) {
         final MatchJoinMessage msg = new MatchJoinMessage();
         msg.setToken(token);
 
@@ -378,7 +378,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Void> matchLeave(@NonNull final String matchId) {
+    public ListenableFuture<Void> leaveMatch(@NonNull final String matchId) {
         final MatchLeaveMessage msg = new MatchLeaveMessage(matchId);
 
         final WebSocketEnvelope env = new WebSocketEnvelope();
@@ -387,32 +387,32 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<MatchmakerTicket> matchmakerAdd() {
-        return matchmakerAdd(0, 0, null, null, null);
+    public ListenableFuture<MatchmakerTicket> addMatchmaker() {
+        return addMatchmaker(0, 0, null, null, null);
     }
 
     @Override
-    public ListenableFuture<MatchmakerTicket> matchmakerAdd(final int minCount) {
-        return matchmakerAdd(minCount, 0, null, null, null);
+    public ListenableFuture<MatchmakerTicket> addMatchmaker(final int minCount) {
+        return addMatchmaker(minCount, 0, null, null, null);
     }
 
     @Override
-    public ListenableFuture<MatchmakerTicket> matchmakerAdd(final int minCount, final int maxCount) {
-        return matchmakerAdd(minCount, maxCount, null, null, null);
+    public ListenableFuture<MatchmakerTicket> addMatchmaker(final int minCount, final int maxCount) {
+        return addMatchmaker(minCount, maxCount, null, null, null);
     }
 
     @Override
-    public ListenableFuture<MatchmakerTicket> matchmakerAdd(final int minCount, final int maxCount, final String query) {
-        return matchmakerAdd(minCount, maxCount, query, null, null);
+    public ListenableFuture<MatchmakerTicket> addMatchmaker(final int minCount, final int maxCount, final String query) {
+        return addMatchmaker(minCount, maxCount, query, null, null);
     }
 
     @Override
-    public ListenableFuture<MatchmakerTicket> matchmakerAdd(final int minCount, final int maxCount, final String query, final Map<String, String> stringProperties) {
-        return matchmakerAdd(minCount, maxCount, query, stringProperties, null);
+    public ListenableFuture<MatchmakerTicket> addMatchmaker(final int minCount, final int maxCount, final String query, final Map<String, String> stringProperties) {
+        return addMatchmaker(minCount, maxCount, query, stringProperties, null);
     }
 
     @Override
-    public ListenableFuture<MatchmakerTicket> matchmakerAdd(final int minCount, final int maxCount, final String query, final Map<String, String> stringProperties, final Map<String, Double> numericProperties) {
+    public ListenableFuture<MatchmakerTicket> addMatchmaker(final int minCount, final int maxCount, final String query, final Map<String, String> stringProperties, final Map<String, Double> numericProperties) {
         final MatchmakerAddMessage msg = new MatchmakerAddMessage();
         if (minCount > 0) {
             msg.setMinCount(minCount);
@@ -436,7 +436,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Void> matchmakerRemove(@NonNull final String ticket) {
+    public ListenableFuture<Void> removeMatchmaker(@NonNull final String ticket) {
         final MatchmakerRemoveMessage msg = new MatchmakerRemoveMessage(ticket);
 
         final WebSocketEnvelope env = new WebSocketEnvelope();
@@ -445,12 +445,12 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Void> matchDataSend(@NonNull final String matchId, @NonNull final String opCode, @NonNull final String data) {
-        return matchDataSend(matchId, opCode, data, (UserPresence) null);
+    public ListenableFuture<Void> sendMatchData(@NonNull final String matchId, @NonNull final String opCode, @NonNull final String data) {
+        return sendMatchData(matchId, opCode, data, (UserPresence) null);
     }
 
     @Override
-    public ListenableFuture<Void> matchDataSend(@NonNull final String matchId, @NonNull final String opCode, @NonNull final String data, final UserPresence... presences) {
+    public ListenableFuture<Void> sendMatchData(@NonNull final String matchId, @NonNull final String opCode, @NonNull final String data, final UserPresence... presences) {
         final MatchSendMessage msg = new MatchSendMessage(matchId, opCode, data);
         if (presences != null) {
             msg.setPresences(Arrays.asList(presences));
@@ -480,7 +480,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Status> statusFollow(@NonNull final String... userIds) {
+    public ListenableFuture<Status> followUsers(@NonNull final String... userIds) {
         final StatusFollowMessage message = new StatusFollowMessage(Arrays.asList(userIds));
 
         final WebSocketEnvelope env = new WebSocketEnvelope();
@@ -489,7 +489,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Void> statusUnfollow(@NonNull final String... userIds) {
+    public ListenableFuture<Void> unfollowUsers(@NonNull final String... userIds) {
         final StatusUnfollowMessage message = new StatusUnfollowMessage(Arrays.asList(userIds));
 
         final WebSocketEnvelope env = new WebSocketEnvelope();
@@ -498,7 +498,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Void> statusUpdate(@NonNull final String status) {
+    public ListenableFuture<Void> updateStatus(@NonNull final String status) {
         final StatusUpdateMessage message = new StatusUpdateMessage(status);
 
         final WebSocketEnvelope env = new WebSocketEnvelope();

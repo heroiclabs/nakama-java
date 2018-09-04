@@ -43,7 +43,7 @@ public class SocketTest {
     public void sendNotConnectedUnhandled() throws Throwable {
         // socket.connect(session, new AbstractClientListener() {}).get();
         try {
-            socket.matchCreate().get();
+            socket.createMatch().get();
         } catch (Exception e) {
             throw e.getCause();
         }
@@ -53,7 +53,7 @@ public class SocketTest {
     public void sendConnectedNoException() throws Exception {
         socket.connect(session, new AbstractClientListener() {}).get();
         try {
-            final Match match = socket.matchCreate().get();
+            final Match match = socket.createMatch().get();
             Assert.assertNotNull(match);
             Assert.assertNotNull(match.getMatchId());
         } catch (Exception e) {
