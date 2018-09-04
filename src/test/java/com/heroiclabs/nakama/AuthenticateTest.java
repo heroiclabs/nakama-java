@@ -44,6 +44,7 @@ public class AuthenticateTest {
         final ListenableFuture<Session> future = client.authenticateDevice(UUID.randomUUID().toString());
         Assert.assertNotNull(future);
         Assert.assertNotNull(future.get());
+
     }
 
     @Test

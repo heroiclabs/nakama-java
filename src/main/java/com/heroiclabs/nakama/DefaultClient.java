@@ -155,13 +155,17 @@ public class DefaultClient implements Client {
         this.managedChannel.awaitTermination(timeout, unit);
     }
 
-    @Override
-    public SocketClient createSocket(final String host, final int port, final boolean ssl) {
-        return createSocket(host, port, ssl, 5000);
+    public SocketClient createSocket() {
+        return createSocket(7350);
     }
 
     @Override
-    public SocketClient createSocket(final String host, final int port, final boolean ssl, final int socketTimeoutMs) {
+    public SocketClient createSocket(final int port) {
+        return createSocket(port, 5000);
+    }
+
+    @Override
+    public SocketClient createSocket(final int port, final int socketTimeoutMs) {
         return new WebSocketClient(host, port, ssl, socketTimeoutMs, this.trace);
     }
 

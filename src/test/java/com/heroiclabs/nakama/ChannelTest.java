@@ -35,7 +35,7 @@ public class ChannelTest {
     public void init() throws Exception {
         client = new DefaultClient("defaultkey");
         session = client.authenticateCustom(UUID.randomUUID().toString()).get();
-        socket = client.createSocket("localhost", 7350, false);
+        socket = client.createSocket();
     }
 
     @After

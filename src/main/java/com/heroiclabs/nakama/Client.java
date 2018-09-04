@@ -39,23 +39,25 @@ public interface Client {
     void disconnect();
 
     /**
-     * Create a new socket from the client.
-     * @param host The host address of the server.
-     * @param port The port number of the server. Default should be 7350.
-     * @param ssl Set connection strings to use the secure mode with the server.
+     * Create a new socket from the client with the default port set to 7350.
      * @return a new SocketClient instance.
      */
-    SocketClient createSocket(@NonNull final String host, @NonNull final int port, @NonNull final boolean ssl);
+    SocketClient createSocket();
 
     /**
      * Create a new socket from the client.
-     * @param host The host address of the server.
      * @param port The port number of the server. Default should be 7350.
-     * @param ssl Set connection strings to use the secure mode with the server.
+     * @return a new SocketClient instance.
+     */
+    SocketClient createSocket(@NonNull final int port);
+
+    /**
+     * Create a new socket from the client.
+     * @param port The port number of the server. Default should be 7350.
      * @param socketTimeoutMs Sets the connect, read and write timeout for new connections.
      * @return a new SocketClient instance.
      */
-    SocketClient createSocket(@NonNull final String host, @NonNull final int port, @NonNull final boolean ssl, @NonNull final int socketTimeoutMs);
+    SocketClient createSocket(@NonNull final int port, @NonNull final int socketTimeoutMs);
 
     /**
      * Add one or more friends by id.
