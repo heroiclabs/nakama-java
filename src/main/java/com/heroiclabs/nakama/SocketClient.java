@@ -271,5 +271,5 @@ public interface SocketClient {
      * @param status The new status of the user.
      * @return A future.
      */
-    ListenableFuture<Void> updateStatus(@NonNull final String status);
+    ListenableFuture<Void> updateStatus(final String status);
 }

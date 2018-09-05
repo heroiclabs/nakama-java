@@ -498,7 +498,7 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Void> updateStatus(@NonNull final String status) {
+    public ListenableFuture<Void> updateStatus(final String status) {
         final StatusUpdateMessage message = new StatusUpdateMessage(status);
 
         final WebSocketEnvelope env = new WebSocketEnvelope();
