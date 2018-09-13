@@ -27,7 +27,7 @@ public interface WriteLeaderboardRecordRequestOrBuilder extends
 
   /**
    * <pre>
-   * Record data.
+   * Record input.
    * </pre>
    *
    * <code>optional .nakama.api.WriteLeaderboardRecordRequest.LeaderboardRecordWrite record = 2;</code>
@@ -35,7 +35,7 @@ public interface WriteLeaderboardRecordRequestOrBuilder extends
   boolean hasRecord();
   /**
    * <pre>
-   * Record data.
+   * Record input.
    * </pre>
    *
    * <code>optional .nakama.api.WriteLeaderboardRecordRequest.LeaderboardRecordWrite record = 2;</code>

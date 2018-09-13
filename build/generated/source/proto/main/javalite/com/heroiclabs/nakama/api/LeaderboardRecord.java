@@ -662,6 +662,41 @@ public  final class LeaderboardRecord extends
     rank_ = 0L;
   }
 
+  public static final int MAX_NUM_SCORE_FIELD_NUMBER = 12;
+  private int maxNumScore_;
+  /**
+   * <pre>
+   * The maximum number of score updates allowed by the owner.
+   * </pre>
+   *
+   * <code>optional uint32 max_num_score = 12;</code>
+   */
+  public int getMaxNumScore() {
+    return maxNumScore_;
+  }
+  /**
+   * <pre>
+   * The maximum number of score updates allowed by the owner.
+   * </pre>
+   *
+   * <code>optional uint32 max_num_score = 12;</code>
+   */
+  private void setMaxNumScore(int value) {
+    
+    maxNumScore_ = value;
+  }
+  /**
+   * <pre>
+   * The maximum number of score updates allowed by the owner.
+   * </pre>
+   *
+   * <code>optional uint32 max_num_score = 12;</code>
+   */
+  private void clearMaxNumScore() {
+    
+    maxNumScore_ = 0;
+  }
+
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!leaderboardId_.isEmpty()) {
@@ -696,6 +731,9 @@ public  final class LeaderboardRecord extends
     }
     if (rank_ != 0L) {
       output.writeInt64(11, rank_);
+    }
+    if (maxNumScore_ != 0) {
+      output.writeUInt32(12, maxNumScore_);
     }
   }
 
@@ -747,6 +785,10 @@ public  final class LeaderboardRecord extends
     if (rank_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(11, rank_);
+    }
+    if (maxNumScore_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeUInt32Size(12, maxNumScore_);
     }
     memoizedSerializedSize = size;
     return size;
@@ -1434,6 +1476,41 @@ public  final class LeaderboardRecord extends
       return this;
     }
 
+    /**
+     * <pre>
+     * The maximum number of score updates allowed by the owner.
+     * </pre>
+     *
+     * <code>optional uint32 max_num_score = 12;</code>
+     */
+    public int getMaxNumScore() {
+      return instance.getMaxNumScore();
+    }
+    /**
+     * <pre>
+     * The maximum number of score updates allowed by the owner.
+     * </pre>
+     *
+     * <code>optional uint32 max_num_score = 12;</code>
+     */
+    public Builder setMaxNumScore(int value) {
+      copyOnWrite();
+      instance.setMaxNumScore(value);
+      return this;
+    }
+    /**
+     * <pre>
+     * The maximum number of score updates allowed by the owner.
+     * </pre>
+     *
+     * <code>optional uint32 max_num_score = 12;</code>
+     */
+    public Builder clearMaxNumScore() {
+      copyOnWrite();
+      instance.clearMaxNumScore();
+      return this;
+    }
+
     // @@protoc_insertion_point(builder_scope:nakama.api.LeaderboardRecord)
   }
   protected final Object dynamicMethod(
@@ -1473,6 +1550,8 @@ public  final class LeaderboardRecord extends
         expiryTime_ = visitor.visitMessage(expiryTime_, other.expiryTime_);
         rank_ = visitor.visitLong(rank_ != 0L, rank_,
             other.rank_ != 0L, other.rank_);
+        maxNumScore_ = visitor.visitInt(maxNumScore_ != 0, maxNumScore_,
+            other.maxNumScore_ != 0, other.maxNumScore_);
         if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
             .INSTANCE) {
         }
@@ -1585,6 +1664,11 @@ public  final class LeaderboardRecord extends
               case 88: {
 
                 rank_ = input.readInt64();
+                break;
+              }
+              case 96: {
+
+                maxNumScore_ = input.readUInt32();
                 break;
               }
             }

@@ -682,6 +682,37 @@ public final class NakamaGrpc {
      return getJoinGroupMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.JoinTournamentRequest,
+      com.google.protobuf.Empty> getJoinTournamentMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "JoinTournament",
+      requestType = com.heroiclabs.nakama.api.JoinTournamentRequest.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.JoinTournamentRequest,
+      com.google.protobuf.Empty> getJoinTournamentMethod() {
+    io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.JoinTournamentRequest, com.google.protobuf.Empty> getJoinTournamentMethod;
+    if ((getJoinTournamentMethod = NakamaGrpc.getJoinTournamentMethod) == null) {
+      synchronized (NakamaGrpc.class) {
+        if ((getJoinTournamentMethod = NakamaGrpc.getJoinTournamentMethod) == null) {
+          NakamaGrpc.getJoinTournamentMethod = getJoinTournamentMethod = 
+              io.grpc.MethodDescriptor.<com.heroiclabs.nakama.api.JoinTournamentRequest, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "nakama.api.Nakama", "JoinTournament"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.JoinTournamentRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+                  .build();
+          }
+        }
+     }
+     return getJoinTournamentMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.KickGroupUsersRequest,
       com.google.protobuf.Empty> getKickGroupUsersMethod;
 
@@ -1209,6 +1240,68 @@ public final class NakamaGrpc {
      return getListStorageObjectsMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListTournamentsRequest,
+      com.heroiclabs.nakama.api.TournamentList> getListTournamentsMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ListTournaments",
+      requestType = com.heroiclabs.nakama.api.ListTournamentsRequest.class,
+      responseType = com.heroiclabs.nakama.api.TournamentList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListTournamentsRequest,
+      com.heroiclabs.nakama.api.TournamentList> getListTournamentsMethod() {
+    io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListTournamentsRequest, com.heroiclabs.nakama.api.TournamentList> getListTournamentsMethod;
+    if ((getListTournamentsMethod = NakamaGrpc.getListTournamentsMethod) == null) {
+      synchronized (NakamaGrpc.class) {
+        if ((getListTournamentsMethod = NakamaGrpc.getListTournamentsMethod) == null) {
+          NakamaGrpc.getListTournamentsMethod = getListTournamentsMethod = 
+              io.grpc.MethodDescriptor.<com.heroiclabs.nakama.api.ListTournamentsRequest, com.heroiclabs.nakama.api.TournamentList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "nakama.api.Nakama", "ListTournaments"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.ListTournamentsRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.TournamentList.getDefaultInstance()))
+                  .build();
+          }
+        }
+     }
+     return getListTournamentsMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListTournamentRecordsRequest,
+      com.heroiclabs.nakama.api.TournamentRecordList> getListTournamentRecordsMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ListTournamentRecords",
+      requestType = com.heroiclabs.nakama.api.ListTournamentRecordsRequest.class,
+      responseType = com.heroiclabs.nakama.api.TournamentRecordList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListTournamentRecordsRequest,
+      com.heroiclabs.nakama.api.TournamentRecordList> getListTournamentRecordsMethod() {
+    io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListTournamentRecordsRequest, com.heroiclabs.nakama.api.TournamentRecordList> getListTournamentRecordsMethod;
+    if ((getListTournamentRecordsMethod = NakamaGrpc.getListTournamentRecordsMethod) == null) {
+      synchronized (NakamaGrpc.class) {
+        if ((getListTournamentRecordsMethod = NakamaGrpc.getListTournamentRecordsMethod) == null) {
+          NakamaGrpc.getListTournamentRecordsMethod = getListTournamentRecordsMethod = 
+              io.grpc.MethodDescriptor.<com.heroiclabs.nakama.api.ListTournamentRecordsRequest, com.heroiclabs.nakama.api.TournamentRecordList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "nakama.api.Nakama", "ListTournamentRecords"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.ListTournamentRecordsRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.TournamentRecordList.getDefaultInstance()))
+                  .build();
+          }
+        }
+     }
+     return getListTournamentRecordsMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListUserGroupsRequest,
       com.heroiclabs.nakama.api.UserGroupList> getListUserGroupsMethod;
 
@@ -1674,6 +1767,37 @@ public final class NakamaGrpc {
      return getWriteStorageObjectsMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.WriteTournamentRecordRequest,
+      com.heroiclabs.nakama.api.LeaderboardRecord> getWriteTournamentRecordMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "WriteTournamentRecord",
+      requestType = com.heroiclabs.nakama.api.WriteTournamentRecordRequest.class,
+      responseType = com.heroiclabs.nakama.api.LeaderboardRecord.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.WriteTournamentRecordRequest,
+      com.heroiclabs.nakama.api.LeaderboardRecord> getWriteTournamentRecordMethod() {
+    io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.WriteTournamentRecordRequest, com.heroiclabs.nakama.api.LeaderboardRecord> getWriteTournamentRecordMethod;
+    if ((getWriteTournamentRecordMethod = NakamaGrpc.getWriteTournamentRecordMethod) == null) {
+      synchronized (NakamaGrpc.class) {
+        if ((getWriteTournamentRecordMethod = NakamaGrpc.getWriteTournamentRecordMethod) == null) {
+          NakamaGrpc.getWriteTournamentRecordMethod = getWriteTournamentRecordMethod = 
+              io.grpc.MethodDescriptor.<com.heroiclabs.nakama.api.WriteTournamentRecordRequest, com.heroiclabs.nakama.api.LeaderboardRecord>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "nakama.api.Nakama", "WriteTournamentRecord"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.WriteTournamentRecordRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.LeaderboardRecord.getDefaultInstance()))
+                  .build();
+          }
+        }
+     }
+     return getWriteTournamentRecordMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -1916,6 +2040,13 @@ public final class NakamaGrpc {
     }
 
     /**
+     */
+    public void joinTournament(com.heroiclabs.nakama.api.JoinTournamentRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnimplementedUnaryCall(getJoinTournamentMethod(), responseObserver);
+    }
+
+    /**
      * <pre>
      * Kick a set of users from a group.
      * </pre>
@@ -2047,7 +2178,7 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
-     * List leaderboard records
+     * List leaderboard records.
      * </pre>
      */
     public void listLeaderboardRecords(com.heroiclabs.nakama.api.ListLeaderboardRecordsRequest request,
@@ -2083,6 +2214,26 @@ public final class NakamaGrpc {
     public void listStorageObjects(com.heroiclabs.nakama.api.ListStorageObjectsRequest request,
         io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.StorageObjectList> responseObserver) {
       asyncUnimplementedUnaryCall(getListStorageObjectsMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * List current or upcoming tournaments.
+     * </pre>
+     */
+    public void listTournaments(com.heroiclabs.nakama.api.ListTournamentsRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.TournamentList> responseObserver) {
+      asyncUnimplementedUnaryCall(getListTournamentsMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * List tournament records.
+     * </pre>
+     */
+    public void listTournamentRecords(com.heroiclabs.nakama.api.ListTournamentRecordsRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.TournamentRecordList> responseObserver) {
+      asyncUnimplementedUnaryCall(getListTournamentRecordsMethod(), responseObserver);
     }
 
     /**
@@ -2235,6 +2386,16 @@ public final class NakamaGrpc {
       asyncUnimplementedUnaryCall(getWriteStorageObjectsMethod(), responseObserver);
     }
 
+    /**
+     * <pre>
+     * Write a record to a tournament.
+     * </pre>
+     */
+    public void writeTournamentRecord(com.heroiclabs.nakama.api.WriteTournamentRecordRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.LeaderboardRecord> responseObserver) {
+      asyncUnimplementedUnaryCall(getWriteTournamentRecordMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -2385,6 +2546,13 @@ public final class NakamaGrpc {
                 com.google.protobuf.Empty>(
                   this, METHODID_JOIN_GROUP)))
           .addMethod(
+            getJoinTournamentMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.heroiclabs.nakama.api.JoinTournamentRequest,
+                com.google.protobuf.Empty>(
+                  this, METHODID_JOIN_TOURNAMENT)))
+          .addMethod(
             getKickGroupUsersMethod(),
             asyncUnaryCall(
               new MethodHandlers<
@@ -2504,6 +2672,20 @@ public final class NakamaGrpc {
                 com.heroiclabs.nakama.api.StorageObjectList>(
                   this, METHODID_LIST_STORAGE_OBJECTS)))
           .addMethod(
+            getListTournamentsMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.heroiclabs.nakama.api.ListTournamentsRequest,
+                com.heroiclabs.nakama.api.TournamentList>(
+                  this, METHODID_LIST_TOURNAMENTS)))
+          .addMethod(
+            getListTournamentRecordsMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.heroiclabs.nakama.api.ListTournamentRecordsRequest,
+                com.heroiclabs.nakama.api.TournamentRecordList>(
+                  this, METHODID_LIST_TOURNAMENT_RECORDS)))
+          .addMethod(
             getListUserGroupsMethod(),
             asyncUnaryCall(
               new MethodHandlers<
@@ -2608,6 +2790,13 @@ public final class NakamaGrpc {
                 com.heroiclabs.nakama.api.WriteStorageObjectsRequest,
                 com.heroiclabs.nakama.api.StorageObjectAcks>(
                   this, METHODID_WRITE_STORAGE_OBJECTS)))
+          .addMethod(
+            getWriteTournamentRecordMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.heroiclabs.nakama.api.WriteTournamentRecordRequest,
+                com.heroiclabs.nakama.api.LeaderboardRecord>(
+                  this, METHODID_WRITE_TOURNAMENT_RECORD)))
           .build();
     }
   }
@@ -2866,6 +3055,14 @@ public final class NakamaGrpc {
     }
 
     /**
+     */
+    public void joinTournament(com.heroiclabs.nakama.api.JoinTournamentRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getJoinTournamentMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
      * <pre>
      * Kick a set of users from a group.
      * </pre>
@@ -3010,7 +3207,7 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
-     * List leaderboard records
+     * List leaderboard records.
      * </pre>
      */
     public void listLeaderboardRecords(com.heroiclabs.nakama.api.ListLeaderboardRecordsRequest request,
@@ -3050,6 +3247,28 @@ public final class NakamaGrpc {
         io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.StorageObjectList> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getListStorageObjectsMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * List current or upcoming tournaments.
+     * </pre>
+     */
+    public void listTournaments(com.heroiclabs.nakama.api.ListTournamentsRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.TournamentList> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getListTournamentsMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * List tournament records.
+     * </pre>
+     */
+    public void listTournamentRecords(com.heroiclabs.nakama.api.ListTournamentRecordsRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.TournamentRecordList> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getListTournamentRecordsMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -3215,6 +3434,17 @@ public final class NakamaGrpc {
         io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.StorageObjectAcks> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getWriteStorageObjectsMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Write a record to a tournament.
+     * </pre>
+     */
+    public void writeTournamentRecord(com.heroiclabs.nakama.api.WriteTournamentRecordRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.LeaderboardRecord> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getWriteTournamentRecordMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -3451,6 +3681,13 @@ public final class NakamaGrpc {
     }
 
     /**
+     */
+    public com.google.protobuf.Empty joinTournament(com.heroiclabs.nakama.api.JoinTournamentRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getJoinTournamentMethod(), getCallOptions(), request);
+    }
+
+    /**
      * <pre>
      * Kick a set of users from a group.
      * </pre>
@@ -3582,7 +3819,7 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
-     * List leaderboard records
+     * List leaderboard records.
      * </pre>
      */
     public com.heroiclabs.nakama.api.LeaderboardRecordList listLeaderboardRecords(com.heroiclabs.nakama.api.ListLeaderboardRecordsRequest request) {
@@ -3618,6 +3855,26 @@ public final class NakamaGrpc {
     public com.heroiclabs.nakama.api.StorageObjectList listStorageObjects(com.heroiclabs.nakama.api.ListStorageObjectsRequest request) {
       return blockingUnaryCall(
           getChannel(), getListStorageObjectsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * List current or upcoming tournaments.
+     * </pre>
+     */
+    public com.heroiclabs.nakama.api.TournamentList listTournaments(com.heroiclabs.nakama.api.ListTournamentsRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getListTournamentsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * List tournament records.
+     * </pre>
+     */
+    public com.heroiclabs.nakama.api.TournamentRecordList listTournamentRecords(com.heroiclabs.nakama.api.ListTournamentRecordsRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getListTournamentRecordsMethod(), getCallOptions(), request);
     }
 
     /**
@@ -3768,6 +4025,16 @@ public final class NakamaGrpc {
     public com.heroiclabs.nakama.api.StorageObjectAcks writeStorageObjects(com.heroiclabs.nakama.api.WriteStorageObjectsRequest request) {
       return blockingUnaryCall(
           getChannel(), getWriteStorageObjectsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Write a record to a tournament.
+     * </pre>
+     */
+    public com.heroiclabs.nakama.api.LeaderboardRecord writeTournamentRecord(com.heroiclabs.nakama.api.WriteTournamentRecordRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getWriteTournamentRecordMethod(), getCallOptions(), request);
     }
   }
 
@@ -4025,6 +4292,14 @@ public final class NakamaGrpc {
     }
 
     /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> joinTournament(
+        com.heroiclabs.nakama.api.JoinTournamentRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getJoinTournamentMethod(), getCallOptions()), request);
+    }
+
+    /**
      * <pre>
      * Kick a set of users from a group.
      * </pre>
@@ -4169,7 +4444,7 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
-     * List leaderboard records
+     * List leaderboard records.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.heroiclabs.nakama.api.LeaderboardRecordList> listLeaderboardRecords(
@@ -4209,6 +4484,28 @@ public final class NakamaGrpc {
         com.heroiclabs.nakama.api.ListStorageObjectsRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getListStorageObjectsMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * List current or upcoming tournaments.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.heroiclabs.nakama.api.TournamentList> listTournaments(
+        com.heroiclabs.nakama.api.ListTournamentsRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getListTournamentsMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * List tournament records.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.heroiclabs.nakama.api.TournamentRecordList> listTournamentRecords(
+        com.heroiclabs.nakama.api.ListTournamentRecordsRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getListTournamentRecordsMethod(), getCallOptions()), request);
     }
 
     /**
@@ -4375,6 +4672,17 @@ public final class NakamaGrpc {
       return futureUnaryCall(
           getChannel().newCall(getWriteStorageObjectsMethod(), getCallOptions()), request);
     }
+
+    /**
+     * <pre>
+     * Write a record to a tournament.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.heroiclabs.nakama.api.LeaderboardRecord> writeTournamentRecord(
+        com.heroiclabs.nakama.api.WriteTournamentRecordRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getWriteTournamentRecordMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_ADD_FRIENDS = 0;
@@ -4398,38 +4706,42 @@ public final class NakamaGrpc {
   private static final int METHODID_HEALTHCHECK = 18;
   private static final int METHODID_IMPORT_FACEBOOK_FRIENDS = 19;
   private static final int METHODID_JOIN_GROUP = 20;
-  private static final int METHODID_KICK_GROUP_USERS = 21;
-  private static final int METHODID_LEAVE_GROUP = 22;
-  private static final int METHODID_LINK_CUSTOM = 23;
-  private static final int METHODID_LINK_DEVICE = 24;
-  private static final int METHODID_LINK_EMAIL = 25;
-  private static final int METHODID_LINK_FACEBOOK = 26;
-  private static final int METHODID_LINK_GAME_CENTER = 27;
-  private static final int METHODID_LINK_GOOGLE = 28;
-  private static final int METHODID_LINK_STEAM = 29;
-  private static final int METHODID_LIST_CHANNEL_MESSAGES = 30;
-  private static final int METHODID_LIST_FRIENDS = 31;
-  private static final int METHODID_LIST_GROUPS = 32;
-  private static final int METHODID_LIST_GROUP_USERS = 33;
-  private static final int METHODID_LIST_LEADERBOARD_RECORDS = 34;
-  private static final int METHODID_LIST_MATCHES = 35;
-  private static final int METHODID_LIST_NOTIFICATIONS = 36;
-  private static final int METHODID_LIST_STORAGE_OBJECTS = 37;
-  private static final int METHODID_LIST_USER_GROUPS = 38;
-  private static final int METHODID_PROMOTE_GROUP_USERS = 39;
-  private static final int METHODID_READ_STORAGE_OBJECTS = 40;
-  private static final int METHODID_RPC_FUNC = 41;
-  private static final int METHODID_UNLINK_CUSTOM = 42;
-  private static final int METHODID_UNLINK_DEVICE = 43;
-  private static final int METHODID_UNLINK_EMAIL = 44;
-  private static final int METHODID_UNLINK_FACEBOOK = 45;
-  private static final int METHODID_UNLINK_GAME_CENTER = 46;
-  private static final int METHODID_UNLINK_GOOGLE = 47;
-  private static final int METHODID_UNLINK_STEAM = 48;
-  private static final int METHODID_UPDATE_ACCOUNT = 49;
-  private static final int METHODID_UPDATE_GROUP = 50;
-  private static final int METHODID_WRITE_LEADERBOARD_RECORD = 51;
-  private static final int METHODID_WRITE_STORAGE_OBJECTS = 52;
+  private static final int METHODID_JOIN_TOURNAMENT = 21;
+  private static final int METHODID_KICK_GROUP_USERS = 22;
+  private static final int METHODID_LEAVE_GROUP = 23;
+  private static final int METHODID_LINK_CUSTOM = 24;
+  private static final int METHODID_LINK_DEVICE = 25;
+  private static final int METHODID_LINK_EMAIL = 26;
+  private static final int METHODID_LINK_FACEBOOK = 27;
+  private static final int METHODID_LINK_GAME_CENTER = 28;
+  private static final int METHODID_LINK_GOOGLE = 29;
+  private static final int METHODID_LINK_STEAM = 30;
+  private static final int METHODID_LIST_CHANNEL_MESSAGES = 31;
+  private static final int METHODID_LIST_FRIENDS = 32;
+  private static final int METHODID_LIST_GROUPS = 33;
+  private static final int METHODID_LIST_GROUP_USERS = 34;
+  private static final int METHODID_LIST_LEADERBOARD_RECORDS = 35;
+  private static final int METHODID_LIST_MATCHES = 36;
+  private static final int METHODID_LIST_NOTIFICATIONS = 37;
+  private static final int METHODID_LIST_STORAGE_OBJECTS = 38;
+  private static final int METHODID_LIST_TOURNAMENTS = 39;
+  private static final int METHODID_LIST_TOURNAMENT_RECORDS = 40;
+  private static final int METHODID_LIST_USER_GROUPS = 41;
+  private static final int METHODID_PROMOTE_GROUP_USERS = 42;
+  private static final int METHODID_READ_STORAGE_OBJECTS = 43;
+  private static final int METHODID_RPC_FUNC = 44;
+  private static final int METHODID_UNLINK_CUSTOM = 45;
+  private static final int METHODID_UNLINK_DEVICE = 46;
+  private static final int METHODID_UNLINK_EMAIL = 47;
+  private static final int METHODID_UNLINK_FACEBOOK = 48;
+  private static final int METHODID_UNLINK_GAME_CENTER = 49;
+  private static final int METHODID_UNLINK_GOOGLE = 50;
+  private static final int METHODID_UNLINK_STEAM = 51;
+  private static final int METHODID_UPDATE_ACCOUNT = 52;
+  private static final int METHODID_UPDATE_GROUP = 53;
+  private static final int METHODID_WRITE_LEADERBOARD_RECORD = 54;
+  private static final int METHODID_WRITE_STORAGE_OBJECTS = 55;
+  private static final int METHODID_WRITE_TOURNAMENT_RECORD = 56;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -4532,6 +4844,10 @@ public final class NakamaGrpc {
           serviceImpl.joinGroup((com.heroiclabs.nakama.api.JoinGroupRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
+        case METHODID_JOIN_TOURNAMENT:
+          serviceImpl.joinTournament((com.heroiclabs.nakama.api.JoinTournamentRequest) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
         case METHODID_KICK_GROUP_USERS:
           serviceImpl.kickGroupUsers((com.heroiclabs.nakama.api.KickGroupUsersRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
@@ -4600,6 +4916,14 @@ public final class NakamaGrpc {
           serviceImpl.listStorageObjects((com.heroiclabs.nakama.api.ListStorageObjectsRequest) request,
               (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.StorageObjectList>) responseObserver);
           break;
+        case METHODID_LIST_TOURNAMENTS:
+          serviceImpl.listTournaments((com.heroiclabs.nakama.api.ListTournamentsRequest) request,
+              (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.TournamentList>) responseObserver);
+          break;
+        case METHODID_LIST_TOURNAMENT_RECORDS:
+          serviceImpl.listTournamentRecords((com.heroiclabs.nakama.api.ListTournamentRecordsRequest) request,
+              (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.TournamentRecordList>) responseObserver);
+          break;
         case METHODID_LIST_USER_GROUPS:
           serviceImpl.listUserGroups((com.heroiclabs.nakama.api.ListUserGroupsRequest) request,
               (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.UserGroupList>) responseObserver);
@@ -4660,6 +4984,10 @@ public final class NakamaGrpc {
           serviceImpl.writeStorageObjects((com.heroiclabs.nakama.api.WriteStorageObjectsRequest) request,
               (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.StorageObjectAcks>) responseObserver);
           break;
+        case METHODID_WRITE_TOURNAMENT_RECORD:
+          serviceImpl.writeTournamentRecord((com.heroiclabs.nakama.api.WriteTournamentRecordRequest) request,
+              (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.LeaderboardRecord>) responseObserver);
+          break;
         default:
           throw new AssertionError();
       }
@@ -4706,6 +5034,7 @@ public final class NakamaGrpc {
               .addMethod(getHealthcheckMethod())
               .addMethod(getImportFacebookFriendsMethod())
               .addMethod(getJoinGroupMethod())
+              .addMethod(getJoinTournamentMethod())
               .addMethod(getKickGroupUsersMethod())
               .addMethod(getLeaveGroupMethod())
               .addMethod(getLinkCustomMethod())
@@ -4723,6 +5052,8 @@ public final class NakamaGrpc {
               .addMethod(getListMatchesMethod())
               .addMethod(getListNotificationsMethod())
               .addMethod(getListStorageObjectsMethod())
+              .addMethod(getListTournamentsMethod())
+              .addMethod(getListTournamentRecordsMethod())
               .addMethod(getListUserGroupsMethod())
               .addMethod(getPromoteGroupUsersMethod())
               .addMethod(getReadStorageObjectsMethod())
@@ -4738,6 +5069,7 @@ public final class NakamaGrpc {
               .addMethod(getUpdateGroupMethod())
               .addMethod(getWriteLeaderboardRecordMethod())
               .addMethod(getWriteStorageObjectsMethod())
+              .addMethod(getWriteTournamentRecordMethod())
               .build();
         }
       }

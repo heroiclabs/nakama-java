@@ -164,4 +164,13 @@ public interface LeaderboardRecordOrBuilder extends
    * <code>optional int64 rank = 11;</code>
    */
   long getRank();
+
+  /**
+   * <pre>
+   * The maximum number of score updates allowed by the owner.
+   * </pre>
+   *
+   * <code>optional uint32 max_num_score = 12;</code>
+   */
+  int getMaxNumScore();
 }

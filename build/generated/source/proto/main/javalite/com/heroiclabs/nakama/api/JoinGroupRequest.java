@@ -22,7 +22,7 @@ public  final class JoinGroupRequest extends
   private java.lang.String groupId_;
   /**
    * <pre>
-   * The group ID to join.
+   * The group ID to join. The group must already exist.
    * </pre>
    *
    * <code>optional string group_id = 1;</code>
@@ -32,7 +32,7 @@ public  final class JoinGroupRequest extends
   }
   /**
    * <pre>
-   * The group ID to join.
+   * The group ID to join. The group must already exist.
    * </pre>
    *
    * <code>optional string group_id = 1;</code>
@@ -43,7 +43,7 @@ public  final class JoinGroupRequest extends
   }
   /**
    * <pre>
-   * The group ID to join.
+   * The group ID to join. The group must already exist.
    * </pre>
    *
    * <code>optional string group_id = 1;</code>
@@ -58,7 +58,7 @@ public  final class JoinGroupRequest extends
   }
   /**
    * <pre>
-   * The group ID to join.
+   * The group ID to join. The group must already exist.
    * </pre>
    *
    * <code>optional string group_id = 1;</code>
@@ -69,7 +69,7 @@ public  final class JoinGroupRequest extends
   }
   /**
    * <pre>
-   * The group ID to join.
+   * The group ID to join. The group must already exist.
    * </pre>
    *
    * <code>optional string group_id = 1;</code>
@@ -192,7 +192,7 @@ public  final class JoinGroupRequest extends
 
     /**
      * <pre>
-     * The group ID to join.
+     * The group ID to join. The group must already exist.
      * </pre>
      *
      * <code>optional string group_id = 1;</code>
@@ -202,7 +202,7 @@ public  final class JoinGroupRequest extends
     }
     /**
      * <pre>
-     * The group ID to join.
+     * The group ID to join. The group must already exist.
      * </pre>
      *
      * <code>optional string group_id = 1;</code>
@@ -213,7 +213,7 @@ public  final class JoinGroupRequest extends
     }
     /**
      * <pre>
-     * The group ID to join.
+     * The group ID to join. The group must already exist.
      * </pre>
      *
      * <code>optional string group_id = 1;</code>
@@ -226,7 +226,7 @@ public  final class JoinGroupRequest extends
     }
     /**
      * <pre>
-     * The group ID to join.
+     * The group ID to join. The group must already exist.
      * </pre>
      *
      * <code>optional string group_id = 1;</code>
@@ -238,7 +238,7 @@ public  final class JoinGroupRequest extends
     }
     /**
      * <pre>
-     * The group ID to join.
+     * The group ID to join. The group must already exist.
      * </pre>
      *
      * <code>optional string group_id = 1;</code>

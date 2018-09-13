@@ -9,7 +9,7 @@ public interface JoinGroupRequestOrBuilder extends
 
   /**
    * <pre>
-   * The group ID to join.
+   * The group ID to join. The group must already exist.
    * </pre>
    *
    * <code>optional string group_id = 1;</code>
@@ -17,7 +17,7 @@ public interface JoinGroupRequestOrBuilder extends
   java.lang.String getGroupId();
   /**
    * <pre>
-   * The group ID to join.
+   * The group ID to join. The group must already exist.
    * </pre>
    *
    * <code>optional string group_id = 1;</code>

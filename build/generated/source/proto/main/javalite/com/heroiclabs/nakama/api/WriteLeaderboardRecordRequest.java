@@ -642,7 +642,7 @@ public  final class WriteLeaderboardRecordRequest extends
   private com.heroiclabs.nakama.api.WriteLeaderboardRecordRequest.LeaderboardRecordWrite record_;
   /**
    * <pre>
-   * Record data.
+   * Record input.
    * </pre>
    *
    * <code>optional .nakama.api.WriteLeaderboardRecordRequest.LeaderboardRecordWrite record = 2;</code>
@@ -652,7 +652,7 @@ public  final class WriteLeaderboardRecordRequest extends
   }
   /**
    * <pre>
-   * Record data.
+   * Record input.
    * </pre>
    *
    * <code>optional .nakama.api.WriteLeaderboardRecordRequest.LeaderboardRecordWrite record = 2;</code>
@@ -662,7 +662,7 @@ public  final class WriteLeaderboardRecordRequest extends
   }
   /**
    * <pre>
-   * Record data.
+   * Record input.
    * </pre>
    *
    * <code>optional .nakama.api.WriteLeaderboardRecordRequest.LeaderboardRecordWrite record = 2;</code>
@@ -676,7 +676,7 @@ public  final class WriteLeaderboardRecordRequest extends
     }
   /**
    * <pre>
-   * Record data.
+   * Record input.
    * </pre>
    *
    * <code>optional .nakama.api.WriteLeaderboardRecordRequest.LeaderboardRecordWrite record = 2;</code>
@@ -688,7 +688,7 @@ public  final class WriteLeaderboardRecordRequest extends
   }
   /**
    * <pre>
-   * Record data.
+   * Record input.
    * </pre>
    *
    * <code>optional .nakama.api.WriteLeaderboardRecordRequest.LeaderboardRecordWrite record = 2;</code>
@@ -705,7 +705,7 @@ public  final class WriteLeaderboardRecordRequest extends
   }
   /**
    * <pre>
-   * Record data.
+   * Record input.
    * </pre>
    *
    * <code>optional .nakama.api.WriteLeaderboardRecordRequest.LeaderboardRecordWrite record = 2;</code>
@@ -889,7 +889,7 @@ public  final class WriteLeaderboardRecordRequest extends
 
     /**
      * <pre>
-     * Record data.
+     * Record input.
      * </pre>
      *
      * <code>optional .nakama.api.WriteLeaderboardRecordRequest.LeaderboardRecordWrite record = 2;</code>
@@ -899,7 +899,7 @@ public  final class WriteLeaderboardRecordRequest extends
     }
     /**
      * <pre>
-     * Record data.
+     * Record input.
      * </pre>
      *
      * <code>optional .nakama.api.WriteLeaderboardRecordRequest.LeaderboardRecordWrite record = 2;</code>
@@ -909,7 +909,7 @@ public  final class WriteLeaderboardRecordRequest extends
     }
     /**
      * <pre>
-     * Record data.
+     * Record input.
      * </pre>
      *
      * <code>optional .nakama.api.WriteLeaderboardRecordRequest.LeaderboardRecordWrite record = 2;</code>
@@ -921,7 +921,7 @@ public  final class WriteLeaderboardRecordRequest extends
       }
     /**
      * <pre>
-     * Record data.
+     * Record input.
      * </pre>
      *
      * <code>optional .nakama.api.WriteLeaderboardRecordRequest.LeaderboardRecordWrite record = 2;</code>
@@ -934,7 +934,7 @@ public  final class WriteLeaderboardRecordRequest extends
     }
     /**
      * <pre>
-     * Record data.
+     * Record input.
      * </pre>
      *
      * <code>optional .nakama.api.WriteLeaderboardRecordRequest.LeaderboardRecordWrite record = 2;</code>
@@ -946,7 +946,7 @@ public  final class WriteLeaderboardRecordRequest extends
     }
     /**
      * <pre>
-     * Record data.
+     * Record input.
      * </pre>
      *
      * <code>optional .nakama.api.WriteLeaderboardRecordRequest.LeaderboardRecordWrite record = 2;</code>
