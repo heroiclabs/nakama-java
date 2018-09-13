@@ -536,6 +536,15 @@ public interface Client {
     ListenableFuture<Empty> joinGroup(@NonNull final Session session, @NonNull final String groupId);
 
     /**
+     * Join a group if it has open membership or request to join it.
+     *
+     * @param session The session of the user.
+     * @param tournamentId The id of the tournament to join.
+     * @return A future.
+     */
+    ListenableFuture<Empty> joinTournament(@NonNull final Session session, @NonNull final String tournamentId);
+
+    /**
      * Kick one or more users from the group.
      *
      * @param session The session of the user.
@@ -765,6 +774,25 @@ public interface Client {
     ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds, final int limit, final String cursor);
 
     /**
+     * List leaderboard records from a given leaderboard around the owner.
+     * @param session The session of the user.
+     * @param leaderboardId The id of the leaderboard to list.
+     * @param ownerId The owner to retrieve records around.
+     * @return A future to resolve leaderboard record objects.
+     */
+    ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final String ownerId);
+
+    /**
+     * List leaderrboard records from a given leaderboard around the owner.
+     * @param session The session of the user.
+     * @param leaderboardId The id of the leaderboard to list.
+     * @param ownerId The owner to retrieve records around.
+     * @param limit Max number of records to return. Between 1 and 100.
+     * @return A future to resolve leaderboard record objects.
+     */
+    ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final String ownerId, final int limit);
+
+    /**
      * Fetch a list of matches active on the server.
      *
      * @param session The session of the user.
@@ -883,6 +911,131 @@ public interface Client {
      * @return A future which resolves to a storage object list.
      */
     ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection, final int limit, final String cursor);
+
+    /**
+     * List active/upcoming tournaments based on given filters.
+     * @param session The session of the user.
+     * @return a future which resolved to a tournament list.
+     */
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session);
+
+    /**
+     * List active/upcoming tournaments based on given filters.
+     * @param session The session of the user.
+     * @param full Include tournaments that are full with players.
+     * @param limit Max number of records to return. Between 1 and 100.
+     * @param cursor A next page cursor for listings.
+     * @return a future which resolved to a tournament list.
+     */
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int limit, final String cursor);
+
+    /**
+     * List active/upcoming tournaments based on given filters.
+     * @param session The session of the user.
+     * @param categoryStart The start of the categories to include. Defaults to 0.
+     * @return a future which resolved to a tournament list.
+     */
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final int categoryStart);
+
+    /**
+     * List active/upcoming tournaments based on given filters.
+     * @param session The session of the user.
+     * @param categoryStart The start of the categories to include. Defaults to 0.
+     * @param categoryEnd The end of the categories to include. Defaults to 128.
+     * @return a future which resolved to a tournament list.
+     */
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, @NonNull final int categoryEnd);
+
+    /**
+     * List active/upcoming tournaments based on given filters.
+     * @param session The session of the user.
+     * @param categoryStart The start of the categories to include. Defaults to 0.
+     * @param categoryEnd The end of the categories to include. Defaults to 128.
+     * @param startTime The start time for tournaments. Defaults to current Unix time.
+     * @return a future which resolved to a tournament list.
+     */
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, @NonNull final long startTime);
+
+    /**
+     * List active/upcoming tournaments based on given filters.
+     * @param session The session of the user.
+     * @param categoryStart The start of the categories to include. Defaults to 0.
+     * @param categoryEnd The end of the categories to include. Defaults to 128.
+     * @param startTime The start time for tournaments. Defaults to current Unix time.
+     * @param endTime The end time for tournaments. Defaults to +1 year from current Unix time.
+     * @return a future which resolved to a tournament list.
+     */
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, final long startTime, @NonNull final long endTime);
+
+    /**
+     * List active/upcoming tournaments based on given filters.
+     * @param session The session of the user.
+     * @param categoryStart The start of the categories to include. Defaults to 0.
+     * @param categoryEnd The end of the categories to include. Defaults to 128.
+     * @param startTime The start time for tournaments. Defaults to current Unix time.
+     * @param endTime The end time for tournaments. Defaults to +1 year from current Unix time.
+     * @param limit Max number of records to return. Between 1 and 100.
+     * @param cursor A next page cursor for listings.
+     * @return a future which resolved to a tournament list.
+     */
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, final long startTime, final long endTime, final int limit, final String cursor);
+
+    /**
+     * List tournament records from a given tournament.
+     * @param session The session of the user.
+     * @param tournamentId The ID of the tournament to list for.
+     * @return a future which resolved to a tournament record list.
+     */
+    ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId);
+
+    /**
+     * List tournament records from a given tournament.
+     * @param session The session of the user.
+     * @param tournamentId The ID of the tournament to list for.
+     * @param limit Max number of records to return. Between 1 and 100.
+     * @param cursor A next or previous page cursor.
+     * @return a future which resolved to a tournament record list.
+     */
+    ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int limit, final String cursor);
+
+    /**
+     * List tournament records from a given tournament.
+     * @param session The session of the user.
+     * @param tournamentId The ID of the tournament to list for.
+     * @param ownerIds One or more owners to retrieve records for.
+     * @return a future which resolved to a tournament record list.
+     */
+    ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final String... ownerIds);
+
+    /**
+     * List tournament records from a given tournament.
+     * @param session The session of the user.
+     * @param tournamentId The ID of the tournament to list for.
+     * @param limit Max number of records to return. Between 1 and 100.
+     * @param cursor A next or previous page cursor.
+     * @param ownerIds One or more owners to retrieve records for.
+     * @return a future which resolved to a tournament record list.
+     */
+    ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int limit, final String cursor, @NonNull final String... ownerIds);
+
+    /**
+     * List tournament records from a given tournament around the owner.
+     * @param session The session of the user.
+     * @param tournamentId The ID of the tournament to list for.
+     * @param ownerId The owner to retrieve records around.
+     * @return A future to resolve tournament record objects.
+     */
+    ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final String ownerId);
+
+    /**
+     * List tournament records from a given tournament around the owner.
+     * @param session The session of the user.
+     * @param tournamentId The ID of the tournament to list for.
+     * @param ownerId The owner to retrieve records around.
+     * @param limit Max number of records to return. Between 1 and 100.
+     * @return A future to resolve tournament record objects.
+     */
+    ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final String ownerId, final int limit);
 
     /**
      * List of groups the current user is a member of.
@@ -1238,5 +1391,47 @@ public interface Client {
      */
     ListenableFuture<StorageObjectAcks> writeStorageObjects(@NonNull final Session session, @NonNull final StorageObjectWrite... objects);
 
+    /**
+     * A request to submit a score to a tournament.
+     *
+     * @param session The session for the user.
+     * @param tournamentId The tournament ID to write the record for.
+     * @param score The score value to submit.
+     * @return A future to complete the tournament record write.
+     */
+    ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, final long score);
 
+    /**
+     * A request to submit a score to a tournament.
+     *
+     * @param session The session for the user.
+     * @param tournamentId The tournament ID to write the record for.
+     * @param score The score value to submit.
+     * @param subscore An optional secondary value.
+     * @return A future to complete the tournament record write.
+     */
+    ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, final long score, final long subscore);
+
+    /**
+     * A request to submit a score to a tournament.
+     *
+     * @param session The session for the user.
+     * @param tournamentId The tournament ID to write the record for.
+     * @param score The score value to submit.
+     * @param metadata A JSON object of additional properties.
+     * @return A future to complete the tournament record write.
+     */
+    ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, final long score, final String metadata);
+
+    /**
+     * A request to submit a score to a tournament.
+     *
+     * @param session The session for the user.
+     * @param tournamentId The tournament ID to write the record for.
+     * @param score The score value to submit.
+     * @param subscore  An optional secondary value.
+     * @param metadata A JSON object of additional properties.
+     * @return A future to complete the tournament record write.
+     */
+    ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, final long score, final long subscore, final String metadata);
 }

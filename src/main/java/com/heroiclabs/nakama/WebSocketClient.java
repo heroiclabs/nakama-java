@@ -70,12 +70,12 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Session> connect(@NonNull final Session session, @NonNull final ClientListener listener) {
+    public ListenableFuture<Session> connect(@NonNull final Session session, @NonNull final SocketListener listener) {
         return connect(session, listener, false);
     }
 
     @Override
-    public ListenableFuture<Session> connect(@NonNull final Session session, @NonNull final ClientListener listener, final boolean createStatus) {
+    public ListenableFuture<Session> connect(@NonNull final Session session, @NonNull final SocketListener listener, final boolean createStatus) {
         if (socket != null) {
             return Futures.immediateFailedFuture(new DefaultError("Client is already connected"));
         }
@@ -102,7 +102,7 @@ public class WebSocketClient implements SocketClient {
         return createWebsocket(session, listener, request);
     }
 
-    private ListenableFuture<Session> createWebsocket(@NonNull final Session session, @NonNull final ClientListener listener, @NonNull final Request request) {
+    private ListenableFuture<Session> createWebsocket(@NonNull final Session session, @NonNull final SocketListener listener, @NonNull final Request request) {
         final SettableFuture<Session> future = SettableFuture.create();
         final Object lock = this;
         socket = client.newWebSocket(request, new WebSocketListener() {

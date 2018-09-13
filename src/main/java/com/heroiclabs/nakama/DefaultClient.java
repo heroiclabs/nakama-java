@@ -18,10 +18,7 @@ package com.heroiclabs.nakama;
 
 import com.google.common.io.BaseEncoding;
 import com.google.common.util.concurrent.*;
-import com.google.protobuf.BoolValue;
-import com.google.protobuf.Empty;
-import com.google.protobuf.Int32Value;
-import com.google.protobuf.StringValue;
+import com.google.protobuf.*;
 import com.heroiclabs.nakama.api.*;
 import io.grpc.*;
 import io.grpc.okhttp.OkHttpChannelBuilder;
@@ -711,6 +708,11 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<Empty> joinTournament(final Session session, @NonNull final String tournamentId) {
+        return getStub(session).joinTournament(JoinTournamentRequest.newBuilder().setTournamentId(tournamentId).build());
+    }
+
+    @Override
     public ListenableFuture<Empty> kickGroupUsers(@NonNull final Session session, @NonNull final String groupId, @NonNull final String... ids) {
         return getStub(session).kickGroupUsers(KickGroupUsersRequest.newBuilder()
                 .setGroupId(groupId)
@@ -876,6 +878,20 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(final Session session, final String leaderboardId, final String ownerId) {
+        return listLeaderboardRecordsAroundOwner(session, leaderboardId, ownerId, 0);
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(final Session session, final String leaderboardId, final String ownerId, final int limit) {
+        final var builder = ListLeaderboardRecordsAroundOwnerRequest.newBuilder().setLeaderboardId(leaderboardId).setOwnerId(ownerId);
+        if (limit > 0) {
+            builder.setLimit(UInt32Value.newBuilder().setValue(limit).build());
+        }
+        return getStub(session).listLeaderboardRecordsAroundOwner(builder.build());
+    }
+
+    @Override
     public ListenableFuture<MatchList> listMatches(@NonNull final Session session) {
         return listMatches(session, -1, -1, 0, null);
     }
@@ -967,6 +983,160 @@ public class DefaultClient implements Client {
     @Override
     public ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection, final int limit, final String cursor) {
         return listUsersStorageObjects(session, null, collection, 0, null);
+    }
+
+    @Override
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session) {
+        return getStub(session).listTournaments(ListTournamentsRequest.newBuilder().build());
+    }
+
+    @Override
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int limit, final String cursor) {
+        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+        return getStub(session).listTournaments(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final int categoryStart) {
+        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
+        if (categoryStart >= 0) {
+            builder.setCategoryStart(UInt32Value.newBuilder().setValue(categoryStart).build());
+        }
+        return getStub(session).listTournaments(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, @NonNull final int categoryEnd) {
+        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
+
+        if (categoryStart >= 0) {
+            builder.setCategoryStart(UInt32Value.newBuilder().setValue(categoryStart).build());
+        }
+        if (categoryEnd >= 0) {
+            builder.setCategoryEnd(UInt32Value.newBuilder().setValue(categoryEnd).build());
+        }
+        return getStub(session).listTournaments(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, @NonNull final long startTime) {
+        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
+
+        if (categoryStart >= 0) {
+            builder.setCategoryStart(UInt32Value.newBuilder().setValue(categoryStart).build());
+        }
+        if (categoryEnd >= 0) {
+            builder.setCategoryEnd(UInt32Value.newBuilder().setValue(categoryEnd).build());
+        }
+        if (startTime >= 0) {
+            builder.setStartTime(UInt32Value.newBuilder().setValue((int) startTime).build());
+        }
+        return getStub(session).listTournaments(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, final long startTime, @NonNull final long endTime) {
+        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
+
+        if (categoryStart >= 0) {
+            builder.setCategoryStart(UInt32Value.newBuilder().setValue(categoryStart).build());
+        }
+        if (categoryEnd >= 0) {
+            builder.setCategoryEnd(UInt32Value.newBuilder().setValue(categoryEnd).build());
+        }
+        if (startTime >= 0) {
+            builder.setStartTime(UInt32Value.newBuilder().setValue((int) startTime).build());
+        }
+        if (endTime >= 0) {
+            builder.setEndTime(UInt32Value.newBuilder().setValue((int) endTime).build());
+        }
+        return getStub(session).listTournaments(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, final long startTime, final long endTime, final int limit, final String cursor) {
+        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
+        if (categoryStart >= 0) {
+            builder.setCategoryStart(UInt32Value.newBuilder().setValue(categoryStart).build());
+        }
+        if (categoryEnd >= 0) {
+            builder.setCategoryEnd(UInt32Value.newBuilder().setValue(categoryEnd).build());
+        }
+        if (startTime >= 0) {
+            builder.setStartTime(UInt32Value.newBuilder().setValue((int) startTime).build());
+        }
+        if (endTime >= 0) {
+            builder.setEndTime(UInt32Value.newBuilder().setValue((int) endTime).build());
+        }
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+        return getStub(session).listTournaments(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId) {
+        ListTournamentRecordsRequest.Builder builder = ListTournamentRecordsRequest.newBuilder().setTournamentId(tournamentId);
+        return getStub(session).listTournamentRecords(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int limit, final String cursor) {
+        ListTournamentRecordsRequest.Builder builder = ListTournamentRecordsRequest.newBuilder().setTournamentId(tournamentId);
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+        return getStub(session).listTournamentRecords(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final String... ownerIds) {
+        ListTournamentRecordsRequest.Builder builder = ListTournamentRecordsRequest.newBuilder().setTournamentId(tournamentId);
+        if (ownerIds != null) {
+            builder.addAllOwnerIds(Arrays.asList(ownerIds));
+        }
+        return getStub(session).listTournamentRecords(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int limit, final String cursor, @NonNull final String... ownerIds) {
+        ListTournamentRecordsRequest.Builder builder = ListTournamentRecordsRequest.newBuilder().setTournamentId(tournamentId);
+        if (ownerIds != null) {
+            builder.addAllOwnerIds(Arrays.asList(ownerIds));
+        }
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+        return getStub(session).listTournamentRecords(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(final Session session, final String tournamentId, final String ownerId) {
+        return listTournamentRecordsAroundOwner(session, tournamentId, ownerId, 0);
+    }
+
+    @Override
+    public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(final Session session, final String tournamentId, final String ownerId, final int limit) {
+        final var builder = ListTournamentRecordsAroundOwnerRequest.newBuilder().setTournamentId(tournamentId).setOwnerId(ownerId);
+        if (limit > 0) {
+            builder.setLimit(UInt32Value.newBuilder().setValue(limit).build());
+        }
+        return getStub(session).listTournamentRecordsAroundOwner(builder.build());
     }
 
     @Override
@@ -1266,5 +1436,44 @@ public class DefaultClient implements Client {
             }
         }
         return getStub(session).writeStorageObjects(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final long score) {
+        final var builder = WriteTournamentRecordRequest.newBuilder().setTournamentId(tournamentId);
+        final var recordBuilder = WriteTournamentRecordRequest.TournamentRecordWrite.newBuilder().setScore(score);
+        builder.setRecord(recordBuilder.build());
+        return getStub(session).writeTournamentRecord(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final long score, @NonNull final long subscore) {
+        final var builder = WriteTournamentRecordRequest.newBuilder().setTournamentId(tournamentId);
+        final var recordBuilder = WriteTournamentRecordRequest.TournamentRecordWrite.newBuilder()
+                .setScore(score)
+                .setSubscore(subscore);
+        builder.setRecord(recordBuilder.build());
+        return getStub(session).writeTournamentRecord(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final long score, @NonNull final String metadata) {
+        final var builder = WriteTournamentRecordRequest.newBuilder().setTournamentId(tournamentId);
+        final var recordBuilder = WriteTournamentRecordRequest.TournamentRecordWrite.newBuilder()
+                .setScore(score)
+                .setMetadata(metadata);
+        builder.setRecord(recordBuilder.build());
+        return getStub(session).writeTournamentRecord(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final long score, @NonNull final long subscore, @NonNull final String metadata) {
+        final var builder = WriteTournamentRecordRequest.newBuilder().setTournamentId(tournamentId);
+        final var recordBuilder = WriteTournamentRecordRequest.TournamentRecordWrite.newBuilder()
+                .setScore(score)
+                .setSubscore(subscore)
+                .setMetadata(metadata);
+        builder.setRecord(recordBuilder.build());
+        return getStub(session).writeTournamentRecord(builder.build());
     }
 }

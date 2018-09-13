@@ -23,6 +23,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -47,11 +49,13 @@ public class NotificationTest {
 
     @Test
     public void testCreateAndListenForNewNotification() throws Exception {
+        final List<Boolean> callbacks = new ArrayList<Boolean>();
         final CountDownLatch latch = new CountDownLatch(1);
-        socket.connect(session, new AbstractClientListener() {
+        socket.connect(session, new AbstractSocketListener() {
             @Override
             public void onNotifications(final NotificationList notifications) {
                 super.onNotifications(notifications);
+                callbacks.add(true);
                 Assert.assertNotNull(notifications);
                 Assert.assertNotNull(notifications.getNotificationsList());
                 Assert.assertEquals(1, notifications.getNotificationsCount());
@@ -70,12 +74,13 @@ public class NotificationTest {
 
         final String payload = "{\"user_id\":\"" + session.getUserId() + "\"}";
         socket.rpc("clientrpc.send_notification", payload).get();
-        latch.await();
+        latch.await(10, TimeUnit.SECONDS);
+        Assert.assertEquals(1, callbacks.size());
     }
 
     @Test
     public void testCreateAndListNotifications() throws Exception {
-        socket.connect(session, new AbstractClientListener() {}).get();
+        socket.connect(session, new AbstractSocketListener() {}).get();
 
         final String payload = "{\"user_id\":\"" + session.getUserId() + "\"}";
         socket.rpc("clientrpc.send_notification", payload).get();
