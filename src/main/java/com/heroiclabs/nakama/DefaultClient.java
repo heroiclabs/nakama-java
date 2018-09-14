@@ -1046,7 +1046,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, @NonNull final int startTime) {
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, @NonNull final long startTime) {
         ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder().setFull(BoolValue.newBuilder().setValue(full).build());
         if (ownerId != null && !"".equals(ownerId)) {
             builder.setOwnerId(ownerId);
@@ -1058,13 +1058,13 @@ public class DefaultClient implements Client {
             builder.setCategoryEnd(UInt32Value.newBuilder().setValue(categoryEnd).build());
         }
         if (startTime >= 0) {
-            builder.setStartTime(UInt32Value.newBuilder().setValue(startTime).build());
+            builder.setStartTime(UInt32Value.newBuilder().setValue((int) startTime).build());
         }
         return getStub(session).listTournaments(builder.build());
     }
 
     @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, final int startTime, @NonNull final int endTime) {
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, final long startTime, @NonNull final long endTime) {
         ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder().setFull(BoolValue.newBuilder().setValue(full).build());
         if (ownerId != null && !"".equals(ownerId)) {
             builder.setOwnerId(ownerId);
@@ -1076,16 +1076,16 @@ public class DefaultClient implements Client {
             builder.setCategoryEnd(UInt32Value.newBuilder().setValue(categoryEnd).build());
         }
         if (startTime >= 0) {
-            builder.setStartTime(UInt32Value.newBuilder().setValue(startTime).build());
+            builder.setStartTime(UInt32Value.newBuilder().setValue((int) startTime).build());
         }
         if (endTime >= 0) {
-            builder.setEndTime(UInt32Value.newBuilder().setValue(endTime).build());
+            builder.setEndTime(UInt32Value.newBuilder().setValue((int) endTime).build());
         }
         return getStub(session).listTournaments(builder.build());
     }
 
     @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, final int startTime, final int endTime, final int limit, final String cursor) {
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, final long startTime, final long endTime, final int limit, final String cursor) {
         ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder().setFull(BoolValue.newBuilder().setValue(full).build());
         if (ownerId != null && !"".equals(ownerId)) {
             builder.setOwnerId(ownerId);
@@ -1097,10 +1097,10 @@ public class DefaultClient implements Client {
             builder.setCategoryEnd(UInt32Value.newBuilder().setValue(categoryEnd).build());
         }
         if (startTime >= 0) {
-            builder.setStartTime(UInt32Value.newBuilder().setValue(startTime).build());
+            builder.setStartTime(UInt32Value.newBuilder().setValue((int) startTime).build());
         }
         if (endTime >= 0) {
-            builder.setEndTime(UInt32Value.newBuilder().setValue(endTime).build());
+            builder.setEndTime(UInt32Value.newBuilder().setValue((int) endTime).build());
         }
         if (limit > 0) {
             builder.setLimit(Int32Value.newBuilder().setValue(limit).build());

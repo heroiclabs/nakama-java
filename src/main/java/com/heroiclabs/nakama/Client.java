@@ -977,7 +977,7 @@ public interface Client {
      * @param startTime The start time for tournaments. Defaults to current Unix time.
      * @return a future which resolved to a tournament list.
      */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, @NonNull final int startTime);
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, @NonNull final long startTime);
 
     /**
      * List active/upcoming tournaments based on given filters.
@@ -990,7 +990,7 @@ public interface Client {
      * @param endTime The end time for tournaments. Defaults to +1 year from current Unix time.
      * @return a future which resolved to a tournament list.
      */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, final int startTime, @NonNull final int endTime);
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, final long startTime, @NonNull final long endTime);
 
     /**
      * List active/upcoming tournaments based on given filters.
@@ -1005,7 +1005,7 @@ public interface Client {
      * @param cursor A next page cursor for listings.
      * @return a future which resolved to a tournament list.
      */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, final int startTime, final int endTime, final int limit, final String cursor);
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, final long startTime, final long endTime, final int limit, final String cursor);
 
     /**
      * List tournament records from a given tournament.
