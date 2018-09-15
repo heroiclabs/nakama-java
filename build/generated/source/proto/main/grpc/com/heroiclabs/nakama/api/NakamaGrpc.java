@@ -1147,6 +1147,37 @@ public final class NakamaGrpc {
      return getListLeaderboardRecordsMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest,
+      com.heroiclabs.nakama.api.LeaderboardRecordList> getListLeaderboardRecordsAroundOwnerMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ListLeaderboardRecordsAroundOwner",
+      requestType = com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest.class,
+      responseType = com.heroiclabs.nakama.api.LeaderboardRecordList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest,
+      com.heroiclabs.nakama.api.LeaderboardRecordList> getListLeaderboardRecordsAroundOwnerMethod() {
+    io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest, com.heroiclabs.nakama.api.LeaderboardRecordList> getListLeaderboardRecordsAroundOwnerMethod;
+    if ((getListLeaderboardRecordsAroundOwnerMethod = NakamaGrpc.getListLeaderboardRecordsAroundOwnerMethod) == null) {
+      synchronized (NakamaGrpc.class) {
+        if ((getListLeaderboardRecordsAroundOwnerMethod = NakamaGrpc.getListLeaderboardRecordsAroundOwnerMethod) == null) {
+          NakamaGrpc.getListLeaderboardRecordsAroundOwnerMethod = getListLeaderboardRecordsAroundOwnerMethod = 
+              io.grpc.MethodDescriptor.<com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest, com.heroiclabs.nakama.api.LeaderboardRecordList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "nakama.api.Nakama", "ListLeaderboardRecordsAroundOwner"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.LeaderboardRecordList.getDefaultInstance()))
+                  .build();
+          }
+        }
+     }
+     return getListLeaderboardRecordsAroundOwnerMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListMatchesRequest,
       com.heroiclabs.nakama.api.MatchList> getListMatchesMethod;
 
@@ -1300,6 +1331,37 @@ public final class NakamaGrpc {
         }
      }
      return getListTournamentRecordsMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest,
+      com.heroiclabs.nakama.api.TournamentRecordList> getListTournamentRecordsAroundOwnerMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ListTournamentRecordsAroundOwner",
+      requestType = com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest.class,
+      responseType = com.heroiclabs.nakama.api.TournamentRecordList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest,
+      com.heroiclabs.nakama.api.TournamentRecordList> getListTournamentRecordsAroundOwnerMethod() {
+    io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest, com.heroiclabs.nakama.api.TournamentRecordList> getListTournamentRecordsAroundOwnerMethod;
+    if ((getListTournamentRecordsAroundOwnerMethod = NakamaGrpc.getListTournamentRecordsAroundOwnerMethod) == null) {
+      synchronized (NakamaGrpc.class) {
+        if ((getListTournamentRecordsAroundOwnerMethod = NakamaGrpc.getListTournamentRecordsAroundOwnerMethod) == null) {
+          NakamaGrpc.getListTournamentRecordsAroundOwnerMethod = getListTournamentRecordsAroundOwnerMethod = 
+              io.grpc.MethodDescriptor.<com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest, com.heroiclabs.nakama.api.TournamentRecordList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "nakama.api.Nakama", "ListTournamentRecordsAroundOwner"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.TournamentRecordList.getDefaultInstance()))
+                  .build();
+          }
+        }
+     }
+     return getListTournamentRecordsAroundOwnerMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListUserGroupsRequest,
@@ -2187,6 +2249,13 @@ public final class NakamaGrpc {
     }
 
     /**
+     */
+    public void listLeaderboardRecordsAroundOwner(com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.LeaderboardRecordList> responseObserver) {
+      asyncUnimplementedUnaryCall(getListLeaderboardRecordsAroundOwnerMethod(), responseObserver);
+    }
+
+    /**
      * <pre>
      * Fetch list of running matches.
      * </pre>
@@ -2234,6 +2303,13 @@ public final class NakamaGrpc {
     public void listTournamentRecords(com.heroiclabs.nakama.api.ListTournamentRecordsRequest request,
         io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.TournamentRecordList> responseObserver) {
       asyncUnimplementedUnaryCall(getListTournamentRecordsMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void listTournamentRecordsAroundOwner(com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.TournamentRecordList> responseObserver) {
+      asyncUnimplementedUnaryCall(getListTournamentRecordsAroundOwnerMethod(), responseObserver);
     }
 
     /**
@@ -2651,6 +2727,13 @@ public final class NakamaGrpc {
                 com.heroiclabs.nakama.api.LeaderboardRecordList>(
                   this, METHODID_LIST_LEADERBOARD_RECORDS)))
           .addMethod(
+            getListLeaderboardRecordsAroundOwnerMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest,
+                com.heroiclabs.nakama.api.LeaderboardRecordList>(
+                  this, METHODID_LIST_LEADERBOARD_RECORDS_AROUND_OWNER)))
+          .addMethod(
             getListMatchesMethod(),
             asyncUnaryCall(
               new MethodHandlers<
@@ -2685,6 +2768,13 @@ public final class NakamaGrpc {
                 com.heroiclabs.nakama.api.ListTournamentRecordsRequest,
                 com.heroiclabs.nakama.api.TournamentRecordList>(
                   this, METHODID_LIST_TOURNAMENT_RECORDS)))
+          .addMethod(
+            getListTournamentRecordsAroundOwnerMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest,
+                com.heroiclabs.nakama.api.TournamentRecordList>(
+                  this, METHODID_LIST_TOURNAMENT_RECORDS_AROUND_OWNER)))
           .addMethod(
             getListUserGroupsMethod(),
             asyncUnaryCall(
@@ -3217,6 +3307,14 @@ public final class NakamaGrpc {
     }
 
     /**
+     */
+    public void listLeaderboardRecordsAroundOwner(com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.LeaderboardRecordList> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getListLeaderboardRecordsAroundOwnerMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
      * <pre>
      * Fetch list of running matches.
      * </pre>
@@ -3269,6 +3367,14 @@ public final class NakamaGrpc {
         io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.TournamentRecordList> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getListTournamentRecordsMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void listTournamentRecordsAroundOwner(com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.TournamentRecordList> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getListTournamentRecordsAroundOwnerMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -3828,6 +3934,13 @@ public final class NakamaGrpc {
     }
 
     /**
+     */
+    public com.heroiclabs.nakama.api.LeaderboardRecordList listLeaderboardRecordsAroundOwner(com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getListLeaderboardRecordsAroundOwnerMethod(), getCallOptions(), request);
+    }
+
+    /**
      * <pre>
      * Fetch list of running matches.
      * </pre>
@@ -3875,6 +3988,13 @@ public final class NakamaGrpc {
     public com.heroiclabs.nakama.api.TournamentRecordList listTournamentRecords(com.heroiclabs.nakama.api.ListTournamentRecordsRequest request) {
       return blockingUnaryCall(
           getChannel(), getListTournamentRecordsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.heroiclabs.nakama.api.TournamentRecordList listTournamentRecordsAroundOwner(com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getListTournamentRecordsAroundOwnerMethod(), getCallOptions(), request);
     }
 
     /**
@@ -4454,6 +4574,14 @@ public final class NakamaGrpc {
     }
 
     /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.heroiclabs.nakama.api.LeaderboardRecordList> listLeaderboardRecordsAroundOwner(
+        com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getListLeaderboardRecordsAroundOwnerMethod(), getCallOptions()), request);
+    }
+
+    /**
      * <pre>
      * Fetch list of running matches.
      * </pre>
@@ -4506,6 +4634,14 @@ public final class NakamaGrpc {
         com.heroiclabs.nakama.api.ListTournamentRecordsRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getListTournamentRecordsMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.heroiclabs.nakama.api.TournamentRecordList> listTournamentRecordsAroundOwner(
+        com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getListTournamentRecordsAroundOwnerMethod(), getCallOptions()), request);
     }
 
     /**
@@ -4721,27 +4857,29 @@ public final class NakamaGrpc {
   private static final int METHODID_LIST_GROUPS = 33;
   private static final int METHODID_LIST_GROUP_USERS = 34;
   private static final int METHODID_LIST_LEADERBOARD_RECORDS = 35;
-  private static final int METHODID_LIST_MATCHES = 36;
-  private static final int METHODID_LIST_NOTIFICATIONS = 37;
-  private static final int METHODID_LIST_STORAGE_OBJECTS = 38;
-  private static final int METHODID_LIST_TOURNAMENTS = 39;
-  private static final int METHODID_LIST_TOURNAMENT_RECORDS = 40;
-  private static final int METHODID_LIST_USER_GROUPS = 41;
-  private static final int METHODID_PROMOTE_GROUP_USERS = 42;
-  private static final int METHODID_READ_STORAGE_OBJECTS = 43;
-  private static final int METHODID_RPC_FUNC = 44;
-  private static final int METHODID_UNLINK_CUSTOM = 45;
-  private static final int METHODID_UNLINK_DEVICE = 46;
-  private static final int METHODID_UNLINK_EMAIL = 47;
-  private static final int METHODID_UNLINK_FACEBOOK = 48;
-  private static final int METHODID_UNLINK_GAME_CENTER = 49;
-  private static final int METHODID_UNLINK_GOOGLE = 50;
-  private static final int METHODID_UNLINK_STEAM = 51;
-  private static final int METHODID_UPDATE_ACCOUNT = 52;
-  private static final int METHODID_UPDATE_GROUP = 53;
-  private static final int METHODID_WRITE_LEADERBOARD_RECORD = 54;
-  private static final int METHODID_WRITE_STORAGE_OBJECTS = 55;
-  private static final int METHODID_WRITE_TOURNAMENT_RECORD = 56;
+  private static final int METHODID_LIST_LEADERBOARD_RECORDS_AROUND_OWNER = 36;
+  private static final int METHODID_LIST_MATCHES = 37;
+  private static final int METHODID_LIST_NOTIFICATIONS = 38;
+  private static final int METHODID_LIST_STORAGE_OBJECTS = 39;
+  private static final int METHODID_LIST_TOURNAMENTS = 40;
+  private static final int METHODID_LIST_TOURNAMENT_RECORDS = 41;
+  private static final int METHODID_LIST_TOURNAMENT_RECORDS_AROUND_OWNER = 42;
+  private static final int METHODID_LIST_USER_GROUPS = 43;
+  private static final int METHODID_PROMOTE_GROUP_USERS = 44;
+  private static final int METHODID_READ_STORAGE_OBJECTS = 45;
+  private static final int METHODID_RPC_FUNC = 46;
+  private static final int METHODID_UNLINK_CUSTOM = 47;
+  private static final int METHODID_UNLINK_DEVICE = 48;
+  private static final int METHODID_UNLINK_EMAIL = 49;
+  private static final int METHODID_UNLINK_FACEBOOK = 50;
+  private static final int METHODID_UNLINK_GAME_CENTER = 51;
+  private static final int METHODID_UNLINK_GOOGLE = 52;
+  private static final int METHODID_UNLINK_STEAM = 53;
+  private static final int METHODID_UPDATE_ACCOUNT = 54;
+  private static final int METHODID_UPDATE_GROUP = 55;
+  private static final int METHODID_WRITE_LEADERBOARD_RECORD = 56;
+  private static final int METHODID_WRITE_STORAGE_OBJECTS = 57;
+  private static final int METHODID_WRITE_TOURNAMENT_RECORD = 58;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -4904,6 +5042,10 @@ public final class NakamaGrpc {
           serviceImpl.listLeaderboardRecords((com.heroiclabs.nakama.api.ListLeaderboardRecordsRequest) request,
               (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.LeaderboardRecordList>) responseObserver);
           break;
+        case METHODID_LIST_LEADERBOARD_RECORDS_AROUND_OWNER:
+          serviceImpl.listLeaderboardRecordsAroundOwner((com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest) request,
+              (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.LeaderboardRecordList>) responseObserver);
+          break;
         case METHODID_LIST_MATCHES:
           serviceImpl.listMatches((com.heroiclabs.nakama.api.ListMatchesRequest) request,
               (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.MatchList>) responseObserver);
@@ -4922,6 +5064,10 @@ public final class NakamaGrpc {
           break;
         case METHODID_LIST_TOURNAMENT_RECORDS:
           serviceImpl.listTournamentRecords((com.heroiclabs.nakama.api.ListTournamentRecordsRequest) request,
+              (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.TournamentRecordList>) responseObserver);
+          break;
+        case METHODID_LIST_TOURNAMENT_RECORDS_AROUND_OWNER:
+          serviceImpl.listTournamentRecordsAroundOwner((com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest) request,
               (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.TournamentRecordList>) responseObserver);
           break;
         case METHODID_LIST_USER_GROUPS:
@@ -5049,11 +5195,13 @@ public final class NakamaGrpc {
               .addMethod(getListGroupsMethod())
               .addMethod(getListGroupUsersMethod())
               .addMethod(getListLeaderboardRecordsMethod())
+              .addMethod(getListLeaderboardRecordsAroundOwnerMethod())
               .addMethod(getListMatchesMethod())
               .addMethod(getListNotificationsMethod())
               .addMethod(getListStorageObjectsMethod())
               .addMethod(getListTournamentsMethod())
               .addMethod(getListTournamentRecordsMethod())
+              .addMethod(getListTournamentRecordsAroundOwnerMethod())
               .addMethod(getListUserGroupsMethod())
               .addMethod(getPromoteGroupUsersMethod())
               .addMethod(getReadStorageObjectsMethod())

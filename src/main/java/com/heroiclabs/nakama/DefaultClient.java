@@ -878,6 +878,20 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(final Session session, final String leaderboardId, final String ownerId) {
+        return listLeaderboardRecordsAroundOwner(session, leaderboardId, ownerId, 0);
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(final Session session, final String leaderboardId, final String ownerId, final int limit) {
+        final var builder = ListLeaderboardRecordsAroundOwnerRequest.newBuilder().setLeaderboardId(leaderboardId).setOwnerId(ownerId);
+        if (limit > 0) {
+            builder.setLimit(UInt32Value.newBuilder().setValue(limit).build());
+        }
+        return getStub(session).listLeaderboardRecordsAroundOwner(builder.build());
+    }
+
+    @Override
     public ListenableFuture<MatchList> listMatches(@NonNull final Session session) {
         return listMatches(session, -1, -1, 0, null);
     }
@@ -1151,6 +1165,20 @@ public class DefaultClient implements Client {
             builder.setCursor(cursor);
         }
         return getStub(session).listTournamentRecords(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(final Session session, final String tournamentId, final String ownerId) {
+        return listTournamentRecordsAroundOwner(session, tournamentId, ownerId, 0);
+    }
+
+    @Override
+    public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(final Session session, final String tournamentId, final String ownerId, final int limit) {
+        final var builder = ListTournamentRecordsAroundOwnerRequest.newBuilder().setTournamentId(tournamentId).setOwnerId(ownerId);
+        if (limit > 0) {
+            builder.setLimit(UInt32Value.newBuilder().setValue(limit).build());
+        }
+        return getStub(session).listTournamentRecordsAroundOwner(builder.build());
     }
 
     @Override

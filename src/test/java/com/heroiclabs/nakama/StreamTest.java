@@ -57,14 +57,6 @@ public class StreamTest {
                 Assert.assertNotNull(presence.getJoins().get(0));
                 Assert.assertEquals(session.getUserId(), presence.getJoins().get(0).getUserId());
                 latch.countDown();
-
-                for (UserPresence userPresence : presence.getJoins()) {
-                    System.out.println("User ID: " + userPresence.getUserId() + " Username: " + userPresence.getUsername() + " Status: " + userPresence.getStatus());
-                }
-
-                for (UserPresence userPresence : presence.getLeaves()) {
-                    System.out.println("User ID: " + userPresence.getUserId() + " Username: " + userPresence.getUsername() + " Status: " + userPresence.getStatus());
-                }
             }
 
             @Override

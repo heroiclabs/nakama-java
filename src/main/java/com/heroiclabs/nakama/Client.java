@@ -774,6 +774,25 @@ public interface Client {
     ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds, final int limit, final String cursor);
 
     /**
+     * List leaderboard records from a given leaderboard around the owner.
+     * @param session The session of the user.
+     * @param leaderboardId The id of the leaderboard to list.
+     * @param ownerId The owner to retrieve records around.
+     * @return A future to resolve leaderboard record objects.
+     */
+    ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final String ownerId);
+
+    /**
+     * List leaderrboard records from a given leaderboard around the owner.
+     * @param session The session of the user.
+     * @param leaderboardId The id of the leaderboard to list.
+     * @param ownerId The owner to retrieve records around.
+     * @param limit Max number of records to return. Between 1 and 100.
+     * @return A future to resolve leaderboard record objects.
+     */
+    ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final String ownerId, final int limit);
+
+    /**
      * Fetch a list of matches active on the server.
      *
      * @param session The session of the user.
@@ -1045,6 +1064,24 @@ public interface Client {
      */
     ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int limit, final String cursor, @NonNull final String... ownerIds);
 
+    /**
+     * List tournament records from a given tournament around the owner.
+     * @param session The session of the user.
+     * @param tournamentId The ID of the tournament to list for.
+     * @param ownerId The owner to retrieve records around.
+     * @return A future to resolve tournament record objects.
+     */
+    ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final String ownerId);
+
+    /**
+     * List tournament records from a given tournament around the owner.
+     * @param session The session of the user.
+     * @param tournamentId The ID of the tournament to list for.
+     * @param ownerId The owner to retrieve records around.
+     * @param limit Max number of records to return. Between 1 and 100.
+     * @return A future to resolve tournament record objects.
+     */
+    ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final String ownerId, final int limit);
 
     /**
      * List of groups the current user is a member of.

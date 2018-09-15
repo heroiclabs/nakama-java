@@ -377,6 +377,10 @@ service Nakama {
     option (google.api.http).get = "/v2/leaderboard/{leaderboard_id}";
   }
 
+  rpc ListLeaderboardRecordsAroundOwner (ListLeaderboardRecordsAroundOwnerRequest) returns (LeaderboardRecordList) {
+    option (google.api.http).get = "/v2/leaderboard/{leaderboard_id}/owner/{owner_id}";
+  }
+
   // Fetch list of running matches.
   rpc ListMatches (ListMatchesRequest) returns (MatchList) {
     option (google.api.http).get = "/v2/match";
@@ -405,6 +409,10 @@ service Nakama {
   // List tournament records.
   rpc ListTournamentRecords (ListTournamentRecordsRequest) returns (TournamentRecordList) {
     option (google.api.http).get = "/v2/tournament/{tournament_id}";
+  }
+
+  rpc ListTournamentRecordsAroundOwner (ListTournamentRecordsAroundOwnerRequest) returns (TournamentRecordList) {
+    option (google.api.http).get = "/v2/tournament/{tournament_id}/owner/{owner_id}";
   }
 
   // List groups the current user belongs to.
@@ -1014,6 +1022,16 @@ message ListGroupUsersRequest {
   string group_id = 1;
 }
 
+// List leaerboard records from a given leaderboard around the owner.
+message ListLeaderboardRecordsAroundOwnerRequest {
+  // The ID of the tournament to list for.
+  string leaderboard_id = 1;
+  // Max number of records to return. Between 1 and 100.
+  google.protobuf.UInt32Value limit = 2;
+  // The owner to retrieve records around.
+  string owner_id = 3;
+}
+
 // List leaderboard records from a given leaderboard.
 message ListLeaderboardRecordsRequest {
   // The ID of the leaderboard to list for.
@@ -1060,6 +1078,16 @@ message ListStorageObjectsRequest {
   string cursor = 4; // value from StorageObjectList.cursor.
 }
 
+// List tournament records from a given tournament around the owner.
+message ListTournamentRecordsAroundOwnerRequest {
+  // The ID of the tournament to list for.
+  string tournament_id = 1;
+  // Max number of records to return. Between 1 and 100.
+  google.protobuf.UInt32Value limit = 2;
+  // The owner to retrieve records around.
+  string owner_id = 3;
+}
+
 // List tournament records from a given tournament.
 message ListTournamentRecordsRequest {
   // The ID of the tournament to list for.
@@ -1078,7 +1106,7 @@ message ListTournamentsRequest {
   google.protobuf.UInt32Value category_start = 1;
   // The end of the categories to include. Defaults to 128.
   google.protobuf.UInt32Value category_end = 2;
-  // The start time for tournaments. Defaults to current Unix time.
+  // The start time for tournaments. Defaults to epoch.
   google.protobuf.UInt32Value start_time = 3;
   // The end time for tournaments. Defaults to +1 year from current Unix time.
   google.protobuf.UInt32Value end_time = 4;
