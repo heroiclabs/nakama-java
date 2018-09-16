@@ -20,16 +20,15 @@ import com.google.gson.Gson;
 import com.heroiclabs.nakama.api.LeaderboardRecord;
 import com.heroiclabs.nakama.api.Tournament;
 import com.heroiclabs.nakama.api.TournamentList;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import static java.lang.Thread.sleep;
 
 public class TournamentTest {
     private Client client;
@@ -355,7 +354,7 @@ public class TournamentTest {
         Assert.assertNotNull(tournaments);
         Assert.assertEquals(tournaments.getTournamentsList().size(), 0);
 
-        Thread.sleep(5000);
+        sleep(5000);
 
         endTime = object.end_time;
         tournaments = client.listTournaments(session, full, ownerId, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
@@ -419,6 +418,8 @@ public class TournamentTest {
         Assert.assertEquals(t.getId(), tournamentId);
         Assert.assertEquals(t.getSize(), 1);
         Assert.assertEquals(t.getCategory(), object.category);
+
+        client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
     }
 
     @Test
@@ -452,6 +453,8 @@ public class TournamentTest {
         } finally {
             Assert.assertNotNull(err);
         }
+
+        client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
     }
 
     @Test
@@ -482,6 +485,8 @@ public class TournamentTest {
         } finally {
             Assert.assertNotNull(err);
         }
+
+        client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
     }
 
     @Test
@@ -518,6 +523,8 @@ public class TournamentTest {
         } finally {
             Assert.assertNotNull(err);
         }
+
+        client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
     }
 
     @Test
@@ -541,6 +548,8 @@ public class TournamentTest {
 
         LeaderboardRecord record = client.writeTournamentRecord(session, tournamentId, 10).get();
         Assert.assertNotNull(record);
+
+        client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
     }
 
     @Test
@@ -563,7 +572,7 @@ public class TournamentTest {
         LeaderboardRecord record = client.writeTournamentRecord(session, tournamentId, 10).get();
         Assert.assertNotNull(record);
 
-        Thread.sleep(object.duration * 1000);
+        sleep(object.duration * 1000);
 
         Client client2 = new DefaultClient("defaultkey");
         Session session2 = client.authenticateCustom(UUID.randomUUID().toString()).get();
@@ -576,10 +585,12 @@ public class TournamentTest {
         } finally {
             Assert.assertNotNull(err);
         }
+
+        client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
     }
 
     @Test
-    public void testTournamentWriteAfterEndTime() throws Exception {
+    public void testTournamentWriteAfterDurationAndEndTime() throws Exception {
         TournamentObject object = new TournamentObject();
         object.description = "checking set tournament duration 3s, after tournament end time";
         object.end_time = (new Date().getTime() / 1000) + 5;
@@ -599,26 +610,38 @@ public class TournamentTest {
         LeaderboardRecord record = client.writeTournamentRecord(session, tournamentId, 10).get();
         Assert.assertNotNull(record);
 
-        Thread.sleep(object.duration * 1000);
+        sleep(object.duration * 1000);
 
-        Client client2 = new DefaultClient("defaultkey");
         Session session2 = client.authenticateCustom(UUID.randomUUID().toString()).get();
 
         Exception err = null;
         try {
-            client2.writeTournamentRecord(session2, tournamentId, 20).get();
+            client.writeTournamentRecord(session2, tournamentId, 20).get();
         } catch (Exception e) {
             err = e;
         } finally {
             Assert.assertNotNull(err);
         }
+
+        sleep(2 * 1000);
+        Session session3 = client.authenticateCustom(UUID.randomUUID().toString()).get();
+        err = null;
+        try {
+            client.writeTournamentRecord(session3, tournamentId, 30).get();
+        } catch (Exception e) {
+            err = e;
+        } finally {
+            Assert.assertNotNull(err);
+        }
+
+        client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
     }
 
     @Test
     public void testTournamentWriteManyRanks() throws Exception {
         TournamentObject object = new TournamentObject();
         object.description = "checking set tournament duration 10s, no end, ranks calculation";
-        object.duration = 10000;
+        object.duration = 10;
         object.category = 100;
         object.join_required = false;
         object.operator = "set";
@@ -649,6 +672,152 @@ public class TournamentTest {
         records = client.listLeaderboardRecords(session, tournamentId, session.getUserId()).get().getOwnerRecordsList();
         Assert.assertEquals(1, records.size());
         Assert.assertEquals(object.max_size, records.get(0).getRank());
+
+        client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
+    }
+
+    @Test
+    public void testTournamentListRecordAfterExpiry() throws Exception {
+        TournamentObject object = new TournamentObject();
+        object.description = "checking set tournament duration 3s, end_time 4s, list records";
+        object.duration = 3;
+        object.end_time = (new Date().getTime() / 1000) + 4;
+        object.category = 100;
+        object.join_required = false;
+        object.operator = "set";
+        object.max_num_score = 1;
+        object.max_size = 10;
+        object.sort_order = "asc";
+        object.title = "tournament-test";
+
+        final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
+        final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
+        Assert.assertNotNull(tournamentId);
+
+        client.writeTournamentRecord(session, tournamentId, 20).get();
+
+        sleep(4 * 1000);
+
+        List<LeaderboardRecord> records = client.listLeaderboardRecords(session, tournamentId, session.getUserId()).get().getOwnerRecordsList();
+        Assert.assertEquals(0, records.size());
+
+        client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
+    }
+
+    @Test
+    public void testTournamentWriteSubscoreRank() throws Exception {
+        TournamentObject object = new TournamentObject();
+        object.description = "checking set tournament duration 10s, no end, ranks calculation with subscore";
+        object.duration = 10;
+        object.category = 100;
+        object.join_required = false;
+        object.operator = "set";
+        object.max_num_score = 1;
+        object.max_size = 10;
+        object.sort_order = "desc";
+        object.title = "tournament-test";
+
+        final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
+        final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
+        Assert.assertNotNull(tournamentId);
+
+        LeaderboardRecord record = client.writeTournamentRecord(session, tournamentId, 20, 10).get();
+        Assert.assertNotNull(record);
+        Assert.assertEquals(1, record.getRank());
+
+        Session session2 = client.authenticateCustom(UUID.randomUUID().toString()).get();
+        record = client.writeTournamentRecord(session2, tournamentId, 20, 5).get();
+        Assert.assertNotNull(record);
+        Assert.assertEquals(2, record.getRank());
+
+        client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
+    }
+
+    @Test
+    @Ignore("requires setting token expiry to more than 1min")
+    public void testTournamentWithResetScheduleAndCheckSize() throws Exception {
+        TournamentObject object = new TournamentObject();
+        object.description = "checking set tournament duration 3, reset 1min, ranks calculation.";
+        object.reset_schedule = "* * * * *"; // every 1 min
+        object.duration = 3;
+        object.category = 100;
+        object.join_required = false;
+        object.operator = "set";
+        object.max_num_score = 1;
+        object.max_size = 1;
+        object.sort_order = "desc";
+        object.title = "tournament-test";
+
+        final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
+        final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
+        Assert.assertNotNull(tournamentId);
+
+        LeaderboardRecord record = client.writeTournamentRecord(session, tournamentId, 20, 10).get();
+        Assert.assertNotNull(record);
+        Assert.assertEquals(1, record.getRank());
+
+        sleep(3000);
+
+        Exception err = null;
+        try {
+            client.writeTournamentRecord(session, tournamentId, 20, 10).get();
+        } catch (Exception ex) {
+            err = ex;
+        } finally {
+            Assert.assertNotNull(err);
+        }
+
+        sleep(60000);
+
+        List<LeaderboardRecord> records = client.listLeaderboardRecords(session, tournamentId, session.getUserId()).get().getOwnerRecordsList();
+        Assert.assertEquals(0, records.size());
+
+//        record = client.writeTournamentRecord(session, tournamentId, 30, 20).get();
+//        Assert.assertNotNull(record);
+//        Assert.assertEquals(1, record.getRank());
+
+        client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
+    }
+
+    @Test
+    public void testTournamentAddAttempts() throws Exception {
+        TournamentObject object = new TournamentObject();
+        object.description = "checking set tournament duration 10s, no end, add 1 attempt";
+        object.duration = 10;
+        object.category = 6;
+        object.join_required = false;
+        object.operator = "set";
+        object.max_num_score = 1; // cannot write multiple times
+        object.max_size = 2;
+        object.sort_order = "desc";
+        object.title = "tournament-test";
+
+        final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
+        final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
+        Assert.assertNotNull(tournamentId);
+
+        LeaderboardRecord record = client.writeTournamentRecord(session, tournamentId, 10).get();
+        Assert.assertNotNull(record);
+
+        Exception err = null;
+        try {
+            client.writeTournamentRecord(session, tournamentId, 20).get();
+        } catch (Exception e) {
+            err = e;
+        } finally {
+            Assert.assertNotNull(err);
+        }
+
+        TournamentAddAttempt tournamentAddAttempt = new TournamentAddAttempt();
+        tournamentAddAttempt.count = 1;
+        tournamentAddAttempt.tournament_id = tournamentId;
+        tournamentAddAttempt.owner_id = session.getUserId();
+        client.rpc(session, "clientrpc.addattempt_tournament", gson.toJson(tournamentAddAttempt)).get();
+
+        record = client.writeTournamentRecord(session, tournamentId, 20, 30).get();
+        Assert.assertNotNull(record);
+
+        client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
     }
 }
 
@@ -664,8 +833,15 @@ class TournamentObject {
     public int max_num_score;
     public String title;
     public long start_time;
+    public String reset_schedule;
 }
 
 class TournamentId {
     String tournament_id;
+}
+
+class TournamentAddAttempt {
+    String tournament_id;
+    String owner_id;
+    int count;
 }
