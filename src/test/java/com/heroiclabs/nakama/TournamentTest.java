@@ -25,7 +25,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -52,10 +54,10 @@ public class TournamentTest {
         object.duration = 10;
         object.category = 5;
         object.join_required = true;
-        object.operator = 0;
+        object.operator = "set";
         object.max_num_score = 1;
         object.max_size = 2;
-        object.sort_order = 1;
+        object.sort_order = "desc";
         object.title = "tournament-test";
 
         final String response = client.rpc(session, "clientrpc.create_same_tournament_multiple_times", gson.toJson(object)).get().getPayload();
@@ -66,14 +68,14 @@ public class TournamentTest {
     @Test
     public void testCreateTournamentAndTournamentDelete() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking best tournament duration 10s, no end";
+        object.description = "checking set tournament duration 10s, no end";
         object.duration = 10;
         object.category = 5;
         object.join_required = true;
-        object.operator = 0;
+        object.operator = "set";
         object.max_num_score = 1;
         object.max_size = 2;
-        object.sort_order = 1;
+        object.sort_order = "desc";
         object.title = "tournament-test";
 
         final String response = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
@@ -110,15 +112,15 @@ public class TournamentTest {
     @Test
     public void testCreateTournamentInFuture() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking best tournament duration 10s, no end, start in future";
+        object.description = "checking set tournament duration 10s, no end, start in future";
         object.start_time = (new Date().getTime() / 1000) + 10;
         object.duration = 10;
         object.category = 5;
         object.join_required = true;
-        object.operator = 0;
+        object.operator = "set";
         object.max_num_score = 1;
         object.max_size = 2;
-        object.sort_order = 1;
+        object.sort_order = "desc";
         object.title = "tournament-test";
 
         final String response = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
@@ -158,11 +160,11 @@ public class TournamentTest {
         object.description = "full tournament listing";
         object.duration = 10;
         object.category = 5;
-        object.join_required = true;
-        object.operator = 0;
+        object.join_required = false;
+        object.operator = "set";
         object.max_num_score = 1;
         object.max_size = 1; //ensure tournament is full
-        object.sort_order = 1;
+        object.sort_order = "desc";
         object.title = "tournament-test";
 
         final String response = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
@@ -171,11 +173,11 @@ public class TournamentTest {
 
         client.writeTournamentRecord(session, tournamentId, 10).get();
 
-        TournamentList tournaments = client.listTournaments(session, false, 100, null).get();
+        TournamentList tournaments = client.listTournaments(session, false, session.getUserId(), 100, null).get();
         Assert.assertNotNull(tournaments);
-        Assert.assertEquals(tournaments.getTournamentsList().size(), 0);
+        Assert.assertEquals(0, tournaments.getTournamentsList().size());
 
-        tournaments = client.listTournaments(session, true, 100, null).get();
+        tournaments = client.listTournaments(session, true, session.getUserId(), 100, null).get();
         Tournament t = null;
         for (Tournament tt : tournaments.getTournamentsList()) {
             if (tt.getId().equals(tournamentId)) {
@@ -186,13 +188,13 @@ public class TournamentTest {
 
         Assert.assertNotNull(t);
         Assert.assertEquals(t.getId(), tournamentId);
-        Assert.assertEquals(t.getSize(), 0);
+        Assert.assertEquals(t.getSize(), 1);
         Assert.assertEquals(t.getCategory(), object.category);
         Assert.assertEquals(t.getDescription(), object.description);
         Assert.assertEquals(t.getTitle(), object.title);
         Assert.assertEquals(t.getEndTime().getSeconds(), 0);
         Assert.assertNotEquals(t.getCreateTime(), 0);
-        Assert.assertTrue(t.getCanEnter());
+        Assert.assertFalse(t.getCanEnter()); // tournament is full, can't enter!
         Assert.assertNotEquals(t.getEndActive(), 0);
         Assert.assertEquals(t.getNextReset(), 0);
         Assert.assertEquals(t.getMetadata(), "{}");
@@ -209,10 +211,10 @@ public class TournamentTest {
         object.duration = 10;
         object.category = 5;
         object.join_required = false;
-        object.operator = 0;
+        object.operator = "set";
         object.max_num_score = 1;
         object.max_size = 2;
-        object.sort_order = 1;
+        object.sort_order = "desc";
         object.title = "tournament-test";
 
         final String response = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
@@ -243,10 +245,10 @@ public class TournamentTest {
         object.duration = 10;
         object.category = 20;
         object.join_required = false;
-        object.operator = 0;
+        object.operator = "set";
         object.max_num_score = 1;
         object.max_size = 2;
-        object.sort_order = 1;
+        object.sort_order = "desc";
         object.title = "tournament-test";
 
         final String response = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
@@ -281,10 +283,10 @@ public class TournamentTest {
         object.duration = 10;
         object.category = 30;
         object.join_required = false;
-        object.operator = 0;
+        object.operator = "set";
         object.max_num_score = 1;
         object.max_size = 2;
-        object.sort_order = 1;
+        object.sort_order = "desc";
         object.title = "tournament-test";
 
         final String response = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
@@ -320,10 +322,10 @@ public class TournamentTest {
         object.duration = 1;
         object.category = 30;
         object.join_required = false;
-        object.operator = 0;
+        object.operator = "set";
         object.max_num_score = 1;
         object.max_size = 2;
-        object.sort_order = 1;
+        object.sort_order = "desc";
         object.title = "tournament-test";
 
         final String response = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
@@ -353,7 +355,6 @@ public class TournamentTest {
         Assert.assertNotNull(tournaments);
         Assert.assertEquals(tournaments.getTournamentsList().size(), 0);
 
-
         Thread.sleep(5000);
 
         endTime = object.end_time;
@@ -375,14 +376,14 @@ public class TournamentTest {
     @Test
     public void testTournamentWrite() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking best tournament duration 10s, no end";
+        object.description = "checking set tournament duration 10s, no end";
         object.duration = 10;
         object.category = 6;
         object.join_required = false;
-        object.operator = 0;
+        object.operator = "set";
         object.max_num_score = 1;
         object.max_size = 2;
-        object.sort_order = 1;
+        object.sort_order = "desc";
         object.title = "tournament-test";
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
@@ -396,13 +397,13 @@ public class TournamentTest {
         Assert.assertEquals(record.getLeaderboardId(), tournamentId);
         Assert.assertEquals(record.getOwnerId(), session.getUserId());
         Assert.assertEquals(record.getUsername().getValue(), session.getUsername());
-        Assert.assertNull(record.getExpiryTime());
+        Assert.assertEquals(record.getExpiryTime().getSeconds(), 0);
         Assert.assertEquals(record.getScore(), score);
         Assert.assertEquals(record.getSubscore(), subscore);
         Assert.assertEquals(record.getMetadata(), metadata);
         Assert.assertEquals(record.getNumScore(), 1);
         Assert.assertEquals(record.getMaxNumScore(), object.max_num_score);
-//        Assert.assertEquals(record.getRank(), 1);
+        Assert.assertEquals(record.getRank(), 1);
         Assert.assertNotEquals(record.getCreateTime().getSeconds(), 0);
         Assert.assertNotEquals(record.getUpdateTime().getSeconds(), 0);
 
@@ -423,14 +424,14 @@ public class TournamentTest {
     @Test
     public void testTournamentWriteFailBecauseFull() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking best tournament duration 10s, no end, fail more than 1 record";
+        object.description = "checking set tournament duration 10s, no end, fail more than 1 record";
         object.duration = 10;
         object.category = 6;
         object.join_required = false;
-        object.operator = 0;
+        object.operator = "set";
         object.max_num_score = 1;
         object.max_size = 1; // set full after one write
-        object.sort_order = 1;
+        object.sort_order = "desc";
         object.title = "tournament-test";
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
@@ -456,14 +457,14 @@ public class TournamentTest {
     @Test
     public void testTournamentWriteFailBecauseTooManyAttempts() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking best tournament duration 10s, no end, fail more than 1 attempt";
+        object.description = "checking set tournament duration 10s, no end, fail more than 1 attempt";
         object.duration = 10;
         object.category = 6;
         object.join_required = false;
-        object.operator = 0;
+        object.operator = "set";
         object.max_num_score = 1; // cannot write multiple times
         object.max_size = 2;
-        object.sort_order = 1;
+        object.sort_order = "desc";
         object.title = "tournament-test";
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
@@ -486,14 +487,14 @@ public class TournamentTest {
     @Test
     public void testTournamentWriteFailBecauseJoinRequired() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking best tournament duration 10s, no end, fail join required";
+        object.description = "checking set tournament duration 10s, no end, fail join required";
         object.duration = 10;
         object.category = 6;
         object.join_required = true;
-        object.operator = 0;
+        object.operator = "set";
         object.max_num_score = 1;
         object.max_size = 2;
-        object.sort_order = 1;
+        object.sort_order = "desc";
         object.title = "tournament-test";
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
@@ -522,14 +523,14 @@ public class TournamentTest {
     @Test
     public void testTournamentWriteJoinNotRequired() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking best tournament duration 10s, no end, joining idempotent";
+        object.description = "checking set tournament duration 10s, no end, joining idempotent";
         object.duration = 10;
         object.category = 6;
         object.join_required = false;
-        object.operator = 0;
+        object.operator = "set";
         object.max_num_score = 1;
         object.max_size = 2;
-        object.sort_order = 1;
+        object.sort_order = "desc";
         object.title = "tournament-test";
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
@@ -545,14 +546,14 @@ public class TournamentTest {
     @Test
     public void testTournamentWriteOutsideDuration() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking best tournament duration 3s, write outside duration";
+        object.description = "checking set tournament duration 3s, write outside duration";
         object.duration = 3;
         object.category = 6;
         object.join_required = false;
-        object.operator = 0;
+        object.operator = "set";
         object.max_num_score = 1;
         object.max_size = 2;
-        object.sort_order = 1;
+        object.sort_order = "desc";
         object.title = "tournament-test";
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
@@ -580,15 +581,15 @@ public class TournamentTest {
     @Test
     public void testTournamentWriteAfterEndTime() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking best tournament duration 3s, after tournament end time";
+        object.description = "checking set tournament duration 3s, after tournament end time";
         object.end_time = (new Date().getTime() / 1000) + 5;
         object.duration = 3;
         object.category = 6;
         object.join_required = false;
-        object.operator = 0;
+        object.operator = "set";
         object.max_num_score = 1;
         object.max_size = 2;
-        object.sort_order = 1;
+        object.sort_order = "desc";
         object.title = "tournament-test";
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
@@ -612,11 +613,48 @@ public class TournamentTest {
             Assert.assertNotNull(err);
         }
     }
+
+    @Test
+    public void testTournamentWriteManyRanks() throws Exception {
+        TournamentObject object = new TournamentObject();
+        object.description = "checking set tournament duration 10s, no end, ranks calculation";
+        object.duration = 10000;
+        object.category = 100;
+        object.join_required = false;
+        object.operator = "set";
+        object.max_num_score = 1;
+        object.max_size = 10;
+        object.sort_order = "asc";
+        object.title = "tournament-test";
+
+        final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
+        final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
+        Assert.assertNotNull(tournamentId);
+
+        List<LeaderboardRecord> records = new ArrayList<LeaderboardRecord>();
+
+        LeaderboardRecord record = client.writeTournamentRecord(session, tournamentId, 20).get();
+        Assert.assertNotNull(record);
+        records.add(record);
+        Assert.assertEquals(1, record.getRank());
+
+        for (int i = 1; i < object.max_size; i++) {
+            Session newSession = client.authenticateCustom(UUID.randomUUID().toString()).get();
+            record = client.writeTournamentRecord(newSession, tournamentId, i).get();
+            records.add(record);
+            Assert.assertNotNull(record);
+            Assert.assertEquals(i, record.getRank());
+        }
+
+        records = client.listLeaderboardRecords(session, tournamentId, session.getUserId()).get().getOwnerRecordsList();
+        Assert.assertEquals(1, records.size());
+        Assert.assertEquals(object.max_size, records.get(0).getRank());
+    }
 }
 
 class TournamentObject {
-    public int sort_order;
-    public int operator;
+    public String sort_order;
+    public String operator;
     public int category;
     public String description;
     public int duration;
