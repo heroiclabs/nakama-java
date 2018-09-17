@@ -22,10 +22,7 @@ import com.heroiclabs.nakama.api.Tournament;
 import com.heroiclabs.nakama.api.TournamentList;
 import org.junit.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.sleep;
@@ -734,12 +731,12 @@ public class TournamentTest {
     }
 
     @Test
-    @Ignore("requires setting token expiry to more than 1min")
+//    @Ignore("requires setting token expiry to more than 1min")
     public void testTournamentWithResetScheduleAndCheckSize() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking set tournament duration 3, reset 1min, ranks calculation.";
+        object.description = "checking set tournament duration 10, reset 1min, ranks calculation.";
         object.reset_schedule = "* * * * *"; // every 1 min
-        object.duration = 3;
+        object.duration = 10;
         object.category = 100;
         object.join_required = false;
         object.operator = "set";
@@ -752,11 +749,15 @@ public class TournamentTest {
         final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
         Assert.assertNotNull(tournamentId);
 
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("utc"));
+        int waitPeriod = (60 - c.get(Calendar.SECOND)) + 1;
+        sleep(waitPeriod * 1000);
+
         LeaderboardRecord record = client.writeTournamentRecord(session, tournamentId, 20, 10).get();
         Assert.assertNotNull(record);
         Assert.assertEquals(1, record.getRank());
 
-        sleep(3000);
+        sleep(5000);
 
         Exception err = null;
         try {
@@ -767,14 +768,14 @@ public class TournamentTest {
             Assert.assertNotNull(err);
         }
 
-        sleep(60000);
+        sleep(56 * 1000);
 
         List<LeaderboardRecord> records = client.listLeaderboardRecords(session, tournamentId, session.getUserId()).get().getOwnerRecordsList();
         Assert.assertEquals(0, records.size());
 
-//        record = client.writeTournamentRecord(session, tournamentId, 30, 20).get();
-//        Assert.assertNotNull(record);
-//        Assert.assertEquals(1, record.getRank());
+        record = client.writeTournamentRecord(session, tournamentId, 30, 20).get();
+        Assert.assertNotNull(record);
+        Assert.assertEquals(1, record.getRank());
 
         client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
     }
