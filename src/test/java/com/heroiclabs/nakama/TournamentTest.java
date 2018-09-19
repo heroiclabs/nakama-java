@@ -735,7 +735,7 @@ public class TournamentTest {
     }
 
     @Test
-//    @Ignore("requires setting token expiry to more than 1min")
+    @Ignore("requires setting token expiry to more than 1min")
     public void testTournamentWithResetScheduleAndCheckSize() throws Exception {
         TournamentObject object = new TournamentObject();
         object.description = "checking set tournament duration 10, reset 1min, ranks calculation.";
@@ -847,7 +847,6 @@ public class TournamentTest {
         sleep(object.duration * 1000);
 
         Account account = client.getAccount(session).get();
-        System.out.println(account.getUser().getMetadata());
         Assert.assertTrue(account.getUser().getMetadata().contains(tournamentId));
 
         client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
