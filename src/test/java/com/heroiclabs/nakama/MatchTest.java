@@ -22,6 +22,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -47,12 +49,14 @@ public class MatchTest {
 
     @Test
     public void testCreateMatchAndSendAndReceiveData() throws Exception {
+        final List<Boolean> callbacks = new ArrayList<Boolean>();
         final CountDownLatch latch = new CountDownLatch(2);
         final String payload = "{\"hello\":\"world!\"}";
         socket.connect(session, new AbstractClientListener() {
             @Override
             public void onMatchPresence(final MatchPresenceEvent presence) {
                 super.onMatchPresence(presence);
+                callbacks.add(true);
                 Assert.assertNotNull(presence);
                 Assert.assertNull(presence.getLeaves());
                 Assert.assertNotNull(presence.getJoins());
@@ -64,6 +68,7 @@ public class MatchTest {
             @Override
             public void onMatchData(final MatchData data) {
                 super.onMatchData(data);
+                callbacks.add(true);
                 Assert.assertNotNull(data);
                 Assert.assertNotNull(data.getData());
                 Assert.assertNotNull(data.getMatchId());
@@ -80,7 +85,8 @@ public class MatchTest {
 
         socket.sendMatchData(matchId, 1, payload.getBytes());
 
-        latch.await(30, TimeUnit.SECONDS);
+        latch.await(10, TimeUnit.SECONDS);
+        Assert.assertEquals(2, callbacks.size());
     }
 }
 

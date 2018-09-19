@@ -21,6 +21,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -45,12 +47,14 @@ public class StreamTest {
 
     @Test
     public void testCreateAndListenForStreamData() throws Exception {
+        final List<Boolean> callbacks = new ArrayList<Boolean>();
         final CountDownLatch latch = new CountDownLatch(2);
         final String payload = "helloworld";
         socket.connect(session, new AbstractClientListener() {
             @Override
             public void onStreamPresence(final StreamPresenceEvent presence) {
                 super.onStreamPresence(presence);
+                callbacks.add(true);
                 Assert.assertNotNull(presence);
                 Assert.assertNull(presence.getLeaves());
                 Assert.assertNotNull(presence.getJoins());
@@ -62,6 +66,7 @@ public class StreamTest {
             @Override
             public void onStreamData(final StreamData data) {
                 super.onStreamData(data);
+                callbacks.add(true);
                 Assert.assertNotNull(data);
                 Assert.assertNotNull(data.getData());
                 Assert.assertNotNull(data.getStream());
@@ -73,6 +78,7 @@ public class StreamTest {
         }).get();
 
         socket.rpc("clientrpc.send_stream_data", payload).get();
-        latch.await();
+        latch.await(10, TimeUnit.SECONDS);
+        Assert.assertEquals(2, callbacks.size());
     }
 }

@@ -22,6 +22,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -59,12 +61,14 @@ public class ChannelTest {
 
     @Test
     public void testCreateRoomAndMessage() throws Exception {
+        final List<Boolean> callbacks = new ArrayList<Boolean>();
         final CountDownLatch latch = new CountDownLatch(2);
         final String content = "{\"message\":\"Hello world\"}";
         socket.connect(session, new AbstractClientListener() {
             @Override
             public void onChannelMessage(final ChannelMessage message) {
                 super.onChannelMessage(message);
+                callbacks.add(true);
                 Assert.assertNotNull(message);
                 Assert.assertNotNull(message.getMessageId());
                 Assert.assertNotNull(message.getChannelId());
@@ -78,6 +82,7 @@ public class ChannelTest {
             @Override
             public void onChannelPresence(final ChannelPresenceEvent presence) {
                 super.onChannelPresence(presence);
+                callbacks.add(true);
                 Assert.assertNotNull(presence);
                 Assert.assertNull(presence.getLeaves());
                 Assert.assertNotNull(presence.getJoins());
@@ -94,6 +99,8 @@ public class ChannelTest {
         Assert.assertEquals(channel.getId(), ack.getChannelId());
         Assert.assertNotNull(ack.getCreateTime());
         Assert.assertNotNull(ack.getUpdateTime());
-        latch.await();
+
+        latch.await(10, TimeUnit.SECONDS);
+        Assert.assertEquals(2, callbacks.size());
     }
 }
