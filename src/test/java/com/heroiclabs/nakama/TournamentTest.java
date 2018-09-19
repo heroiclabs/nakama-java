@@ -17,10 +17,14 @@
 package com.heroiclabs.nakama;
 
 import com.google.gson.Gson;
+import com.heroiclabs.nakama.api.Account;
 import com.heroiclabs.nakama.api.LeaderboardRecord;
 import com.heroiclabs.nakama.api.Tournament;
 import com.heroiclabs.nakama.api.TournamentList;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -817,6 +821,34 @@ public class TournamentTest {
 
         record = client.writeTournamentRecord(session, tournamentId, 20, 30).get();
         Assert.assertNotNull(record);
+
+        client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
+    }
+
+    @Test
+    public void testTournamentCheckEndCallback() throws Exception {
+        TournamentObject object = new TournamentObject();
+        object.description = "checking set tournament duration 2s, no end";
+        object.duration = 2;
+        object.category = 25;
+        object.join_required = false;
+        object.operator = "set";
+        object.max_num_score = 1;
+        object.max_size = 1;
+        object.sort_order = "desc";
+        object.title = "tournament-test";
+
+        final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
+        final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
+        Assert.assertNotNull(tournamentId);
+
+        client.writeTournamentRecord(session, tournamentId, 100).get();
+
+        sleep(object.duration * 1000);
+
+        Account account = client.getAccount(session).get();
+        System.out.println(account.getUser().getMetadata());
+        Assert.assertTrue(account.getUser().getMetadata().contains(tournamentId));
 
         client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
     }
