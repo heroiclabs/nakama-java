@@ -26,7 +26,7 @@ import java.util.List;
  */
 class MatchSendMessage {
     private final String matchId;
-    private final String opCode;
-    private final String data;
+    private final long opCode;
+    private final byte[] data;
     private List<UserPresence> presences;
 }

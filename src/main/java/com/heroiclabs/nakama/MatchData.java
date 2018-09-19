@@ -16,6 +16,7 @@
 
 package com.heroiclabs.nakama;
 
+import com.google.common.io.BaseEncoding;
 import lombok.*;
 
 @Getter
@@ -38,12 +39,20 @@ public class MatchData {
     private long opCode;
 
     /**
-     * he byte contents of the state change.
+     * the base-64 contents of the state change.
      */
-    private byte[] data;
+    private String data;
 
     /**
      * Information on the user who sent the state change.
      */
     private UserPresence userPresence;
+
+    /**
+     * Returns match data
+     * @return match data
+     */
+    public byte[] getData() {
+        return BaseEncoding.base64().decode(this.data);
+    }
 }

@@ -31,6 +31,13 @@ public abstract class AbstractClientListener implements ClientListener {
     @Override public void onDisconnect(final Throwable t) {}
 
     /**
+     * Called when the client receives an error.
+     *
+     * @param error The {@code Error} received.
+     */
+    @Override public void onError(final Error error) {}
+
+    /**
      * Called when a new topic message has been received.
      *
      * @param message The {@code ChannelMessage} received.

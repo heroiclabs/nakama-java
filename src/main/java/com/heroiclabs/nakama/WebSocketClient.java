@@ -128,14 +128,15 @@ public class WebSocketClient implements SocketClient {
                 try {
                     env = GSON.fromJson(text, WebSocketEnvelope.class);
                 } catch (final JsonSyntaxException e) {
-                    // TODO onError callback
                     log.error("Error decoding incoming message from server: " + e.getMessage());
                     return;
                 }
 
                 final String collationId = env.getCid();
                 if (collationId == null || "".equals(collationId)) {
-                    if (env.getChannelMessage() != null) {
+                    if (env.getError() != null) {
+                        listener.onError(new DefaultError(collationId, env.getError()));
+                    } else if (env.getChannelMessage() != null) {
                         final ChannelMessage m = env.getChannelMessage();
                         final com.heroiclabs.nakama.api.ChannelMessage.Builder builder = com.heroiclabs.nakama.api.ChannelMessage.newBuilder();
                         if (m.getMessageId() != null) {
@@ -445,12 +446,12 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Void> sendMatchData(@NonNull final String matchId, @NonNull final String opCode, @NonNull final String data) {
-        return sendMatchData(matchId, opCode, data, (UserPresence) null);
+    public ListenableFuture<Void> sendMatchData(@NonNull final String matchId, @NonNull final long opCode, @NonNull final byte[] data) {
+        return sendMatchData(matchId, opCode, data, new UserPresence[]{});
     }
 
     @Override
-    public ListenableFuture<Void> sendMatchData(@NonNull final String matchId, @NonNull final String opCode, @NonNull final String data, final UserPresence... presences) {
+    public ListenableFuture<Void> sendMatchData(@NonNull final String matchId, @NonNull final long opCode, @NonNull final byte[] data, final UserPresence... presences) {
         final MatchSendMessage msg = new MatchSendMessage(matchId, opCode, data);
         if (presences != null) {
             msg.setPresences(Arrays.asList(presences));
@@ -515,6 +516,8 @@ public class WebSocketClient implements SocketClient {
         final String collationId = UUID.randomUUID().toString();
         webSocketEnvelope.setCid(collationId);
         collationIds.put(collationId, future);
+
+        System.out.println(GSON.toJson(webSocketEnvelope));
 
         final boolean enqueued = socket.send(GSON.toJson(webSocketEnvelope));
         if (!enqueued) {
