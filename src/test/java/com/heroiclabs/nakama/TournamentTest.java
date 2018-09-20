@@ -21,10 +21,7 @@ import com.heroiclabs.nakama.api.Account;
 import com.heroiclabs.nakama.api.LeaderboardRecord;
 import com.heroiclabs.nakama.api.Tournament;
 import com.heroiclabs.nakama.api.TournamentList;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
