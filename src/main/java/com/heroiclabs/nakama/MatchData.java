@@ -53,6 +53,9 @@ public class MatchData {
      * @return match data
      */
     public byte[] getData() {
+        if (this.data == null) {
+            return null;
+        }
         return BaseEncoding.base64().decode(this.data);
     }
 }
