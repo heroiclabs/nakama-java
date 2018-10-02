@@ -29,7 +29,7 @@ public interface SocketClient {
      * @param listener An event listener to notify on updates.
      * @return A future.
      */
-    ListenableFuture<Session> connect(@NonNull final Session session, @NonNull final ClientListener listener);
+    ListenableFuture<Session> connect(@NonNull final Session session, @NonNull final SocketListener listener);
 
     /**
      * Connect to the server.
@@ -38,7 +38,7 @@ public interface SocketClient {
      * @param createStatus True if the socket should show the user as online to others.
      * @return A future.
      */
-    ListenableFuture<Session> connect(@NonNull final Session session, @NonNull final ClientListener listener, final boolean createStatus);
+    ListenableFuture<Session> connect(@NonNull final Session session, @NonNull final SocketListener listener, final boolean createStatus);
 
     /**
      * Close the connection with the server.

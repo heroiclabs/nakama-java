@@ -52,7 +52,7 @@ public class MatchTest {
         final List<Boolean> callbacks = new ArrayList<Boolean>();
         final CountDownLatch latch = new CountDownLatch(2);
         final String payload = "{\"hello\":\"world!\"}";
-        socket.connect(session, new AbstractClientListener() {
+        socket.connect(session, new AbstractSocketListener() {
             @Override
             public void onMatchPresence(final MatchPresenceEvent presence) {
                 super.onMatchPresence(presence);

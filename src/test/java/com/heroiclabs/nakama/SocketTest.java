@@ -41,7 +41,7 @@ public class SocketTest {
 
     @Test(expected = Error.class)
     public void sendNotConnectedUnhandled() throws Throwable {
-        // socket.connect(session, new AbstractClientListener() {}).get();
+        // socket.connect(session, new AbstractSocketListener() {}).get();
         try {
             socket.createMatch().get();
         } catch (Exception e) {
@@ -51,7 +51,7 @@ public class SocketTest {
 
     @Test
     public void sendConnectedNoException() throws Exception {
-        socket.connect(session, new AbstractClientListener() {}).get();
+        socket.connect(session, new AbstractSocketListener() {}).get();
         try {
             final Match match = socket.createMatch().get();
             Assert.assertNotNull(match);

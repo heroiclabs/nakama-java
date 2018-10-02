@@ -51,7 +51,7 @@ public class NotificationTest {
     public void testCreateAndListenForNewNotification() throws Exception {
         final List<Boolean> callbacks = new ArrayList<Boolean>();
         final CountDownLatch latch = new CountDownLatch(1);
-        socket.connect(session, new AbstractClientListener() {
+        socket.connect(session, new AbstractSocketListener() {
             @Override
             public void onNotifications(final NotificationList notifications) {
                 super.onNotifications(notifications);
@@ -80,7 +80,7 @@ public class NotificationTest {
 
     @Test
     public void testCreateAndListNotifications() throws Exception {
-        socket.connect(session, new AbstractClientListener() {}).get();
+        socket.connect(session, new AbstractSocketListener() {}).get();
 
         final String payload = "{\"user_id\":\"" + session.getUserId() + "\"}";
         socket.rpc("clientrpc.send_notification", payload).get();

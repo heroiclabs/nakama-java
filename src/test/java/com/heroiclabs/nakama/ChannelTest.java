@@ -48,7 +48,7 @@ public class ChannelTest {
 
     @Test
     public void testCreateRoom() throws Exception {
-        socket.connect(session, new AbstractClientListener() {});
+        socket.connect(session, new AbstractSocketListener() {});
         final Channel channel = socket.joinChat("myroom", ChannelType.ROOM).get();
         Assert.assertNotNull(channel);
         Assert.assertNotNull(channel.getId());
@@ -64,7 +64,7 @@ public class ChannelTest {
         final List<Boolean> callbacks = new ArrayList<Boolean>();
         final CountDownLatch latch = new CountDownLatch(2);
         final String content = "{\"message\":\"Hello world\"}";
-        socket.connect(session, new AbstractClientListener() {
+        socket.connect(session, new AbstractSocketListener() {
             @Override
             public void onChannelMessage(final ChannelMessage message) {
                 super.onChannelMessage(message);

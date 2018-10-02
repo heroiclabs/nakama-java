@@ -79,7 +79,7 @@ public class TournamentTest {
         final String tournamentId = gson.fromJson(response, TournamentId.class).tournament_id;
         Assert.assertNotNull(tournamentId);
 
-        TournamentList tournaments = client.listTournaments(session, true, 100, null).get();
+        TournamentList tournaments = client.listTournaments(session, 100, null).get();
         Tournament t = null;
         for (Tournament tt : tournaments.getTournamentsList()) {
             if (tt.getId().equals(tournamentId)) {
@@ -124,7 +124,7 @@ public class TournamentTest {
         final String tournamentId = gson.fromJson(response, TournamentId.class).tournament_id;
         Assert.assertNotNull(tournamentId);
 
-        TournamentList tournaments = client.listTournaments(session, true, 100, null).get();
+        TournamentList tournaments = client.listTournaments(session, 100, null).get();
         Tournament t = null;
         for (Tournament tt : tournaments.getTournamentsList()) {
             if (tt.getId().equals(tournamentId)) {
@@ -152,90 +152,6 @@ public class TournamentTest {
     }
 
     @Test
-    public void testListTournamentFull() throws Exception {
-        TournamentObject object = new TournamentObject();
-        object.description = "full tournament listing";
-        object.duration = 10;
-        object.category = 5;
-        object.join_required = false;
-        object.operator = "set";
-        object.max_num_score = 1;
-        object.max_size = 1; //ensure tournament is full
-        object.sort_order = "desc";
-        object.title = "tournament-test";
-
-        final String response = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
-        final String tournamentId = gson.fromJson(response, TournamentId.class).tournament_id;
-        Assert.assertNotNull(tournamentId);
-
-        client.writeTournamentRecord(session, tournamentId, 10).get();
-
-        TournamentList tournaments = client.listTournaments(session, false, session.getUserId(), 100, null).get();
-        Assert.assertNotNull(tournaments);
-        Assert.assertEquals(0, tournaments.getTournamentsList().size());
-
-        tournaments = client.listTournaments(session, true, session.getUserId(), 100, null).get();
-        Tournament t = null;
-        for (Tournament tt : tournaments.getTournamentsList()) {
-            if (tt.getId().equals(tournamentId)) {
-                t = tt;
-                break;
-            }
-        }
-
-        Assert.assertNotNull(t);
-        Assert.assertEquals(t.getId(), tournamentId);
-        Assert.assertEquals(t.getSize(), 1);
-        Assert.assertEquals(t.getCategory(), object.category);
-        Assert.assertEquals(t.getDescription(), object.description);
-        Assert.assertEquals(t.getTitle(), object.title);
-        Assert.assertEquals(t.getEndTime().getSeconds(), 0);
-        Assert.assertNotEquals(t.getCreateTime(), 0);
-        Assert.assertFalse(t.getCanEnter()); // tournament is full, can't enter!
-        Assert.assertNotEquals(t.getEndActive(), 0);
-        Assert.assertEquals(t.getNextReset(), 0);
-        Assert.assertEquals(t.getMetadata(), "{}");
-        Assert.assertEquals(t.getMaxSize(), object.max_size);
-        Assert.assertEquals(t.getMaxNumScore(), object.max_num_score);
-
-        client.rpc(session, "clientrpc.delete_tournament", response).get();
-    }
-
-    @Test
-    public void testListTournamentByOwner() throws Exception {
-        TournamentObject object = new TournamentObject();
-        object.description = "tournament listing by owner";
-        object.duration = 10;
-        object.category = 5;
-        object.join_required = false;
-        object.operator = "set";
-        object.max_num_score = 1;
-        object.max_size = 2;
-        object.sort_order = "desc";
-        object.title = "tournament-test";
-
-        final String response = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
-        final String tournamentId = gson.fromJson(response, TournamentId.class).tournament_id;
-        Assert.assertNotNull(tournamentId);
-
-        client.writeTournamentRecord(session, tournamentId, 10).get();
-
-        TournamentList tournaments = client.listTournaments(session, true, session.getUserId(), 100, null).get();
-        Assert.assertNotNull(tournaments);
-
-        boolean found = false;
-        for (Tournament tt : tournaments.getTournamentsList()) {
-            if (tt.getId().equals(tournamentId)) {
-                found = true;
-                break;
-            }
-        }
-
-        Assert.assertTrue(found);
-        client.rpc(session, "clientrpc.delete_tournament", response).get();
-    }
-
-    @Test
     public void testListTournamentByCategory() throws Exception {
         TournamentObject object = new TournamentObject();
         object.description = "tournament listing by category=20";
@@ -258,7 +174,7 @@ public class TournamentTest {
         int categoryEnd = object.category;
         int startTime = -1;
         int endTime = -1;
-        TournamentList tournaments = client.listTournaments(session, full, ownerId, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
+        TournamentList tournaments = client.listTournaments(session, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
         Assert.assertNotNull(tournaments);
 
         boolean found = false;
@@ -290,13 +206,11 @@ public class TournamentTest {
         final String tournamentId = gson.fromJson(response, TournamentId.class).tournament_id;
         Assert.assertNotNull(tournamentId);
 
-        boolean full = true;
-        String ownerId = null;
         int categoryStart = 20;
         int categoryEnd = 40;
         int startTime = -1;
         int endTime = -1;
-        TournamentList tournaments = client.listTournaments(session, full, ownerId, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
+        TournamentList tournaments = client.listTournaments(session, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
         Assert.assertNotNull(tournaments);
 
         boolean found = false;
@@ -329,13 +243,11 @@ public class TournamentTest {
         final String tournamentId = gson.fromJson(response, TournamentId.class).tournament_id;
         Assert.assertNotNull(tournamentId);
 
-        boolean full = true;
-        String ownerId = null;
         int categoryStart = 20;
         int categoryEnd = 40;
         int startTime = -1;
         long endTime = object.end_time;
-        TournamentList tournaments = client.listTournaments(session, full, ownerId, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
+        TournamentList tournaments = client.listTournaments(session, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
         Assert.assertNotNull(tournaments);
 
         boolean found = false;
@@ -348,14 +260,14 @@ public class TournamentTest {
         Assert.assertTrue(found);
 
         endTime = new Date().getTime() / 1000; // now
-        tournaments = client.listTournaments(session, full, ownerId, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
+        tournaments = client.listTournaments(session, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
         Assert.assertNotNull(tournaments);
         Assert.assertEquals(tournaments.getTournamentsList().size(), 0);
 
         sleep(5000);
 
         endTime = object.end_time;
-        tournaments = client.listTournaments(session, full, ownerId, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
+        tournaments = client.listTournaments(session, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
         Assert.assertNotNull(tournaments);
 
         found = false;
@@ -404,7 +316,7 @@ public class TournamentTest {
         Assert.assertNotEquals(record.getCreateTime().getSeconds(), 0);
         Assert.assertNotEquals(record.getUpdateTime().getSeconds(), 0);
 
-        TournamentList tournaments = client.listTournaments(session, true, session.getUserId(), 100, null).get();
+        TournamentList tournaments = client.listTournaments(session, 100, null).get();
         Tournament t = tournaments.getTournaments(0);
         for (Tournament tt : tournaments.getTournamentsList()) {
             if (tt.getId().equals(tournamentId)) {
@@ -845,6 +757,27 @@ public class TournamentTest {
 
         Account account = client.getAccount(session).get();
         Assert.assertTrue(account.getUser().getMetadata().contains(tournamentId));
+
+        client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
+    }
+
+    @Test
+    public void testTournamentWithLargeResetSchedule() throws Exception {
+        TournamentObject object = new TournamentObject();
+        object.description = "checking set tournament duration 10, reset 1min, ranks calculation.";
+        object.reset_schedule = "0 9 * * *"; // 9am each day
+        object.duration = 28800; // 8hrs
+        object.category = 100;
+        object.join_required = true;
+        object.operator = "set";
+        object.max_num_score = 100;
+        object.max_size = 10000000;
+        object.sort_order = "desc";
+        object.title = "tournament-test";
+
+        final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
+        final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
+        Assert.assertNotNull(tournamentId);
 
         client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
     }

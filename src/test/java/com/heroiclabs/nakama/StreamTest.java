@@ -50,7 +50,7 @@ public class StreamTest {
         final List<Boolean> callbacks = new ArrayList<Boolean>();
         final CountDownLatch latch = new CountDownLatch(2);
         final String payload = "helloworld";
-        socket.connect(session, new AbstractClientListener() {
+        socket.connect(session, new AbstractSocketListener() {
             @Override
             public void onStreamPresence(final StreamPresenceEvent presence) {
                 super.onStreamPresence(presence);

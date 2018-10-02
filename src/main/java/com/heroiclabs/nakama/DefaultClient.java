@@ -991,18 +991,8 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final String ownerId) {
-        return getStub(session).listTournaments(ListTournamentsRequest.newBuilder().setOwnerId(ownerId).build());
-    }
-
-    @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full) {
-        return getStub(session).listTournaments(ListTournamentsRequest.newBuilder().setFull(BoolValue.newBuilder().setValue(full).build()).build());
-    }
-
-    @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final int limit, final String cursor) {
-        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder().setFull(BoolValue.newBuilder().setValue(full).build());
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int limit, final String cursor) {
+        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
         if (limit > 0) {
             builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
         }
@@ -1013,31 +1003,8 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, @NonNull final String ownerId) {
-        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder().setFull(BoolValue.newBuilder().setValue(full).build());
-        builder.setOwnerId(ownerId);
-        return getStub(session).listTournaments(builder.build());
-    }
-
-    @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, @NonNull final String ownerId, final int limit, final String cursor) {
-        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder().setFull(BoolValue.newBuilder().setValue(full).build());
-        builder.setOwnerId(ownerId);
-        if (limit > 0) {
-            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
-        }
-        if (cursor != null) {
-            builder.setCursor(cursor);
-        }
-        return getStub(session).listTournaments(builder.build());
-    }
-
-    @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, @NonNull final int categoryStart) {
-        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder().setFull(BoolValue.newBuilder().setValue(full).build());
-        if (ownerId != null && !"".equals(ownerId)) {
-            builder.setOwnerId(ownerId);
-        }
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final int categoryStart) {
+        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
         if (categoryStart >= 0) {
             builder.setCategoryStart(UInt32Value.newBuilder().setValue(categoryStart).build());
         }
@@ -1045,11 +1012,9 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, @NonNull final int categoryEnd) {
-        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder().setFull(BoolValue.newBuilder().setValue(full).build());
-        if (ownerId != null && !"".equals(ownerId)) {
-            builder.setOwnerId(ownerId);
-        }
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, @NonNull final int categoryEnd) {
+        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
+
         if (categoryStart >= 0) {
             builder.setCategoryStart(UInt32Value.newBuilder().setValue(categoryStart).build());
         }
@@ -1060,11 +1025,9 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, @NonNull final long startTime) {
-        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder().setFull(BoolValue.newBuilder().setValue(full).build());
-        if (ownerId != null && !"".equals(ownerId)) {
-            builder.setOwnerId(ownerId);
-        }
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, @NonNull final long startTime) {
+        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
+
         if (categoryStart >= 0) {
             builder.setCategoryStart(UInt32Value.newBuilder().setValue(categoryStart).build());
         }
@@ -1078,11 +1041,9 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, final long startTime, @NonNull final long endTime) {
-        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder().setFull(BoolValue.newBuilder().setValue(full).build());
-        if (ownerId != null && !"".equals(ownerId)) {
-            builder.setOwnerId(ownerId);
-        }
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, final long startTime, @NonNull final long endTime) {
+        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
+
         if (categoryStart >= 0) {
             builder.setCategoryStart(UInt32Value.newBuilder().setValue(categoryStart).build());
         }
@@ -1099,11 +1060,8 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, final long startTime, final long endTime, final int limit, final String cursor) {
-        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder().setFull(BoolValue.newBuilder().setValue(full).build());
-        if (ownerId != null && !"".equals(ownerId)) {
-            builder.setOwnerId(ownerId);
-        }
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, final long startTime, final long endTime, final int limit, final String cursor) {
+        ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
         if (categoryStart >= 0) {
             builder.setCategoryStart(UInt32Value.newBuilder().setValue(categoryStart).build());
         }

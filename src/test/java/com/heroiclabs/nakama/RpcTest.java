@@ -55,7 +55,7 @@ public class RpcTest {
 
     @Test
     public void testPingRpcSocket() throws Exception {
-        socket.connect(session, new AbstractClientListener() {
+        socket.connect(session, new AbstractSocketListener() {
             @Override
             public void onDisconnect(final Throwable t) { }
         });
@@ -79,7 +79,7 @@ public class RpcTest {
 
     @Test(expected = Error.class)
     public void testRpcFailSocket() throws Exception {
-        socket.connect(session, new AbstractClientListener() {});
+        socket.connect(session, new AbstractSocketListener() {});
         final String rpcId = "clientrpc.rpc_fail";
         try {
             final Rpc result = socket.rpc(rpcId).get();
@@ -104,7 +104,7 @@ public class RpcTest {
 
     @Test(expected = Error.class)
     public void testRpcNotFoundSocket() throws Exception {
-        socket.connect(session, new AbstractClientListener() {});
+        socket.connect(session, new AbstractSocketListener() {});
         final String rpcId = "notfound";
         try {
             final Rpc result = socket.rpc(rpcId).get();

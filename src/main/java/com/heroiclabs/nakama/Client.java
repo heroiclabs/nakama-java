@@ -922,100 +922,54 @@ public interface Client {
     /**
      * List active/upcoming tournaments based on given filters.
      * @param session The session of the user.
-     * @param ownerId Filter tournaments joined by the ID.
-     * @return a future which resolved to a tournament list.
-     */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final String ownerId);
-
-    /**
-     * List active/upcoming tournaments based on given filters.
-     * @param session The session of the user.
-     * @param full Include tournaments that are full with players.
-     * @return a future which resolved to a tournament list.
-     */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full);
-
-    /**
-     * List active/upcoming tournaments based on given filters.
-     * @param session The session of the user.
      * @param full Include tournaments that are full with players.
      * @param limit Max number of records to return. Between 1 and 100.
      * @param cursor A next page cursor for listings.
      * @return a future which resolved to a tournament list.
      */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final int limit, final String cursor);
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int limit, final String cursor);
 
     /**
      * List active/upcoming tournaments based on given filters.
      * @param session The session of the user.
-     * @param full Include tournaments that are full with players.
-     * @param ownerId Filter tournaments joined by the ID.
-     * @return a future which resolved to a tournament list.
-     */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, @NonNull final String ownerId);
-
-    /**
-     * List active/upcoming tournaments based on given filters.
-     * @param session The session of the user.
-     * @param full Include tournaments that are full with players.
-     * @param ownerId Filter tournaments joined by the ID.
-     * @param limit Max number of records to return. Between 1 and 100.
-     * @param cursor A next page cursor for listings.
-     * @return a future which resolved to a tournament list.
-     */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, @NonNull final String ownerId, final int limit, final String cursor);
-
-    /**
-     * List active/upcoming tournaments based on given filters.
-     * @param session The session of the user.
-     * @param full Include tournaments that are full with players.
-     * @param ownerId Filter tournaments joined by the ID.
      * @param categoryStart The start of the categories to include. Defaults to 0.
      * @return a future which resolved to a tournament list.
      */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, @NonNull final int categoryStart);
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final int categoryStart);
 
     /**
      * List active/upcoming tournaments based on given filters.
      * @param session The session of the user.
-     * @param full Include tournaments that are full with players.
-     * @param ownerId Filter tournaments joined by the ID.
      * @param categoryStart The start of the categories to include. Defaults to 0.
      * @param categoryEnd The end of the categories to include. Defaults to 128.
      * @return a future which resolved to a tournament list.
      */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, @NonNull final int categoryEnd);
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, @NonNull final int categoryEnd);
 
     /**
      * List active/upcoming tournaments based on given filters.
      * @param session The session of the user.
-     * @param full Include tournaments that are full with players.
-     * @param ownerId Filter tournaments joined by the ID.
      * @param categoryStart The start of the categories to include. Defaults to 0.
      * @param categoryEnd The end of the categories to include. Defaults to 128.
      * @param startTime The start time for tournaments. Defaults to current Unix time.
      * @return a future which resolved to a tournament list.
      */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, @NonNull final long startTime);
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, @NonNull final long startTime);
 
     /**
      * List active/upcoming tournaments based on given filters.
      * @param session The session of the user.
-     * @param full Include tournaments that are full with players.
-     * @param ownerId Filter tournaments joined by the ID.
      * @param categoryStart The start of the categories to include. Defaults to 0.
      * @param categoryEnd The end of the categories to include. Defaults to 128.
      * @param startTime The start time for tournaments. Defaults to current Unix time.
      * @param endTime The end time for tournaments. Defaults to +1 year from current Unix time.
      * @return a future which resolved to a tournament list.
      */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, final long startTime, @NonNull final long endTime);
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, final long startTime, @NonNull final long endTime);
 
     /**
      * List active/upcoming tournaments based on given filters.
      * @param session The session of the user.
-     * @param full Include tournaments that are full with players.
-     * @param ownerId Filter tournaments joined by the ID.
      * @param categoryStart The start of the categories to include. Defaults to 0.
      * @param categoryEnd The end of the categories to include. Defaults to 128.
      * @param startTime The start time for tournaments. Defaults to current Unix time.
@@ -1024,7 +978,7 @@ public interface Client {
      * @param cursor A next page cursor for listings.
      * @return a future which resolved to a tournament list.
      */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final boolean full, final String ownerId, final int categoryStart, final int categoryEnd, final long startTime, final long endTime, final int limit, final String cursor);
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, final long startTime, final long endTime, final int limit, final String cursor);
 
     /**
      * List tournament records from a given tournament.
