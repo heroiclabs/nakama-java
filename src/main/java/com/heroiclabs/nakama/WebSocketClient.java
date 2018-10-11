@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 public class WebSocketClient implements SocketClient {
     static final Gson GSON = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            .setDateFormat("Y-M-d'T'H:m:s'Z'")
+            .setDateFormat("y-M-d'T'H:m:s'Z'")
             .create();
 
     private final String host;
@@ -188,6 +188,7 @@ public class WebSocketClient implements SocketClient {
                                 builder.setSubject(n.getSubject());
                             }
                             if (n.getCreateTime() != null) {
+                                System.out.println(n.getCreateTime().toString());
                                 builder.setCreateTime(Timestamp.newBuilder().setSeconds(n.getCreateTime().getTime() / 1000).build());
                             }
                             builder.setCode(n.getCode());
@@ -516,8 +517,6 @@ public class WebSocketClient implements SocketClient {
         final String collationId = UUID.randomUUID().toString();
         webSocketEnvelope.setCid(collationId);
         collationIds.put(collationId, future);
-
-        System.out.println(GSON.toJson(webSocketEnvelope));
 
         final boolean enqueued = socket.send(GSON.toJson(webSocketEnvelope));
         if (!enqueued) {
