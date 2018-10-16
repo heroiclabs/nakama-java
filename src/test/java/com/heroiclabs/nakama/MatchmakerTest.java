@@ -94,10 +94,14 @@ public class MatchmakerTest {
         map.put("a3", "bar");
         socket2.addMatchmaker(2, 4, "properties.a3:baz", map2).get();
 
-        latch.await(10, TimeUnit.SECONDS);
+        latch.await(15, TimeUnit.SECONDS);
         Assert.assertEquals(2, callbacks.size());
 
-        socket.joinMatchToken(callbacks.get(0)).get();
-        socket2.joinMatchToken(callbacks.get(1)).get();
+        Match match = socket.joinMatchToken(callbacks.get(0)).get();
+        Match match2 = socket2.joinMatchToken(callbacks.get(1)).get();
+
+        final String payload = "{\"hello\":\"world!\"}";
+        socket.sendMatchData(match.getMatchId(), 1, payload.getBytes());
+        socket2.sendMatchData(match2.getMatchId(), 1, payload.getBytes());
     }
 }
