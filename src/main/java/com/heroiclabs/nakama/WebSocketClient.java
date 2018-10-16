@@ -395,7 +395,7 @@ public class WebSocketClient implements SocketClient {
 
     @Override
     public ListenableFuture<MatchmakerTicket> addMatchmaker(final int minCount) {
-        return addMatchmaker(minCount, 0, null, null, null);
+        return addMatchmaker(minCount, minCount, null, null, null);
     }
 
     @Override
