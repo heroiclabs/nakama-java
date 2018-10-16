@@ -170,7 +170,7 @@ public class WebSocketClient implements SocketClient {
                     } else if (env.getMatchPresenceEvent() != null) {
                         listener.onMatchPresence(env.getMatchPresenceEvent());
                     } else if (env.getMatchmakerMatched() != null) {
-                        listener.onMatchmakeMatched(env.getMatchmakerMatched());
+                        listener.onMatchmakerMatched(env.getMatchmakerMatched());
                     } else if (env.getNotifications() != null) {
                         final NotificationList.Builder resultBuilder = NotificationList.newBuilder();
                         for (final Notification n : env.getNotifications().getNotifications()) {

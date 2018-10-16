@@ -56,7 +56,7 @@ public abstract class AbstractSocketListener implements SocketListener {
      *
      * @param matched The {@code MatchmakerMatched} received.
      */
-    @Override public void onMatchmakeMatched(final MatchmakerMatched matched) {}
+    @Override public void onMatchmakerMatched(final MatchmakerMatched matched) {}
 
     /**
      * Called when a new match data is received.

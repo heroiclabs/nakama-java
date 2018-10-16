@@ -56,7 +56,7 @@ public interface SocketListener {
      *
      * @param matched The {@code MatchmakerMatched} received.
      */
-    void onMatchmakeMatched(final MatchmakerMatched matched);
+    void onMatchmakerMatched(final MatchmakerMatched matched);
 
     /**
      * Called when a new match data is received.
