@@ -64,6 +64,7 @@ public class MatchmakerTest {
                 Assert.assertNotNull(matched.getSelf().getPresence());
                 Assert.assertNotNull(matched.getUsers());
                 Assert.assertNotEquals(0, matched.getUsers().size());
+                latch.countDown();
             }
         }).get();
 
@@ -79,6 +80,7 @@ public class MatchmakerTest {
                 Assert.assertNotNull(matched.getSelf().getPresence());
                 Assert.assertNotNull(matched.getUsers());
                 Assert.assertNotEquals(0, matched.getUsers().size());
+                latch.countDown();
             }
         }).get();
 

@@ -37,6 +37,8 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -53,6 +55,7 @@ public class WebSocketClient implements SocketClient {
     private final OkHttpClient client;
     private final Map<String, SettableFuture<?>> collationIds;
     private WebSocket socket;
+    private final ExecutorService listenerThreadPoolExec = Executors.newCachedThreadPool();
 
     WebSocketClient(@NonNull final String host, @NonNull final int port, @NonNull final boolean ssl,
                     @NonNull final int socketTimeoutMs, @NonNull final boolean trace) {
@@ -134,78 +137,82 @@ public class WebSocketClient implements SocketClient {
 
                 final String collationId = env.getCid();
                 if (collationId == null || "".equals(collationId)) {
-                    if (env.getError() != null) {
-                        listener.onError(new DefaultError(collationId, env.getError()));
-                    } else if (env.getChannelMessage() != null) {
-                        final ChannelMessage m = env.getChannelMessage();
-                        final com.heroiclabs.nakama.api.ChannelMessage.Builder builder = com.heroiclabs.nakama.api.ChannelMessage.newBuilder();
-                        if (m.getMessageId() != null) {
-                            builder.setMessageId(m.getMessageId());
-                        }
-                        if (m.getSenderId() != null) {
-                            builder.setSenderId(m.getSenderId());
-                        }
-                        if (m.getChannelId() != null) {
-                            builder.setChannelId(m.getChannelId());
-                        }
-                        if (m.getUsername() != null) {
-                            builder.setUsername(m.getUsername());
-                        }
-                        if (m.getContent() != null) {
-                            builder.setContent(m.getContent());
-                        }
-                        if (m.getCreateTime() != null) {
-                            builder.setCreateTime(Timestamp.newBuilder().setSeconds(m.getCreateTime().getTime() / 1000).build());
-                        }
-                        if (m.getUpdateTime() != null) {
-                            builder.setUpdateTime(Timestamp.newBuilder().setSeconds(m.getUpdateTime().getTime() / 1000).build());
-                        }
-                        builder.setPersistent(BoolValue.newBuilder().setValue(m.isPersistent()).getDefaultInstanceForType());
-                        builder.setCode(Int32Value.newBuilder().setValue(m.getCode()).build());
-                        listener.onChannelMessage(builder.build());
-                    } else if (env.getChannelPresenceEvent() != null) {
-                        listener.onChannelPresence(env.getChannelPresenceEvent());
-                    } else if (env.getMatchData() != null) {
-                        listener.onMatchData(env.getMatchData());
-                    } else if (env.getMatchPresenceEvent() != null) {
-                        listener.onMatchPresence(env.getMatchPresenceEvent());
-                    } else if (env.getMatchmakerMatched() != null) {
-                        listener.onMatchmakerMatched(env.getMatchmakerMatched());
-                    } else if (env.getNotifications() != null) {
-                        final NotificationList.Builder resultBuilder = NotificationList.newBuilder();
-                        for (final Notification n : env.getNotifications().getNotifications()) {
-                            final com.heroiclabs.nakama.api.Notification.Builder builder = com.heroiclabs.nakama.api.Notification.newBuilder();
-                            if (n.getContent() != null) {
-                                builder.setContent(n.getContent());
-                            }
-                            if (n.getId() != null) {
-                                builder.setId(n.getId());
-                            }
-                            if (n.getSenderId() != null) {
-                                builder.setSenderId(n.getSenderId());
-                            }
-                            if (n.getSubject() != null) {
-                                builder.setSubject(n.getSubject());
-                            }
-                            if (n.getCreateTime() != null) {
-                                System.out.println(n.getCreateTime().toString());
-                                builder.setCreateTime(Timestamp.newBuilder().setSeconds(n.getCreateTime().getTime() / 1000).build());
-                            }
-                            builder.setCode(n.getCode());
-                            builder.setPersistent(n.isPersistent());
+                    listenerThreadPoolExec.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (env.getError() != null) {
+                                listener.onError(new DefaultError(collationId, env.getError()));
+                            } else if (env.getChannelMessage() != null) {
+                                final ChannelMessage m = env.getChannelMessage();
+                                final com.heroiclabs.nakama.api.ChannelMessage.Builder builder = com.heroiclabs.nakama.api.ChannelMessage.newBuilder();
+                                if (m.getMessageId() != null) {
+                                    builder.setMessageId(m.getMessageId());
+                                }
+                                if (m.getSenderId() != null) {
+                                    builder.setSenderId(m.getSenderId());
+                                }
+                                if (m.getChannelId() != null) {
+                                    builder.setChannelId(m.getChannelId());
+                                }
+                                if (m.getUsername() != null) {
+                                    builder.setUsername(m.getUsername());
+                                }
+                                if (m.getContent() != null) {
+                                    builder.setContent(m.getContent());
+                                }
+                                if (m.getCreateTime() != null) {
+                                    builder.setCreateTime(Timestamp.newBuilder().setSeconds(m.getCreateTime().getTime() / 1000).build());
+                                }
+                                if (m.getUpdateTime() != null) {
+                                    builder.setUpdateTime(Timestamp.newBuilder().setSeconds(m.getUpdateTime().getTime() / 1000).build());
+                                }
+                                builder.setPersistent(BoolValue.newBuilder().setValue(m.isPersistent()).getDefaultInstanceForType());
+                                builder.setCode(Int32Value.newBuilder().setValue(m.getCode()).build());
+                                listener.onChannelMessage(builder.build());
+                            } else if (env.getChannelPresenceEvent() != null) {
+                                listener.onChannelPresence(env.getChannelPresenceEvent());
+                            } else if (env.getMatchData() != null) {
+                                listener.onMatchData(env.getMatchData());
+                            } else if (env.getMatchPresenceEvent() != null) {
+                                listener.onMatchPresence(env.getMatchPresenceEvent());
+                            } else if (env.getMatchmakerMatched() != null) {
+                                listener.onMatchmakerMatched(env.getMatchmakerMatched());
+                            } else if (env.getNotifications() != null) {
+                                final NotificationList.Builder resultBuilder = NotificationList.newBuilder();
+                                for (final Notification n : env.getNotifications().getNotifications()) {
+                                    final com.heroiclabs.nakama.api.Notification.Builder builder = com.heroiclabs.nakama.api.Notification.newBuilder();
+                                    if (n.getContent() != null) {
+                                        builder.setContent(n.getContent());
+                                    }
+                                    if (n.getId() != null) {
+                                        builder.setId(n.getId());
+                                    }
+                                    if (n.getSenderId() != null) {
+                                        builder.setSenderId(n.getSenderId());
+                                    }
+                                    if (n.getSubject() != null) {
+                                        builder.setSubject(n.getSubject());
+                                    }
+                                    if (n.getCreateTime() != null) {
+                                        builder.setCreateTime(Timestamp.newBuilder().setSeconds(n.getCreateTime().getTime() / 1000).build());
+                                    }
+                                    builder.setCode(n.getCode());
+                                    builder.setPersistent(n.isPersistent());
 
-                            resultBuilder.addNotifications(builder.build());
+                                    resultBuilder.addNotifications(builder.build());
+                                }
+                                listener.onNotifications(resultBuilder.build());
+                            } else if (env.getStatusPresenceEvent() != null) {
+                                listener.onStatusPresence(env.getStatusPresenceEvent());
+                            } else if (env.getStreamData() != null) {
+                                listener.onStreamData(env.getStreamData());
+                            } else if (env.getStreamPresenceEvent() != null) {
+                                listener.onStreamPresence(env.getStreamPresenceEvent());
+                            } else {
+                                log.error("Unrecognised incoming uncollated message from server: " + env.toString());
+                            }
                         }
-                        listener.onNotifications(resultBuilder.build());
-                    } else if (env.getStatusPresenceEvent() != null) {
-                        listener.onStatusPresence(env.getStatusPresenceEvent());
-                    } else if (env.getStreamData() != null) {
-                        listener.onStreamData(env.getStreamData());
-                    } else if (env.getStreamPresenceEvent() != null) {
-                        listener.onStreamPresence(env.getStreamPresenceEvent());
-                    } else {
-                        log.error("Unrecognised incoming uncollated message from server: " + env.toString());
-                    }
+                    });
                 } else {
                     final SettableFuture future = collationIds.remove(collationId);
                     if (future == null) {
