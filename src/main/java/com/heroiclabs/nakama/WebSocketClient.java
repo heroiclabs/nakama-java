@@ -69,6 +69,7 @@ public class WebSocketClient implements SocketClient {
                 .connectTimeout(socketTimeoutMs, TimeUnit.MILLISECONDS)
                 .readTimeout(socketTimeoutMs, TimeUnit.MILLISECONDS)
                 .writeTimeout(socketTimeoutMs, TimeUnit.MILLISECONDS)
+                .pingInterval(0, TimeUnit.SECONDS)
                 .build();
     }
 
