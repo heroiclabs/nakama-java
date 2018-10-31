@@ -16,29 +16,31 @@
 
 package com.heroiclabs.nakama;
 
-import lombok.*;
-
-import java.util.List;
-
-@Getter
-@EqualsAndHashCode
-@ToString
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
 /**
- * A chat channel on the server.
+ * The available channel types on the server.
  */
-public class Channel {
+public enum ChannelType {
+    /**
+     * A chat room which can be created dynamically with a name.
+     */
+    ROOM(0),
 
     /**
-     * The server-assigned channel ID.
+     * A private chat between two users.
      */
-    private String id;
+    DIRECT_MESSAGE(1),
+
     /**
-     * The presences visible on the chat channel.
+     * A chat within a group on the server.
      */
-    private List<UserPresence> presences;
-    /**
-     * The presence of the current user. i.e. Your self.
-     */
-    private UserPresence self;
+    GROUP(2);
+
+    private final int value;
+    ChannelType(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 }
