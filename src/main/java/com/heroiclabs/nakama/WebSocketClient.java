@@ -16,13 +16,11 @@
 
 package com.heroiclabs.nakama;
 
+import com.google.common.io.BaseEncoding;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Timestamp;
@@ -33,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okio.ByteString;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
@@ -43,8 +42,20 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class WebSocketClient implements SocketClient {
+    private static class ByteArrayToBase64TypeAdapter implements JsonSerializer<byte[]>, JsonDeserializer<byte[]> {
+        public JsonElement serialize(final byte[] src, final Type typeOfSrc, final JsonSerializationContext context) {
+            return new JsonPrimitive(BaseEncoding.base64().encode(src));
+        }
+
+        @Override
+        public byte[] deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            return BaseEncoding.base64().decode(jsonElement.getAsString());
+        }
+    }
+
     static final Gson GSON = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .registerTypeHierarchyAdapter(byte[].class, new ByteArrayToBase64TypeAdapter())
             .setDateFormat("y-M-d'T'H:m:s'Z'")
             .create();
 
@@ -455,12 +466,12 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public ListenableFuture<Void> sendMatchData(@NonNull final String matchId, @NonNull final long opCode, @NonNull final byte[] data) {
-        return sendMatchData(matchId, opCode, data, new UserPresence[]{});
+    public void sendMatchData(@NonNull final String matchId, @NonNull final long opCode, @NonNull final byte[] data) {
+        sendMatchData(matchId, opCode, data, new UserPresence[]{});
     }
 
     @Override
-    public ListenableFuture<Void> sendMatchData(@NonNull final String matchId, @NonNull final long opCode, @NonNull final byte[] data, final UserPresence... presences) {
+    public void sendMatchData(@NonNull final String matchId, @NonNull final long opCode, @NonNull final byte[] data, final UserPresence... presences) {
         final MatchSendMessage msg = new MatchSendMessage(matchId, opCode, data);
         if (presences != null) {
             msg.setPresences(Arrays.asList(presences));
@@ -468,7 +479,7 @@ public class WebSocketClient implements SocketClient {
 
         final WebSocketEnvelope env = new WebSocketEnvelope();
         env.setMatchDataSend(msg);
-        return send(env);
+        sendAsync(env);
     }
 
     @Override
@@ -514,6 +525,17 @@ public class WebSocketClient implements SocketClient {
         final WebSocketEnvelope env = new WebSocketEnvelope();
         env.setStatusUpdate(message);
         return send(env);
+    }
+
+    private void sendAsync(@NonNull final WebSocketEnvelope webSocketEnvelope) {
+        if (socket == null) {
+            throw new RuntimeException(new DefaultError("Socket is not connected."));
+        }
+
+        final boolean enqueued = socket.send(GSON.toJson(webSocketEnvelope));
+        if (!enqueued) {
+            throw new RuntimeException(new DefaultError("Could not enqueue message - is the socket connected?"));
+        }
     }
 
     private <T> ListenableFuture<T> send(@NonNull final WebSocketEnvelope webSocketEnvelope) {

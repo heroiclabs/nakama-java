@@ -218,7 +218,7 @@ public interface SocketClient {
      * @param opCode An operation code for the match state.
      * @param data The new state to send to the match.
      */
-    ListenableFuture<Void> sendMatchData(@NonNull final String matchId, @NonNull final long opCode, @NonNull byte[] data);
+    void sendMatchData(@NonNull final String matchId, @NonNull final long opCode, @NonNull byte[] data);
 
     /**
      * Send a state change to a match on the server.
@@ -230,7 +230,7 @@ public interface SocketClient {
      * @param data The new state to send to the match.
      * @param presences The presences in the match to send the state.
      */
-    ListenableFuture<Void> sendMatchData(@NonNull final String matchId, @NonNull final long opCode, @NonNull byte[] data, UserPresence... presences);
+    void sendMatchData(@NonNull final String matchId, @NonNull final long opCode, @NonNull byte[] data, UserPresence... presences);
 
     /**
      * Send an RPC message to the server.

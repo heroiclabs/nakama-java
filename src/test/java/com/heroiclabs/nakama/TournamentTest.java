@@ -168,8 +168,6 @@ public class TournamentTest {
         final String tournamentId = gson.fromJson(response, TournamentId.class).tournament_id;
         Assert.assertNotNull(tournamentId);
 
-        boolean full = true;
-        String ownerId = null;
         int categoryStart = object.category;
         int categoryEnd = object.category;
         int startTime = -1;
