@@ -18,35 +18,6 @@ package com.heroiclabs.nakama;
 
 import lombok.Data;
 
-enum PermissionRead {
-    NO_READ(0),
-    OWNER_READ(1),
-    PUBLIC_READ(2);
-
-    private final int value;
-    PermissionRead(int value) {
-        this.value = value;
-    }
-
-    public int getValue() {
-        return value;
-    }
-}
-
-enum PermissionWrite {
-    NO_READ(0),
-    OWNER_WRITE(1);
-
-    private final int value;
-    PermissionWrite(int value) {
-        this.value = value;
-    }
-
-    public int getValue() {
-        return value;
-    }
-}
-
 @Data
 /**
  * An identifier and values for a storage object.
