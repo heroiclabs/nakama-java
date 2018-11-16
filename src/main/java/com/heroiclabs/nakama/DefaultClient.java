@@ -1434,6 +1434,7 @@ public class DefaultClient implements Client {
             if (object.getPermissionWrite() != null) {
                 b.setPermissionWrite(Int32Value.newBuilder().setValue(object.getPermissionWrite().getValue()).build());
             }
+            builder.addObjects(b);
         }
         return getStub(session).writeStorageObjects(builder.build());
     }
