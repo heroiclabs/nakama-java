@@ -1155,12 +1155,12 @@ public class DefaultClient implements Client {
 
     @Override
     public ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, final String userId) {
-        return listUsersStorageObjects(session, userId, collection, 0, null);
+        return listUsersStorageObjects(session, collection, userId, 0, null);
     }
 
     @Override
     public ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, final String userId, final int limit) {
-        return listUsersStorageObjects(session, userId, collection, limit, null);
+        return listUsersStorageObjects(session, collection, userId, limit, null);
     }
 
     @Override
