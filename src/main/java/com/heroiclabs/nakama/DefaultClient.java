@@ -982,7 +982,7 @@ public class DefaultClient implements Client {
 
     @Override
     public ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection, final int limit, final String cursor) {
-        return listUsersStorageObjects(session, null, collection, 0, null);
+        return listUsersStorageObjects(session, collection, null, 0, null);
     }
 
     @Override
