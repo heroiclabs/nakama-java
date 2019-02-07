@@ -28,87 +28,71 @@ public  final class Friend extends
       implements com.google.protobuf.Internal.EnumLite {
     /**
      * <pre>
-     * Default case. Assumed as FRIEND state.
-     * </pre>
-     *
-     * <code>STATE_UNSPECIFIED = 0;</code>
-     */
-    STATE_UNSPECIFIED(0),
-    /**
-     * <pre>
      * The user is a friend of the current user.
      * </pre>
      *
-     * <code>FRIEND = 1;</code>
+     * <code>FRIEND = 0;</code>
      */
-    FRIEND(1),
+    FRIEND(0),
     /**
      * <pre>
-     * The user has sent an invite to the current user.
+     * The current user has sent an invite to the user.
      * </pre>
      *
-     * <code>INVITE_SENT = 2;</code>
+     * <code>INVITE_SENT = 1;</code>
      */
-    INVITE_SENT(2),
+    INVITE_SENT(1),
     /**
      * <pre>
-     * The current user has sent an invite to this user.
+     * The current user has received an invite from this user.
      * </pre>
      *
-     * <code>INVITE_RECEIVED = 3;</code>
+     * <code>INVITE_RECEIVED = 2;</code>
      */
-    INVITE_RECEIVED(3),
+    INVITE_RECEIVED(2),
     /**
      * <pre>
      * The current user has blocked this user.
      * </pre>
      *
-     * <code>BLOCKED = 4;</code>
+     * <code>BLOCKED = 3;</code>
      */
-    BLOCKED(4),
+    BLOCKED(3),
     UNRECOGNIZED(-1),
     ;
 
     /**
      * <pre>
-     * Default case. Assumed as FRIEND state.
-     * </pre>
-     *
-     * <code>STATE_UNSPECIFIED = 0;</code>
-     */
-    public static final int STATE_UNSPECIFIED_VALUE = 0;
-    /**
-     * <pre>
      * The user is a friend of the current user.
      * </pre>
      *
-     * <code>FRIEND = 1;</code>
+     * <code>FRIEND = 0;</code>
      */
-    public static final int FRIEND_VALUE = 1;
+    public static final int FRIEND_VALUE = 0;
     /**
      * <pre>
-     * The user has sent an invite to the current user.
+     * The current user has sent an invite to the user.
      * </pre>
      *
-     * <code>INVITE_SENT = 2;</code>
+     * <code>INVITE_SENT = 1;</code>
      */
-    public static final int INVITE_SENT_VALUE = 2;
+    public static final int INVITE_SENT_VALUE = 1;
     /**
      * <pre>
-     * The current user has sent an invite to this user.
+     * The current user has received an invite from this user.
      * </pre>
      *
-     * <code>INVITE_RECEIVED = 3;</code>
+     * <code>INVITE_RECEIVED = 2;</code>
      */
-    public static final int INVITE_RECEIVED_VALUE = 3;
+    public static final int INVITE_RECEIVED_VALUE = 2;
     /**
      * <pre>
      * The current user has blocked this user.
      * </pre>
      *
-     * <code>BLOCKED = 4;</code>
+     * <code>BLOCKED = 3;</code>
      */
-    public static final int BLOCKED_VALUE = 4;
+    public static final int BLOCKED_VALUE = 3;
 
 
     public final int getNumber() {
@@ -125,11 +109,10 @@ public  final class Friend extends
 
     public static State forNumber(int value) {
       switch (value) {
-        case 0: return STATE_UNSPECIFIED;
-        case 1: return FRIEND;
-        case 2: return INVITE_SENT;
-        case 3: return INVITE_RECEIVED;
-        case 4: return BLOCKED;
+        case 0: return FRIEND;
+        case 1: return INVITE_SENT;
+        case 2: return INVITE_RECEIVED;
+        case 3: return BLOCKED;
         default: return null;
       }
     }
@@ -232,38 +215,79 @@ public  final class Friend extends
   }
 
   public static final int STATE_FIELD_NUMBER = 2;
-  private int state_;
+  private com.google.protobuf.Int32Value state_;
   /**
    * <pre>
    * The friend status.
    * </pre>
    *
-   * <code>optional int32 state = 2;</code>
+   * <code>optional .google.protobuf.Int32Value state = 2;</code>
    */
-  public int getState() {
-    return state_;
+  public boolean hasState() {
+    return state_ != null;
   }
   /**
    * <pre>
    * The friend status.
    * </pre>
    *
-   * <code>optional int32 state = 2;</code>
+   * <code>optional .google.protobuf.Int32Value state = 2;</code>
    */
-  private void setState(int value) {
-    
+  public com.google.protobuf.Int32Value getState() {
+    return state_ == null ? com.google.protobuf.Int32Value.getDefaultInstance() : state_;
+  }
+  /**
+   * <pre>
+   * The friend status.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int32Value state = 2;</code>
+   */
+  private void setState(com.google.protobuf.Int32Value value) {
+    if (value == null) {
+      throw new NullPointerException();
+    }
     state_ = value;
+    
+    }
+  /**
+   * <pre>
+   * The friend status.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int32Value state = 2;</code>
+   */
+  private void setState(
+      com.google.protobuf.Int32Value.Builder builderForValue) {
+    state_ = builderForValue.build();
+    
   }
   /**
    * <pre>
    * The friend status.
    * </pre>
    *
-   * <code>optional int32 state = 2;</code>
+   * <code>optional .google.protobuf.Int32Value state = 2;</code>
    */
-  private void clearState() {
+  private void mergeState(com.google.protobuf.Int32Value value) {
+    if (state_ != null &&
+        state_ != com.google.protobuf.Int32Value.getDefaultInstance()) {
+      state_ =
+        com.google.protobuf.Int32Value.newBuilder(state_).mergeFrom(value).buildPartial();
+    } else {
+      state_ = value;
+    }
     
-    state_ = 0;
+  }
+  /**
+   * <pre>
+   * The friend status.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int32Value state = 2;</code>
+   */
+  private void clearState() {  state_ = null;
+    
   }
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
@@ -271,8 +295,8 @@ public  final class Friend extends
     if (user_ != null) {
       output.writeMessage(1, getUser());
     }
-    if (state_ != 0) {
-      output.writeInt32(2, state_);
+    if (state_ != null) {
+      output.writeMessage(2, getState());
     }
   }
 
@@ -285,9 +309,9 @@ public  final class Friend extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getUser());
     }
-    if (state_ != 0) {
+    if (state_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, state_);
+        .computeMessageSize(2, getState());
     }
     memoizedSerializedSize = size;
     return size;
@@ -453,9 +477,19 @@ public  final class Friend extends
      * The friend status.
      * </pre>
      *
-     * <code>optional int32 state = 2;</code>
+     * <code>optional .google.protobuf.Int32Value state = 2;</code>
      */
-    public int getState() {
+    public boolean hasState() {
+      return instance.hasState();
+    }
+    /**
+     * <pre>
+     * The friend status.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Int32Value state = 2;</code>
+     */
+    public com.google.protobuf.Int32Value getState() {
       return instance.getState();
     }
     /**
@@ -463,11 +497,24 @@ public  final class Friend extends
      * The friend status.
      * </pre>
      *
-     * <code>optional int32 state = 2;</code>
+     * <code>optional .google.protobuf.Int32Value state = 2;</code>
      */
-    public Builder setState(int value) {
+    public Builder setState(com.google.protobuf.Int32Value value) {
       copyOnWrite();
       instance.setState(value);
+      return this;
+      }
+    /**
+     * <pre>
+     * The friend status.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Int32Value state = 2;</code>
+     */
+    public Builder setState(
+        com.google.protobuf.Int32Value.Builder builderForValue) {
+      copyOnWrite();
+      instance.setState(builderForValue);
       return this;
     }
     /**
@@ -475,10 +522,21 @@ public  final class Friend extends
      * The friend status.
      * </pre>
      *
-     * <code>optional int32 state = 2;</code>
+     * <code>optional .google.protobuf.Int32Value state = 2;</code>
      */
-    public Builder clearState() {
+    public Builder mergeState(com.google.protobuf.Int32Value value) {
       copyOnWrite();
+      instance.mergeState(value);
+      return this;
+    }
+    /**
+     * <pre>
+     * The friend status.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Int32Value state = 2;</code>
+     */
+    public Builder clearState() {  copyOnWrite();
       instance.clearState();
       return this;
     }
@@ -505,8 +563,7 @@ public  final class Friend extends
         Visitor visitor = (Visitor) arg0;
         com.heroiclabs.nakama.api.Friend other = (com.heroiclabs.nakama.api.Friend) arg1;
         user_ = visitor.visitMessage(user_, other.user_);
-        state_ = visitor.visitInt(state_ != 0, state_,
-            other.state_ != 0, other.state_);
+        state_ = visitor.visitMessage(state_, other.state_);
         if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
             .INSTANCE) {
         }
@@ -544,9 +601,17 @@ public  final class Friend extends
 
                 break;
               }
-              case 16: {
+              case 18: {
+                com.google.protobuf.Int32Value.Builder subBuilder = null;
+                if (state_ != null) {
+                  subBuilder = state_.toBuilder();
+                }
+                state_ = input.readMessage(com.google.protobuf.Int32Value.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(state_);
+                  state_ = subBuilder.buildPartial();
+                }
 
-                state_ = input.readInt32();
                 break;
               }
             }

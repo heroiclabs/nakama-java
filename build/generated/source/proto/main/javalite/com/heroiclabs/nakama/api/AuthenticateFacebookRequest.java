@@ -236,40 +236,40 @@ public  final class AuthenticateFacebookRequest extends
     username_ = value.toStringUtf8();
   }
 
-  public static final int IMPORT_FIELD_NUMBER = 4;
-  private com.google.protobuf.BoolValue import_;
+  public static final int SYNC_FIELD_NUMBER = 4;
+  private com.google.protobuf.BoolValue sync_;
   /**
    * <pre>
    * Import Facebook friends for the user.
    * </pre>
    *
-   * <code>optional .google.protobuf.BoolValue import = 4;</code>
+   * <code>optional .google.protobuf.BoolValue sync = 4;</code>
    */
-  public boolean hasImport() {
-    return import_ != null;
+  public boolean hasSync() {
+    return sync_ != null;
   }
   /**
    * <pre>
    * Import Facebook friends for the user.
    * </pre>
    *
-   * <code>optional .google.protobuf.BoolValue import = 4;</code>
+   * <code>optional .google.protobuf.BoolValue sync = 4;</code>
    */
-  public com.google.protobuf.BoolValue getImport() {
-    return import_ == null ? com.google.protobuf.BoolValue.getDefaultInstance() : import_;
+  public com.google.protobuf.BoolValue getSync() {
+    return sync_ == null ? com.google.protobuf.BoolValue.getDefaultInstance() : sync_;
   }
   /**
    * <pre>
    * Import Facebook friends for the user.
    * </pre>
    *
-   * <code>optional .google.protobuf.BoolValue import = 4;</code>
+   * <code>optional .google.protobuf.BoolValue sync = 4;</code>
    */
-  private void setImport(com.google.protobuf.BoolValue value) {
+  private void setSync(com.google.protobuf.BoolValue value) {
     if (value == null) {
       throw new NullPointerException();
     }
-    import_ = value;
+    sync_ = value;
     
     }
   /**
@@ -277,11 +277,11 @@ public  final class AuthenticateFacebookRequest extends
    * Import Facebook friends for the user.
    * </pre>
    *
-   * <code>optional .google.protobuf.BoolValue import = 4;</code>
+   * <code>optional .google.protobuf.BoolValue sync = 4;</code>
    */
-  private void setImport(
+  private void setSync(
       com.google.protobuf.BoolValue.Builder builderForValue) {
-    import_ = builderForValue.build();
+    sync_ = builderForValue.build();
     
   }
   /**
@@ -289,15 +289,15 @@ public  final class AuthenticateFacebookRequest extends
    * Import Facebook friends for the user.
    * </pre>
    *
-   * <code>optional .google.protobuf.BoolValue import = 4;</code>
+   * <code>optional .google.protobuf.BoolValue sync = 4;</code>
    */
-  private void mergeImport(com.google.protobuf.BoolValue value) {
-    if (import_ != null &&
-        import_ != com.google.protobuf.BoolValue.getDefaultInstance()) {
-      import_ =
-        com.google.protobuf.BoolValue.newBuilder(import_).mergeFrom(value).buildPartial();
+  private void mergeSync(com.google.protobuf.BoolValue value) {
+    if (sync_ != null &&
+        sync_ != com.google.protobuf.BoolValue.getDefaultInstance()) {
+      sync_ =
+        com.google.protobuf.BoolValue.newBuilder(sync_).mergeFrom(value).buildPartial();
     } else {
-      import_ = value;
+      sync_ = value;
     }
     
   }
@@ -306,9 +306,9 @@ public  final class AuthenticateFacebookRequest extends
    * Import Facebook friends for the user.
    * </pre>
    *
-   * <code>optional .google.protobuf.BoolValue import = 4;</code>
+   * <code>optional .google.protobuf.BoolValue sync = 4;</code>
    */
-  private void clearImport() {  import_ = null;
+  private void clearSync() {  sync_ = null;
     
   }
 
@@ -323,8 +323,8 @@ public  final class AuthenticateFacebookRequest extends
     if (!username_.isEmpty()) {
       output.writeString(3, getUsername());
     }
-    if (import_ != null) {
-      output.writeMessage(4, getImport());
+    if (sync_ != null) {
+      output.writeMessage(4, getSync());
     }
   }
 
@@ -345,9 +345,9 @@ public  final class AuthenticateFacebookRequest extends
       size += com.google.protobuf.CodedOutputStream
         .computeStringSize(3, getUsername());
     }
-    if (import_ != null) {
+    if (sync_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, getImport());
+        .computeMessageSize(4, getSync());
     }
     memoizedSerializedSize = size;
     return size;
@@ -642,31 +642,31 @@ public  final class AuthenticateFacebookRequest extends
      * Import Facebook friends for the user.
      * </pre>
      *
-     * <code>optional .google.protobuf.BoolValue import = 4;</code>
+     * <code>optional .google.protobuf.BoolValue sync = 4;</code>
      */
-    public boolean hasImport() {
-      return instance.hasImport();
+    public boolean hasSync() {
+      return instance.hasSync();
     }
     /**
      * <pre>
      * Import Facebook friends for the user.
      * </pre>
      *
-     * <code>optional .google.protobuf.BoolValue import = 4;</code>
+     * <code>optional .google.protobuf.BoolValue sync = 4;</code>
      */
-    public com.google.protobuf.BoolValue getImport() {
-      return instance.getImport();
+    public com.google.protobuf.BoolValue getSync() {
+      return instance.getSync();
     }
     /**
      * <pre>
      * Import Facebook friends for the user.
      * </pre>
      *
-     * <code>optional .google.protobuf.BoolValue import = 4;</code>
+     * <code>optional .google.protobuf.BoolValue sync = 4;</code>
      */
-    public Builder setImport(com.google.protobuf.BoolValue value) {
+    public Builder setSync(com.google.protobuf.BoolValue value) {
       copyOnWrite();
-      instance.setImport(value);
+      instance.setSync(value);
       return this;
       }
     /**
@@ -674,12 +674,12 @@ public  final class AuthenticateFacebookRequest extends
      * Import Facebook friends for the user.
      * </pre>
      *
-     * <code>optional .google.protobuf.BoolValue import = 4;</code>
+     * <code>optional .google.protobuf.BoolValue sync = 4;</code>
      */
-    public Builder setImport(
+    public Builder setSync(
         com.google.protobuf.BoolValue.Builder builderForValue) {
       copyOnWrite();
-      instance.setImport(builderForValue);
+      instance.setSync(builderForValue);
       return this;
     }
     /**
@@ -687,11 +687,11 @@ public  final class AuthenticateFacebookRequest extends
      * Import Facebook friends for the user.
      * </pre>
      *
-     * <code>optional .google.protobuf.BoolValue import = 4;</code>
+     * <code>optional .google.protobuf.BoolValue sync = 4;</code>
      */
-    public Builder mergeImport(com.google.protobuf.BoolValue value) {
+    public Builder mergeSync(com.google.protobuf.BoolValue value) {
       copyOnWrite();
-      instance.mergeImport(value);
+      instance.mergeSync(value);
       return this;
     }
     /**
@@ -699,10 +699,10 @@ public  final class AuthenticateFacebookRequest extends
      * Import Facebook friends for the user.
      * </pre>
      *
-     * <code>optional .google.protobuf.BoolValue import = 4;</code>
+     * <code>optional .google.protobuf.BoolValue sync = 4;</code>
      */
-    public Builder clearImport() {  copyOnWrite();
-      instance.clearImport();
+    public Builder clearSync() {  copyOnWrite();
+      instance.clearSync();
       return this;
     }
 
@@ -731,7 +731,7 @@ public  final class AuthenticateFacebookRequest extends
         create_ = visitor.visitMessage(create_, other.create_);
         username_ = visitor.visitString(!username_.isEmpty(), username_,
             !other.username_.isEmpty(), other.username_);
-        import_ = visitor.visitMessage(import_, other.import_);
+        sync_ = visitor.visitMessage(sync_, other.sync_);
         if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
             .INSTANCE) {
         }
@@ -790,13 +790,13 @@ public  final class AuthenticateFacebookRequest extends
               }
               case 34: {
                 com.google.protobuf.BoolValue.Builder subBuilder = null;
-                if (import_ != null) {
-                  subBuilder = import_.toBuilder();
+                if (sync_ != null) {
+                  subBuilder = sync_.toBuilder();
                 }
-                import_ = input.readMessage(com.google.protobuf.BoolValue.parser(), extensionRegistry);
+                sync_ = input.readMessage(com.google.protobuf.BoolValue.parser(), extensionRegistry);
                 if (subBuilder != null) {
-                  subBuilder.mergeFrom(import_);
-                  import_ = subBuilder.buildPartial();
+                  subBuilder.mergeFrom(sync_);
+                  sync_ = subBuilder.buildPartial();
                 }
 
                 break;

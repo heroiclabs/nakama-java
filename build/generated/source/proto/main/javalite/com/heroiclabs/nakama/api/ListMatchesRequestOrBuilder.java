@@ -91,4 +91,21 @@ public interface ListMatchesRequestOrBuilder extends
    * <code>optional .google.protobuf.Int32Value max_size = 5;</code>
    */
   com.google.protobuf.Int32Value getMaxSize();
+
+  /**
+   * <pre>
+   * Arbitrary label query.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.StringValue query = 6;</code>
+   */
+  boolean hasQuery();
+  /**
+   * <pre>
+   * Arbitrary label query.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.StringValue query = 6;</code>
+   */
+  com.google.protobuf.StringValue getQuery();
 }
