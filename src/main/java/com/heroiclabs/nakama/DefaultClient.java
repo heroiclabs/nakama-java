@@ -375,7 +375,7 @@ public class DefaultClient implements Client {
                         .build())
                 .setUsername(username)
                 .setCreate(BoolValue.newBuilder().setValue(create).build())
-                .setImport(BoolValue.newBuilder().setValue(importFriends).build())
+                .setSync(BoolValue.newBuilder().setValue(importFriends).build())
                 .build());
     }
 
@@ -751,7 +751,7 @@ public class DefaultClient implements Client {
     public ListenableFuture<Empty> linkFacebook(@NonNull final Session session, @NonNull final String accessToken, @NonNull final boolean importFriends) {
         return getStub(session).linkFacebook(LinkFacebookRequest.newBuilder()
                 .setAccount(AccountFacebook.newBuilder().setToken(accessToken).build())
-                .setImport(BoolValue.newBuilder().setValue(importFriends).build())
+                .setSync(BoolValue.newBuilder().setValue(importFriends).build())
                 .build());
     }
 

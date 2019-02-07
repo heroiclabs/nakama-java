@@ -29,7 +29,15 @@ public interface FriendOrBuilder extends
    * The friend status.
    * </pre>
    *
-   * <code>optional int32 state = 2;</code>
+   * <code>optional .google.protobuf.Int32Value state = 2;</code>
    */
-  int getState();
+  boolean hasState();
+  /**
+   * <pre>
+   * The friend status.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int32Value state = 2;</code>
+   */
+  com.google.protobuf.Int32Value getState();
 }

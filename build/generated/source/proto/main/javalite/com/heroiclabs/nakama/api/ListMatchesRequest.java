@@ -397,6 +397,82 @@ public  final class ListMatchesRequest extends
     
   }
 
+  public static final int QUERY_FIELD_NUMBER = 6;
+  private com.google.protobuf.StringValue query_;
+  /**
+   * <pre>
+   * Arbitrary label query.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.StringValue query = 6;</code>
+   */
+  public boolean hasQuery() {
+    return query_ != null;
+  }
+  /**
+   * <pre>
+   * Arbitrary label query.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.StringValue query = 6;</code>
+   */
+  public com.google.protobuf.StringValue getQuery() {
+    return query_ == null ? com.google.protobuf.StringValue.getDefaultInstance() : query_;
+  }
+  /**
+   * <pre>
+   * Arbitrary label query.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.StringValue query = 6;</code>
+   */
+  private void setQuery(com.google.protobuf.StringValue value) {
+    if (value == null) {
+      throw new NullPointerException();
+    }
+    query_ = value;
+    
+    }
+  /**
+   * <pre>
+   * Arbitrary label query.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.StringValue query = 6;</code>
+   */
+  private void setQuery(
+      com.google.protobuf.StringValue.Builder builderForValue) {
+    query_ = builderForValue.build();
+    
+  }
+  /**
+   * <pre>
+   * Arbitrary label query.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.StringValue query = 6;</code>
+   */
+  private void mergeQuery(com.google.protobuf.StringValue value) {
+    if (query_ != null &&
+        query_ != com.google.protobuf.StringValue.getDefaultInstance()) {
+      query_ =
+        com.google.protobuf.StringValue.newBuilder(query_).mergeFrom(value).buildPartial();
+    } else {
+      query_ = value;
+    }
+    
+  }
+  /**
+   * <pre>
+   * Arbitrary label query.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.StringValue query = 6;</code>
+   */
+  private void clearQuery() {  query_ = null;
+    
+  }
+
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (limit_ != null) {
@@ -413,6 +489,9 @@ public  final class ListMatchesRequest extends
     }
     if (maxSize_ != null) {
       output.writeMessage(5, getMaxSize());
+    }
+    if (query_ != null) {
+      output.writeMessage(6, getQuery());
     }
   }
 
@@ -440,6 +519,10 @@ public  final class ListMatchesRequest extends
     if (maxSize_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, getMaxSize());
+    }
+    if (query_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, getQuery());
     }
     memoizedSerializedSize = size;
     return size;
@@ -876,6 +959,75 @@ public  final class ListMatchesRequest extends
       return this;
     }
 
+    /**
+     * <pre>
+     * Arbitrary label query.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.StringValue query = 6;</code>
+     */
+    public boolean hasQuery() {
+      return instance.hasQuery();
+    }
+    /**
+     * <pre>
+     * Arbitrary label query.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.StringValue query = 6;</code>
+     */
+    public com.google.protobuf.StringValue getQuery() {
+      return instance.getQuery();
+    }
+    /**
+     * <pre>
+     * Arbitrary label query.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.StringValue query = 6;</code>
+     */
+    public Builder setQuery(com.google.protobuf.StringValue value) {
+      copyOnWrite();
+      instance.setQuery(value);
+      return this;
+      }
+    /**
+     * <pre>
+     * Arbitrary label query.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.StringValue query = 6;</code>
+     */
+    public Builder setQuery(
+        com.google.protobuf.StringValue.Builder builderForValue) {
+      copyOnWrite();
+      instance.setQuery(builderForValue);
+      return this;
+    }
+    /**
+     * <pre>
+     * Arbitrary label query.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.StringValue query = 6;</code>
+     */
+    public Builder mergeQuery(com.google.protobuf.StringValue value) {
+      copyOnWrite();
+      instance.mergeQuery(value);
+      return this;
+    }
+    /**
+     * <pre>
+     * Arbitrary label query.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.StringValue query = 6;</code>
+     */
+    public Builder clearQuery() {  copyOnWrite();
+      instance.clearQuery();
+      return this;
+    }
+
     // @@protoc_insertion_point(builder_scope:nakama.api.ListMatchesRequest)
   }
   protected final Object dynamicMethod(
@@ -902,6 +1054,7 @@ public  final class ListMatchesRequest extends
         label_ = visitor.visitMessage(label_, other.label_);
         minSize_ = visitor.visitMessage(minSize_, other.minSize_);
         maxSize_ = visitor.visitMessage(maxSize_, other.maxSize_);
+        query_ = visitor.visitMessage(query_, other.query_);
         if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
             .INSTANCE) {
         }
@@ -987,6 +1140,19 @@ public  final class ListMatchesRequest extends
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(maxSize_);
                   maxSize_ = subBuilder.buildPartial();
+                }
+
+                break;
+              }
+              case 50: {
+                com.google.protobuf.StringValue.Builder subBuilder = null;
+                if (query_ != null) {
+                  subBuilder = query_.toBuilder();
+                }
+                query_ = input.readMessage(com.google.protobuf.StringValue.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(query_);
+                  query_ = subBuilder.buildPartial();
                 }
 
                 break;

@@ -44,9 +44,17 @@ public  final class UserGroupList extends
      * The user's relationship to the group.
      * </pre>
      *
-     * <code>optional int32 state = 2;</code>
+     * <code>optional .google.protobuf.Int32Value state = 2;</code>
      */
-    int getState();
+    boolean hasState();
+    /**
+     * <pre>
+     * The user's relationship to the group.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Int32Value state = 2;</code>
+     */
+    com.google.protobuf.Int32Value getState();
   }
   /**
    * <pre>
@@ -73,87 +81,71 @@ public  final class UserGroupList extends
         implements com.google.protobuf.Internal.EnumLite {
       /**
        * <pre>
-       * Default case. Assumed as SUPERADMIN state.
-       * </pre>
-       *
-       * <code>STATE_UNSPECIFIED = 0;</code>
-       */
-      STATE_UNSPECIFIED(0),
-      /**
-       * <pre>
        * The user is a superadmin with full control of the group.
        * </pre>
        *
-       * <code>SUPERADMIN = 1;</code>
+       * <code>SUPERADMIN = 0;</code>
        */
-      SUPERADMIN(1),
+      SUPERADMIN(0),
       /**
        * <pre>
        * The user is an admin with additional privileges.
        * </pre>
        *
-       * <code>ADMIN = 2;</code>
+       * <code>ADMIN = 1;</code>
        */
-      ADMIN(2),
+      ADMIN(1),
       /**
        * <pre>
        * The user is a regular member.
        * </pre>
        *
-       * <code>MEMBER = 3;</code>
+       * <code>MEMBER = 2;</code>
        */
-      MEMBER(3),
+      MEMBER(2),
       /**
        * <pre>
        * The user has requested to join the group
        * </pre>
        *
-       * <code>JOIN_REQUEST = 4;</code>
+       * <code>JOIN_REQUEST = 3;</code>
        */
-      JOIN_REQUEST(4),
+      JOIN_REQUEST(3),
       UNRECOGNIZED(-1),
       ;
 
       /**
        * <pre>
-       * Default case. Assumed as SUPERADMIN state.
-       * </pre>
-       *
-       * <code>STATE_UNSPECIFIED = 0;</code>
-       */
-      public static final int STATE_UNSPECIFIED_VALUE = 0;
-      /**
-       * <pre>
        * The user is a superadmin with full control of the group.
        * </pre>
        *
-       * <code>SUPERADMIN = 1;</code>
+       * <code>SUPERADMIN = 0;</code>
        */
-      public static final int SUPERADMIN_VALUE = 1;
+      public static final int SUPERADMIN_VALUE = 0;
       /**
        * <pre>
        * The user is an admin with additional privileges.
        * </pre>
        *
-       * <code>ADMIN = 2;</code>
+       * <code>ADMIN = 1;</code>
        */
-      public static final int ADMIN_VALUE = 2;
+      public static final int ADMIN_VALUE = 1;
       /**
        * <pre>
        * The user is a regular member.
        * </pre>
        *
-       * <code>MEMBER = 3;</code>
+       * <code>MEMBER = 2;</code>
        */
-      public static final int MEMBER_VALUE = 3;
+      public static final int MEMBER_VALUE = 2;
       /**
        * <pre>
        * The user has requested to join the group
        * </pre>
        *
-       * <code>JOIN_REQUEST = 4;</code>
+       * <code>JOIN_REQUEST = 3;</code>
        */
-      public static final int JOIN_REQUEST_VALUE = 4;
+      public static final int JOIN_REQUEST_VALUE = 3;
 
 
       public final int getNumber() {
@@ -170,11 +162,10 @@ public  final class UserGroupList extends
 
       public static State forNumber(int value) {
         switch (value) {
-          case 0: return STATE_UNSPECIFIED;
-          case 1: return SUPERADMIN;
-          case 2: return ADMIN;
-          case 3: return MEMBER;
-          case 4: return JOIN_REQUEST;
+          case 0: return SUPERADMIN;
+          case 1: return ADMIN;
+          case 2: return MEMBER;
+          case 3: return JOIN_REQUEST;
           default: return null;
         }
       }
@@ -277,38 +268,79 @@ public  final class UserGroupList extends
     }
 
     public static final int STATE_FIELD_NUMBER = 2;
-    private int state_;
+    private com.google.protobuf.Int32Value state_;
     /**
      * <pre>
      * The user's relationship to the group.
      * </pre>
      *
-     * <code>optional int32 state = 2;</code>
+     * <code>optional .google.protobuf.Int32Value state = 2;</code>
      */
-    public int getState() {
-      return state_;
+    public boolean hasState() {
+      return state_ != null;
     }
     /**
      * <pre>
      * The user's relationship to the group.
      * </pre>
      *
-     * <code>optional int32 state = 2;</code>
+     * <code>optional .google.protobuf.Int32Value state = 2;</code>
      */
-    private void setState(int value) {
-      
+    public com.google.protobuf.Int32Value getState() {
+      return state_ == null ? com.google.protobuf.Int32Value.getDefaultInstance() : state_;
+    }
+    /**
+     * <pre>
+     * The user's relationship to the group.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Int32Value state = 2;</code>
+     */
+    private void setState(com.google.protobuf.Int32Value value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
       state_ = value;
+      
+      }
+    /**
+     * <pre>
+     * The user's relationship to the group.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Int32Value state = 2;</code>
+     */
+    private void setState(
+        com.google.protobuf.Int32Value.Builder builderForValue) {
+      state_ = builderForValue.build();
+      
     }
     /**
      * <pre>
      * The user's relationship to the group.
      * </pre>
      *
-     * <code>optional int32 state = 2;</code>
+     * <code>optional .google.protobuf.Int32Value state = 2;</code>
      */
-    private void clearState() {
+    private void mergeState(com.google.protobuf.Int32Value value) {
+      if (state_ != null &&
+          state_ != com.google.protobuf.Int32Value.getDefaultInstance()) {
+        state_ =
+          com.google.protobuf.Int32Value.newBuilder(state_).mergeFrom(value).buildPartial();
+      } else {
+        state_ = value;
+      }
       
-      state_ = 0;
+    }
+    /**
+     * <pre>
+     * The user's relationship to the group.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Int32Value state = 2;</code>
+     */
+    private void clearState() {  state_ = null;
+      
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
@@ -316,8 +348,8 @@ public  final class UserGroupList extends
       if (group_ != null) {
         output.writeMessage(1, getGroup());
       }
-      if (state_ != 0) {
-        output.writeInt32(2, state_);
+      if (state_ != null) {
+        output.writeMessage(2, getState());
       }
     }
 
@@ -330,9 +362,9 @@ public  final class UserGroupList extends
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getGroup());
       }
-      if (state_ != 0) {
+      if (state_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, state_);
+          .computeMessageSize(2, getState());
       }
       memoizedSerializedSize = size;
       return size;
@@ -498,9 +530,19 @@ public  final class UserGroupList extends
        * The user's relationship to the group.
        * </pre>
        *
-       * <code>optional int32 state = 2;</code>
+       * <code>optional .google.protobuf.Int32Value state = 2;</code>
        */
-      public int getState() {
+      public boolean hasState() {
+        return instance.hasState();
+      }
+      /**
+       * <pre>
+       * The user's relationship to the group.
+       * </pre>
+       *
+       * <code>optional .google.protobuf.Int32Value state = 2;</code>
+       */
+      public com.google.protobuf.Int32Value getState() {
         return instance.getState();
       }
       /**
@@ -508,11 +550,24 @@ public  final class UserGroupList extends
        * The user's relationship to the group.
        * </pre>
        *
-       * <code>optional int32 state = 2;</code>
+       * <code>optional .google.protobuf.Int32Value state = 2;</code>
        */
-      public Builder setState(int value) {
+      public Builder setState(com.google.protobuf.Int32Value value) {
         copyOnWrite();
         instance.setState(value);
+        return this;
+        }
+      /**
+       * <pre>
+       * The user's relationship to the group.
+       * </pre>
+       *
+       * <code>optional .google.protobuf.Int32Value state = 2;</code>
+       */
+      public Builder setState(
+          com.google.protobuf.Int32Value.Builder builderForValue) {
+        copyOnWrite();
+        instance.setState(builderForValue);
         return this;
       }
       /**
@@ -520,10 +575,21 @@ public  final class UserGroupList extends
        * The user's relationship to the group.
        * </pre>
        *
-       * <code>optional int32 state = 2;</code>
+       * <code>optional .google.protobuf.Int32Value state = 2;</code>
        */
-      public Builder clearState() {
+      public Builder mergeState(com.google.protobuf.Int32Value value) {
         copyOnWrite();
+        instance.mergeState(value);
+        return this;
+      }
+      /**
+       * <pre>
+       * The user's relationship to the group.
+       * </pre>
+       *
+       * <code>optional .google.protobuf.Int32Value state = 2;</code>
+       */
+      public Builder clearState() {  copyOnWrite();
         instance.clearState();
         return this;
       }
@@ -550,8 +616,7 @@ public  final class UserGroupList extends
           Visitor visitor = (Visitor) arg0;
           com.heroiclabs.nakama.api.UserGroupList.UserGroup other = (com.heroiclabs.nakama.api.UserGroupList.UserGroup) arg1;
           group_ = visitor.visitMessage(group_, other.group_);
-          state_ = visitor.visitInt(state_ != 0, state_,
-              other.state_ != 0, other.state_);
+          state_ = visitor.visitMessage(state_, other.state_);
           if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
               .INSTANCE) {
           }
@@ -589,9 +654,17 @@ public  final class UserGroupList extends
 
                   break;
                 }
-                case 16: {
+                case 18: {
+                  com.google.protobuf.Int32Value.Builder subBuilder = null;
+                  if (state_ != null) {
+                    subBuilder = state_.toBuilder();
+                  }
+                  state_ = input.readMessage(com.google.protobuf.Int32Value.parser(), extensionRegistry);
+                  if (subBuilder != null) {
+                    subBuilder.mergeFrom(state_);
+                    state_ = subBuilder.buildPartial();
+                  }
 
-                  state_ = input.readInt32();
                   break;
                 }
               }

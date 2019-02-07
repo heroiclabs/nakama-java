@@ -64,15 +64,15 @@ public interface AuthenticateFacebookRequestOrBuilder extends
    * Import Facebook friends for the user.
    * </pre>
    *
-   * <code>optional .google.protobuf.BoolValue import = 4;</code>
+   * <code>optional .google.protobuf.BoolValue sync = 4;</code>
    */
-  boolean hasImport();
+  boolean hasSync();
   /**
    * <pre>
    * Import Facebook friends for the user.
    * </pre>
    *
-   * <code>optional .google.protobuf.BoolValue import = 4;</code>
+   * <code>optional .google.protobuf.BoolValue sync = 4;</code>
    */
-  com.google.protobuf.BoolValue getImport();
+  com.google.protobuf.BoolValue getSync();
 }
