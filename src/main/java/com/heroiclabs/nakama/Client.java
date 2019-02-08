@@ -31,7 +31,7 @@ public interface Client {
     /**
      * Disconnects the client. This function kills all outgoing exchanges and waits until the channel is shutdown.
      */
-    void disconnect(@NonNull final long timeout, @NonNull final TimeUnit unit) throws InterruptedException;
+    void disconnect(final long timeout, @NonNull final TimeUnit unit) throws InterruptedException;
 
     /**
      * Disconnects the client. This function kills all outgoing exchanges immediately without waiting.
@@ -49,7 +49,7 @@ public interface Client {
      * @param port The port number of the server. Default should be 7350.
      * @return a new SocketClient instance.
      */
-    SocketClient createSocket(@NonNull final int port);
+    SocketClient createSocket(final int port);
 
     /**
      * Create a new socket from the client.
@@ -57,7 +57,7 @@ public interface Client {
      * @param socketTimeoutMs Sets the connect, read and write timeout for new connections.
      * @return a new SocketClient instance.
      */
-    SocketClient createSocket(@NonNull final int port, @NonNull final int socketTimeoutMs);
+    SocketClient createSocket(final int port, final int socketTimeoutMs);
 
     /**
      * Add one or more friends by id.
@@ -106,7 +106,7 @@ public interface Client {
      * @param create True if the user should be created when authenticated.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateCustom(@NonNull final String id, @NonNull final boolean create);
+    ListenableFuture<Session> authenticateCustom(@NonNull final String id, final boolean create);
 
     /**
      * Authenticate a user with a custom id.
@@ -115,7 +115,7 @@ public interface Client {
      * @param username A username used to create the user.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateCustom(@NonNull final String id, @NonNull final boolean create, @NonNull final String username);
+    ListenableFuture<Session> authenticateCustom(@NonNull final String id, final boolean create, @NonNull final String username);
 
     /**
      * Authenticate a user with a device id.
@@ -138,7 +138,7 @@ public interface Client {
      * @param create True if the user should be created when authenticated.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateDevice(@NonNull final String id, @NonNull final boolean create);
+    ListenableFuture<Session> authenticateDevice(@NonNull final String id, final boolean create);
 
     /**
      * Authenticate a user with a device id.
@@ -147,7 +147,7 @@ public interface Client {
      * @param username A username used to create the user.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateDevice(@NonNull final String id, @NonNull final boolean create, @NonNull final String username);
+    ListenableFuture<Session> authenticateDevice(@NonNull final String id, final boolean create, @NonNull final String username);
 
     /**
      * Authenticate a user with an email and password.
@@ -173,7 +173,7 @@ public interface Client {
      * @param create True if the user should be created when authenticated.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, @NonNull final boolean create);
+    ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, final boolean create);
 
     /**
      * Authenticate a user with an email and password.
@@ -183,7 +183,7 @@ public interface Client {
      * @param username A username used to create the user.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, @NonNull final boolean create, @NonNull final String username);
+    ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, final boolean create, @NonNull final String username);
 
     /**
      * Authenticate a user with a Facebook auth token.
@@ -206,7 +206,7 @@ public interface Client {
      * @param create True if the user should be created when authenticated.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, @NonNull final boolean create);
+    ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, final boolean create);
 
     /**
      * Authenticate a user with a Facebook auth token.
@@ -215,7 +215,7 @@ public interface Client {
      * @param username A username used to create the user.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, @NonNull final boolean create, @NonNull final String username);
+    ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, final boolean create, @NonNull final String username);
 
     /**
      * Authenticate a user with a Facebook auth token.
@@ -225,7 +225,7 @@ public interface Client {
      * @param importFriends True if the Facebook friends should be imported.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, @NonNull final boolean create, @NonNull final String username, @NonNull final boolean importFriends);
+    ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, final boolean create, @NonNull final String username, final boolean importFriends);
 
     /**
      * Authenticate a user with a Google auth token.
@@ -248,7 +248,7 @@ public interface Client {
      * @param create True if the user should be created when authenticated.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, @NonNull final boolean create);
+    ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, final boolean create);
 
     /**
      * Authenticate a user with a Google auth token.
@@ -257,7 +257,7 @@ public interface Client {
      * @param username A username used to create the user.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, @NonNull final boolean create, @NonNull final String username);
+    ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, final boolean create, @NonNull final String username);
 
     /**
      * Authenticate a user with a Steam auth token.
@@ -280,7 +280,7 @@ public interface Client {
      * @param create True if the user should be created when authenticated.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateSteam(@NonNull final String token, @NonNull final boolean create);
+    ListenableFuture<Session> authenticateSteam(@NonNull final String token, final boolean create);
 
     /**
      * Authenticate a user with a Steam auth token.
@@ -289,7 +289,7 @@ public interface Client {
      * @param username A username used to create the user.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateSteam(@NonNull final String token, @NonNull final boolean create, @NonNull final String username);
+    ListenableFuture<Session> authenticateSteam(@NonNull final String token, final boolean create, @NonNull final String username);
 
     /**
      * Authenticate a user with Apple Game Center.
@@ -301,7 +301,7 @@ public interface Client {
      * @param publicKeyUrl The URL for the public encryption key.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl);
+    ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl);
 
     /**
      * Authenticate a user with Apple Game Center.
@@ -314,7 +314,7 @@ public interface Client {
      * @param username A username used to create the user.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, @NonNull final String username);
+    ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, @NonNull final String username);
 
     /**
      * Authenticate a user with Apple Game Center.
@@ -327,7 +327,7 @@ public interface Client {
      * @param create True if the user should be created when authenticated.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, @NonNull final boolean create);
+    ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, final boolean create);
 
     /**
      * Authenticate a user with Apple Game Center.
@@ -341,7 +341,7 @@ public interface Client {
      * @param username A username used to create the user.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, @NonNull final boolean create, @NonNull final String username);
+    ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, final boolean create, @NonNull final String username);
 
     /**
      * Block one or more friends by id.
@@ -524,7 +524,7 @@ public interface Client {
      * @param reset True if the Facebook friend import for the user should be reset.
      * @return A future.
      */
-    ListenableFuture<Empty> importFacebookFriends(@NonNull final Session session, @NonNull final String token, @NonNull final boolean reset);
+    ListenableFuture<Empty> importFacebookFriends(@NonNull final Session session, @NonNull final String token, final boolean reset);
 
     /**
      * Join a group if it has open membership or request to join it.
@@ -608,7 +608,7 @@ public interface Client {
      * @param importFriends True if the Facebook friends should be imported.
      * @return A future.
      */
-    ListenableFuture<Empty> linkFacebook(@NonNull final Session session, @NonNull final String accessToken, @NonNull final boolean importFriends);
+    ListenableFuture<Empty> linkFacebook(@NonNull final Session session, @NonNull final String accessToken, final boolean importFriends);
 
     /**
      * Link a Google profile to a user account.
@@ -640,7 +640,7 @@ public interface Client {
      * @param publicKeyUrl The URL for the public encryption key.
      * @return A future.
      */
-    ListenableFuture<Empty> linkGameCenter(@NonNull final Session session, @NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl);
+    ListenableFuture<Empty> linkGameCenter(@NonNull final Session session, @NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl);
 
     /**
      * List messages from a chat channel.
@@ -935,7 +935,7 @@ public interface Client {
      * @param categoryStart The start of the categories to include. Defaults to 0.
      * @return a future which resolved to a tournament list.
      */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final int categoryStart);
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart);
 
     /**
      * List active/upcoming tournaments based on given filters.
@@ -944,7 +944,7 @@ public interface Client {
      * @param categoryEnd The end of the categories to include. Defaults to 128.
      * @return a future which resolved to a tournament list.
      */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, @NonNull final int categoryEnd);
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd);
 
     /**
      * List active/upcoming tournaments based on given filters.
@@ -954,7 +954,7 @@ public interface Client {
      * @param startTime The start time for tournaments. Defaults to current Unix time.
      * @return a future which resolved to a tournament list.
      */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, @NonNull final long startTime);
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, final long startTime);
 
     /**
      * List active/upcoming tournaments based on given filters.
@@ -965,7 +965,7 @@ public interface Client {
      * @param endTime The end time for tournaments. Defaults to +1 year from current Unix time.
      * @return a future which resolved to a tournament list.
      */
-    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, final long startTime, @NonNull final long endTime);
+    ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, final long startTime, final long endTime);
 
     /**
      * List active/upcoming tournaments based on given filters.
@@ -1197,7 +1197,7 @@ public interface Client {
      * @param publicKeyUrl The URL for the public encryption key.
      * @return A future.
      */
-    ListenableFuture<Empty> unlinkGameCenter(@NonNull final Session session, @NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl);
+    ListenableFuture<Empty> unlinkGameCenter(@NonNull final Session session, @NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl);
 
     /**
      * Update the current user's account on the server.

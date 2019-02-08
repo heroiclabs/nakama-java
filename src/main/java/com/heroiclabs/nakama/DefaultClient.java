@@ -17,10 +17,14 @@
 package com.heroiclabs.nakama;
 
 import com.google.common.io.BaseEncoding;
-import com.google.common.util.concurrent.*;
+import com.google.common.util.concurrent.AsyncFunction;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.protobuf.*;
 import com.heroiclabs.nakama.api.*;
-import io.grpc.*;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import io.grpc.Metadata;
 import io.grpc.okhttp.OkHttpChannelBuilder;
 import io.grpc.stub.MetadataUtils;
 import lombok.NonNull;
@@ -64,7 +68,7 @@ public class DefaultClient implements Client {
      * must configure the server to expose it's IP address so it can be bundled within session tokens. See the
      * server documentation for more information.
      */
-    public DefaultClient(@NonNull final String serverKey, @NonNull final String host, @NonNull final int port, @NonNull final boolean ssl) {
+    public DefaultClient(@NonNull final String serverKey, @NonNull final String host, final int port, final boolean ssl) {
         this(serverKey, host, port, ssl, 0, Long.MAX_VALUE, 0L, false);
     }
 
@@ -86,8 +90,8 @@ public class DefaultClient implements Client {
      * small value might be increased. Defaults to 20 seconds.
      * @param trace Trace all actions performed by the client. Defaults to false.
      */
-    public DefaultClient(@NonNull final String serverKey, @NonNull final String host, @NonNull final int port, @NonNull final boolean ssl,
-                         final int deadlineAfterMs, @NonNull final long keepAliveTimeMs, @NonNull final long keepAliveTimeoutMs,  @NonNull final boolean trace) {
+    public DefaultClient(@NonNull final String serverKey, @NonNull final String host, final int port, final boolean ssl,
+                         final int deadlineAfterMs, final long keepAliveTimeMs, final long keepAliveTimeoutMs,  final boolean trace) {
         this.host = host;
         this.port = port;
         this.ssl = ssl;
@@ -147,7 +151,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public void disconnect(@NonNull final long timeout, @NonNull final TimeUnit unit) throws InterruptedException {
+    public void disconnect(final long timeout, @NonNull final TimeUnit unit) throws InterruptedException {
         this.managedChannel.shutdown();
         this.managedChannel.awaitTermination(timeout, unit);
     }
@@ -211,7 +215,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateCustom(@NonNull final String id, @NonNull final boolean create) {
+    public ListenableFuture<Session> authenticateCustom(@NonNull final String id, final boolean create) {
         return authenticateCustom(AuthenticateCustomRequest.newBuilder()
                 .setAccount(AccountCustom.newBuilder()
                         .setId(id)
@@ -221,7 +225,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateCustom(@NonNull final String id, @NonNull final boolean create, @NonNull final String username) {
+    public ListenableFuture<Session> authenticateCustom(@NonNull final String id, final boolean create, @NonNull final String username) {
         return authenticateCustom(AuthenticateCustomRequest.newBuilder()
                 .setAccount(AccountCustom.newBuilder()
                         .setId(id)
@@ -255,7 +259,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateDevice(@NonNull final String id, @NonNull final boolean create) {
+    public ListenableFuture<Session> authenticateDevice(@NonNull final String id, final boolean create) {
         return authenticateDevice(AuthenticateDeviceRequest.newBuilder()
                 .setAccount(AccountDevice.newBuilder()
                         .setId(id)
@@ -265,7 +269,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateDevice(@NonNull final String id, @NonNull final boolean create, @NonNull final String username) {
+    public ListenableFuture<Session> authenticateDevice(@NonNull final String id, final boolean create, @NonNull final String username) {
         return authenticateDevice(AuthenticateDeviceRequest.newBuilder()
                 .setAccount(AccountDevice.newBuilder()
                         .setId(id)
@@ -301,7 +305,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, @NonNull final boolean create) {
+    public ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, final boolean create) {
         return authenticateEmail(AuthenticateEmailRequest.newBuilder()
                 .setAccount(AccountEmail.newBuilder()
                         .setEmail(email)
@@ -312,7 +316,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, @NonNull final boolean create, @NonNull final String username) {
+    public ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, final boolean create, @NonNull final String username) {
         return authenticateEmail(AuthenticateEmailRequest.newBuilder()
                 .setAccount(AccountEmail.newBuilder()
                         .setEmail(email)
@@ -347,7 +351,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, @NonNull final boolean create) {
+    public ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, final boolean create) {
         return authenticateFacebook(AuthenticateFacebookRequest.newBuilder()
                 .setAccount(AccountFacebook.newBuilder()
                         .setToken(accessToken)
@@ -357,7 +361,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, @NonNull final boolean create, @NonNull final String username) {
+    public ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, final boolean create, @NonNull final String username) {
         return authenticateFacebook(AuthenticateFacebookRequest.newBuilder()
                 .setAccount(AccountFacebook.newBuilder()
                         .setToken(accessToken)
@@ -368,7 +372,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, @NonNull final boolean create, @NonNull final String username, @NonNull final boolean importFriends) {
+    public ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, final boolean create, @NonNull final String username, final boolean importFriends) {
         return authenticateFacebook(AuthenticateFacebookRequest.newBuilder()
                 .setAccount(AccountFacebook.newBuilder()
                         .setToken(accessToken)
@@ -403,7 +407,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, @NonNull final boolean create) {
+    public ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, final boolean create) {
         return authenticateGoogle(AuthenticateGoogleRequest.newBuilder()
                 .setAccount(AccountGoogle.newBuilder()
                         .setToken(accessToken)
@@ -413,7 +417,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, @NonNull final boolean create, @NonNull final String username) {
+    public ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, final boolean create, @NonNull final String username) {
         return authenticateGoogle(AuthenticateGoogleRequest.newBuilder()
                 .setAccount(AccountGoogle.newBuilder()
                         .setToken(accessToken)
@@ -447,7 +451,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateSteam(@NonNull final String token, @NonNull final boolean create) {
+    public ListenableFuture<Session> authenticateSteam(@NonNull final String token, final boolean create) {
         return authenticateSteam(AuthenticateSteamRequest.newBuilder()
                 .setAccount(AccountSteam.newBuilder()
                         .setToken(token)
@@ -457,7 +461,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateSteam(@NonNull final String token, @NonNull final boolean create, @NonNull final String username) {
+    public ListenableFuture<Session> authenticateSteam(@NonNull final String token, final boolean create, @NonNull final String username) {
         return authenticateSteam(AuthenticateSteamRequest.newBuilder()
                 .setAccount(AccountSteam.newBuilder()
                         .setToken(token)
@@ -472,7 +476,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl) {
+    public ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl) {
         return authenticateGameCenter(AuthenticateGameCenterRequest.newBuilder()
                 .setAccount(AccountGameCenter.newBuilder()
                         .setPlayerId(playerId)
@@ -485,7 +489,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, @NonNull final String username) {
+    public ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, @NonNull final String username) {
         return authenticateGameCenter(AuthenticateGameCenterRequest.newBuilder()
                 .setAccount(AccountGameCenter.newBuilder()
                         .setPlayerId(playerId)
@@ -499,7 +503,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, @NonNull final boolean create) {
+    public ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, final boolean create) {
         return authenticateGameCenter(AuthenticateGameCenterRequest.newBuilder()
                 .setAccount(AccountGameCenter.newBuilder()
                         .setPlayerId(playerId)
@@ -513,7 +517,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, @NonNull final boolean create, @NonNull final String username) {
+    public ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, final boolean create, @NonNull final String username) {
         return authenticateGameCenter(AuthenticateGameCenterRequest.newBuilder()
                 .setAccount(AccountGameCenter.newBuilder()
                         .setPlayerId(playerId)
@@ -695,7 +699,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Empty> importFacebookFriends(@NonNull final Session session, @NonNull final String token, @NonNull final boolean reset) {
+    public ListenableFuture<Empty> importFacebookFriends(@NonNull final Session session, @NonNull final String token, final boolean reset) {
         return getStub(session).importFacebookFriends(ImportFacebookFriendsRequest.newBuilder()
                 .setAccount(AccountFacebook.newBuilder().setToken(token).build())
                 .setReset(BoolValue.newBuilder().setValue(reset).getDefaultInstanceForType())
@@ -748,7 +752,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Empty> linkFacebook(@NonNull final Session session, @NonNull final String accessToken, @NonNull final boolean importFriends) {
+    public ListenableFuture<Empty> linkFacebook(@NonNull final Session session, @NonNull final String accessToken, final boolean importFriends) {
         return getStub(session).linkFacebook(LinkFacebookRequest.newBuilder()
                 .setAccount(AccountFacebook.newBuilder().setToken(accessToken).build())
                 .setSync(BoolValue.newBuilder().setValue(importFriends).build())
@@ -766,7 +770,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Empty> linkGameCenter(@NonNull final Session session, @NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl) {
+    public ListenableFuture<Empty> linkGameCenter(@NonNull final Session session, @NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl) {
         return getStub(session).linkGameCenter(AccountGameCenter.newBuilder()
                 .setPlayerId(playerId)
                 .setBundleId(bundleId)
@@ -1003,7 +1007,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, @NonNull final int categoryStart) {
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart) {
         ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
         if (categoryStart >= 0) {
             builder.setCategoryStart(UInt32Value.newBuilder().setValue(categoryStart).build());
@@ -1012,7 +1016,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, @NonNull final int categoryEnd) {
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd) {
         ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
 
         if (categoryStart >= 0) {
@@ -1025,7 +1029,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, @NonNull final long startTime) {
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, final long startTime) {
         ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
 
         if (categoryStart >= 0) {
@@ -1041,7 +1045,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, final long startTime, @NonNull final long endTime) {
+    public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session, final int categoryStart, final int categoryEnd, final long startTime, final long endTime) {
         ListTournamentsRequest.Builder builder = ListTournamentsRequest.newBuilder();
 
         if (categoryStart >= 0) {
@@ -1263,7 +1267,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Empty> unlinkGameCenter(@NonNull final Session session, @NonNull final String playerId, @NonNull final String bundleId, @NonNull final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl) {
+    public ListenableFuture<Empty> unlinkGameCenter(@NonNull final Session session, @NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl) {
         return getStub(session).unlinkGameCenter(AccountGameCenter.newBuilder()
                 .setPlayerId(playerId)
                 .setBundleId(bundleId)
@@ -1440,7 +1444,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final long score) {
+    public ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, final long score) {
         final var builder = WriteTournamentRecordRequest.newBuilder().setTournamentId(tournamentId);
         final var recordBuilder = WriteTournamentRecordRequest.TournamentRecordWrite.newBuilder().setScore(score);
         builder.setRecord(recordBuilder.build());
@@ -1448,7 +1452,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final long score, @NonNull final long subscore) {
+    public ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, final long score, final long subscore) {
         final var builder = WriteTournamentRecordRequest.newBuilder().setTournamentId(tournamentId);
         final var recordBuilder = WriteTournamentRecordRequest.TournamentRecordWrite.newBuilder()
                 .setScore(score)
@@ -1458,7 +1462,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final long score, @NonNull final String metadata) {
+    public ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, final long score, @NonNull final String metadata) {
         final var builder = WriteTournamentRecordRequest.newBuilder().setTournamentId(tournamentId);
         final var recordBuilder = WriteTournamentRecordRequest.TournamentRecordWrite.newBuilder()
                 .setScore(score)
@@ -1468,7 +1472,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final long score, @NonNull final long subscore, @NonNull final String metadata) {
+    public ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, final long score, final long subscore, @NonNull final String metadata) {
         final var builder = WriteTournamentRecordRequest.newBuilder().setTournamentId(tournamentId);
         final var recordBuilder = WriteTournamentRecordRequest.TournamentRecordWrite.newBuilder()
                 .setScore(score)
