@@ -1,6 +1,5 @@
 # Created by https://www.gitignore.io/api/git,java,macos,linux,gradle,eclipse,windows,sublimetext,intellij+all,intellij+iml
 
-/src/main/proto/*
 build/*
 !build/generated/source/*
 

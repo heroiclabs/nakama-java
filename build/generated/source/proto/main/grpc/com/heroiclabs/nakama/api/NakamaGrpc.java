@@ -2102,6 +2102,9 @@ public final class NakamaGrpc {
     }
 
     /**
+     * <pre>
+     * Attempt to join an open and running tournament.
+     * </pre>
      */
     public void joinTournament(com.heroiclabs.nakama.api.JoinTournamentRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -2249,6 +2252,9 @@ public final class NakamaGrpc {
     }
 
     /**
+     * <pre>
+     * List leaderboard records that belong to a user.
+     * </pre>
      */
     public void listLeaderboardRecordsAroundOwner(com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest request,
         io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.LeaderboardRecordList> responseObserver) {
@@ -2306,6 +2312,9 @@ public final class NakamaGrpc {
     }
 
     /**
+     * <pre>
+     * List tournament records for a given owner.
+     * </pre>
      */
     public void listTournamentRecordsAroundOwner(com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest request,
         io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.TournamentRecordList> responseObserver) {
@@ -3145,6 +3154,9 @@ public final class NakamaGrpc {
     }
 
     /**
+     * <pre>
+     * Attempt to join an open and running tournament.
+     * </pre>
      */
     public void joinTournament(com.heroiclabs.nakama.api.JoinTournamentRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -3307,6 +3319,9 @@ public final class NakamaGrpc {
     }
 
     /**
+     * <pre>
+     * List leaderboard records that belong to a user.
+     * </pre>
      */
     public void listLeaderboardRecordsAroundOwner(com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest request,
         io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.LeaderboardRecordList> responseObserver) {
@@ -3370,6 +3385,9 @@ public final class NakamaGrpc {
     }
 
     /**
+     * <pre>
+     * List tournament records for a given owner.
+     * </pre>
      */
     public void listTournamentRecordsAroundOwner(com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest request,
         io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.TournamentRecordList> responseObserver) {
@@ -3787,6 +3805,9 @@ public final class NakamaGrpc {
     }
 
     /**
+     * <pre>
+     * Attempt to join an open and running tournament.
+     * </pre>
      */
     public com.google.protobuf.Empty joinTournament(com.heroiclabs.nakama.api.JoinTournamentRequest request) {
       return blockingUnaryCall(
@@ -3934,6 +3955,9 @@ public final class NakamaGrpc {
     }
 
     /**
+     * <pre>
+     * List leaderboard records that belong to a user.
+     * </pre>
      */
     public com.heroiclabs.nakama.api.LeaderboardRecordList listLeaderboardRecordsAroundOwner(com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest request) {
       return blockingUnaryCall(
@@ -3991,6 +4015,9 @@ public final class NakamaGrpc {
     }
 
     /**
+     * <pre>
+     * List tournament records for a given owner.
+     * </pre>
      */
     public com.heroiclabs.nakama.api.TournamentRecordList listTournamentRecordsAroundOwner(com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest request) {
       return blockingUnaryCall(
@@ -4412,6 +4439,9 @@ public final class NakamaGrpc {
     }
 
     /**
+     * <pre>
+     * Attempt to join an open and running tournament.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> joinTournament(
         com.heroiclabs.nakama.api.JoinTournamentRequest request) {
@@ -4574,6 +4604,9 @@ public final class NakamaGrpc {
     }
 
     /**
+     * <pre>
+     * List leaderboard records that belong to a user.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.heroiclabs.nakama.api.LeaderboardRecordList> listLeaderboardRecordsAroundOwner(
         com.heroiclabs.nakama.api.ListLeaderboardRecordsAroundOwnerRequest request) {
@@ -4637,6 +4670,9 @@ public final class NakamaGrpc {
     }
 
     /**
+     * <pre>
+     * List tournament records for a given owner.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.heroiclabs.nakama.api.TournamentRecordList> listTournamentRecordsAroundOwner(
         com.heroiclabs.nakama.api.ListTournamentRecordsAroundOwnerRequest request) {
