@@ -6,6 +6,10 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.0.0] - 2019-03-29
+### Added
+- Support for Nakama 2.
+
 ## [0.5.1] - 2017-12-07
 ### Fixed
 - Build storage update messages with valid operations.
