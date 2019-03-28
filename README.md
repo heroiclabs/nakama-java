@@ -15,7 +15,9 @@ You'll need to setup the server and database before you can connect with the cli
 
 1. Install and run the servers. Follow these [instructions](https://heroiclabs.com/docs/install-docker-quickstart).
 
-2. Download the client from the [releases page](https://github.com/heroiclabs/nakama-java/releases) and import it into your project. You can also [build from source](#source-builds). Alternatively, if you use a build tool like Gradle you can skip the download and fetch it from the central repository.
+2. Download the client from the [releases page](https://github.com/heroiclabs/nakama-java/releases) and import it into your project. You can also [build from source](#source-builds).
+
+<!-- Alternatively, if you use a build tool like Gradle you can skip the download and fetch it from the central repository.
 
 ```groovy
 repositories {
@@ -30,7 +32,7 @@ dependencies {
     force = true // don't upgrade to "1.8.0-alpha2"
   }
 }
-```
+``` -->
 
 3. Use the connection credentials to build a client object.
 
