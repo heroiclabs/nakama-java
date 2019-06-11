@@ -756,10 +756,10 @@ public interface Client {
      * @param session The session of the user.
      * @param leaderboardId The id of the leaderboard to list.
      * @param ownerIds Record owners to fetch with the list of records.
-     * @param limit The number of records to list.
+     * @param expiry Expiry in seconds (since epoch) to begin fetching records from.
      * @return A future to resolve leaderboard record objects.
      */
-    ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds, final int limit);
+    ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds, final int expiry);
 
     /**
      * List records from a leaderboard.
@@ -767,11 +767,24 @@ public interface Client {
      * @param session The session of the user.
      * @param leaderboardId The id of the leaderboard to list.
      * @param ownerIds Record owners to fetch with the list of records.
+     * @param expiry Expiry in seconds (since epoch) to begin fetching records from.
+     * @param limit The number of records to list.
+     * @return A future to resolve leaderboard record objects.
+     */
+    ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds, final int expiry, final int limit);
+
+    /**
+     * List records from a leaderboard.
+     *
+     * @param session The session of the user.
+     * @param leaderboardId The id of the leaderboard to list.
+     * @param ownerIds Record owners to fetch with the list of records.
+     * @param expiry Expiry in seconds (since epoch) to begin fetching records from.
      * @param limit The number of records to list.
      * @param cursor A cursor for the current position in the leaderboard records to list.
      * @return A future to resolve leaderboard record objects.
      */
-    ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds, final int limit, final String cursor);
+    ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds,  final int expiry, final int limit, final String cursor);
 
     /**
      * List leaderboard records from a given leaderboard around the owner.
@@ -787,10 +800,21 @@ public interface Client {
      * @param session The session of the user.
      * @param leaderboardId The id of the leaderboard to list.
      * @param ownerId The owner to retrieve records around.
+     * @param expiry Expiry in seconds (since epoch) to begin fetching records from.
+     * @return A future to resolve leaderboard record objects.
+     */
+    ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final String ownerId, final int expiry);
+
+    /**
+     * List leaderrboard records from a given leaderboard around the owner.
+     * @param session The session of the user.
+     * @param leaderboardId The id of the leaderboard to list.
+     * @param ownerId The owner to retrieve records around.
+     * @param expiry Expiry in seconds (since epoch) to begin fetching records from.
      * @param limit Max number of records to return. Between 1 and 100.
      * @return A future to resolve leaderboard record objects.
      */
-    ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final String ownerId, final int limit);
+    ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final String ownerId, final int expiry, final int limit);
 
     /**
      * Fetch a list of matches active on the server.
@@ -992,11 +1016,31 @@ public interface Client {
      * List tournament records from a given tournament.
      * @param session The session of the user.
      * @param tournamentId The ID of the tournament to list for.
+     * @param expiry Expiry in seconds (since epoch) to begin fetching records from.
+     * @return a future which resolved to a tournament record list.
+     */
+    ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int expiry);
+
+    /**
+     * List tournament records from a given tournament.
+     * @param session The session of the user.
+     * @param tournamentId The ID of the tournament to list for.
+     * @param expiry Expiry in seconds (since epoch) to begin fetching records from.
+     * @param limit Max number of records to return. Between 1 and 100.
+     * @return a future which resolved to a tournament record list.
+     */
+    ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int expiry, final int limit);
+
+    /**
+     * List tournament records from a given tournament.
+     * @param session The session of the user.
+     * @param tournamentId The ID of the tournament to list for.
+     * @param expiry Expiry in seconds (since epoch) to begin fetching records from.
      * @param limit Max number of records to return. Between 1 and 100.
      * @param cursor A next or previous page cursor.
      * @return a future which resolved to a tournament record list.
      */
-    ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int limit, final String cursor);
+    ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int expiry, final int limit, final String cursor);
 
     /**
      * List tournament records from a given tournament.
@@ -1011,12 +1055,13 @@ public interface Client {
      * List tournament records from a given tournament.
      * @param session The session of the user.
      * @param tournamentId The ID of the tournament to list for.
+     * @param expiry Expiry in seconds (since epoch) to begin fetching records from.
      * @param limit Max number of records to return. Between 1 and 100.
      * @param cursor A next or previous page cursor.
      * @param ownerIds One or more owners to retrieve records for.
      * @return a future which resolved to a tournament record list.
      */
-    ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int limit, final String cursor, @NonNull final String... ownerIds);
+    ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int expiry, final int limit, final String cursor, @NonNull final String... ownerIds);
 
     /**
      * List tournament records from a given tournament around the owner.
@@ -1032,10 +1077,21 @@ public interface Client {
      * @param session The session of the user.
      * @param tournamentId The ID of the tournament to list for.
      * @param ownerId The owner to retrieve records around.
+     * @param expiry Expiry in seconds (since epoch) to begin fetching records from.
+     * @return A future to resolve tournament record objects.
+     */
+    ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final String ownerId, final int expiry);
+
+    /**
+     * List tournament records from a given tournament around the owner.
+     * @param session The session of the user.
+     * @param tournamentId The ID of the tournament to list for.
+     * @param ownerId The owner to retrieve records around.
+     * @param expiry Expiry in seconds (since epoch) to begin fetching records from.
      * @param limit Max number of records to return. Between 1 and 100.
      * @return A future to resolve tournament record objects.
      */
-    ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final String ownerId, final int limit);
+    ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final String ownerId, final int expiry, final int limit);
 
     /**
      * List of groups the current user is a member of.

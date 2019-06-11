@@ -433,7 +433,7 @@ public  final class Tournament extends
   private int endActive_;
   /**
    * <pre>
-   * The UNIX timestamp when the tournament stops being active until next reset. A computed value.
+   * The UNIX time when the tournament stops being active until next reset. A computed value.
    * </pre>
    *
    * <code>optional uint32 end_active = 10;</code>
@@ -443,7 +443,7 @@ public  final class Tournament extends
   }
   /**
    * <pre>
-   * The UNIX timestamp when the tournament stops being active until next reset. A computed value.
+   * The UNIX time when the tournament stops being active until next reset. A computed value.
    * </pre>
    *
    * <code>optional uint32 end_active = 10;</code>
@@ -454,7 +454,7 @@ public  final class Tournament extends
   }
   /**
    * <pre>
-   * The UNIX timestamp when the tournament stops being active until next reset. A computed value.
+   * The UNIX time when the tournament stops being active until next reset. A computed value.
    * </pre>
    *
    * <code>optional uint32 end_active = 10;</code>
@@ -468,7 +468,7 @@ public  final class Tournament extends
   private int nextReset_;
   /**
    * <pre>
-   * The UNIX timestamp when the tournament is next playable. A computed value.
+   * The UNIX time when the tournament is next playable. A computed value.
    * </pre>
    *
    * <code>optional uint32 next_reset = 11;</code>
@@ -478,7 +478,7 @@ public  final class Tournament extends
   }
   /**
    * <pre>
-   * The UNIX timestamp when the tournament is next playable. A computed value.
+   * The UNIX time when the tournament is next playable. A computed value.
    * </pre>
    *
    * <code>optional uint32 next_reset = 11;</code>
@@ -489,7 +489,7 @@ public  final class Tournament extends
   }
   /**
    * <pre>
-   * The UNIX timestamp when the tournament is next playable. A computed value.
+   * The UNIX time when the tournament is next playable. A computed value.
    * </pre>
    *
    * <code>optional uint32 next_reset = 11;</code>
@@ -797,7 +797,7 @@ public  final class Tournament extends
   private int duration_;
   /**
    * <pre>
-   * The UNIX timestamp for duration of a tournament.
+   * Duration of the tournament in seconds.
    * </pre>
    *
    * <code>optional uint32 duration = 16;</code>
@@ -807,7 +807,7 @@ public  final class Tournament extends
   }
   /**
    * <pre>
-   * The UNIX timestamp for duration of a tournament.
+   * Duration of the tournament in seconds.
    * </pre>
    *
    * <code>optional uint32 duration = 16;</code>
@@ -818,7 +818,7 @@ public  final class Tournament extends
   }
   /**
    * <pre>
-   * The UNIX timestamp for duration of a tournament.
+   * Duration of the tournament in seconds.
    * </pre>
    *
    * <code>optional uint32 duration = 16;</code>
@@ -826,6 +826,41 @@ public  final class Tournament extends
   private void clearDuration() {
     
     duration_ = 0;
+  }
+
+  public static final int START_ACTIVE_FIELD_NUMBER = 17;
+  private int startActive_;
+  /**
+   * <pre>
+   * The UNIX time when the tournament start being active. A computed value.
+   * </pre>
+   *
+   * <code>optional uint32 start_active = 17;</code>
+   */
+  public int getStartActive() {
+    return startActive_;
+  }
+  /**
+   * <pre>
+   * The UNIX time when the tournament start being active. A computed value.
+   * </pre>
+   *
+   * <code>optional uint32 start_active = 17;</code>
+   */
+  private void setStartActive(int value) {
+    
+    startActive_ = value;
+  }
+  /**
+   * <pre>
+   * The UNIX time when the tournament start being active. A computed value.
+   * </pre>
+   *
+   * <code>optional uint32 start_active = 17;</code>
+   */
+  private void clearStartActive() {
+    
+    startActive_ = 0;
   }
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
@@ -877,6 +912,9 @@ public  final class Tournament extends
     }
     if (duration_ != 0) {
       output.writeUInt32(16, duration_);
+    }
+    if (startActive_ != 0) {
+      output.writeUInt32(17, startActive_);
     }
   }
 
@@ -948,6 +986,10 @@ public  final class Tournament extends
     if (duration_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeUInt32Size(16, duration_);
+    }
+    if (startActive_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeUInt32Size(17, startActive_);
     }
     memoizedSerializedSize = size;
     return size;
@@ -1431,7 +1473,7 @@ public  final class Tournament extends
 
     /**
      * <pre>
-     * The UNIX timestamp when the tournament stops being active until next reset. A computed value.
+     * The UNIX time when the tournament stops being active until next reset. A computed value.
      * </pre>
      *
      * <code>optional uint32 end_active = 10;</code>
@@ -1441,7 +1483,7 @@ public  final class Tournament extends
     }
     /**
      * <pre>
-     * The UNIX timestamp when the tournament stops being active until next reset. A computed value.
+     * The UNIX time when the tournament stops being active until next reset. A computed value.
      * </pre>
      *
      * <code>optional uint32 end_active = 10;</code>
@@ -1453,7 +1495,7 @@ public  final class Tournament extends
     }
     /**
      * <pre>
-     * The UNIX timestamp when the tournament stops being active until next reset. A computed value.
+     * The UNIX time when the tournament stops being active until next reset. A computed value.
      * </pre>
      *
      * <code>optional uint32 end_active = 10;</code>
@@ -1466,7 +1508,7 @@ public  final class Tournament extends
 
     /**
      * <pre>
-     * The UNIX timestamp when the tournament is next playable. A computed value.
+     * The UNIX time when the tournament is next playable. A computed value.
      * </pre>
      *
      * <code>optional uint32 next_reset = 11;</code>
@@ -1476,7 +1518,7 @@ public  final class Tournament extends
     }
     /**
      * <pre>
-     * The UNIX timestamp when the tournament is next playable. A computed value.
+     * The UNIX time when the tournament is next playable. A computed value.
      * </pre>
      *
      * <code>optional uint32 next_reset = 11;</code>
@@ -1488,7 +1530,7 @@ public  final class Tournament extends
     }
     /**
      * <pre>
-     * The UNIX timestamp when the tournament is next playable. A computed value.
+     * The UNIX time when the tournament is next playable. A computed value.
      * </pre>
      *
      * <code>optional uint32 next_reset = 11;</code>
@@ -1768,7 +1810,7 @@ public  final class Tournament extends
 
     /**
      * <pre>
-     * The UNIX timestamp for duration of a tournament.
+     * Duration of the tournament in seconds.
      * </pre>
      *
      * <code>optional uint32 duration = 16;</code>
@@ -1778,7 +1820,7 @@ public  final class Tournament extends
     }
     /**
      * <pre>
-     * The UNIX timestamp for duration of a tournament.
+     * Duration of the tournament in seconds.
      * </pre>
      *
      * <code>optional uint32 duration = 16;</code>
@@ -1790,7 +1832,7 @@ public  final class Tournament extends
     }
     /**
      * <pre>
-     * The UNIX timestamp for duration of a tournament.
+     * Duration of the tournament in seconds.
      * </pre>
      *
      * <code>optional uint32 duration = 16;</code>
@@ -1798,6 +1840,41 @@ public  final class Tournament extends
     public Builder clearDuration() {
       copyOnWrite();
       instance.clearDuration();
+      return this;
+    }
+
+    /**
+     * <pre>
+     * The UNIX time when the tournament start being active. A computed value.
+     * </pre>
+     *
+     * <code>optional uint32 start_active = 17;</code>
+     */
+    public int getStartActive() {
+      return instance.getStartActive();
+    }
+    /**
+     * <pre>
+     * The UNIX time when the tournament start being active. A computed value.
+     * </pre>
+     *
+     * <code>optional uint32 start_active = 17;</code>
+     */
+    public Builder setStartActive(int value) {
+      copyOnWrite();
+      instance.setStartActive(value);
+      return this;
+    }
+    /**
+     * <pre>
+     * The UNIX time when the tournament start being active. A computed value.
+     * </pre>
+     *
+     * <code>optional uint32 start_active = 17;</code>
+     */
+    public Builder clearStartActive() {
+      copyOnWrite();
+      instance.clearStartActive();
       return this;
     }
 
@@ -1851,6 +1928,8 @@ public  final class Tournament extends
         endTime_ = visitor.visitMessage(endTime_, other.endTime_);
         duration_ = visitor.visitInt(duration_ != 0, duration_,
             other.duration_ != 0, other.duration_);
+        startActive_ = visitor.visitInt(startActive_ != 0, startActive_,
+            other.startActive_ != 0, other.startActive_);
         if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
             .INSTANCE) {
         }
@@ -1981,6 +2060,11 @@ public  final class Tournament extends
               case 128: {
 
                 duration_ = input.readUInt32();
+                break;
+              }
+              case 136: {
+
+                startActive_ = input.readUInt32();
                 break;
               }
             }

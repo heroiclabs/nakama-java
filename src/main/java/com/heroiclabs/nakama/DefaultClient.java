@@ -853,24 +853,31 @@ public class DefaultClient implements Client {
 
     @Override
     public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId) {
-        return listLeaderboardRecords(session, leaderboardId, null, 0, null);
+        return listLeaderboardRecords(session, leaderboardId, null, -1, 0, null);
     }
 
     @Override
     public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final String... ownerIds) {
-        return listLeaderboardRecords(session, leaderboardId, Arrays.asList(ownerIds), 0, null);
+        return listLeaderboardRecords(session, leaderboardId, Arrays.asList(ownerIds), -1, 0, null);
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds, final int limit) {
-        return listLeaderboardRecords(session, leaderboardId, ownerIds, limit, null);
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds, final int expiry) {
+        return listLeaderboardRecords(session, leaderboardId, ownerIds, expiry, 0, null);
+    }
+
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds, final int expiry, final int limit) {
+        return listLeaderboardRecords(session, leaderboardId, ownerIds, expiry, limit, null);
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds, final int limit, final String cursor) {
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecords(@NonNull final Session session, @NonNull final String leaderboardId, final Iterable<String> ownerIds, final int expiry, final int limit, final String cursor) {
         final var builder = ListLeaderboardRecordsRequest.newBuilder().setLeaderboardId(leaderboardId);
         if (ownerIds != null) {
             builder.addAllOwnerIds(ownerIds);
+        }
+        if (expiry > 0) {
+            builder.setExpiry(Int64Value.newBuilder().setValue(expiry).build());
         }
         if (limit > 0) {
             builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
@@ -883,12 +890,20 @@ public class DefaultClient implements Client {
 
     @Override
     public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(final Session session, final String leaderboardId, final String ownerId) {
-        return listLeaderboardRecordsAroundOwner(session, leaderboardId, ownerId, 0);
+        return listLeaderboardRecordsAroundOwner(session, leaderboardId, ownerId, -1, 0);
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(final Session session, final String leaderboardId, final String ownerId, final int limit) {
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(final Session session, final String leaderboardId, final String ownerId, final int expiry) {
+        return listLeaderboardRecordsAroundOwner(session, leaderboardId, ownerId, expiry, 0);
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(final Session session, final String leaderboardId, final String ownerId, final int expiry, final int limit) {
         final var builder = ListLeaderboardRecordsAroundOwnerRequest.newBuilder().setLeaderboardId(leaderboardId).setOwnerId(ownerId);
+        if (expiry > 0) {
+            builder.setExpiry(Int64Value.newBuilder().setValue(expiry).build());
+        }
         if (limit > 0) {
             builder.setLimit(UInt32Value.newBuilder().setValue(limit).build());
         }
@@ -1089,13 +1104,25 @@ public class DefaultClient implements Client {
 
     @Override
     public ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId) {
-        ListTournamentRecordsRequest.Builder builder = ListTournamentRecordsRequest.newBuilder().setTournamentId(tournamentId);
-        return getStub(session).listTournamentRecords(builder.build());
+        return listTournamentRecords(session, tournamentId, -1, 0, null);
     }
 
     @Override
-    public ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int limit, final String cursor) {
+    public ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int expiry) {
+        return listTournamentRecords(session, tournamentId, expiry, 0, null);
+    }
+
+    @Override
+    public ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int expiry, final int limit) {
+        return listTournamentRecords(session, tournamentId, expiry, limit, null);
+    }
+
+    @Override
+    public ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int expiry, final int limit, final String cursor) {
         ListTournamentRecordsRequest.Builder builder = ListTournamentRecordsRequest.newBuilder().setTournamentId(tournamentId);
+        if (expiry > 0) {
+            builder.setExpiry(Int64Value.newBuilder().setValue(expiry).build());
+        }
         if (limit > 0) {
             builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
         }
@@ -1115,10 +1142,13 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int limit, final String cursor, @NonNull final String... ownerIds) {
+    public ListenableFuture<TournamentRecordList> listTournamentRecords(@NonNull final Session session, @NonNull final String tournamentId, final int expiry, final int limit, final String cursor, @NonNull final String... ownerIds) {
         ListTournamentRecordsRequest.Builder builder = ListTournamentRecordsRequest.newBuilder().setTournamentId(tournamentId);
         if (ownerIds != null) {
             builder.addAllOwnerIds(Arrays.asList(ownerIds));
+        }
+        if (expiry > 0) {
+            builder.setExpiry(Int64Value.newBuilder().setValue(expiry).build());
         }
         if (limit > 0) {
             builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
@@ -1131,12 +1161,20 @@ public class DefaultClient implements Client {
 
     @Override
     public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(final Session session, final String tournamentId, final String ownerId) {
-        return listTournamentRecordsAroundOwner(session, tournamentId, ownerId, 0);
+        return listTournamentRecordsAroundOwner(session, tournamentId, ownerId, -1, 0);
     }
 
     @Override
-    public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(final Session session, final String tournamentId, final String ownerId, final int limit) {
+    public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(final Session session, final String tournamentId, final String ownerId, final int expiry) {
+        return listTournamentRecordsAroundOwner(session, tournamentId, ownerId, expiry, 0);
+    }
+
+    @Override
+    public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(final Session session, final String tournamentId, final String ownerId, final int expiry, final int limit) {
         final var builder = ListTournamentRecordsAroundOwnerRequest.newBuilder().setTournamentId(tournamentId).setOwnerId(ownerId);
+        if (expiry > 0) {
+            builder.setExpiry(Int64Value.newBuilder().setValue(expiry).build());
+        }
         if (limit > 0) {
             builder.setLimit(UInt32Value.newBuilder().setValue(limit).build());
         }

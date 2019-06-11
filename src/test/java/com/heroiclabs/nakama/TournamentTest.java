@@ -260,11 +260,25 @@ public class TournamentTest {
         endTime = new Date().getTime() / 1000; // now
         tournaments = client.listTournaments(session, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
         Assert.assertNotNull(tournaments);
-        Assert.assertEquals(tournaments.getTournamentsList().size(), 0);
+        Assert.assertEquals(0, tournaments.getTournamentsList().size());
 
         sleep(5000);
 
-        endTime = object.end_time;
+        // tournament has ended 2s ago.
+        endTime = 0;
+        tournaments = client.listTournaments(session, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
+        Assert.assertNotNull(tournaments);
+
+        found = false;
+        for (Tournament tt : tournaments.getTournamentsList()) {
+            if (tt.getId().equals(tournamentId)) {
+                found = true;
+                break;
+            }
+        }
+        Assert.assertFalse(found);
+
+        endTime = object.end_time; // tournament has ended 2s ago.
         tournaments = client.listTournaments(session, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
         Assert.assertNotNull(tournaments);
 
@@ -604,10 +618,14 @@ public class TournamentTest {
 
         client.writeTournamentRecord(session, tournamentId, 20).get();
 
-        sleep(4 * 1000);
+        sleep(5 * 1000);
 
         List<LeaderboardRecord> records = client.listLeaderboardRecords(session, tournamentId, session.getUserId()).get().getOwnerRecordsList();
         Assert.assertEquals(0, records.size());
+
+        List<String> owners = Collections.singletonList(session.getUserId());
+        records = client.listLeaderboardRecords(session, tournamentId, owners, (int)object.end_time).get().getOwnerRecordsList();
+        Assert.assertEquals(1, records.size());
 
         client.rpc(session, "clientrpc.delete_tournament", "{\"tournament_id\": \"" + tournamentId + "\"}").get();
     }
@@ -642,7 +660,7 @@ public class TournamentTest {
     }
 
     @Test
-    @Ignore("requires setting token expiry to more than 1min")
+    @Ignore("requires setting token expiry to more than 180s")
     public void testTournamentWithResetScheduleAndCheckSize() throws Exception {
         TournamentObject object = new TournamentObject();
         object.description = "checking set tournament duration 10, reset 1min, ranks calculation.";
@@ -751,7 +769,7 @@ public class TournamentTest {
 
         client.writeTournamentRecord(session, tournamentId, 100).get();
 
-        sleep(object.duration * 1000);
+        sleep((object.duration + 1) * 1000);
 
         Account account = client.getAccount(session).get();
         Assert.assertTrue(account.getUser().getMetadata().contains(tournamentId));

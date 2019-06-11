@@ -59,4 +59,21 @@ public interface ListLeaderboardRecordsAroundOwnerRequestOrBuilder extends
    */
   com.google.protobuf.ByteString
       getOwnerIdBytes();
+
+  /**
+   * <pre>
+   * Expiry in seconds (since epoch) to begin fetching records from.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int64Value expiry = 4;</code>
+   */
+  boolean hasExpiry();
+  /**
+   * <pre>
+   * Expiry in seconds (since epoch) to begin fetching records from.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int64Value expiry = 4;</code>
+   */
+  com.google.protobuf.Int64Value getExpiry();
 }

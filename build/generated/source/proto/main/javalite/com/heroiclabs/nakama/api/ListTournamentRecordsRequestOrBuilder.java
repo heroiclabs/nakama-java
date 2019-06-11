@@ -94,4 +94,21 @@ public interface ListTournamentRecordsRequestOrBuilder extends
    */
   com.google.protobuf.ByteString
       getCursorBytes();
+
+  /**
+   * <pre>
+   * Expiry in seconds (since epoch) to begin fetching records from.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+   */
+  boolean hasExpiry();
+  /**
+   * <pre>
+   * Expiry in seconds (since epoch) to begin fetching records from.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+   */
+  com.google.protobuf.Int64Value getExpiry();
 }

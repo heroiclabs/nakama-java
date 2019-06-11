@@ -68,8 +68,8 @@ public class WebSocketClient implements SocketClient {
     private WebSocket socket;
     private final ExecutorService listenerThreadPoolExec = Executors.newCachedThreadPool();
 
-    WebSocketClient(@NonNull final String host, @NonNull final int port, @NonNull final boolean ssl,
-                    @NonNull final int socketTimeoutMs, @NonNull final boolean trace) {
+    WebSocketClient(@NonNull final String host, final int port, final boolean ssl,
+                    final int socketTimeoutMs, final boolean trace) {
         this.host = host;
         this.port = port;
         this.ssl = ssl;
@@ -466,12 +466,12 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
-    public void sendMatchData(@NonNull final String matchId, @NonNull final long opCode, @NonNull final byte[] data) {
+    public void sendMatchData(@NonNull final String matchId, final long opCode, @NonNull final byte[] data) {
         sendMatchData(matchId, opCode, data, new UserPresence[]{});
     }
 
     @Override
-    public void sendMatchData(@NonNull final String matchId, @NonNull final long opCode, @NonNull final byte[] data, final UserPresence... presences) {
+    public void sendMatchData(@NonNull final String matchId, final long opCode, @NonNull final byte[] data, final UserPresence... presences) {
         final MatchSendMessage msg = new MatchSendMessage(matchId, opCode, data);
         if (presences != null) {
             msg.setPresences(Arrays.asList(presences));

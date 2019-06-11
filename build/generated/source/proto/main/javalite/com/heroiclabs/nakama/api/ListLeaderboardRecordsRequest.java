@@ -349,6 +349,82 @@ public  final class ListLeaderboardRecordsRequest extends
     cursor_ = value.toStringUtf8();
   }
 
+  public static final int EXPIRY_FIELD_NUMBER = 5;
+  private com.google.protobuf.Int64Value expiry_;
+  /**
+   * <pre>
+   * Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+   */
+  public boolean hasExpiry() {
+    return expiry_ != null;
+  }
+  /**
+   * <pre>
+   * Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+   */
+  public com.google.protobuf.Int64Value getExpiry() {
+    return expiry_ == null ? com.google.protobuf.Int64Value.getDefaultInstance() : expiry_;
+  }
+  /**
+   * <pre>
+   * Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+   */
+  private void setExpiry(com.google.protobuf.Int64Value value) {
+    if (value == null) {
+      throw new NullPointerException();
+    }
+    expiry_ = value;
+    
+    }
+  /**
+   * <pre>
+   * Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+   */
+  private void setExpiry(
+      com.google.protobuf.Int64Value.Builder builderForValue) {
+    expiry_ = builderForValue.build();
+    
+  }
+  /**
+   * <pre>
+   * Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+   */
+  private void mergeExpiry(com.google.protobuf.Int64Value value) {
+    if (expiry_ != null &&
+        expiry_ != com.google.protobuf.Int64Value.getDefaultInstance()) {
+      expiry_ =
+        com.google.protobuf.Int64Value.newBuilder(expiry_).mergeFrom(value).buildPartial();
+    } else {
+      expiry_ = value;
+    }
+    
+  }
+  /**
+   * <pre>
+   * Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+   */
+  private void clearExpiry() {  expiry_ = null;
+    
+  }
+
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!leaderboardId_.isEmpty()) {
@@ -362,6 +438,9 @@ public  final class ListLeaderboardRecordsRequest extends
     }
     if (!cursor_.isEmpty()) {
       output.writeString(4, getCursor());
+    }
+    if (expiry_ != null) {
+      output.writeMessage(5, getExpiry());
     }
   }
 
@@ -390,6 +469,10 @@ public  final class ListLeaderboardRecordsRequest extends
     if (!cursor_.isEmpty()) {
       size += com.google.protobuf.CodedOutputStream
         .computeStringSize(4, getCursor());
+    }
+    if (expiry_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, getExpiry());
     }
     memoizedSerializedSize = size;
     return size;
@@ -778,6 +861,75 @@ public  final class ListLeaderboardRecordsRequest extends
       return this;
     }
 
+    /**
+     * <pre>
+     * Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+     */
+    public boolean hasExpiry() {
+      return instance.hasExpiry();
+    }
+    /**
+     * <pre>
+     * Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+     */
+    public com.google.protobuf.Int64Value getExpiry() {
+      return instance.getExpiry();
+    }
+    /**
+     * <pre>
+     * Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+     */
+    public Builder setExpiry(com.google.protobuf.Int64Value value) {
+      copyOnWrite();
+      instance.setExpiry(value);
+      return this;
+      }
+    /**
+     * <pre>
+     * Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+     */
+    public Builder setExpiry(
+        com.google.protobuf.Int64Value.Builder builderForValue) {
+      copyOnWrite();
+      instance.setExpiry(builderForValue);
+      return this;
+    }
+    /**
+     * <pre>
+     * Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+     */
+    public Builder mergeExpiry(com.google.protobuf.Int64Value value) {
+      copyOnWrite();
+      instance.mergeExpiry(value);
+      return this;
+    }
+    /**
+     * <pre>
+     * Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+     */
+    public Builder clearExpiry() {  copyOnWrite();
+      instance.clearExpiry();
+      return this;
+    }
+
     // @@protoc_insertion_point(builder_scope:nakama.api.ListLeaderboardRecordsRequest)
   }
   protected final Object dynamicMethod(
@@ -806,6 +958,7 @@ public  final class ListLeaderboardRecordsRequest extends
         limit_ = visitor.visitMessage(limit_, other.limit_);
         cursor_ = visitor.visitString(!cursor_.isEmpty(), cursor_,
             !other.cursor_.isEmpty(), other.cursor_);
+        expiry_ = visitor.visitMessage(expiry_, other.expiry_);
         if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
             .INSTANCE) {
           bitField0_ |= other.bitField0_;
@@ -863,6 +1016,19 @@ public  final class ListLeaderboardRecordsRequest extends
                 String s = input.readStringRequireUtf8();
 
                 cursor_ = s;
+                break;
+              }
+              case 42: {
+                com.google.protobuf.Int64Value.Builder subBuilder = null;
+                if (expiry_ != null) {
+                  subBuilder = expiry_.toBuilder();
+                }
+                expiry_ = input.readMessage(com.google.protobuf.Int64Value.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(expiry_);
+                  expiry_ = subBuilder.buildPartial();
+                }
+
                 break;
               }
             }

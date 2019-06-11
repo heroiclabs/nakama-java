@@ -117,7 +117,7 @@ public interface TournamentOrBuilder extends
 
   /**
    * <pre>
-   * The UNIX timestamp when the tournament stops being active until next reset. A computed value.
+   * The UNIX time when the tournament stops being active until next reset. A computed value.
    * </pre>
    *
    * <code>optional uint32 end_active = 10;</code>
@@ -126,7 +126,7 @@ public interface TournamentOrBuilder extends
 
   /**
    * <pre>
-   * The UNIX timestamp when the tournament is next playable. A computed value.
+   * The UNIX time when the tournament is next playable. A computed value.
    * </pre>
    *
    * <code>optional uint32 next_reset = 11;</code>
@@ -204,10 +204,19 @@ public interface TournamentOrBuilder extends
 
   /**
    * <pre>
-   * The UNIX timestamp for duration of a tournament.
+   * Duration of the tournament in seconds.
    * </pre>
    *
    * <code>optional uint32 duration = 16;</code>
    */
   int getDuration();
+
+  /**
+   * <pre>
+   * The UNIX time when the tournament start being active. A computed value.
+   * </pre>
+   *
+   * <code>optional uint32 start_active = 17;</code>
+   */
+  int getStartActive();
 }

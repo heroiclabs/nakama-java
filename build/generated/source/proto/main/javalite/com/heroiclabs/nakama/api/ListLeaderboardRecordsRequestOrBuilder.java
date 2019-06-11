@@ -94,4 +94,21 @@ public interface ListLeaderboardRecordsRequestOrBuilder extends
    */
   com.google.protobuf.ByteString
       getCursorBytes();
+
+  /**
+   * <pre>
+   * Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+   */
+  boolean hasExpiry();
+  /**
+   * <pre>
+   * Expiry in seconds (since epoch) to begin fetching records from. Optional. 0 means from current time.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Int64Value expiry = 5;</code>
+   */
+  com.google.protobuf.Int64Value getExpiry();
 }
