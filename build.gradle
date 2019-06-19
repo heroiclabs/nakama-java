@@ -36,7 +36,7 @@ plugins {
 }
 
 group = 'com.heroiclabs.nakama'
-version = '2.0.1-SNAPSHOT'
+version = '2.0.1'
 def description = 'Android optimized Java client for Nakama server.'
 def gopath = System.getenv('GOPATH')
 sourceCompatibility = 1.7

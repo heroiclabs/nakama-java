@@ -5,6 +5,8 @@ All notable changes to this project are documented below.
 The format is based on [keep a changelog](http://keepachangelog.com/) and this project uses [semantic versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.0.1] - 2019-06-19
 ### Added
 - Add support for listing expired leaderboard/tournament records.
 
