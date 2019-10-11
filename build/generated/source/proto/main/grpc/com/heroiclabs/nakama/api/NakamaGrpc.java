@@ -527,6 +527,37 @@ public final class NakamaGrpc {
      return getDeleteStorageObjectsMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.Event,
+      com.google.protobuf.Empty> getEventMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "Event",
+      requestType = com.heroiclabs.nakama.api.Event.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.Event,
+      com.google.protobuf.Empty> getEventMethod() {
+    io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.Event, com.google.protobuf.Empty> getEventMethod;
+    if ((getEventMethod = NakamaGrpc.getEventMethod) == null) {
+      synchronized (NakamaGrpc.class) {
+        if ((getEventMethod = NakamaGrpc.getEventMethod) == null) {
+          NakamaGrpc.getEventMethod = getEventMethod = 
+              io.grpc.MethodDescriptor.<com.heroiclabs.nakama.api.Event, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "nakama.api.Nakama", "Event"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.Event.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+                  .build();
+          }
+        }
+     }
+     return getEventMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
       com.heroiclabs.nakama.api.Account> getGetAccountMethod;
 
@@ -1023,30 +1054,30 @@ public final class NakamaGrpc {
      return getListChannelMessagesMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      com.heroiclabs.nakama.api.Friends> getListFriendsMethod;
+  private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListFriendsRequest,
+      com.heroiclabs.nakama.api.FriendList> getListFriendsMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "ListFriends",
-      requestType = com.google.protobuf.Empty.class,
-      responseType = com.heroiclabs.nakama.api.Friends.class,
+      requestType = com.heroiclabs.nakama.api.ListFriendsRequest.class,
+      responseType = com.heroiclabs.nakama.api.FriendList.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      com.heroiclabs.nakama.api.Friends> getListFriendsMethod() {
-    io.grpc.MethodDescriptor<com.google.protobuf.Empty, com.heroiclabs.nakama.api.Friends> getListFriendsMethod;
+  public static io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListFriendsRequest,
+      com.heroiclabs.nakama.api.FriendList> getListFriendsMethod() {
+    io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListFriendsRequest, com.heroiclabs.nakama.api.FriendList> getListFriendsMethod;
     if ((getListFriendsMethod = NakamaGrpc.getListFriendsMethod) == null) {
       synchronized (NakamaGrpc.class) {
         if ((getListFriendsMethod = NakamaGrpc.getListFriendsMethod) == null) {
           NakamaGrpc.getListFriendsMethod = getListFriendsMethod = 
-              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, com.heroiclabs.nakama.api.Friends>newBuilder()
+              io.grpc.MethodDescriptor.<com.heroiclabs.nakama.api.ListFriendsRequest, com.heroiclabs.nakama.api.FriendList>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "nakama.api.Nakama", "ListFriends"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
-                  com.google.protobuf.Empty.getDefaultInstance()))
+                  com.heroiclabs.nakama.api.ListFriendsRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
-                  com.heroiclabs.nakama.api.Friends.getDefaultInstance()))
+                  com.heroiclabs.nakama.api.FriendList.getDefaultInstance()))
                   .build();
           }
         }
@@ -2053,6 +2084,16 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
+     * Submit an event for processing in the server's registered runtime custom events handler.
+     * </pre>
+     */
+    public void event(com.heroiclabs.nakama.api.Event request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnimplementedUnaryCall(getEventMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Fetch the current user's account.
      * </pre>
      */
@@ -2216,8 +2257,8 @@ public final class NakamaGrpc {
      * List all friends for the current user.
      * </pre>
      */
-    public void listFriends(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.Friends> responseObserver) {
+    public void listFriends(com.heroiclabs.nakama.api.ListFriendsRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.FriendList> responseObserver) {
       asyncUnimplementedUnaryCall(getListFriendsMethod(), responseObserver);
     }
 
@@ -2596,6 +2637,13 @@ public final class NakamaGrpc {
                 com.google.protobuf.Empty>(
                   this, METHODID_DELETE_STORAGE_OBJECTS)))
           .addMethod(
+            getEventMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.heroiclabs.nakama.api.Event,
+                com.google.protobuf.Empty>(
+                  this, METHODID_EVENT)))
+          .addMethod(
             getGetAccountMethod(),
             asyncUnaryCall(
               new MethodHandlers<
@@ -2711,8 +2759,8 @@ public final class NakamaGrpc {
             getListFriendsMethod(),
             asyncUnaryCall(
               new MethodHandlers<
-                com.google.protobuf.Empty,
-                com.heroiclabs.nakama.api.Friends>(
+                com.heroiclabs.nakama.api.ListFriendsRequest,
+                com.heroiclabs.nakama.api.FriendList>(
                   this, METHODID_LIST_FRIENDS)))
           .addMethod(
             getListGroupsMethod(),
@@ -3100,6 +3148,17 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
+     * Submit an event for processing in the server's registered runtime custom events handler.
+     * </pre>
+     */
+    public void event(com.heroiclabs.nakama.api.Event request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getEventMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Fetch the current user's account.
      * </pre>
      */
@@ -3279,8 +3338,8 @@ public final class NakamaGrpc {
      * List all friends for the current user.
      * </pre>
      */
-    public void listFriends(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.Friends> responseObserver) {
+    public void listFriends(com.heroiclabs.nakama.api.ListFriendsRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.FriendList> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getListFriendsMethod(), getCallOptions()), request, responseObserver);
     }
@@ -3756,6 +3815,16 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
+     * Submit an event for processing in the server's registered runtime custom events handler.
+     * </pre>
+     */
+    public com.google.protobuf.Empty event(com.heroiclabs.nakama.api.Event request) {
+      return blockingUnaryCall(
+          getChannel(), getEventMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Fetch the current user's account.
      * </pre>
      */
@@ -3919,7 +3988,7 @@ public final class NakamaGrpc {
      * List all friends for the current user.
      * </pre>
      */
-    public com.heroiclabs.nakama.api.Friends listFriends(com.google.protobuf.Empty request) {
+    public com.heroiclabs.nakama.api.FriendList listFriends(com.heroiclabs.nakama.api.ListFriendsRequest request) {
       return blockingUnaryCall(
           getChannel(), getListFriendsMethod(), getCallOptions(), request);
     }
@@ -4385,6 +4454,17 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
+     * Submit an event for processing in the server's registered runtime custom events handler.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> event(
+        com.heroiclabs.nakama.api.Event request) {
+      return futureUnaryCall(
+          getChannel().newCall(getEventMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Fetch the current user's account.
      * </pre>
      */
@@ -4564,8 +4644,8 @@ public final class NakamaGrpc {
      * List all friends for the current user.
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.heroiclabs.nakama.api.Friends> listFriends(
-        com.google.protobuf.Empty request) {
+    public com.google.common.util.concurrent.ListenableFuture<com.heroiclabs.nakama.api.FriendList> listFriends(
+        com.heroiclabs.nakama.api.ListFriendsRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getListFriendsMethod(), getCallOptions()), request);
     }
@@ -4873,49 +4953,50 @@ public final class NakamaGrpc {
   private static final int METHODID_DELETE_LEADERBOARD_RECORD = 13;
   private static final int METHODID_DELETE_NOTIFICATIONS = 14;
   private static final int METHODID_DELETE_STORAGE_OBJECTS = 15;
-  private static final int METHODID_GET_ACCOUNT = 16;
-  private static final int METHODID_GET_USERS = 17;
-  private static final int METHODID_HEALTHCHECK = 18;
-  private static final int METHODID_IMPORT_FACEBOOK_FRIENDS = 19;
-  private static final int METHODID_JOIN_GROUP = 20;
-  private static final int METHODID_JOIN_TOURNAMENT = 21;
-  private static final int METHODID_KICK_GROUP_USERS = 22;
-  private static final int METHODID_LEAVE_GROUP = 23;
-  private static final int METHODID_LINK_CUSTOM = 24;
-  private static final int METHODID_LINK_DEVICE = 25;
-  private static final int METHODID_LINK_EMAIL = 26;
-  private static final int METHODID_LINK_FACEBOOK = 27;
-  private static final int METHODID_LINK_GAME_CENTER = 28;
-  private static final int METHODID_LINK_GOOGLE = 29;
-  private static final int METHODID_LINK_STEAM = 30;
-  private static final int METHODID_LIST_CHANNEL_MESSAGES = 31;
-  private static final int METHODID_LIST_FRIENDS = 32;
-  private static final int METHODID_LIST_GROUPS = 33;
-  private static final int METHODID_LIST_GROUP_USERS = 34;
-  private static final int METHODID_LIST_LEADERBOARD_RECORDS = 35;
-  private static final int METHODID_LIST_LEADERBOARD_RECORDS_AROUND_OWNER = 36;
-  private static final int METHODID_LIST_MATCHES = 37;
-  private static final int METHODID_LIST_NOTIFICATIONS = 38;
-  private static final int METHODID_LIST_STORAGE_OBJECTS = 39;
-  private static final int METHODID_LIST_TOURNAMENTS = 40;
-  private static final int METHODID_LIST_TOURNAMENT_RECORDS = 41;
-  private static final int METHODID_LIST_TOURNAMENT_RECORDS_AROUND_OWNER = 42;
-  private static final int METHODID_LIST_USER_GROUPS = 43;
-  private static final int METHODID_PROMOTE_GROUP_USERS = 44;
-  private static final int METHODID_READ_STORAGE_OBJECTS = 45;
-  private static final int METHODID_RPC_FUNC = 46;
-  private static final int METHODID_UNLINK_CUSTOM = 47;
-  private static final int METHODID_UNLINK_DEVICE = 48;
-  private static final int METHODID_UNLINK_EMAIL = 49;
-  private static final int METHODID_UNLINK_FACEBOOK = 50;
-  private static final int METHODID_UNLINK_GAME_CENTER = 51;
-  private static final int METHODID_UNLINK_GOOGLE = 52;
-  private static final int METHODID_UNLINK_STEAM = 53;
-  private static final int METHODID_UPDATE_ACCOUNT = 54;
-  private static final int METHODID_UPDATE_GROUP = 55;
-  private static final int METHODID_WRITE_LEADERBOARD_RECORD = 56;
-  private static final int METHODID_WRITE_STORAGE_OBJECTS = 57;
-  private static final int METHODID_WRITE_TOURNAMENT_RECORD = 58;
+  private static final int METHODID_EVENT = 16;
+  private static final int METHODID_GET_ACCOUNT = 17;
+  private static final int METHODID_GET_USERS = 18;
+  private static final int METHODID_HEALTHCHECK = 19;
+  private static final int METHODID_IMPORT_FACEBOOK_FRIENDS = 20;
+  private static final int METHODID_JOIN_GROUP = 21;
+  private static final int METHODID_JOIN_TOURNAMENT = 22;
+  private static final int METHODID_KICK_GROUP_USERS = 23;
+  private static final int METHODID_LEAVE_GROUP = 24;
+  private static final int METHODID_LINK_CUSTOM = 25;
+  private static final int METHODID_LINK_DEVICE = 26;
+  private static final int METHODID_LINK_EMAIL = 27;
+  private static final int METHODID_LINK_FACEBOOK = 28;
+  private static final int METHODID_LINK_GAME_CENTER = 29;
+  private static final int METHODID_LINK_GOOGLE = 30;
+  private static final int METHODID_LINK_STEAM = 31;
+  private static final int METHODID_LIST_CHANNEL_MESSAGES = 32;
+  private static final int METHODID_LIST_FRIENDS = 33;
+  private static final int METHODID_LIST_GROUPS = 34;
+  private static final int METHODID_LIST_GROUP_USERS = 35;
+  private static final int METHODID_LIST_LEADERBOARD_RECORDS = 36;
+  private static final int METHODID_LIST_LEADERBOARD_RECORDS_AROUND_OWNER = 37;
+  private static final int METHODID_LIST_MATCHES = 38;
+  private static final int METHODID_LIST_NOTIFICATIONS = 39;
+  private static final int METHODID_LIST_STORAGE_OBJECTS = 40;
+  private static final int METHODID_LIST_TOURNAMENTS = 41;
+  private static final int METHODID_LIST_TOURNAMENT_RECORDS = 42;
+  private static final int METHODID_LIST_TOURNAMENT_RECORDS_AROUND_OWNER = 43;
+  private static final int METHODID_LIST_USER_GROUPS = 44;
+  private static final int METHODID_PROMOTE_GROUP_USERS = 45;
+  private static final int METHODID_READ_STORAGE_OBJECTS = 46;
+  private static final int METHODID_RPC_FUNC = 47;
+  private static final int METHODID_UNLINK_CUSTOM = 48;
+  private static final int METHODID_UNLINK_DEVICE = 49;
+  private static final int METHODID_UNLINK_EMAIL = 50;
+  private static final int METHODID_UNLINK_FACEBOOK = 51;
+  private static final int METHODID_UNLINK_GAME_CENTER = 52;
+  private static final int METHODID_UNLINK_GOOGLE = 53;
+  private static final int METHODID_UNLINK_STEAM = 54;
+  private static final int METHODID_UPDATE_ACCOUNT = 55;
+  private static final int METHODID_UPDATE_GROUP = 56;
+  private static final int METHODID_WRITE_LEADERBOARD_RECORD = 57;
+  private static final int METHODID_WRITE_STORAGE_OBJECTS = 58;
+  private static final int METHODID_WRITE_TOURNAMENT_RECORD = 59;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -4998,6 +5079,10 @@ public final class NakamaGrpc {
           serviceImpl.deleteStorageObjects((com.heroiclabs.nakama.api.DeleteStorageObjectsRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
+        case METHODID_EVENT:
+          serviceImpl.event((com.heroiclabs.nakama.api.Event) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
         case METHODID_GET_ACCOUNT:
           serviceImpl.getAccount((com.google.protobuf.Empty) request,
               (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.Account>) responseObserver);
@@ -5063,8 +5148,8 @@ public final class NakamaGrpc {
               (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.ChannelMessageList>) responseObserver);
           break;
         case METHODID_LIST_FRIENDS:
-          serviceImpl.listFriends((com.google.protobuf.Empty) request,
-              (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.Friends>) responseObserver);
+          serviceImpl.listFriends((com.heroiclabs.nakama.api.ListFriendsRequest) request,
+              (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.FriendList>) responseObserver);
           break;
         case METHODID_LIST_GROUPS:
           serviceImpl.listGroups((com.heroiclabs.nakama.api.ListGroupsRequest) request,
@@ -5211,6 +5296,7 @@ public final class NakamaGrpc {
               .addMethod(getDeleteLeaderboardRecordMethod())
               .addMethod(getDeleteNotificationsMethod())
               .addMethod(getDeleteStorageObjectsMethod())
+              .addMethod(getEventMethod())
               .addMethod(getGetAccountMethod())
               .addMethod(getGetUsersMethod())
               .addMethod(getHealthcheckMethod())

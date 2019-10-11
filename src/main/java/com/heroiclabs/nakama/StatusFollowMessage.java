@@ -26,4 +26,5 @@ import java.util.List;
  */
 class StatusFollowMessage {
     private final List<String> userIds;
+    private final List<String> usernames;
 }

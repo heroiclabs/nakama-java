@@ -36,5 +36,9 @@ class ChannelMessage {
     private Date createTime;
     private Date updateTime;
     private boolean persistent;
+    private String roomName;
+    private String groupId;
+    private String userIdOne;
+    private String userIdTwo;
 }
 

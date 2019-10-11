@@ -23,6 +23,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.nio.charset.Charset;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -43,7 +45,11 @@ public class GroupTest {
 
     @Test
     public void testCreateAndUpdateGroup() throws Exception {
-        final String groupName = "group_name";
+        byte[] array = new byte[7]; // length is bounded by 7
+        new Random().nextBytes(array);
+        String generatedString = new String(array, Charset.forName("UTF-8"));
+
+        final String groupName = "group_name" + generatedString;
         final String groupDescription = "group_description";
         final String groupAvatarUrl = "group_avatar_url";
         final String groupLang = "fa";

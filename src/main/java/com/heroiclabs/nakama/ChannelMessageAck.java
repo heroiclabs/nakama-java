@@ -62,4 +62,24 @@ public class ChannelMessageAck {
      * The UNIX time when the message was updated.
      */
     private Date updateTime;
+
+    /**
+     * The name of the chat room, or an empty string if this message was not sent through a chat room.
+     */
+    private String roomName;
+
+    /**
+     *  The ID of the group, or an empty string if this message was not sent through a group channel.
+     */
+    private String groupId;
+
+    /**
+     * The ID of the first DM user, or an empty string if this message was not sent through a DM chat.
+     */
+    private String userIdOne;
+
+    /**
+     * The ID of the second DM user, or an empty string if this message was not sent through a DM chat.
+     */
+    private String userIdTwo;
 }

@@ -21,6 +21,7 @@ import com.google.protobuf.Empty;
 import com.heroiclabs.nakama.api.*;
 import lombok.NonNull;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -95,6 +96,14 @@ public interface Client {
     /**
      * Authenticate a user with a custom id.
      * @param id A custom identifier usually obtained from an external authentication service.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateCustom(@NonNull final String id, @NonNull final Map<String, String> vars);
+
+    /**
+     * Authenticate a user with a custom id.
+     * @param id A custom identifier usually obtained from an external authentication service.
      * @param username A username used to create the user.
      * @return A future to resolve a session object.
      */
@@ -118,11 +127,29 @@ public interface Client {
     ListenableFuture<Session> authenticateCustom(@NonNull final String id, final boolean create, @NonNull final String username);
 
     /**
+     * Authenticate a user with a custom id.
+     * @param id A custom identifier usually obtained from an external authentication service.
+     * @param create True if the user should be created when authenticated.
+     * @param username A username used to create the user.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateCustom(@NonNull final String id, final boolean create, final String username, @NonNull final Map<String, String> vars);
+
+    /**
      * Authenticate a user with a device id.
      * @param id A device identifier usually obtained from a platform API.
      * @return A future to resolve a session object.
      */
     ListenableFuture<Session> authenticateDevice(@NonNull final String id);
+
+    /**
+     * Authenticate a user with a device id.
+     * @param id A device identifier usually obtained from a platform API.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateDevice(@NonNull final String id, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with a device id.
@@ -150,12 +177,31 @@ public interface Client {
     ListenableFuture<Session> authenticateDevice(@NonNull final String id, final boolean create, @NonNull final String username);
 
     /**
+     * Authenticate a user with a device id.
+     * @param id A device identifier usually obtained from a platform API.
+     * @param create True if the user should be created when authenticated.
+     * @param username A username used to create the user.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateDevice(@NonNull final String id, final boolean create, final String username, @NonNull final Map<String, String> vars);
+
+    /**
      * Authenticate a user with an email and password.
      * @param email The email address of the user.
      * @param password The password for the user.
      * @return A future to resolve a session object.
      */
     ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password);
+
+    /**
+     * Authenticate a user with an email and password.
+     * @param email The email address of the user.
+     * @param password The password for the user.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with an email and password.
@@ -186,11 +232,30 @@ public interface Client {
     ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, final boolean create, @NonNull final String username);
 
     /**
+     * Authenticate a user with an email and password.
+     * @param email The email address of the user.
+     * @param password The password for the user.
+     * @param create True if the user should be created when authenticated.
+     * @param username A username used to create the user.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, final boolean create, final String username, @NonNull final Map<String, String> vars);
+
+    /**
      * Authenticate a user with a Facebook auth token.
      * @param accessToken An OAuth access token from the Facebook SDK.
      * @return A future to resolve a session object.
      */
     ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken);
+
+    /**
+     * Authenticate a user with a Facebook auth token.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with a Facebook auth token.
@@ -228,11 +293,30 @@ public interface Client {
     ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, final boolean create, @NonNull final String username, final boolean importFriends);
 
     /**
+     * Authenticate a user with a Facebook auth token.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @param create True if the user should be created when authenticated.
+     * @param username A username used to create the user.
+     * @param importFriends True if the Facebook friends should be imported.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, final boolean create, final String username, final boolean importFriends, @NonNull final Map<String, String> vars);
+
+    /**
      * Authenticate a user with a Google auth token.
      * @param accessToken An OAuth access token from the Google SDK.
      * @return A future to resolve a session object.
      */
     ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken);
+
+    /**
+     * Authenticate a user with a Google auth token.
+     * @param accessToken An OAuth access token from the Google SDK.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with a Google auth token.
@@ -260,11 +344,29 @@ public interface Client {
     ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, final boolean create, @NonNull final String username);
 
     /**
+     * Authenticate a user with a Google auth token.
+     * @param accessToken An OAuth access token from the Google SDK.
+     * @param create True if the user should be created when authenticated.
+     * @param username A username used to create the user.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, final boolean create, final String username, @NonNull final Map<String, String> vars);
+
+    /**
      * Authenticate a user with a Steam auth token.
      * @param token An authentication token from the Steam network.
      * @return A future to resolve a session object.
      */
     ListenableFuture<Session> authenticateSteam(@NonNull final String token);
+
+    /**
+     * Authenticate a user with a Steam auth token.
+     * @param token An authentication token from the Steam network.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateSteam(@NonNull final String token, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with a Steam auth token.
@@ -292,6 +394,16 @@ public interface Client {
     ListenableFuture<Session> authenticateSteam(@NonNull final String token, final boolean create, @NonNull final String username);
 
     /**
+     * Authenticate a user with a Steam auth token.
+     * @param token An authentication token from the Steam network.
+     * @param create True if the user should be created when authenticated.
+     * @param username A username used to create the user.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateSteam(@NonNull final String token, final boolean create, @NonNull final String username, @NonNull final Map<String, String> vars);
+
+    /**
      * Authenticate a user with Apple Game Center.
      * @param playerId The player id of the user in Game Center.
      * @param bundleId The bundle id of the Game Center application.
@@ -302,6 +414,20 @@ public interface Client {
      * @return A future to resolve a session object.
      */
     ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl);
+
+
+    /**
+     * Authenticate a user with Apple Game Center.
+     * @param playerId The player id of the user in Game Center.
+     * @param bundleId The bundle id of the Game Center application.
+     * @param timestampSeconds The date and time that the signature was created.
+     * @param salt A random <c>NSString</c> used to compute the hash and keep it randomized.
+     * @param signature The verification signature data generated.
+     * @param publicKeyUrl The URL for the public encryption key.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with Apple Game Center.
@@ -342,6 +468,21 @@ public interface Client {
      * @return A future to resolve a session object.
      */
     ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, final boolean create, @NonNull final String username);
+
+    /**
+     * Authenticate a user with Apple Game Center.
+     * @param playerId The player id of the user in Game Center.
+     * @param bundleId The bundle id of the Game Center application.
+     * @param timestampSeconds The date and time that the signature was created.
+     * @param salt A random <c>NSString</c> used to compute the hash and keep it randomized.
+     * @param signature The verification signature data generated.
+     * @param publicKeyUrl The URL for the public encryption key.
+     * @param create True if the user should be created when authenticated.
+     * @param username A username used to create the user.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, final boolean create, final String username, @NonNull final Map<String, String> vars);
 
     /**
      * Block one or more friends by id.
@@ -411,6 +552,19 @@ public interface Client {
     ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, final String description, final String avatarUrl, final String langTag, final boolean open);
 
     /**
+     * Create a group.
+     * @param session The session of the user.
+     * @param name The name for the group.
+     * @param description A description for the group.
+     * @param avatarUrl An avatar url for the group.
+     * @param langTag A language tag in BCP-47 format for the group.
+     * @param open True if the group should have open membership.
+     * @param maxCount Maximum number of group members.
+     * @return A future to resolve a new group object.
+     */
+    ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, final String description, final String avatarUrl, final String langTag, final boolean open, final int maxCount);
+
+    /**
      * Delete one more or users by id.
      * @param session The session of the user.
      * @param ids the user ids to remove as friends.
@@ -462,6 +616,16 @@ public interface Client {
      * @return A future.
      */
     ListenableFuture<Empty> deleteStorageObjects(@NonNull final Session session, @NonNull final StorageObjectId... objectIds);
+
+    /**
+     * Submit an event for processing in the server's registered runtime custom events handler.
+     *
+     * @param session The session of the user.
+     * @param name An event name, type, category, or identifier.
+     * @param properties Arbitrary event property values.
+     * @return A future.
+     */
+    ListenableFuture<Empty> emitEvent(@NonNull final Session session, @NonNull final String name, @NonNull final Map<String, String> properties);
 
     /**
      * Fetch the user account owned by the session.
@@ -690,7 +854,18 @@ public interface Client {
      * @param session The session of the user.
      * @return A future to resolve friend objects.
      */
-    ListenableFuture<Friends> listFriends(@NonNull final Session session);
+    ListenableFuture<FriendList> listFriends(@NonNull final Session session);
+
+    /**
+     * List of friends of the current user.
+     *
+     * @param session The session of the user.
+     * @param state The friend state to list.
+     * @param limit Max number of records to return. Between 1 and 100.
+     * @param cursor An optional next page cursor.
+     * @return A future to resolve friend objects.
+     */
+    ListenableFuture<FriendList> listFriends(@NonNull final Session session, final int state, final int limit, final String cursor);
 
     /**
      * List all users part of the group.
@@ -700,6 +875,18 @@ public interface Client {
      * @return A future to resolve group user objects.
      */
     ListenableFuture<GroupUserList> listGroupUsers(@NonNull final Session session, @NonNull final String groupId);
+
+    /**
+     * List all users part of the group.
+     *
+     * @param session The session of the user.
+     * @param groupId The id of the group.
+     * @param state The group user state to list.
+     * @param limit Max number of records to return. Between 1 and 100.
+     * @param cursor An optional next page cursor.
+     * @return A future to resolve group user objects.
+     */
+    ListenableFuture<GroupUserList> listGroupUsers(@NonNull final Session session, @NonNull final String groupId, final int state, final int limit, final String cursor);
 
     /**
      * List groups on the server.
@@ -946,7 +1133,6 @@ public interface Client {
     /**
      * List active/upcoming tournaments based on given filters.
      * @param session The session of the user.
-     * @param full Include tournaments that are full with players.
      * @param limit Max number of records to return. Between 1 and 100.
      * @param cursor A next page cursor for listings.
      * @return a future which resolved to a tournament list.
@@ -1109,6 +1295,18 @@ public interface Client {
      * @return A future which resolves to group objects.
      */
     ListenableFuture<UserGroupList> listUserGroups(@NonNull final Session session, final String userId);
+
+    /**
+     * List groups a user is a member of.
+     *
+     * @param session The session of the user.
+     * @param userId The id of the user whose groups to list.
+     * @param state The user group state to list.
+     * @param limit Max number of records to return. Between 1 and 100.
+     * @param cursor An optional next page cursor.
+     * @return A future which resolves to group objects.
+     */
+    ListenableFuture<UserGroupList> listUserGroups(@NonNull final Session session, @NonNull final String userId, final int state, final int limit, final String cursor);
 
     /**
      * List storage objects in a collection which belong to a specific user and have public read access.

@@ -20,6 +20,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.heroiclabs.nakama.api.Rpc;
 import lombok.NonNull;
 
+import java.util.List;
 import java.util.Map;
 
 public interface SocketClient {
@@ -127,6 +128,15 @@ public interface SocketClient {
      * @return A future which resolves to the match joined.
      */
     ListenableFuture<Match> joinMatch(@NonNull final String matchId);
+
+    /**
+     * Join a multiplayer match by ID.
+     *
+     * @param matchId A match ID.
+     * @param metadata An optional set of key-value metadata pairs to be passed to the match handler, if any.
+     * @return A future which resolves to the match joined.
+     */
+    ListenableFuture<Match> joinMatch(@NonNull final String matchId, @NonNull Map<String, String> metadata);
 
     /**
      * Join a multiplayer match with a matchmaker.
@@ -256,6 +266,15 @@ public interface SocketClient {
      * @return A future.
      */
     ListenableFuture<Status> followUsers(@NonNull final String... userIds);
+
+    /**
+     * Follow one or more users for status updates.
+     *
+     * @param userIds The user Ids to follow.
+     * @param usernames Usernames to follow.
+     * @return A future.
+     */
+    ListenableFuture<Status> followUsers(final List<String> userIds, final String... usernames);
 
     /**
      * Unfollow status updates for one or more users.
