@@ -33,6 +33,7 @@ import okio.ByteString;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -389,6 +390,18 @@ public class WebSocketClient implements SocketClient {
     }
 
     @Override
+    public ListenableFuture<Match> joinMatch(String matchId, Map<String, String> metadata) {
+        final MatchJoinMessage msg = new MatchJoinMessage();
+        msg.setMatchId(matchId);
+        msg.setMetadata(metadata);
+
+        final WebSocketEnvelope env = new WebSocketEnvelope();
+        env.setMatchJoin(msg);
+
+        return send(env);
+    }
+
+    @Override
     public ListenableFuture<Match> joinMatchToken(@NonNull final String token) {
         final MatchJoinMessage msg = new MatchJoinMessage();
         msg.setToken(token);
@@ -502,7 +515,16 @@ public class WebSocketClient implements SocketClient {
 
     @Override
     public ListenableFuture<Status> followUsers(@NonNull final String... userIds) {
-        final StatusFollowMessage message = new StatusFollowMessage(Arrays.asList(userIds));
+        final StatusFollowMessage message = new StatusFollowMessage(Arrays.asList(userIds), null);
+
+        final WebSocketEnvelope env = new WebSocketEnvelope();
+        env.setStatusFollow(message);
+        return send(env);
+    }
+
+    @Override
+    public ListenableFuture<Status> followUsers(final List<String> userIds, @NonNull final String... usernames) {
+        final StatusFollowMessage message = new StatusFollowMessage(userIds, Arrays.asList(usernames));
 
         final WebSocketEnvelope env = new WebSocketEnvelope();
         env.setStatusFollow(message);

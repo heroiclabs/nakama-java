@@ -41,4 +41,9 @@ public class StreamData {
      * The identifier for the stream.
      */
     private Stream stream;
+
+    /**
+     * True if this data was delivered reliably, false otherwise.
+     */
+    private boolean reliable;
 }

@@ -58,4 +58,9 @@ public class MatchData {
         }
         return BaseEncoding.base64().decode(this.data);
     }
+
+    /**
+     * True if this data was delivered reliably, false otherwise.
+     */
+    private Boolean reliable;
 }
