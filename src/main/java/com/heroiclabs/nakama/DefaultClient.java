@@ -33,6 +33,7 @@ import lombok.var;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -205,6 +206,16 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<Session> authenticateCustom(String id, Map<String, String> vars) {
+        return authenticateCustom(AuthenticateCustomRequest.newBuilder()
+                .setAccount(AccountCustom.newBuilder()
+                        .putAllVars(vars)
+                        .setId(id)
+                        .build())
+                .build());
+    }
+
+    @Override
     public ListenableFuture<Session> authenticateCustom(@NonNull final String id, @NonNull final String username) {
         return authenticateCustom(AuthenticateCustomRequest.newBuilder()
                 .setAccount(AccountCustom.newBuilder()
@@ -235,6 +246,18 @@ public class DefaultClient implements Client {
                 .build());
     }
 
+    @Override
+    public ListenableFuture<Session> authenticateCustom(String id, boolean create, String username, Map<String, String> vars) {
+        return authenticateCustom(AuthenticateCustomRequest.newBuilder()
+                .setAccount(AccountCustom.newBuilder()
+                        .putAllVars(vars)
+                        .setId(id)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
     private ListenableFuture<Session> authenticateCustom(@NonNull final AuthenticateCustomRequest request) {
         return convertSession(getStub().authenticateCustom(request));
     }
@@ -243,6 +266,16 @@ public class DefaultClient implements Client {
     public ListenableFuture<Session> authenticateDevice(@NonNull final String id) {
         return authenticateDevice(AuthenticateDeviceRequest.newBuilder()
                 .setAccount(AccountDevice.newBuilder()
+                        .setId(id)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateDevice(String id, Map<String, String> vars) {
+        return authenticateDevice(AuthenticateDeviceRequest.newBuilder()
+                .setAccount(AccountDevice.newBuilder()
+                        .putAllVars(vars)
                         .setId(id)
                         .build())
                 .build());
@@ -279,6 +312,18 @@ public class DefaultClient implements Client {
                 .build());
     }
 
+    @Override
+    public ListenableFuture<Session> authenticateDevice(String id, boolean create, String username, Map<String, String> vars) {
+        return authenticateDevice(AuthenticateDeviceRequest.newBuilder()
+                .setAccount(AccountDevice.newBuilder()
+                        .putAllVars(vars)
+                        .setId(id)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
     private ListenableFuture<Session> authenticateDevice(@NonNull final AuthenticateDeviceRequest request) {
         return convertSession(getStub().authenticateDevice(request));
     }
@@ -287,6 +332,17 @@ public class DefaultClient implements Client {
     public ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password) {
         return authenticateEmail(AuthenticateEmailRequest.newBuilder()
                 .setAccount(AccountEmail.newBuilder()
+                        .setEmail(email)
+                        .setPassword(password)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateEmail(String email, String password, Map<String, String> vars) {
+        return authenticateEmail(AuthenticateEmailRequest.newBuilder()
+                .setAccount(AccountEmail.newBuilder()
+                        .putAllVars(vars)
                         .setEmail(email)
                         .setPassword(password)
                         .build())
@@ -327,6 +383,19 @@ public class DefaultClient implements Client {
                 .build());
     }
 
+    @Override
+    public ListenableFuture<Session> authenticateEmail(String email, String password, boolean create, String username, Map<String, String> vars) {
+        return authenticateEmail(AuthenticateEmailRequest.newBuilder()
+                .setAccount(AccountEmail.newBuilder()
+                        .putAllVars(vars)
+                        .setEmail(email)
+                        .setPassword(password)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
     private ListenableFuture<Session> authenticateEmail(@NonNull final AuthenticateEmailRequest request) {
         return convertSession(getStub().authenticateEmail(request));
     }
@@ -335,6 +404,16 @@ public class DefaultClient implements Client {
     public ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken) {
         return authenticateFacebook(AuthenticateFacebookRequest.newBuilder()
                 .setAccount(AccountFacebook.newBuilder()
+                        .setToken(accessToken)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebook(String accessToken, Map<String, String> vars) {
+        return authenticateFacebook(AuthenticateFacebookRequest.newBuilder()
+                .setAccount(AccountFacebook.newBuilder()
+                        .putAllVars(vars)
                         .setToken(accessToken)
                         .build())
                 .build());
@@ -383,6 +462,19 @@ public class DefaultClient implements Client {
                 .build());
     }
 
+    @Override
+    public ListenableFuture<Session> authenticateFacebook(String accessToken, boolean create, String username, boolean importFriends, Map<String, String> vars) {
+        return authenticateFacebook(AuthenticateFacebookRequest.newBuilder()
+                .setAccount(AccountFacebook.newBuilder()
+                        .putAllVars(vars)
+                        .setToken(accessToken)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .setSync(BoolValue.newBuilder().setValue(importFriends).build())
+                .build());
+    }
+
     private ListenableFuture<Session> authenticateFacebook(@NonNull final AuthenticateFacebookRequest request) {
         return convertSession(getStub().authenticateFacebook(request));
     }
@@ -391,6 +483,16 @@ public class DefaultClient implements Client {
     public ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken) {
         return authenticateGoogle(AuthenticateGoogleRequest.newBuilder()
                 .setAccount(AccountGoogle.newBuilder()
+                        .setToken(accessToken)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateGoogle(String accessToken, Map<String, String> vars) {
+        return authenticateGoogle(AuthenticateGoogleRequest.newBuilder()
+                .setAccount(AccountGoogle.newBuilder()
+                        .putAllVars(vars)
                         .setToken(accessToken)
                         .build())
                 .build());
@@ -427,6 +529,18 @@ public class DefaultClient implements Client {
                 .build());
     }
 
+    @Override
+    public ListenableFuture<Session> authenticateGoogle(String accessToken, boolean create, String username, Map<String, String> vars) {
+        return authenticateGoogle(AuthenticateGoogleRequest.newBuilder()
+                .setAccount(AccountGoogle.newBuilder()
+                        .putAllVars(vars)
+                        .setToken(accessToken)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
     private ListenableFuture<Session> authenticateGoogle(@NonNull final AuthenticateGoogleRequest request) {
         return convertSession(getStub().authenticateGoogle(request));
     }
@@ -435,6 +549,16 @@ public class DefaultClient implements Client {
     public ListenableFuture<Session> authenticateSteam(@NonNull final String token) {
         return authenticateSteam(AuthenticateSteamRequest.newBuilder()
                 .setAccount(AccountSteam.newBuilder()
+                        .setToken(token)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateSteam(String token, Map<String, String> vars) {
+        return authenticateSteam(AuthenticateSteamRequest.newBuilder()
+                .setAccount(AccountSteam.newBuilder()
+                        .putAllVars(vars)
                         .setToken(token)
                         .build())
                 .build());
@@ -471,6 +595,18 @@ public class DefaultClient implements Client {
                 .build());
     }
 
+    @Override
+    public ListenableFuture<Session> authenticateSteam(String token, boolean create, String username, Map<String, String> vars) {
+        return authenticateSteam(AuthenticateSteamRequest.newBuilder()
+                .setAccount(AccountSteam.newBuilder()
+                        .putAllVars(vars)
+                        .setToken(token)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
     private ListenableFuture<Session> authenticateSteam(@NonNull final AuthenticateSteamRequest request) {
         return convertSession(getStub().authenticateSteam(request));
     }
@@ -479,6 +615,20 @@ public class DefaultClient implements Client {
     public ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl) {
         return authenticateGameCenter(AuthenticateGameCenterRequest.newBuilder()
                 .setAccount(AccountGameCenter.newBuilder()
+                        .setPlayerId(playerId)
+                        .setBundleId(bundleId)
+                        .setTimestampSeconds(timestampSeconds)
+                        .setSalt(salt)
+                        .setPublicKeyUrl(publicKeyUrl)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateGameCenter(String playerId, String bundleId, long timestampSeconds, String salt, String signature, String publicKeyUrl, Map<String, String> vars) {
+        return authenticateGameCenter(AuthenticateGameCenterRequest.newBuilder()
+                .setAccount(AccountGameCenter.newBuilder()
+                        .putAllVars(vars)
                         .setPlayerId(playerId)
                         .setBundleId(bundleId)
                         .setTimestampSeconds(timestampSeconds)
@@ -520,6 +670,22 @@ public class DefaultClient implements Client {
     public ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, final boolean create, @NonNull final String username) {
         return authenticateGameCenter(AuthenticateGameCenterRequest.newBuilder()
                 .setAccount(AccountGameCenter.newBuilder()
+                        .setPlayerId(playerId)
+                        .setBundleId(bundleId)
+                        .setTimestampSeconds(timestampSeconds)
+                        .setSalt(salt)
+                        .setPublicKeyUrl(publicKeyUrl)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateGameCenter(String playerId, String bundleId, long timestampSeconds, String salt, String signature, String publicKeyUrl, boolean create, String username, Map<String, String> vars) {
+        return authenticateGameCenter(AuthenticateGameCenterRequest.newBuilder()
+                .setAccount(AccountGameCenter.newBuilder()
+                        .putAllVars(vars)
                         .setPlayerId(playerId)
                         .setBundleId(bundleId)
                         .setTimestampSeconds(timestampSeconds)
@@ -596,6 +762,26 @@ public class DefaultClient implements Client {
         }
         if (langTag != null) {
             builder.setLangTag(langTag);
+        }
+
+        return getStub(session).createGroup(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<Group> createGroup(Session session, String name, String description, String avatarUrl, String langTag, boolean open, int maxCount) {
+        final var builder = CreateGroupRequest.newBuilder().setName(name).setOpen(open);
+
+        if (description != null) {
+            builder.setDescription(description);
+        }
+        if (avatarUrl != null) {
+            builder.setAvatarUrl(avatarUrl);
+        }
+        if (langTag != null) {
+            builder.setLangTag(langTag);
+        }
+        if (maxCount > 0) {
+            builder.setMaxCount(maxCount);
         }
 
         return getStub(session).createGroup(builder.build());
@@ -817,13 +1003,47 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Friends> listFriends(@NonNull final Session session) {
-        return getStub(session).listFriends(Empty.newBuilder().build());
+    public ListenableFuture<FriendList> listFriends(@NonNull final Session session) {
+        return getStub(session).listFriends(ListFriendsRequest.newBuilder().build());
+    }
+
+    @Override
+    public ListenableFuture<FriendList> listFriends(Session session, int state, int limit, String cursor) {
+        final var builder = ListFriendsRequest.newBuilder();
+
+        if (state > -1) {
+            builder.setState(Int32Value.newBuilder().setValue(state).build());
+        }
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+
+        return getStub(session).listFriends(builder.build());
     }
 
     @Override
     public ListenableFuture<GroupUserList> listGroupUsers(@NonNull final Session session, @NonNull final String groupId) {
         return getStub(session).listGroupUsers(ListGroupUsersRequest.newBuilder().setGroupId(groupId).build());
+    }
+
+    @Override
+    public ListenableFuture<GroupUserList> listGroupUsers(Session session, String groupId, int state, int limit, String cursor) {
+        final var builder = ListGroupUsersRequest.newBuilder();
+
+        if (state > -1) {
+            builder.setState(Int32Value.newBuilder().setValue(state).build());
+        }
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+
+        return getStub(session).listGroupUsers(builder.build());
     }
 
     @Override
@@ -1192,6 +1412,23 @@ public class DefaultClient implements Client {
         if (userId != null) {
             builder.setUserId(userId);
         }
+        return getStub(session).listUserGroups(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<UserGroupList> listUserGroups(Session session, String userId, int state, int limit, String cursor) {
+        final var builder = ListUserGroupsRequest.newBuilder();
+
+        if (state > -1) {
+            builder.setState(Int32Value.newBuilder().setValue(state).build());
+        }
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+
         return getStub(session).listUserGroups(builder.build());
     }
 

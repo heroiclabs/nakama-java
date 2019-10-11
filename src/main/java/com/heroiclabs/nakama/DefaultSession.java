@@ -23,6 +23,7 @@ import okio.ByteString;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -35,6 +36,7 @@ public class DefaultSession implements Session {
     private final String username;
     private final String userId;
     private final String authToken;
+    private final Map<String, String> vars;
 
     DefaultSession(final String token, final boolean created) {
         final String[] decoded = token.split("\\.");
@@ -51,6 +53,17 @@ public class DefaultSession implements Session {
         this.expireTime = Math.round(((Double) jsonMap.get("exp")) * 1000L);
         this.username = jsonMap.get("usn").toString();
         this.userId = jsonMap.get("uid").toString();
+        this.vars = new HashMap();
+        if (jsonMap.get("vars") != null) {
+            var v = jsonMap.get("vars");
+            if (v instanceof Map) {
+                var vm = (Map) v;
+                for (Object key : vm.keySet()) {
+                    this.vars.put(key.toString(), vm.get(key).toString());
+                }
+            }
+        }
+
         this.created = created;
         this.authToken = token;
     }

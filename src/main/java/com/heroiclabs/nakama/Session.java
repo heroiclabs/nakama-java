@@ -17,6 +17,7 @@
 package com.heroiclabs.nakama;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * A session used with requests sent to Nakama server.
@@ -63,4 +64,9 @@ public interface Session {
      * @return <c>true</c> if the session has expired.
      */
     boolean isExpired(Date dateTime);
+
+    /**
+     * @return Get session vars.
+     */
+    Map<String, String> getVars();
 }

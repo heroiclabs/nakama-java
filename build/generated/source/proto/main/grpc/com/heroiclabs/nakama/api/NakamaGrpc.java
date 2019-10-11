@@ -1023,30 +1023,30 @@ public final class NakamaGrpc {
      return getListChannelMessagesMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      com.heroiclabs.nakama.api.Friends> getListFriendsMethod;
+  private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListFriendsRequest,
+      com.heroiclabs.nakama.api.FriendList> getListFriendsMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "ListFriends",
-      requestType = com.google.protobuf.Empty.class,
-      responseType = com.heroiclabs.nakama.api.Friends.class,
+      requestType = com.heroiclabs.nakama.api.ListFriendsRequest.class,
+      responseType = com.heroiclabs.nakama.api.FriendList.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      com.heroiclabs.nakama.api.Friends> getListFriendsMethod() {
-    io.grpc.MethodDescriptor<com.google.protobuf.Empty, com.heroiclabs.nakama.api.Friends> getListFriendsMethod;
+  public static io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListFriendsRequest,
+      com.heroiclabs.nakama.api.FriendList> getListFriendsMethod() {
+    io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.ListFriendsRequest, com.heroiclabs.nakama.api.FriendList> getListFriendsMethod;
     if ((getListFriendsMethod = NakamaGrpc.getListFriendsMethod) == null) {
       synchronized (NakamaGrpc.class) {
         if ((getListFriendsMethod = NakamaGrpc.getListFriendsMethod) == null) {
           NakamaGrpc.getListFriendsMethod = getListFriendsMethod = 
-              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, com.heroiclabs.nakama.api.Friends>newBuilder()
+              io.grpc.MethodDescriptor.<com.heroiclabs.nakama.api.ListFriendsRequest, com.heroiclabs.nakama.api.FriendList>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "nakama.api.Nakama", "ListFriends"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
-                  com.google.protobuf.Empty.getDefaultInstance()))
+                  com.heroiclabs.nakama.api.ListFriendsRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
-                  com.heroiclabs.nakama.api.Friends.getDefaultInstance()))
+                  com.heroiclabs.nakama.api.FriendList.getDefaultInstance()))
                   .build();
           }
         }
@@ -2216,8 +2216,8 @@ public final class NakamaGrpc {
      * List all friends for the current user.
      * </pre>
      */
-    public void listFriends(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.Friends> responseObserver) {
+    public void listFriends(com.heroiclabs.nakama.api.ListFriendsRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.FriendList> responseObserver) {
       asyncUnimplementedUnaryCall(getListFriendsMethod(), responseObserver);
     }
 
@@ -2711,8 +2711,8 @@ public final class NakamaGrpc {
             getListFriendsMethod(),
             asyncUnaryCall(
               new MethodHandlers<
-                com.google.protobuf.Empty,
-                com.heroiclabs.nakama.api.Friends>(
+                com.heroiclabs.nakama.api.ListFriendsRequest,
+                com.heroiclabs.nakama.api.FriendList>(
                   this, METHODID_LIST_FRIENDS)))
           .addMethod(
             getListGroupsMethod(),
@@ -3279,8 +3279,8 @@ public final class NakamaGrpc {
      * List all friends for the current user.
      * </pre>
      */
-    public void listFriends(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.Friends> responseObserver) {
+    public void listFriends(com.heroiclabs.nakama.api.ListFriendsRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.FriendList> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getListFriendsMethod(), getCallOptions()), request, responseObserver);
     }
@@ -3919,7 +3919,7 @@ public final class NakamaGrpc {
      * List all friends for the current user.
      * </pre>
      */
-    public com.heroiclabs.nakama.api.Friends listFriends(com.google.protobuf.Empty request) {
+    public com.heroiclabs.nakama.api.FriendList listFriends(com.heroiclabs.nakama.api.ListFriendsRequest request) {
       return blockingUnaryCall(
           getChannel(), getListFriendsMethod(), getCallOptions(), request);
     }
@@ -4564,8 +4564,8 @@ public final class NakamaGrpc {
      * List all friends for the current user.
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.heroiclabs.nakama.api.Friends> listFriends(
-        com.google.protobuf.Empty request) {
+    public com.google.common.util.concurrent.ListenableFuture<com.heroiclabs.nakama.api.FriendList> listFriends(
+        com.heroiclabs.nakama.api.ListFriendsRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getListFriendsMethod(), getCallOptions()), request);
     }
@@ -5063,8 +5063,8 @@ public final class NakamaGrpc {
               (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.ChannelMessageList>) responseObserver);
           break;
         case METHODID_LIST_FRIENDS:
-          serviceImpl.listFriends((com.google.protobuf.Empty) request,
-              (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.Friends>) responseObserver);
+          serviceImpl.listFriends((com.heroiclabs.nakama.api.ListFriendsRequest) request,
+              (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.FriendList>) responseObserver);
           break;
         case METHODID_LIST_GROUPS:
           serviceImpl.listGroups((com.heroiclabs.nakama.api.ListGroupsRequest) request,

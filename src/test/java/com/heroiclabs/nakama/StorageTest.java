@@ -52,7 +52,7 @@ public class StorageTest {
 
     // expect to read 2 records
     StorageObjectList resRead = client
-        .listUsersStorageObjects(session, collection, session.getUserId())
+        .listUsersStorageObjects(session, collection, session.getUserId(), 2)
         .get(timeoutInSec, TimeUnit.SECONDS);
     assertEquals(2, resRead.getObjectsCount());
   }
