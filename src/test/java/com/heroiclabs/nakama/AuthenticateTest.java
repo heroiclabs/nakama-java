@@ -22,6 +22,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -52,5 +54,18 @@ public class AuthenticateTest {
         final ListenableFuture<Session> future = client.authenticateCustom(UUID.randomUUID().toString());
         Assert.assertNotNull(future);
         Assert.assertNotNull(future.get());
+    }
+
+    @Test
+    public void testCustomVars() throws Exception {
+        final Map<String, String> vars = new HashMap<>();
+        vars.put("hello", "world");
+        final ListenableFuture<Session> future = client.authenticateCustom(UUID.randomUUID().toString(), vars);
+        Assert.assertNotNull(future);
+        final Session session = future.get();
+        Assert.assertNotNull(session);
+        final Map<String, String> sessionVars = session.getVars();
+        Assert.assertNotNull(sessionVars);
+        Assert.assertEquals("world", sessionVars.get("hello"));
     }
 }

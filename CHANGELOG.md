@@ -6,6 +6,12 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.0.2] - 2019-10-14
+### Added
+- Add support for session vars.
+- Add support for sending metadata when joining a match with an ID.
+- Add pagination support for friends and groups.
+
 ## [2.0.1] - 2019-06-19
 ### Added
 - Add support for listing expired leaderboard/tournament records.

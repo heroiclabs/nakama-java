@@ -54,8 +54,8 @@ public class DefaultSession implements Session {
         this.username = jsonMap.get("usn").toString();
         this.userId = jsonMap.get("uid").toString();
         this.vars = new HashMap();
-        if (jsonMap.get("vars") != null) {
-            var v = jsonMap.get("vars");
+        if (jsonMap.get("vrs") != null) {
+            var v = jsonMap.get("vrs");
             if (v instanceof Map) {
                 var vm = (Map) v;
                 for (Object key : vm.keySet()) {
