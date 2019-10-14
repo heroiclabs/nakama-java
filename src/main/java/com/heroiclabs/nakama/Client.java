@@ -99,7 +99,7 @@ public interface Client {
      * @param vars Extra information that will be bundled in the session token.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateCustom(@NonNull final String id, Map<String, String> vars);
+    ListenableFuture<Session> authenticateCustom(@NonNull final String id, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with a custom id.
@@ -134,7 +134,7 @@ public interface Client {
      * @param vars Extra information that will be bundled in the session token.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateCustom(@NonNull final String id, final boolean create, @NonNull final String username, Map<String, String> vars);
+    ListenableFuture<Session> authenticateCustom(@NonNull final String id, final boolean create, final String username, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with a device id.
@@ -149,7 +149,7 @@ public interface Client {
      * @param vars Extra information that will be bundled in the session token.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateDevice(@NonNull final String id, Map<String, String> vars);
+    ListenableFuture<Session> authenticateDevice(@NonNull final String id, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with a device id.
@@ -184,7 +184,7 @@ public interface Client {
      * @param vars Extra information that will be bundled in the session token.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateDevice(@NonNull final String id, final boolean create, @NonNull final String username, Map<String, String> vars);
+    ListenableFuture<Session> authenticateDevice(@NonNull final String id, final boolean create, final String username, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with an email and password.
@@ -201,7 +201,7 @@ public interface Client {
      * @param vars Extra information that will be bundled in the session token.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, Map<String, String> vars);
+    ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with an email and password.
@@ -240,7 +240,7 @@ public interface Client {
      * @param vars Extra information that will be bundled in the session token.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, final boolean create, @NonNull final String username, Map<String, String> vars);
+    ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, final boolean create, final String username, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with a Facebook auth token.
@@ -255,7 +255,7 @@ public interface Client {
      * @param vars Extra information that will be bundled in the session token.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, Map<String, String> vars);
+    ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with a Facebook auth token.
@@ -301,7 +301,7 @@ public interface Client {
      * @param vars Extra information that will be bundled in the session token.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, final boolean create, @NonNull final String username, final boolean importFriends, Map<String, String> vars);
+    ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, final boolean create, final String username, final boolean importFriends, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with a Google auth token.
@@ -316,7 +316,7 @@ public interface Client {
      * @param vars Extra information that will be bundled in the session token.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, Map<String, String> vars);
+    ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with a Google auth token.
@@ -351,7 +351,7 @@ public interface Client {
      * @param vars Extra information that will be bundled in the session token.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, final boolean create, @NonNull final String username, Map<String, String> vars);
+    ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, final boolean create, final String username, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with a Steam auth token.
@@ -366,7 +366,7 @@ public interface Client {
      * @param vars Extra information that will be bundled in the session token.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateSteam(@NonNull final String token, Map<String, String> vars);
+    ListenableFuture<Session> authenticateSteam(@NonNull final String token, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with a Steam auth token.
@@ -401,7 +401,7 @@ public interface Client {
      * @param vars Extra information that will be bundled in the session token.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateSteam(@NonNull final String token, final boolean create, @NonNull final String username, Map<String, String> vars);
+    ListenableFuture<Session> authenticateSteam(@NonNull final String token, final boolean create, @NonNull final String username, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with Apple Game Center.
@@ -427,7 +427,7 @@ public interface Client {
      * @param vars Extra information that will be bundled in the session token.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, Map<String, String> vars);
+    ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with Apple Game Center.
@@ -482,7 +482,7 @@ public interface Client {
      * @param vars Extra information that will be bundled in the session token.
      * @return A future to resolve a session object.
      */
-    ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, final boolean create, @NonNull final String username, Map<String, String> vars);
+    ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, final boolean create, final String username, @NonNull final Map<String, String> vars);
 
     /**
      * Block one or more friends by id.
@@ -616,6 +616,16 @@ public interface Client {
      * @return A future.
      */
     ListenableFuture<Empty> deleteStorageObjects(@NonNull final Session session, @NonNull final StorageObjectId... objectIds);
+
+    /**
+     * Submit an event for processing in the server's registered runtime custom events handler.
+     *
+     * @param session The session of the user.
+     * @param name An event name, type, category, or identifier.
+     * @param properties Arbitrary event property values.
+     * @return A future.
+     */
+    ListenableFuture<Empty> emitEvent(@NonNull final Session session, @NonNull final String name, @NonNull final Map<String, String> properties);
 
     /**
      * Fetch the user account owned by the session.
@@ -855,7 +865,7 @@ public interface Client {
      * @param cursor An optional next page cursor.
      * @return A future to resolve friend objects.
      */
-    ListenableFuture<FriendList> listFriends(@NonNull final Session session, @NonNull final int state, final int limit, final String cursor);
+    ListenableFuture<FriendList> listFriends(@NonNull final Session session, final int state, final int limit, final String cursor);
 
     /**
      * List all users part of the group.
@@ -876,7 +886,7 @@ public interface Client {
      * @param cursor An optional next page cursor.
      * @return A future to resolve group user objects.
      */
-    ListenableFuture<GroupUserList> listGroupUsers(@NonNull final Session session, @NonNull final String groupId, @NonNull final int state, final int limit, final String cursor);
+    ListenableFuture<GroupUserList> listGroupUsers(@NonNull final Session session, @NonNull final String groupId, final int state, final int limit, final String cursor);
 
     /**
      * List groups on the server.
@@ -1296,7 +1306,7 @@ public interface Client {
      * @param cursor An optional next page cursor.
      * @return A future which resolves to group objects.
      */
-    ListenableFuture<UserGroupList> listUserGroups(@NonNull final Session session, final String userId, @NonNull final int state, final int limit, final String cursor);
+    ListenableFuture<UserGroupList> listUserGroups(@NonNull final Session session, @NonNull final String userId, final int state, final int limit, final String cursor);
 
     /**
      * List storage objects in a collection which belong to a specific user and have public read access.

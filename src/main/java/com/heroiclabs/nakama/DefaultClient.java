@@ -206,7 +206,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateCustom(String id, Map<String, String> vars) {
+    public ListenableFuture<Session> authenticateCustom(@NonNull final String id, @NonNull final Map<String, String> vars) {
         return authenticateCustom(AuthenticateCustomRequest.newBuilder()
                 .setAccount(AccountCustom.newBuilder()
                         .putAllVars(vars)
@@ -247,7 +247,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateCustom(String id, boolean create, String username, Map<String, String> vars) {
+    public ListenableFuture<Session> authenticateCustom(@NonNull final String id, final boolean create, final String username, @NonNull final Map<String, String> vars) {
         return authenticateCustom(AuthenticateCustomRequest.newBuilder()
                 .setAccount(AccountCustom.newBuilder()
                         .putAllVars(vars)
@@ -272,7 +272,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateDevice(String id, Map<String, String> vars) {
+    public ListenableFuture<Session> authenticateDevice(@NonNull final String id, @NonNull final Map<String, String> vars) {
         return authenticateDevice(AuthenticateDeviceRequest.newBuilder()
                 .setAccount(AccountDevice.newBuilder()
                         .putAllVars(vars)
@@ -313,7 +313,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateDevice(String id, boolean create, String username, Map<String, String> vars) {
+    public ListenableFuture<Session> authenticateDevice(@NonNull final String id, final boolean create, final String username, @NonNull final Map<String, String> vars) {
         return authenticateDevice(AuthenticateDeviceRequest.newBuilder()
                 .setAccount(AccountDevice.newBuilder()
                         .putAllVars(vars)
@@ -339,7 +339,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateEmail(String email, String password, Map<String, String> vars) {
+    public ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, @NonNull final Map<String, String> vars) {
         return authenticateEmail(AuthenticateEmailRequest.newBuilder()
                 .setAccount(AccountEmail.newBuilder()
                         .putAllVars(vars)
@@ -384,7 +384,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateEmail(String email, String password, boolean create, String username, Map<String, String> vars) {
+    public ListenableFuture<Session> authenticateEmail(@NonNull final String email, @NonNull final String password, final boolean create, final String username, @NonNull final Map<String, String> vars) {
         return authenticateEmail(AuthenticateEmailRequest.newBuilder()
                 .setAccount(AccountEmail.newBuilder()
                         .putAllVars(vars)
@@ -410,7 +410,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateFacebook(String accessToken, Map<String, String> vars) {
+    public ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, @NonNull final Map<String, String> vars) {
         return authenticateFacebook(AuthenticateFacebookRequest.newBuilder()
                 .setAccount(AccountFacebook.newBuilder()
                         .putAllVars(vars)
@@ -463,7 +463,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateFacebook(String accessToken, boolean create, String username, boolean importFriends, Map<String, String> vars) {
+    public ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, final boolean create, final String username, final boolean importFriends, @NonNull final Map<String, String> vars) {
         return authenticateFacebook(AuthenticateFacebookRequest.newBuilder()
                 .setAccount(AccountFacebook.newBuilder()
                         .putAllVars(vars)
@@ -489,7 +489,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateGoogle(String accessToken, Map<String, String> vars) {
+    public ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, @NonNull final Map<String, String> vars) {
         return authenticateGoogle(AuthenticateGoogleRequest.newBuilder()
                 .setAccount(AccountGoogle.newBuilder()
                         .putAllVars(vars)
@@ -530,7 +530,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateGoogle(String accessToken, boolean create, String username, Map<String, String> vars) {
+    public ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken, final boolean create, final String username, @NonNull final Map<String, String> vars) {
         return authenticateGoogle(AuthenticateGoogleRequest.newBuilder()
                 .setAccount(AccountGoogle.newBuilder()
                         .putAllVars(vars)
@@ -555,7 +555,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateSteam(String token, Map<String, String> vars) {
+    public ListenableFuture<Session> authenticateSteam(@NonNull final String token, @NonNull final Map<String, String> vars) {
         return authenticateSteam(AuthenticateSteamRequest.newBuilder()
                 .setAccount(AccountSteam.newBuilder()
                         .putAllVars(vars)
@@ -596,7 +596,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateSteam(String token, boolean create, String username, Map<String, String> vars) {
+    public ListenableFuture<Session> authenticateSteam(@NonNull final String token, final boolean create, final String username, @NonNull final Map<String, String> vars) {
         return authenticateSteam(AuthenticateSteamRequest.newBuilder()
                 .setAccount(AccountSteam.newBuilder()
                         .putAllVars(vars)
@@ -625,7 +625,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateGameCenter(String playerId, String bundleId, long timestampSeconds, String salt, String signature, String publicKeyUrl, Map<String, String> vars) {
+    public ListenableFuture<Session> authenticateGameCenter(@NonNull final  String playerId, @NonNull final  String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, @NonNull final Map<String, String> vars) {
         return authenticateGameCenter(AuthenticateGameCenterRequest.newBuilder()
                 .setAccount(AccountGameCenter.newBuilder()
                         .putAllVars(vars)
@@ -682,7 +682,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Session> authenticateGameCenter(String playerId, String bundleId, long timestampSeconds, String salt, String signature, String publicKeyUrl, boolean create, String username, Map<String, String> vars) {
+    public ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, final boolean create, final String username, @NonNull final Map<String, String> vars) {
         return authenticateGameCenter(AuthenticateGameCenterRequest.newBuilder()
                 .setAccount(AccountGameCenter.newBuilder()
                         .putAllVars(vars)
@@ -768,7 +768,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Group> createGroup(Session session, String name, String description, String avatarUrl, String langTag, boolean open, int maxCount) {
+    public ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, final String description, final String avatarUrl, final String langTag, final boolean open, final int maxCount) {
         final var builder = CreateGroupRequest.newBuilder().setName(name).setOpen(open);
 
         if (description != null) {
@@ -840,6 +840,11 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<Empty> emitEvent(@NonNull final Session session, @NonNull final String name, @NonNull final Map<String, String> properties) {
+        return getStub(session).event(Event.newBuilder().setName(name).putAllProperties(properties).build());
+    }
+
+    @Override
     public ListenableFuture<Account> getAccount(@NonNull final Session session) {
         return getStub(session).getAccount(Empty.getDefaultInstance());
     }
@@ -898,7 +903,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Empty> joinTournament(final Session session, @NonNull final String tournamentId) {
+    public ListenableFuture<Empty> joinTournament(@NonNull final Session session, @NonNull final String tournamentId) {
         return getStub(session).joinTournament(JoinTournamentRequest.newBuilder().setTournamentId(tournamentId).build());
     }
 
@@ -1008,7 +1013,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<FriendList> listFriends(Session session, int state, int limit, String cursor) {
+    public ListenableFuture<FriendList> listFriends(@NonNull final Session session, final int state, final int limit, final String cursor) {
         final var builder = ListFriendsRequest.newBuilder();
 
         if (state > -1) {
@@ -1030,7 +1035,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<GroupUserList> listGroupUsers(Session session, String groupId, int state, int limit, String cursor) {
+    public ListenableFuture<GroupUserList> listGroupUsers(@NonNull final Session session, @NonNull final String groupId, final int state, final int limit, final String cursor) {
         final var builder = ListGroupUsersRequest.newBuilder();
 
         if (state > -1) {
@@ -1109,17 +1114,17 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(final Session session, final String leaderboardId, final String ownerId) {
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, final String ownerId) {
         return listLeaderboardRecordsAroundOwner(session, leaderboardId, ownerId, -1, 0);
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(final Session session, final String leaderboardId, final String ownerId, final int expiry) {
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, final String ownerId, final int expiry) {
         return listLeaderboardRecordsAroundOwner(session, leaderboardId, ownerId, expiry, 0);
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(final Session session, final String leaderboardId, final String ownerId, final int expiry, final int limit) {
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, final String ownerId, final int expiry, final int limit) {
         final var builder = ListLeaderboardRecordsAroundOwnerRequest.newBuilder().setLeaderboardId(leaderboardId).setOwnerId(ownerId);
         if (expiry > 0) {
             builder.setExpiry(Int64Value.newBuilder().setValue(expiry).build());
@@ -1380,17 +1385,17 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(final Session session, final String tournamentId, final String ownerId) {
+    public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, final String ownerId) {
         return listTournamentRecordsAroundOwner(session, tournamentId, ownerId, -1, 0);
     }
 
     @Override
-    public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(final Session session, final String tournamentId, final String ownerId, final int expiry) {
+    public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, final String ownerId, final int expiry) {
         return listTournamentRecordsAroundOwner(session, tournamentId, ownerId, expiry, 0);
     }
 
     @Override
-    public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(final Session session, final String tournamentId, final String ownerId, final int expiry, final int limit) {
+    public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, final String ownerId, final int expiry, final int limit) {
         final var builder = ListTournamentRecordsAroundOwnerRequest.newBuilder().setTournamentId(tournamentId).setOwnerId(ownerId);
         if (expiry > 0) {
             builder.setExpiry(Int64Value.newBuilder().setValue(expiry).build());
@@ -1416,7 +1421,7 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<UserGroupList> listUserGroups(Session session, String userId, int state, int limit, String cursor) {
+    public ListenableFuture<UserGroupList> listUserGroups(@NonNull final Session session, final String userId, int state, int limit, String cursor) {
         final var builder = ListUserGroupsRequest.newBuilder();
 
         if (state > -1) {
@@ -1496,20 +1501,6 @@ public class DefaultClient implements Client {
         }
         return getStub(session).rpcFunc(builder.build());
     }
-
-//    @Override
-//    public ListenableFuture<Rpc> rpc(@NonNull final String httpKey, @NonNull final String id) {
-//        return Rpc(httpKey, id, null);
-//    }
-//
-//    @Override
-//    public ListenableFuture<Rpc> rpc(@NonNull final String httpKey, @NonNull final String id, final String payload) {
-//        final var builder = Rpc.newBuilder().setHttpKey(httpKey).setId(id);
-//        if (payload != null) {
-//            builder.setPayload(payload);
-//        }
-//        return getStub().rpcFunc(builder.build());
-//    }
 
     @Override
     public ListenableFuture<Empty> unlinkCustom(@NonNull final Session session, @NonNull final String id) {
