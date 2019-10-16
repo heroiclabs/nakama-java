@@ -33,10 +33,12 @@ public class Channel {
      * The server-assigned channel ID.
      */
     private String id;
+
     /**
      * The presences visible on the chat channel.
      */
     private List<UserPresence> presences;
+
     /**
      * The presence of the current user. i.e. Your self.
      */

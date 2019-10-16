@@ -46,7 +46,7 @@ public class MatchData {
     /**
      * Information on the user who sent the state change.
      */
-    private UserPresence userPresence;
+    private UserPresence presence;
 
     /**
      * Returns match data
@@ -62,5 +62,5 @@ public class MatchData {
     /**
      * True if this data was delivered reliably, false otherwise.
      */
-    private Boolean reliable;
+    private boolean reliable;
 }
