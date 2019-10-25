@@ -6,6 +6,13 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.0.3] - 2019-10-25
+### Added
+- More ways to create a socket connection.
+
+### Fixed
+- Correctly decode UserPresence from payload.
+
 ## [2.0.2] - 2019-10-14
 ### Added
 - Add support for session vars.
