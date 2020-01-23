@@ -20,6 +20,7 @@ import com.google.common.io.BaseEncoding;
 import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.*;
 import com.heroiclabs.nakama.api.*;
 import io.grpc.ManagedChannel;
@@ -143,7 +144,7 @@ public class DefaultClient implements Client {
               final Session result = new DefaultSession(input.getToken(), input.getCreated());
               return Futures.immediateFuture(result);
           }
-      });
+      }, MoreExecutors.directExecutor());
     }
 
     @Override
