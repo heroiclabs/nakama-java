@@ -6,6 +6,10 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.0.4] - 2020-01-23
+### Added
+- Updated gRPC, GSON and Lombok dependencies.
+
 ## [2.0.3] - 2019-10-25
 ### Added
 - More ways to create a socket connection.
