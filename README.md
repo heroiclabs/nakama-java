@@ -131,18 +131,21 @@ To build the codebase you will need to install these dependencies:
 
 * Java Runtime Environment 1.7+
 * Java Development Kit 1.7+
-* Gradle build tool
 
-* Protoc v3.6.0+
-* [Protoc Java Lite compiler](https://github.com/google/protobuf/blob/master/java/lite.md)
+Invoke the Gradle Wrapper with `gradlew build` and Gradle will install your dependencies over
+the network for you prior to building.
 
-The Gradle project is setup to download and manage the Google Protocol buffers compiler toolchain automatically and generate Protobuf Lite definitions required by the source code.
+You can also run `gradlew tasks` for a list of available build tasks.
 
-```
-$> gradle build
-```
+### Protobuf Versions
 
-Run "gradle tasks" for a list of available build tasks.
+This section is a matter of housekeeping. The current `.proto` definitions included in this repostitory were sourced from the following locations:
+
+- `annotations.proto` (http://github.com/grpc-ecosystem/grpc-gateway v1.13.0)
+- `openapiv2.proto` (http://github.com/grpc-ecosystem/grpc-gateway v1.13.0) 
+- `api.proto` (https://github.com/heroiclabs/nakama-common 5254da5c83ced136a4c8014a2cf2eaa85875811d) 
+- `realtime.proto` (https://github.com/heroiclabs/nakama-common 5254da5c83ced136a4c8014a2cf2eaa85875811d) 
+- `apigrpc.proto` (https://github.com/heroiclabs/nakama 8e8e74280915e77b02871955931f60bcea5b91a1) 
 
 ### License
 

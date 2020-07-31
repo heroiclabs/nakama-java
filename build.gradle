@@ -38,7 +38,7 @@ plugins {
 group = 'com.heroiclabs.nakama'
 version = '2.0.5-SNAPSHOT'
 def description = 'Android optimized Java client for Nakama server.'
-def gopath = System.getenv('GOPATH')
+
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -76,11 +76,6 @@ sourceSets {
         java {
             srcDirs 'build/generated/source/proto/main/grpc'
             srcDirs 'build/generated/source/proto/main/javalite'
-        }
-        proto {
-            srcDir 'src/main/proto'
-            include "${gopath}/src/github.com/grpc-ecosystem/grpc-gateway/"
-            include "${gopath}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/"
         }
     }
 }
