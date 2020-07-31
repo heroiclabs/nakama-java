@@ -39,8 +39,8 @@ group = 'com.heroiclabs.nakama'
 version = '2.0.5-SNAPSHOT'
 def description = 'Android optimized Java client for Nakama server.'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     maven {
@@ -51,7 +51,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.10'
+    annotationProcessor 'org.projectlombok:lombok:1.18.10'
+    implementation("org.projectlombok:lombok:1.18.10")
+
     compile 'com.google.code.gson:gson:2.8.6'
     compile 'com.google.protobuf:protobuf-lite:3.0.1'
     compile ('io.grpc:grpc-okhttp:1.21.0') {
@@ -190,8 +192,17 @@ def pomConfig = {
          include '0.2.0/**'
          include '0.3.0/**'
      }
-     commitMessage = "Published javadoc" + project.version + "via Gradle " + GradleVersion.current().version + "."
+     commitMessage = "Published javadoc" + project.version + " via Gradle."
  }
+
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+}
 
  publishing {
      publications {
@@ -221,12 +232,4 @@ def pomConfig = {
  }
 
 shadowJar {
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-}
-
-task javadocJar(type: Jar) {
-    from javadoc
 }
