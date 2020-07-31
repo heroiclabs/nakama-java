@@ -217,6 +217,37 @@ public final class NakamaGrpc {
      return getAuthenticateFacebookMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.AuthenticateFacebookInstantGameRequest,
+      com.heroiclabs.nakama.api.Session> getAuthenticateFacebookInstantGameMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "AuthenticateFacebookInstantGame",
+      requestType = com.heroiclabs.nakama.api.AuthenticateFacebookInstantGameRequest.class,
+      responseType = com.heroiclabs.nakama.api.Session.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.AuthenticateFacebookInstantGameRequest,
+      com.heroiclabs.nakama.api.Session> getAuthenticateFacebookInstantGameMethod() {
+    io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.AuthenticateFacebookInstantGameRequest, com.heroiclabs.nakama.api.Session> getAuthenticateFacebookInstantGameMethod;
+    if ((getAuthenticateFacebookInstantGameMethod = NakamaGrpc.getAuthenticateFacebookInstantGameMethod) == null) {
+      synchronized (NakamaGrpc.class) {
+        if ((getAuthenticateFacebookInstantGameMethod = NakamaGrpc.getAuthenticateFacebookInstantGameMethod) == null) {
+          NakamaGrpc.getAuthenticateFacebookInstantGameMethod = getAuthenticateFacebookInstantGameMethod = 
+              io.grpc.MethodDescriptor.<com.heroiclabs.nakama.api.AuthenticateFacebookInstantGameRequest, com.heroiclabs.nakama.api.Session>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "nakama.api.Nakama", "AuthenticateFacebookInstantGame"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.AuthenticateFacebookInstantGameRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.Session.getDefaultInstance()))
+                  .build();
+          }
+        }
+     }
+     return getAuthenticateFacebookInstantGameMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.AuthenticateGameCenterRequest,
       com.heroiclabs.nakama.api.Session> getAuthenticateGameCenterMethod;
 
@@ -308,6 +339,37 @@ public final class NakamaGrpc {
         }
      }
      return getAuthenticateSteamMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.BanGroupUsersRequest,
+      com.google.protobuf.Empty> getBanGroupUsersMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "BanGroupUsers",
+      requestType = com.heroiclabs.nakama.api.BanGroupUsersRequest.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.BanGroupUsersRequest,
+      com.google.protobuf.Empty> getBanGroupUsersMethod() {
+    io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.BanGroupUsersRequest, com.google.protobuf.Empty> getBanGroupUsersMethod;
+    if ((getBanGroupUsersMethod = NakamaGrpc.getBanGroupUsersMethod) == null) {
+      synchronized (NakamaGrpc.class) {
+        if ((getBanGroupUsersMethod = NakamaGrpc.getBanGroupUsersMethod) == null) {
+          NakamaGrpc.getBanGroupUsersMethod = getBanGroupUsersMethod = 
+              io.grpc.MethodDescriptor.<com.heroiclabs.nakama.api.BanGroupUsersRequest, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "nakama.api.Nakama", "BanGroupUsers"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.BanGroupUsersRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+                  .build();
+          }
+        }
+     }
+     return getBanGroupUsersMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.BlockFriendsRequest,
@@ -928,6 +990,37 @@ public final class NakamaGrpc {
         }
      }
      return getLinkFacebookMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.AccountFacebookInstantGame,
+      com.google.protobuf.Empty> getLinkFacebookInstantGameMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "LinkFacebookInstantGame",
+      requestType = com.heroiclabs.nakama.api.AccountFacebookInstantGame.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.AccountFacebookInstantGame,
+      com.google.protobuf.Empty> getLinkFacebookInstantGameMethod() {
+    io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.AccountFacebookInstantGame, com.google.protobuf.Empty> getLinkFacebookInstantGameMethod;
+    if ((getLinkFacebookInstantGameMethod = NakamaGrpc.getLinkFacebookInstantGameMethod) == null) {
+      synchronized (NakamaGrpc.class) {
+        if ((getLinkFacebookInstantGameMethod = NakamaGrpc.getLinkFacebookInstantGameMethod) == null) {
+          NakamaGrpc.getLinkFacebookInstantGameMethod = getLinkFacebookInstantGameMethod = 
+              io.grpc.MethodDescriptor.<com.heroiclabs.nakama.api.AccountFacebookInstantGame, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "nakama.api.Nakama", "LinkFacebookInstantGame"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.AccountFacebookInstantGame.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+                  .build();
+          }
+        }
+     }
+     return getLinkFacebookInstantGameMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.AccountGameCenter,
@@ -1643,6 +1736,37 @@ public final class NakamaGrpc {
      return getUnlinkFacebookMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.AccountFacebookInstantGame,
+      com.google.protobuf.Empty> getUnlinkFacebookInstantGameMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "UnlinkFacebookInstantGame",
+      requestType = com.heroiclabs.nakama.api.AccountFacebookInstantGame.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.AccountFacebookInstantGame,
+      com.google.protobuf.Empty> getUnlinkFacebookInstantGameMethod() {
+    io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.AccountFacebookInstantGame, com.google.protobuf.Empty> getUnlinkFacebookInstantGameMethod;
+    if ((getUnlinkFacebookInstantGameMethod = NakamaGrpc.getUnlinkFacebookInstantGameMethod) == null) {
+      synchronized (NakamaGrpc.class) {
+        if ((getUnlinkFacebookInstantGameMethod = NakamaGrpc.getUnlinkFacebookInstantGameMethod) == null) {
+          NakamaGrpc.getUnlinkFacebookInstantGameMethod = getUnlinkFacebookInstantGameMethod = 
+              io.grpc.MethodDescriptor.<com.heroiclabs.nakama.api.AccountFacebookInstantGame, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "nakama.api.Nakama", "UnlinkFacebookInstantGame"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.heroiclabs.nakama.api.AccountFacebookInstantGame.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+                  .build();
+          }
+        }
+     }
+     return getUnlinkFacebookInstantGameMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<com.heroiclabs.nakama.api.AccountGameCenter,
       com.google.protobuf.Empty> getUnlinkGameCenterMethod;
 
@@ -1984,6 +2108,16 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
+     * Authenticate a user with a Facebook Instant Game token against the server.
+     * </pre>
+     */
+    public void authenticateFacebookInstantGame(com.heroiclabs.nakama.api.AuthenticateFacebookInstantGameRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.Session> responseObserver) {
+      asyncUnimplementedUnaryCall(getAuthenticateFacebookInstantGameMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Authenticate a user with Apple's GameCenter against the server.
      * </pre>
      */
@@ -2010,6 +2144,16 @@ public final class NakamaGrpc {
     public void authenticateSteam(com.heroiclabs.nakama.api.AuthenticateSteamRequest request,
         io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.Session> responseObserver) {
       asyncUnimplementedUnaryCall(getAuthenticateSteamMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Ban a set of users from a group.
+     * </pre>
+     */
+    public void banGroupUsers(com.heroiclabs.nakama.api.BanGroupUsersRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnimplementedUnaryCall(getBanGroupUsersMethod(), responseObserver);
     }
 
     /**
@@ -2210,6 +2354,16 @@ public final class NakamaGrpc {
     public void linkFacebook(com.heroiclabs.nakama.api.LinkFacebookRequest request,
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       asyncUnimplementedUnaryCall(getLinkFacebookMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Add Facebook Instant Game to the social profiles on the current user's account.
+     * </pre>
+     */
+    public void linkFacebookInstantGame(com.heroiclabs.nakama.api.AccountFacebookInstantGame request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnimplementedUnaryCall(getLinkFacebookInstantGameMethod(), responseObserver);
     }
 
     /**
@@ -2444,6 +2598,16 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
+     * Remove Facebook Instant Game profile from the social profiles on the current user's account.
+     * </pre>
+     */
+    public void unlinkFacebookInstantGame(com.heroiclabs.nakama.api.AccountFacebookInstantGame request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnimplementedUnaryCall(getUnlinkFacebookInstantGameMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Remove Apple's GameCenter from the social profiles on the current user's account.
      * </pre>
      */
@@ -2567,6 +2731,13 @@ public final class NakamaGrpc {
                 com.heroiclabs.nakama.api.Session>(
                   this, METHODID_AUTHENTICATE_FACEBOOK)))
           .addMethod(
+            getAuthenticateFacebookInstantGameMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.heroiclabs.nakama.api.AuthenticateFacebookInstantGameRequest,
+                com.heroiclabs.nakama.api.Session>(
+                  this, METHODID_AUTHENTICATE_FACEBOOK_INSTANT_GAME)))
+          .addMethod(
             getAuthenticateGameCenterMethod(),
             asyncUnaryCall(
               new MethodHandlers<
@@ -2587,6 +2758,13 @@ public final class NakamaGrpc {
                 com.heroiclabs.nakama.api.AuthenticateSteamRequest,
                 com.heroiclabs.nakama.api.Session>(
                   this, METHODID_AUTHENTICATE_STEAM)))
+          .addMethod(
+            getBanGroupUsersMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.heroiclabs.nakama.api.BanGroupUsersRequest,
+                com.google.protobuf.Empty>(
+                  this, METHODID_BAN_GROUP_USERS)))
           .addMethod(
             getBlockFriendsMethod(),
             asyncUnaryCall(
@@ -2727,6 +2905,13 @@ public final class NakamaGrpc {
                 com.heroiclabs.nakama.api.LinkFacebookRequest,
                 com.google.protobuf.Empty>(
                   this, METHODID_LINK_FACEBOOK)))
+          .addMethod(
+            getLinkFacebookInstantGameMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.heroiclabs.nakama.api.AccountFacebookInstantGame,
+                com.google.protobuf.Empty>(
+                  this, METHODID_LINK_FACEBOOK_INSTANT_GAME)))
           .addMethod(
             getLinkGameCenterMethod(),
             asyncUnaryCall(
@@ -2889,6 +3074,13 @@ public final class NakamaGrpc {
                 com.google.protobuf.Empty>(
                   this, METHODID_UNLINK_FACEBOOK)))
           .addMethod(
+            getUnlinkFacebookInstantGameMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.heroiclabs.nakama.api.AccountFacebookInstantGame,
+                com.google.protobuf.Empty>(
+                  this, METHODID_UNLINK_FACEBOOK_INSTANT_GAME)))
+          .addMethod(
             getUnlinkGameCenterMethod(),
             asyncUnaryCall(
               new MethodHandlers<
@@ -3038,6 +3230,17 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
+     * Authenticate a user with a Facebook Instant Game token against the server.
+     * </pre>
+     */
+    public void authenticateFacebookInstantGame(com.heroiclabs.nakama.api.AuthenticateFacebookInstantGameRequest request,
+        io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.Session> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getAuthenticateFacebookInstantGameMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Authenticate a user with Apple's GameCenter against the server.
      * </pre>
      */
@@ -3067,6 +3270,17 @@ public final class NakamaGrpc {
         io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.Session> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getAuthenticateSteamMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Ban a set of users from a group.
+     * </pre>
+     */
+    public void banGroupUsers(com.heroiclabs.nakama.api.BanGroupUsersRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getBanGroupUsersMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -3287,6 +3501,17 @@ public final class NakamaGrpc {
         io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getLinkFacebookMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Add Facebook Instant Game to the social profiles on the current user's account.
+     * </pre>
+     */
+    public void linkFacebookInstantGame(com.heroiclabs.nakama.api.AccountFacebookInstantGame request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getLinkFacebookInstantGameMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -3544,6 +3769,17 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
+     * Remove Facebook Instant Game profile from the social profiles on the current user's account.
+     * </pre>
+     */
+    public void unlinkFacebookInstantGame(com.heroiclabs.nakama.api.AccountFacebookInstantGame request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getUnlinkFacebookInstantGameMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Remove Apple's GameCenter from the social profiles on the current user's account.
      * </pre>
      */
@@ -3715,6 +3951,16 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
+     * Authenticate a user with a Facebook Instant Game token against the server.
+     * </pre>
+     */
+    public com.heroiclabs.nakama.api.Session authenticateFacebookInstantGame(com.heroiclabs.nakama.api.AuthenticateFacebookInstantGameRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getAuthenticateFacebookInstantGameMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Authenticate a user with Apple's GameCenter against the server.
      * </pre>
      */
@@ -3741,6 +3987,16 @@ public final class NakamaGrpc {
     public com.heroiclabs.nakama.api.Session authenticateSteam(com.heroiclabs.nakama.api.AuthenticateSteamRequest request) {
       return blockingUnaryCall(
           getChannel(), getAuthenticateSteamMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Ban a set of users from a group.
+     * </pre>
+     */
+    public com.google.protobuf.Empty banGroupUsers(com.heroiclabs.nakama.api.BanGroupUsersRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getBanGroupUsersMethod(), getCallOptions(), request);
     }
 
     /**
@@ -3941,6 +4197,16 @@ public final class NakamaGrpc {
     public com.google.protobuf.Empty linkFacebook(com.heroiclabs.nakama.api.LinkFacebookRequest request) {
       return blockingUnaryCall(
           getChannel(), getLinkFacebookMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Add Facebook Instant Game to the social profiles on the current user's account.
+     * </pre>
+     */
+    public com.google.protobuf.Empty linkFacebookInstantGame(com.heroiclabs.nakama.api.AccountFacebookInstantGame request) {
+      return blockingUnaryCall(
+          getChannel(), getLinkFacebookInstantGameMethod(), getCallOptions(), request);
     }
 
     /**
@@ -4175,6 +4441,16 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
+     * Remove Facebook Instant Game profile from the social profiles on the current user's account.
+     * </pre>
+     */
+    public com.google.protobuf.Empty unlinkFacebookInstantGame(com.heroiclabs.nakama.api.AccountFacebookInstantGame request) {
+      return blockingUnaryCall(
+          getChannel(), getUnlinkFacebookInstantGameMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Remove Apple's GameCenter from the social profiles on the current user's account.
      * </pre>
      */
@@ -4344,6 +4620,17 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
+     * Authenticate a user with a Facebook Instant Game token against the server.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.heroiclabs.nakama.api.Session> authenticateFacebookInstantGame(
+        com.heroiclabs.nakama.api.AuthenticateFacebookInstantGameRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getAuthenticateFacebookInstantGameMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Authenticate a user with Apple's GameCenter against the server.
      * </pre>
      */
@@ -4373,6 +4660,17 @@ public final class NakamaGrpc {
         com.heroiclabs.nakama.api.AuthenticateSteamRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getAuthenticateSteamMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Ban a set of users from a group.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> banGroupUsers(
+        com.heroiclabs.nakama.api.BanGroupUsersRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getBanGroupUsersMethod(), getCallOptions()), request);
     }
 
     /**
@@ -4593,6 +4891,17 @@ public final class NakamaGrpc {
         com.heroiclabs.nakama.api.LinkFacebookRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getLinkFacebookMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Add Facebook Instant Game to the social profiles on the current user's account.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> linkFacebookInstantGame(
+        com.heroiclabs.nakama.api.AccountFacebookInstantGame request) {
+      return futureUnaryCall(
+          getChannel().newCall(getLinkFacebookInstantGameMethod(), getCallOptions()), request);
     }
 
     /**
@@ -4850,6 +5159,17 @@ public final class NakamaGrpc {
 
     /**
      * <pre>
+     * Remove Facebook Instant Game profile from the social profiles on the current user's account.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> unlinkFacebookInstantGame(
+        com.heroiclabs.nakama.api.AccountFacebookInstantGame request) {
+      return futureUnaryCall(
+          getChannel().newCall(getUnlinkFacebookInstantGameMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Remove Apple's GameCenter from the social profiles on the current user's account.
      * </pre>
      */
@@ -4943,60 +5263,64 @@ public final class NakamaGrpc {
   private static final int METHODID_AUTHENTICATE_DEVICE = 3;
   private static final int METHODID_AUTHENTICATE_EMAIL = 4;
   private static final int METHODID_AUTHENTICATE_FACEBOOK = 5;
-  private static final int METHODID_AUTHENTICATE_GAME_CENTER = 6;
-  private static final int METHODID_AUTHENTICATE_GOOGLE = 7;
-  private static final int METHODID_AUTHENTICATE_STEAM = 8;
-  private static final int METHODID_BLOCK_FRIENDS = 9;
-  private static final int METHODID_CREATE_GROUP = 10;
-  private static final int METHODID_DELETE_FRIENDS = 11;
-  private static final int METHODID_DELETE_GROUP = 12;
-  private static final int METHODID_DELETE_LEADERBOARD_RECORD = 13;
-  private static final int METHODID_DELETE_NOTIFICATIONS = 14;
-  private static final int METHODID_DELETE_STORAGE_OBJECTS = 15;
-  private static final int METHODID_EVENT = 16;
-  private static final int METHODID_GET_ACCOUNT = 17;
-  private static final int METHODID_GET_USERS = 18;
-  private static final int METHODID_HEALTHCHECK = 19;
-  private static final int METHODID_IMPORT_FACEBOOK_FRIENDS = 20;
-  private static final int METHODID_JOIN_GROUP = 21;
-  private static final int METHODID_JOIN_TOURNAMENT = 22;
-  private static final int METHODID_KICK_GROUP_USERS = 23;
-  private static final int METHODID_LEAVE_GROUP = 24;
-  private static final int METHODID_LINK_CUSTOM = 25;
-  private static final int METHODID_LINK_DEVICE = 26;
-  private static final int METHODID_LINK_EMAIL = 27;
-  private static final int METHODID_LINK_FACEBOOK = 28;
-  private static final int METHODID_LINK_GAME_CENTER = 29;
-  private static final int METHODID_LINK_GOOGLE = 30;
-  private static final int METHODID_LINK_STEAM = 31;
-  private static final int METHODID_LIST_CHANNEL_MESSAGES = 32;
-  private static final int METHODID_LIST_FRIENDS = 33;
-  private static final int METHODID_LIST_GROUPS = 34;
-  private static final int METHODID_LIST_GROUP_USERS = 35;
-  private static final int METHODID_LIST_LEADERBOARD_RECORDS = 36;
-  private static final int METHODID_LIST_LEADERBOARD_RECORDS_AROUND_OWNER = 37;
-  private static final int METHODID_LIST_MATCHES = 38;
-  private static final int METHODID_LIST_NOTIFICATIONS = 39;
-  private static final int METHODID_LIST_STORAGE_OBJECTS = 40;
-  private static final int METHODID_LIST_TOURNAMENTS = 41;
-  private static final int METHODID_LIST_TOURNAMENT_RECORDS = 42;
-  private static final int METHODID_LIST_TOURNAMENT_RECORDS_AROUND_OWNER = 43;
-  private static final int METHODID_LIST_USER_GROUPS = 44;
-  private static final int METHODID_PROMOTE_GROUP_USERS = 45;
-  private static final int METHODID_READ_STORAGE_OBJECTS = 46;
-  private static final int METHODID_RPC_FUNC = 47;
-  private static final int METHODID_UNLINK_CUSTOM = 48;
-  private static final int METHODID_UNLINK_DEVICE = 49;
-  private static final int METHODID_UNLINK_EMAIL = 50;
-  private static final int METHODID_UNLINK_FACEBOOK = 51;
-  private static final int METHODID_UNLINK_GAME_CENTER = 52;
-  private static final int METHODID_UNLINK_GOOGLE = 53;
-  private static final int METHODID_UNLINK_STEAM = 54;
-  private static final int METHODID_UPDATE_ACCOUNT = 55;
-  private static final int METHODID_UPDATE_GROUP = 56;
-  private static final int METHODID_WRITE_LEADERBOARD_RECORD = 57;
-  private static final int METHODID_WRITE_STORAGE_OBJECTS = 58;
-  private static final int METHODID_WRITE_TOURNAMENT_RECORD = 59;
+  private static final int METHODID_AUTHENTICATE_FACEBOOK_INSTANT_GAME = 6;
+  private static final int METHODID_AUTHENTICATE_GAME_CENTER = 7;
+  private static final int METHODID_AUTHENTICATE_GOOGLE = 8;
+  private static final int METHODID_AUTHENTICATE_STEAM = 9;
+  private static final int METHODID_BAN_GROUP_USERS = 10;
+  private static final int METHODID_BLOCK_FRIENDS = 11;
+  private static final int METHODID_CREATE_GROUP = 12;
+  private static final int METHODID_DELETE_FRIENDS = 13;
+  private static final int METHODID_DELETE_GROUP = 14;
+  private static final int METHODID_DELETE_LEADERBOARD_RECORD = 15;
+  private static final int METHODID_DELETE_NOTIFICATIONS = 16;
+  private static final int METHODID_DELETE_STORAGE_OBJECTS = 17;
+  private static final int METHODID_EVENT = 18;
+  private static final int METHODID_GET_ACCOUNT = 19;
+  private static final int METHODID_GET_USERS = 20;
+  private static final int METHODID_HEALTHCHECK = 21;
+  private static final int METHODID_IMPORT_FACEBOOK_FRIENDS = 22;
+  private static final int METHODID_JOIN_GROUP = 23;
+  private static final int METHODID_JOIN_TOURNAMENT = 24;
+  private static final int METHODID_KICK_GROUP_USERS = 25;
+  private static final int METHODID_LEAVE_GROUP = 26;
+  private static final int METHODID_LINK_CUSTOM = 27;
+  private static final int METHODID_LINK_DEVICE = 28;
+  private static final int METHODID_LINK_EMAIL = 29;
+  private static final int METHODID_LINK_FACEBOOK = 30;
+  private static final int METHODID_LINK_FACEBOOK_INSTANT_GAME = 31;
+  private static final int METHODID_LINK_GAME_CENTER = 32;
+  private static final int METHODID_LINK_GOOGLE = 33;
+  private static final int METHODID_LINK_STEAM = 34;
+  private static final int METHODID_LIST_CHANNEL_MESSAGES = 35;
+  private static final int METHODID_LIST_FRIENDS = 36;
+  private static final int METHODID_LIST_GROUPS = 37;
+  private static final int METHODID_LIST_GROUP_USERS = 38;
+  private static final int METHODID_LIST_LEADERBOARD_RECORDS = 39;
+  private static final int METHODID_LIST_LEADERBOARD_RECORDS_AROUND_OWNER = 40;
+  private static final int METHODID_LIST_MATCHES = 41;
+  private static final int METHODID_LIST_NOTIFICATIONS = 42;
+  private static final int METHODID_LIST_STORAGE_OBJECTS = 43;
+  private static final int METHODID_LIST_TOURNAMENTS = 44;
+  private static final int METHODID_LIST_TOURNAMENT_RECORDS = 45;
+  private static final int METHODID_LIST_TOURNAMENT_RECORDS_AROUND_OWNER = 46;
+  private static final int METHODID_LIST_USER_GROUPS = 47;
+  private static final int METHODID_PROMOTE_GROUP_USERS = 48;
+  private static final int METHODID_READ_STORAGE_OBJECTS = 49;
+  private static final int METHODID_RPC_FUNC = 50;
+  private static final int METHODID_UNLINK_CUSTOM = 51;
+  private static final int METHODID_UNLINK_DEVICE = 52;
+  private static final int METHODID_UNLINK_EMAIL = 53;
+  private static final int METHODID_UNLINK_FACEBOOK = 54;
+  private static final int METHODID_UNLINK_FACEBOOK_INSTANT_GAME = 55;
+  private static final int METHODID_UNLINK_GAME_CENTER = 56;
+  private static final int METHODID_UNLINK_GOOGLE = 57;
+  private static final int METHODID_UNLINK_STEAM = 58;
+  private static final int METHODID_UPDATE_ACCOUNT = 59;
+  private static final int METHODID_UPDATE_GROUP = 60;
+  private static final int METHODID_WRITE_LEADERBOARD_RECORD = 61;
+  private static final int METHODID_WRITE_STORAGE_OBJECTS = 62;
+  private static final int METHODID_WRITE_TOURNAMENT_RECORD = 63;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -5039,6 +5363,10 @@ public final class NakamaGrpc {
           serviceImpl.authenticateFacebook((com.heroiclabs.nakama.api.AuthenticateFacebookRequest) request,
               (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.Session>) responseObserver);
           break;
+        case METHODID_AUTHENTICATE_FACEBOOK_INSTANT_GAME:
+          serviceImpl.authenticateFacebookInstantGame((com.heroiclabs.nakama.api.AuthenticateFacebookInstantGameRequest) request,
+              (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.Session>) responseObserver);
+          break;
         case METHODID_AUTHENTICATE_GAME_CENTER:
           serviceImpl.authenticateGameCenter((com.heroiclabs.nakama.api.AuthenticateGameCenterRequest) request,
               (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.Session>) responseObserver);
@@ -5050,6 +5378,10 @@ public final class NakamaGrpc {
         case METHODID_AUTHENTICATE_STEAM:
           serviceImpl.authenticateSteam((com.heroiclabs.nakama.api.AuthenticateSteamRequest) request,
               (io.grpc.stub.StreamObserver<com.heroiclabs.nakama.api.Session>) responseObserver);
+          break;
+        case METHODID_BAN_GROUP_USERS:
+          serviceImpl.banGroupUsers((com.heroiclabs.nakama.api.BanGroupUsersRequest) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_BLOCK_FRIENDS:
           serviceImpl.blockFriends((com.heroiclabs.nakama.api.BlockFriendsRequest) request,
@@ -5129,6 +5461,10 @@ public final class NakamaGrpc {
           break;
         case METHODID_LINK_FACEBOOK:
           serviceImpl.linkFacebook((com.heroiclabs.nakama.api.LinkFacebookRequest) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
+        case METHODID_LINK_FACEBOOK_INSTANT_GAME:
+          serviceImpl.linkFacebookInstantGame((com.heroiclabs.nakama.api.AccountFacebookInstantGame) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_LINK_GAME_CENTER:
@@ -5223,6 +5559,10 @@ public final class NakamaGrpc {
           serviceImpl.unlinkFacebook((com.heroiclabs.nakama.api.AccountFacebook) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
+        case METHODID_UNLINK_FACEBOOK_INSTANT_GAME:
+          serviceImpl.unlinkFacebookInstantGame((com.heroiclabs.nakama.api.AccountFacebookInstantGame) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
         case METHODID_UNLINK_GAME_CENTER:
           serviceImpl.unlinkGameCenter((com.heroiclabs.nakama.api.AccountGameCenter) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
@@ -5286,9 +5626,11 @@ public final class NakamaGrpc {
               .addMethod(getAuthenticateDeviceMethod())
               .addMethod(getAuthenticateEmailMethod())
               .addMethod(getAuthenticateFacebookMethod())
+              .addMethod(getAuthenticateFacebookInstantGameMethod())
               .addMethod(getAuthenticateGameCenterMethod())
               .addMethod(getAuthenticateGoogleMethod())
               .addMethod(getAuthenticateSteamMethod())
+              .addMethod(getBanGroupUsersMethod())
               .addMethod(getBlockFriendsMethod())
               .addMethod(getCreateGroupMethod())
               .addMethod(getDeleteFriendsMethod())
@@ -5309,6 +5651,7 @@ public final class NakamaGrpc {
               .addMethod(getLinkDeviceMethod())
               .addMethod(getLinkEmailMethod())
               .addMethod(getLinkFacebookMethod())
+              .addMethod(getLinkFacebookInstantGameMethod())
               .addMethod(getLinkGameCenterMethod())
               .addMethod(getLinkGoogleMethod())
               .addMethod(getLinkSteamMethod())
@@ -5332,6 +5675,7 @@ public final class NakamaGrpc {
               .addMethod(getUnlinkDeviceMethod())
               .addMethod(getUnlinkEmailMethod())
               .addMethod(getUnlinkFacebookMethod())
+              .addMethod(getUnlinkFacebookInstantGameMethod())
               .addMethod(getUnlinkGameCenterMethod())
               .addMethod(getUnlinkGoogleMethod())
               .addMethod(getUnlinkSteamMethod())
