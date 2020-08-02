@@ -72,6 +72,8 @@ dependencies {
         force = true // don't upgrade to "1.8.0-alpha2"
     }
     testCompile 'junit:junit:4.12'
+    testCompile "org.slf4j:slf4j-simple:1.7.9" //logger for testing
+
 }
 
 sourceSets {
@@ -112,10 +114,10 @@ eclipse {
 
                 grpcSource.entryAttributes["ignore_optional_problems"] = 'true'
 
-                def javaLiteSource = entries.find { 
+                def javaLiteSource = entries.find {
                     it.path == "build/generated/source/proto/main/javalite"
                 }
-                
+
                 javaLiteSource.entryAttributes["ignore_optional_problems"] = 'true'
             }
         }
@@ -265,4 +267,9 @@ task javadocJar(type: Jar) {
  }
 
 shadowJar {
+}
+
+test {
+    testLogging.showStandardStreams = true
+    testLogging.exceptionFormat = 'full'
 }

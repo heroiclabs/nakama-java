@@ -133,7 +133,9 @@ To build the codebase you will need to install these dependencies:
 * Java Development Kit 1.8+
 
 Invoke the Gradle Wrapper with `./gradlew build` and Gradle will install your dependencies over
-the network for you prior to building.
+the network for you prior to building. It will then make a build and run the full test suite.
+
+To test a specific test, run `./gradlew test --tests <ClassName.methodName>`
 
 You can also run `./gradlew tasks` for a list of available build tasks.
 
@@ -142,10 +144,10 @@ You can also run `./gradlew tasks` for a list of available build tasks.
 This section is a matter of housekeeping. The current `.proto` definitions included in this repostitory were sourced from the following locations:
 
 - `annotations.proto` (http://github.com/grpc-ecosystem/grpc-gateway v1.13.0)
-- `openapiv2.proto` (http://github.com/grpc-ecosystem/grpc-gateway v1.13.0) 
-- `api.proto` (https://github.com/heroiclabs/nakama-common 5254da5c83ced136a4c8014a2cf2eaa85875811d) 
-- `realtime.proto` (https://github.com/heroiclabs/nakama-common 5254da5c83ced136a4c8014a2cf2eaa85875811d) 
-- `apigrpc.proto` (https://github.com/heroiclabs/nakama 8e8e74280915e77b02871955931f60bcea5b91a1) 
+- `openapiv2.proto` (http://github.com/grpc-ecosystem/grpc-gateway v1.13.0)
+- `api.proto` (https://github.com/heroiclabs/nakama-common 5254da5c83ced136a4c8014a2cf2eaa85875811d)
+- `realtime.proto` (https://github.com/heroiclabs/nakama-common 5254da5c83ced136a4c8014a2cf2eaa85875811d)
+- `apigrpc.proto` (https://github.com/heroiclabs/nakama 8e8e74280915e77b02871955931f60bcea5b91a1)
 
 ### License
 
