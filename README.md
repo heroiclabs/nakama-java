@@ -129,13 +129,13 @@ Android uses a permissions system which determines which platform services the a
 
 To build the codebase you will need to install these dependencies:
 
-* Java Runtime Environment 1.7+
-* Java Development Kit 1.7+
+* Java Runtime Environment 1.8+
+* Java Development Kit 1.8+
 
-Invoke the Gradle Wrapper with `gradlew build` and Gradle will install your dependencies over
+Invoke the Gradle Wrapper with `./gradlew build` and Gradle will install your dependencies over
 the network for you prior to building.
 
-You can also run `gradlew tasks` for a list of available build tasks.
+You can also run `./gradlew tasks` for a list of available build tasks.
 
 ### Protobuf Versions
 
