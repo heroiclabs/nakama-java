@@ -69,7 +69,6 @@ public class TournamentTest {
             object.title = "tournament-test";
             object.end_time = Instant.now().getEpochSecond() + object.duration;
 
-
             final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
             final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
 
@@ -133,11 +132,10 @@ public class TournamentTest {
         Assert.assertEquals(t.getCategory(), object.category);
         Assert.assertEquals(t.getDescription(), object.description);
         Assert.assertEquals(t.getTitle(), object.title);
-        Assert.assertEquals(t.getEndTime().getSeconds(), 0);
+        Assert.assertEquals(t.getEndTime().getSeconds(), object.end_time);
         Assert.assertNotEquals(t.getCreateTime(), 0);
         Assert.assertTrue(t.getCanEnter());
         Assert.assertNotEquals(t.getEndActive(), 0);
-        Assert.assertEquals(t.getNextReset(), 0);
         Assert.assertEquals(t.getMetadata(), "{}");
         Assert.assertEquals(t.getMaxSize(), object.max_size);
         Assert.assertEquals(t.getMaxNumScore(), object.max_num_score);
