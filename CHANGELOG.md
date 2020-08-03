@@ -8,7 +8,7 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 
 - Moved all external .proto dependencies into this repository.
 - Upgraded from Gradle 4 to Gradle 6.
-
+- Fixed bugs in Tournaments test suite.
 ## [2.0.4] - 2020-01-23
 ### Added
 - Updated gRPC, GSON and Lombok dependencies.
