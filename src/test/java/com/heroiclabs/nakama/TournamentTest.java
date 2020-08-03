@@ -314,7 +314,6 @@ public class TournamentTest {
 
         Assert.assertFalse(found);
 
-
         sleep(5000);
 
         // tournament has ended 2s ago.
@@ -350,7 +349,7 @@ public class TournamentTest {
     @Test
     public void testTournamentWrite() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking set tournament duration 10s, no end";
+        object.description = "checking set tournament duration 10s";
         object.duration = 10;
         object.category = 6;
         object.join_required = false;
@@ -372,7 +371,7 @@ public class TournamentTest {
         Assert.assertEquals(record.getLeaderboardId(), tournamentId);
         Assert.assertEquals(record.getOwnerId(), session.getUserId());
         Assert.assertEquals(record.getUsername().getValue(), session.getUsername());
-        Assert.assertEquals(record.getExpiryTime().getSeconds(), 0);
+        Assert.assertEquals(record.getExpiryTime().getSeconds(), object.end_time);
         Assert.assertEquals(record.getScore(), score);
         Assert.assertEquals(record.getSubscore(), subscore);
         Assert.assertEquals(record.getMetadata(), metadata);
