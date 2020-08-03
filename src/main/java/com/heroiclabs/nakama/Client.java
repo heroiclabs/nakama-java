@@ -512,6 +512,15 @@ public interface Client {
     ListenableFuture<Session> authenticateGameCenter(@NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl, final boolean create, final String username, @NonNull final Map<String, String> vars);
 
     /**
+     * Bans a user from a group. This will prevent the user from being able to rejoin the group.
+     * @param session The session of the user.
+     * @param groupId The group to ban the users from.
+     * @param ids The users to ban from the group..
+     * @return A future.
+     */
+    public ListenableFuture<Empty> banGroupUsers(@NonNull final Session session, @NonNull String groupId, @NonNull final String... ids);
+
+    /**
      * Block one or more friends by id.
      * @param session The session of the user.
      * @param ids The ids of the users to block.
