@@ -300,9 +300,20 @@ public class TournamentTest {
         Assert.assertTrue(found);
 
         endTime = Instant.now().getEpochSecond(); // now
+
         tournaments = client.listTournaments(session, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
         Assert.assertNotNull(tournaments);
-        Assert.assertEquals(0, tournaments.getTournamentsList().size());
+
+        found = false;
+        for (Tournament tt : tournaments.getTournamentsList()) {
+            if (tt.getId().equals(tournamentId)) {
+                found = true;
+                break;
+            }
+        }
+
+        Assert.assertFalse(found);
+
 
         sleep(5000);
 
