@@ -58,7 +58,7 @@ public class TournamentTest {
 
         for (int i = 0; i < 3; i++)
         {
-            object.description = "tournament " + i + " set tournament duration 10s, no end";
+            object.description = "tournament " + i + " set tournament duration 10s";
             object.duration = duration;
             object.category = 6;
             object.join_required = false;
@@ -400,7 +400,7 @@ public class TournamentTest {
     @Test
     public void testTournamentWriteFailBecauseFull() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking set tournament duration 10s, no end, fail more than 1 record";
+        object.description = "checking set tournament duration 10s, fail more than 1 record";
         object.duration = 10;
         object.category = 6;
         object.join_required = false;
@@ -436,7 +436,7 @@ public class TournamentTest {
     @Test
     public void testTournamentWriteFailBecauseTooManyAttempts() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking set tournament duration 10s, no end, fail more than 1 attempt";
+        object.description = "checking set tournament duration 10s, fail more than 1 attempt";
         object.duration = 10;
         object.category = 6;
         object.join_required = false;
@@ -469,7 +469,7 @@ public class TournamentTest {
     @Test
     public void testTournamentWriteFailBecauseJoinRequired() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking set tournament duration 10s, no end, fail join required";
+        object.description = "checking set tournament duration 10s, fail join required";
         object.duration = 10;
         object.category = 6;
         object.join_required = true;
@@ -508,7 +508,7 @@ public class TournamentTest {
     @Test
     public void testTournamentWriteJoinNotRequired() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking set tournament duration 10s, no end, joining idempotent";
+        object.description = "checking set tournament duration 10s, joining idempotent";
         object.duration = 10;
         object.category = 6;
         object.join_required = false;
@@ -620,7 +620,7 @@ public class TournamentTest {
     @Test
     public void testTournamentWriteManyRanks() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking set tournament duration 10s, no end, ranks calculation";
+        object.description = "checking set tournament duration 10s, ranks calculation";
         object.duration = 10;
         object.category = 100;
         object.join_required = false;
@@ -773,7 +773,7 @@ public class TournamentTest {
     @Test
     public void testTournamentAddAttempts() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking set tournament duration 10s, no end, add 1 attempt";
+        object.description = "checking set tournament duration 10s, add 1 attempt";
         object.duration = 10;
         object.category = 6;
         object.join_required = false;
@@ -815,7 +815,7 @@ public class TournamentTest {
     @Test
     public void testTournamentCheckEndCallback() throws Exception {
         TournamentObject object = new TournamentObject();
-        object.description = "checking set tournament duration 2s, no end";
+        object.description = "checking set tournament duration 2s";
         object.duration = 2;
         object.category = 25;
         object.join_required = false;
