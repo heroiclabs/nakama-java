@@ -25,6 +25,9 @@ import org.junit.*;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.time.Instant;
 
 import static java.lang.Thread.sleep;
 
@@ -42,6 +45,38 @@ public class TournamentTest {
     @After
     public void shutdown() throws Exception {
         client.disconnect(5000, TimeUnit.MILLISECONDS);
+    }
+
+    @Test
+    public void testListTournaments() throws Exception {
+
+        TournamentObject object = new TournamentObject();
+
+        List<String> idsList = new ArrayList<String>();
+
+        int duration = 10;
+
+        for (int i = 0; i < 3; i++)
+        {
+            object.description = "tournament " + i + " set tournament duration 10s, no end";
+            object.duration = duration;
+            object.category = 6;
+            object.join_required = false;
+            object.operator = "set";
+            object.max_num_score = 1;
+            object.max_size = 2;
+            object.sort_order = "desc";
+            object.title = "tournament-test";
+
+            final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
+            final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
+
+            idsList.add(tournamentId);
+        }
+
+        List<Tournament> tournamentsList = client.listTournaments(session, 100, null).get().getTournamentsList();
+        Set<Tournament> matchingTournaments = tournamentsList.stream().filter(tt -> idsList.contains(tt.getId())).collect(Collectors.toSet());
+        Assert.assertTrue(idsList.size() == matchingTournaments.size());
     }
 
     @Test
