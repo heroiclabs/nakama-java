@@ -145,7 +145,7 @@ public class TournamentTest {
     public void testCreateTournamentInFuture() throws Exception {
         TournamentObject object = new TournamentObject();
         object.description = "checking set tournament duration 10s, no end, start in future";
-        object.start_time = (new Date().getTime() / 1000) + 10;
+        object.start_time = Instant.now().getEpochSecond() + 10;
         object.duration = 10;
         object.category = 5;
         object.join_required = true;
@@ -262,7 +262,7 @@ public class TournamentTest {
     public void testListTournamentByEndTime() throws Exception {
         TournamentObject object = new TournamentObject();
         object.description = "tournament listing by end time 3s";
-        object.end_time = (new Date().getTime() / 1000) + 3;
+        object.end_time = Instant.now().getEpochSecond() + 3;
         object.duration = 1;
         object.category = 30;
         object.join_required = false;
@@ -292,7 +292,7 @@ public class TournamentTest {
         }
         Assert.assertTrue(found);
 
-        endTime = new Date().getTime() / 1000; // now
+        endTime = Instant.now().getEpochSecond(); // now
         tournaments = client.listTournaments(session, categoryStart, categoryEnd, startTime, endTime, 100, null).get();
         Assert.assertNotNull(tournaments);
         Assert.assertEquals(0, tournaments.getTournamentsList().size());
@@ -550,7 +550,7 @@ public class TournamentTest {
     public void testTournamentWriteAfterDurationAndEndTime() throws Exception {
         TournamentObject object = new TournamentObject();
         object.description = "checking set tournament duration 3s, after tournament end time";
-        object.end_time = (new Date().getTime() / 1000) + 5;
+        object.end_time = Instant.now().getEpochSecond() + 5;
         object.duration = 3;
         object.category = 6;
         object.join_required = false;
@@ -609,6 +609,7 @@ public class TournamentTest {
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
+
         Assert.assertNotNull(tournamentId);
 
         List<LeaderboardRecord> records = new ArrayList<LeaderboardRecord>();
@@ -638,7 +639,7 @@ public class TournamentTest {
         TournamentObject object = new TournamentObject();
         object.description = "checking set tournament duration 3s, end_time 4s, list records";
         object.duration = 3;
-        object.end_time = (new Date().getTime() / 1000) + 4;
+        object.end_time = Instant.now().getEpochSecond() + 4;
         object.category = 100;
         object.join_required = false;
         object.operator = "set";
