@@ -67,6 +67,8 @@ public class TournamentTest {
             object.max_size = 2;
             object.sort_order = "desc";
             object.title = "tournament-test";
+            object.end_time = Instant.now().getEpochSecond() + object.duration;
+
 
             final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
             final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
@@ -91,6 +93,7 @@ public class TournamentTest {
         object.max_size = 2;
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String response = client.rpc(session, "clientrpc.create_same_tournament_multiple_times", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(response, TournamentId.class).tournament_id;
@@ -109,6 +112,7 @@ public class TournamentTest {
         object.max_size = 2;
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String response = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(response, TournamentId.class).tournament_id;
@@ -154,6 +158,7 @@ public class TournamentTest {
         object.max_size = 2;
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String response = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(response, TournamentId.class).tournament_id;
@@ -198,6 +203,7 @@ public class TournamentTest {
         object.max_size = 2;
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String response = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(response, TournamentId.class).tournament_id;
@@ -234,6 +240,7 @@ public class TournamentTest {
         object.max_size = 2;
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String response = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(response, TournamentId.class).tournament_id;
@@ -271,6 +278,7 @@ public class TournamentTest {
         object.max_size = 2;
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String response = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(response, TournamentId.class).tournament_id;
@@ -341,6 +349,7 @@ public class TournamentTest {
         object.max_size = 2;
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
@@ -391,6 +400,7 @@ public class TournamentTest {
         object.max_size = 1; // set full after one write
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
@@ -426,6 +436,7 @@ public class TournamentTest {
         object.max_size = 2;
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
@@ -458,6 +469,7 @@ public class TournamentTest {
         object.max_size = 2;
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
@@ -496,6 +508,7 @@ public class TournamentTest {
         object.max_size = 2;
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
@@ -521,6 +534,7 @@ public class TournamentTest {
         object.max_size = 2;
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
@@ -559,6 +573,7 @@ public class TournamentTest {
         object.max_size = 2;
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
@@ -606,6 +621,7 @@ public class TournamentTest {
         object.max_size = 10;
         object.sort_order = "asc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
@@ -647,6 +663,7 @@ public class TournamentTest {
         object.max_size = 10;
         object.sort_order = "asc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
@@ -678,6 +695,7 @@ public class TournamentTest {
         object.max_size = 10;
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
@@ -757,6 +775,7 @@ public class TournamentTest {
         object.max_size = 2;
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
@@ -798,6 +817,7 @@ public class TournamentTest {
         object.max_size = 1;
         object.sort_order = "desc";
         object.title = "tournament-test";
+        object.end_time = Instant.now().getEpochSecond() + object.duration;
 
         final String payload = client.rpc(session, "clientrpc.create_tournament", gson.toJson(object)).get().getPayload();
         final String tournamentId = gson.fromJson(payload, TournamentId.class).tournament_id;
