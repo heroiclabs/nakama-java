@@ -146,6 +146,7 @@ jar {
         attributes 'Implementation-Title': 'Nakama client',
                    'Implementation-Version': "$project.version"
     }
+    exclude '/**/*.proto'
 }
 
 def pomConfig = {
