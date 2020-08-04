@@ -82,19 +82,8 @@ sourceSets {
             srcDirs "src/main/java"
         }
     }
-
-    generated {
-        java {
-            srcDirs 'build/generated/source/proto/main/grpc'
-            srcDirs 'build/generated/source/proto/main/javalite'
-        }
-    }
 }
 
-compileGeneratedJava {
-    dependsOn("build")
-    options.warnings = false; //generated code warnings are not actionable
-}
 
 idea {
     module {
