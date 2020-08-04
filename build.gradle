@@ -81,6 +81,10 @@ sourceSets {
         java {
             srcDirs "src/main/java"
         }
+
+        proto {
+            exclude 'protoc-gen-swagger/**/*.proto'
+        }
     }
 }
 
