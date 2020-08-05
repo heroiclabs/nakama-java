@@ -139,6 +139,12 @@ To test a specific test, run `./gradlew test --tests <ClassName.methodName>`
 
 You can also run `./gradlew tasks` for a list of available build tasks.
 
+To create a fat JAR with self-contained dependencies, run:
+
+`./gradlew shadow`
+
+All JAR artifacts are output to `build/libs`. The fat JAR will have an `-all` suffix.
+
 ### Protobuf Sourcing
 
 If you need to re-download all .proto dependenies, run `./download-protos` from the root of this repository.
