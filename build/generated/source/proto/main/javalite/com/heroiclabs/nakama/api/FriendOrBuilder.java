@@ -40,4 +40,21 @@ public interface FriendOrBuilder extends
    * <code>optional .google.protobuf.Int32Value state = 2;</code>
    */
   com.google.protobuf.Int32Value getState();
+
+  /**
+   * <pre>
+   * Time of the latest relationship update.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp update_time = 3;</code>
+   */
+  boolean hasUpdateTime();
+  /**
+   * <pre>
+   * Time of the latest relationship update.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp update_time = 3;</code>
+   */
+  com.google.protobuf.Timestamp getUpdateTime();
 }

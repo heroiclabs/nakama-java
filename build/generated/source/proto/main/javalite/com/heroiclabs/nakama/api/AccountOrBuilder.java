@@ -120,4 +120,21 @@ public interface AccountOrBuilder extends
    * <code>optional .google.protobuf.Timestamp verify_time = 6;</code>
    */
   com.google.protobuf.Timestamp getVerifyTime();
+
+  /**
+   * <pre>
+   * The UNIX time when the user's account was disabled/banned.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp disable_time = 7;</code>
+   */
+  boolean hasDisableTime();
+  /**
+   * <pre>
+   * The UNIX time when the user's account was disabled/banned.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp disable_time = 7;</code>
+   */
+  com.google.protobuf.Timestamp getDisableTime();
 }

@@ -129,20 +129,25 @@ Android uses a permissions system which determines which platform services the a
 
 To build the codebase you will need to install these dependencies:
 
-* Java Runtime Environment 1.7+
-* Java Development Kit 1.7+
-* Gradle build tool
+* Java Runtime Environment 1.8+
+* Java Development Kit 1.8+
 
-* Protoc v3.6.0+
-* [Protoc Java Lite compiler](https://github.com/google/protobuf/blob/master/java/lite.md)
+Invoke the Gradle Wrapper with `./gradlew build` and Gradle will install your dependencies over
+the network for you prior to building. It will then make a build and run the full test suite.
 
-The Gradle project is setup to download and manage the Google Protocol buffers compiler toolchain automatically and generate Protobuf Lite definitions required by the source code.
+To test a specific test, run `./gradlew test --tests <ClassName.methodName>`
 
-```
-$> gradle build
-```
+You can also run `./gradlew tasks` for a list of available build tasks.
 
-Run "gradle tasks" for a list of available build tasks.
+To create a fat JAR with self-contained dependencies, run:
+
+`./gradlew shadow`
+
+All JAR artifacts are output to `build/libs`. The fat JAR will have an `-all` suffix.
+
+### Protobuf Sourcing
+
+If you need to re-download all .proto dependenies, run `./download-protos` from the root of this repository.
 
 ### License
 

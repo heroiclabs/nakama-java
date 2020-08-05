@@ -4,8 +4,8 @@ package grpc.gateway.protoc_gen_swagger.options;
 
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options";
 
-import "protoc-gen-swagger/options/openapiv2.proto";
 import "google/protobuf/descriptor.proto";
+import "protoc-gen-swagger/options/openapiv2.proto";
 
 extend google.protobuf.FileOptions {
   // ID assigned by protobuf-global-extension-registry@google.com for grpc-gateway project.
@@ -34,4 +34,11 @@ extend google.protobuf.ServiceOptions {
   // All IDs are the same, as assigned. It is okay that they are the same, as they extend
   // different descriptor messages.
   Tag openapiv2_tag = 1042;
+}
+extend google.protobuf.FieldOptions {
+  // ID assigned by protobuf-global-extension-registry@google.com for grpc-gateway project.
+  //
+  // All IDs are the same, as assigned. It is okay that they are the same, as they extend
+  // different descriptor messages.
+  JSONSchema openapiv2_field = 1042;
 }

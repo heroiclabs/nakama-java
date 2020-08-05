@@ -28,6 +28,8 @@ public  final class User extends
     googleId_ = "";
     gamecenterId_ = "";
     steamId_ = "";
+    facebookInstantGameId_ = "";
+    appleId_ = "";
   }
   public static final int ID_FIELD_NUMBER = 1;
   private java.lang.String id_;
@@ -1043,6 +1045,138 @@ public  final class User extends
     
   }
 
+  public static final int FACEBOOK_INSTANT_GAME_ID_FIELD_NUMBER = 17;
+  private java.lang.String facebookInstantGameId_;
+  /**
+   * <pre>
+   * The Facebook Instant Game ID in the user's account.
+   * </pre>
+   *
+   * <code>optional string facebook_instant_game_id = 17;</code>
+   */
+  public java.lang.String getFacebookInstantGameId() {
+    return facebookInstantGameId_;
+  }
+  /**
+   * <pre>
+   * The Facebook Instant Game ID in the user's account.
+   * </pre>
+   *
+   * <code>optional string facebook_instant_game_id = 17;</code>
+   */
+  public com.google.protobuf.ByteString
+      getFacebookInstantGameIdBytes() {
+    return com.google.protobuf.ByteString.copyFromUtf8(facebookInstantGameId_);
+  }
+  /**
+   * <pre>
+   * The Facebook Instant Game ID in the user's account.
+   * </pre>
+   *
+   * <code>optional string facebook_instant_game_id = 17;</code>
+   */
+  private void setFacebookInstantGameId(
+      java.lang.String value) {
+    if (value == null) {
+    throw new NullPointerException();
+  }
+  
+    facebookInstantGameId_ = value;
+  }
+  /**
+   * <pre>
+   * The Facebook Instant Game ID in the user's account.
+   * </pre>
+   *
+   * <code>optional string facebook_instant_game_id = 17;</code>
+   */
+  private void clearFacebookInstantGameId() {
+    
+    facebookInstantGameId_ = getDefaultInstance().getFacebookInstantGameId();
+  }
+  /**
+   * <pre>
+   * The Facebook Instant Game ID in the user's account.
+   * </pre>
+   *
+   * <code>optional string facebook_instant_game_id = 17;</code>
+   */
+  private void setFacebookInstantGameIdBytes(
+      com.google.protobuf.ByteString value) {
+    if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+    
+    facebookInstantGameId_ = value.toStringUtf8();
+  }
+
+  public static final int APPLE_ID_FIELD_NUMBER = 18;
+  private java.lang.String appleId_;
+  /**
+   * <pre>
+   * The Apple Sign In ID in the user's account.
+   * </pre>
+   *
+   * <code>optional string apple_id = 18;</code>
+   */
+  public java.lang.String getAppleId() {
+    return appleId_;
+  }
+  /**
+   * <pre>
+   * The Apple Sign In ID in the user's account.
+   * </pre>
+   *
+   * <code>optional string apple_id = 18;</code>
+   */
+  public com.google.protobuf.ByteString
+      getAppleIdBytes() {
+    return com.google.protobuf.ByteString.copyFromUtf8(appleId_);
+  }
+  /**
+   * <pre>
+   * The Apple Sign In ID in the user's account.
+   * </pre>
+   *
+   * <code>optional string apple_id = 18;</code>
+   */
+  private void setAppleId(
+      java.lang.String value) {
+    if (value == null) {
+    throw new NullPointerException();
+  }
+  
+    appleId_ = value;
+  }
+  /**
+   * <pre>
+   * The Apple Sign In ID in the user's account.
+   * </pre>
+   *
+   * <code>optional string apple_id = 18;</code>
+   */
+  private void clearAppleId() {
+    
+    appleId_ = getDefaultInstance().getAppleId();
+  }
+  /**
+   * <pre>
+   * The Apple Sign In ID in the user's account.
+   * </pre>
+   *
+   * <code>optional string apple_id = 18;</code>
+   */
+  private void setAppleIdBytes(
+      com.google.protobuf.ByteString value) {
+    if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+    
+    appleId_ = value.toStringUtf8();
+  }
+
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (!id_.isEmpty()) {
@@ -1092,6 +1226,12 @@ public  final class User extends
     }
     if (updateTime_ != null) {
       output.writeMessage(16, getUpdateTime());
+    }
+    if (!facebookInstantGameId_.isEmpty()) {
+      output.writeString(17, getFacebookInstantGameId());
+    }
+    if (!appleId_.isEmpty()) {
+      output.writeString(18, getAppleId());
     }
   }
 
@@ -1163,6 +1303,14 @@ public  final class User extends
     if (updateTime_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(16, getUpdateTime());
+    }
+    if (!facebookInstantGameId_.isEmpty()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeStringSize(17, getFacebookInstantGameId());
+    }
+    if (!appleId_.isEmpty()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeStringSize(18, getAppleId());
     }
     memoizedSerializedSize = size;
     return size;
@@ -2182,6 +2330,126 @@ public  final class User extends
       return this;
     }
 
+    /**
+     * <pre>
+     * The Facebook Instant Game ID in the user's account.
+     * </pre>
+     *
+     * <code>optional string facebook_instant_game_id = 17;</code>
+     */
+    public java.lang.String getFacebookInstantGameId() {
+      return instance.getFacebookInstantGameId();
+    }
+    /**
+     * <pre>
+     * The Facebook Instant Game ID in the user's account.
+     * </pre>
+     *
+     * <code>optional string facebook_instant_game_id = 17;</code>
+     */
+    public com.google.protobuf.ByteString
+        getFacebookInstantGameIdBytes() {
+      return instance.getFacebookInstantGameIdBytes();
+    }
+    /**
+     * <pre>
+     * The Facebook Instant Game ID in the user's account.
+     * </pre>
+     *
+     * <code>optional string facebook_instant_game_id = 17;</code>
+     */
+    public Builder setFacebookInstantGameId(
+        java.lang.String value) {
+      copyOnWrite();
+      instance.setFacebookInstantGameId(value);
+      return this;
+    }
+    /**
+     * <pre>
+     * The Facebook Instant Game ID in the user's account.
+     * </pre>
+     *
+     * <code>optional string facebook_instant_game_id = 17;</code>
+     */
+    public Builder clearFacebookInstantGameId() {
+      copyOnWrite();
+      instance.clearFacebookInstantGameId();
+      return this;
+    }
+    /**
+     * <pre>
+     * The Facebook Instant Game ID in the user's account.
+     * </pre>
+     *
+     * <code>optional string facebook_instant_game_id = 17;</code>
+     */
+    public Builder setFacebookInstantGameIdBytes(
+        com.google.protobuf.ByteString value) {
+      copyOnWrite();
+      instance.setFacebookInstantGameIdBytes(value);
+      return this;
+    }
+
+    /**
+     * <pre>
+     * The Apple Sign In ID in the user's account.
+     * </pre>
+     *
+     * <code>optional string apple_id = 18;</code>
+     */
+    public java.lang.String getAppleId() {
+      return instance.getAppleId();
+    }
+    /**
+     * <pre>
+     * The Apple Sign In ID in the user's account.
+     * </pre>
+     *
+     * <code>optional string apple_id = 18;</code>
+     */
+    public com.google.protobuf.ByteString
+        getAppleIdBytes() {
+      return instance.getAppleIdBytes();
+    }
+    /**
+     * <pre>
+     * The Apple Sign In ID in the user's account.
+     * </pre>
+     *
+     * <code>optional string apple_id = 18;</code>
+     */
+    public Builder setAppleId(
+        java.lang.String value) {
+      copyOnWrite();
+      instance.setAppleId(value);
+      return this;
+    }
+    /**
+     * <pre>
+     * The Apple Sign In ID in the user's account.
+     * </pre>
+     *
+     * <code>optional string apple_id = 18;</code>
+     */
+    public Builder clearAppleId() {
+      copyOnWrite();
+      instance.clearAppleId();
+      return this;
+    }
+    /**
+     * <pre>
+     * The Apple Sign In ID in the user's account.
+     * </pre>
+     *
+     * <code>optional string apple_id = 18;</code>
+     */
+    public Builder setAppleIdBytes(
+        com.google.protobuf.ByteString value) {
+      copyOnWrite();
+      instance.setAppleIdBytes(value);
+      return this;
+    }
+
     // @@protoc_insertion_point(builder_scope:nakama.api.User)
   }
   protected final Object dynamicMethod(
@@ -2233,6 +2501,10 @@ public  final class User extends
             other.edgeCount_ != 0, other.edgeCount_);
         createTime_ = visitor.visitMessage(createTime_, other.createTime_);
         updateTime_ = visitor.visitMessage(updateTime_, other.updateTime_);
+        facebookInstantGameId_ = visitor.visitString(!facebookInstantGameId_.isEmpty(), facebookInstantGameId_,
+            !other.facebookInstantGameId_.isEmpty(), other.facebookInstantGameId_);
+        appleId_ = visitor.visitString(!appleId_.isEmpty(), appleId_,
+            !other.appleId_.isEmpty(), other.appleId_);
         if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
             .INSTANCE) {
         }
@@ -2363,6 +2635,18 @@ public  final class User extends
                   updateTime_ = subBuilder.buildPartial();
                 }
 
+                break;
+              }
+              case 138: {
+                String s = input.readStringRequireUtf8();
+
+                facebookInstantGameId_ = s;
+                break;
+              }
+              case 146: {
+                String s = input.readStringRequireUtf8();
+
+                appleId_ = s;
                 break;
               }
             }

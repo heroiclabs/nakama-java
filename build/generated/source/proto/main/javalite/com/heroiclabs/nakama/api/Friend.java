@@ -290,6 +290,82 @@ public  final class Friend extends
     
   }
 
+  public static final int UPDATE_TIME_FIELD_NUMBER = 3;
+  private com.google.protobuf.Timestamp updateTime_;
+  /**
+   * <pre>
+   * Time of the latest relationship update.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp update_time = 3;</code>
+   */
+  public boolean hasUpdateTime() {
+    return updateTime_ != null;
+  }
+  /**
+   * <pre>
+   * Time of the latest relationship update.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp update_time = 3;</code>
+   */
+  public com.google.protobuf.Timestamp getUpdateTime() {
+    return updateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : updateTime_;
+  }
+  /**
+   * <pre>
+   * Time of the latest relationship update.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp update_time = 3;</code>
+   */
+  private void setUpdateTime(com.google.protobuf.Timestamp value) {
+    if (value == null) {
+      throw new NullPointerException();
+    }
+    updateTime_ = value;
+    
+    }
+  /**
+   * <pre>
+   * Time of the latest relationship update.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp update_time = 3;</code>
+   */
+  private void setUpdateTime(
+      com.google.protobuf.Timestamp.Builder builderForValue) {
+    updateTime_ = builderForValue.build();
+    
+  }
+  /**
+   * <pre>
+   * Time of the latest relationship update.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp update_time = 3;</code>
+   */
+  private void mergeUpdateTime(com.google.protobuf.Timestamp value) {
+    if (updateTime_ != null &&
+        updateTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+      updateTime_ =
+        com.google.protobuf.Timestamp.newBuilder(updateTime_).mergeFrom(value).buildPartial();
+    } else {
+      updateTime_ = value;
+    }
+    
+  }
+  /**
+   * <pre>
+   * Time of the latest relationship update.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp update_time = 3;</code>
+   */
+  private void clearUpdateTime() {  updateTime_ = null;
+    
+  }
+
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (user_ != null) {
@@ -297,6 +373,9 @@ public  final class Friend extends
     }
     if (state_ != null) {
       output.writeMessage(2, getState());
+    }
+    if (updateTime_ != null) {
+      output.writeMessage(3, getUpdateTime());
     }
   }
 
@@ -312,6 +391,10 @@ public  final class Friend extends
     if (state_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getState());
+    }
+    if (updateTime_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getUpdateTime());
     }
     memoizedSerializedSize = size;
     return size;
@@ -541,6 +624,75 @@ public  final class Friend extends
       return this;
     }
 
+    /**
+     * <pre>
+     * Time of the latest relationship update.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp update_time = 3;</code>
+     */
+    public boolean hasUpdateTime() {
+      return instance.hasUpdateTime();
+    }
+    /**
+     * <pre>
+     * Time of the latest relationship update.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp update_time = 3;</code>
+     */
+    public com.google.protobuf.Timestamp getUpdateTime() {
+      return instance.getUpdateTime();
+    }
+    /**
+     * <pre>
+     * Time of the latest relationship update.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp update_time = 3;</code>
+     */
+    public Builder setUpdateTime(com.google.protobuf.Timestamp value) {
+      copyOnWrite();
+      instance.setUpdateTime(value);
+      return this;
+      }
+    /**
+     * <pre>
+     * Time of the latest relationship update.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp update_time = 3;</code>
+     */
+    public Builder setUpdateTime(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      copyOnWrite();
+      instance.setUpdateTime(builderForValue);
+      return this;
+    }
+    /**
+     * <pre>
+     * Time of the latest relationship update.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp update_time = 3;</code>
+     */
+    public Builder mergeUpdateTime(com.google.protobuf.Timestamp value) {
+      copyOnWrite();
+      instance.mergeUpdateTime(value);
+      return this;
+    }
+    /**
+     * <pre>
+     * Time of the latest relationship update.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp update_time = 3;</code>
+     */
+    public Builder clearUpdateTime() {  copyOnWrite();
+      instance.clearUpdateTime();
+      return this;
+    }
+
     // @@protoc_insertion_point(builder_scope:nakama.api.Friend)
   }
   protected final Object dynamicMethod(
@@ -564,6 +716,7 @@ public  final class Friend extends
         com.heroiclabs.nakama.api.Friend other = (com.heroiclabs.nakama.api.Friend) arg1;
         user_ = visitor.visitMessage(user_, other.user_);
         state_ = visitor.visitMessage(state_, other.state_);
+        updateTime_ = visitor.visitMessage(updateTime_, other.updateTime_);
         if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
             .INSTANCE) {
         }
@@ -610,6 +763,19 @@ public  final class Friend extends
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(state_);
                   state_ = subBuilder.buildPartial();
+                }
+
+                break;
+              }
+              case 26: {
+                com.google.protobuf.Timestamp.Builder subBuilder = null;
+                if (updateTime_ != null) {
+                  subBuilder = updateTime_.toBuilder();
+                }
+                updateTime_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(updateTime_);
+                  updateTime_ = subBuilder.buildPartial();
                 }
 
                 break;

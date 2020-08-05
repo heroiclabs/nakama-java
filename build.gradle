@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+
 buildscript {
     repositories {
         maven {
@@ -21,26 +23,27 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.6'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.12'
     }
 }
 
 plugins {
     id 'java'
     id 'idea'
-    id 'com.github.johnrengelman.shadow' version '2.0.4'
-    id 'org.ajoberstar.git-publish' version '1.0.1'
+    id 'eclipse'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'org.ajoberstar.git-publish' version '2.1.3'
     id 'com.jfrog.bintray' version '1.8.4'
     id 'maven-publish'
-    id 'com.google.protobuf' version '0.8.6'
+    id 'com.google.protobuf' version '0.8.12'
 }
 
 group = 'com.heroiclabs.nakama'
 version = '2.0.5-SNAPSHOT'
 def description = 'Android optimized Java client for Nakama server.'
-def gopath = System.getenv('GOPATH')
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     maven {
@@ -51,44 +54,68 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.10'
-    compile 'com.google.code.gson:gson:2.8.6'
-    compile 'com.google.protobuf:protobuf-lite:3.0.1'
-    compile ('io.grpc:grpc-okhttp:1.21.0') {
+    annotationProcessor 'org.projectlombok:lombok:1.18.10'
+    implementation("org.projectlombok:lombok:1.18.10")
+
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.protobuf:protobuf-lite:3.0.1'
+    implementation ('io.grpc:grpc-okhttp:1.21.0') {
         exclude group: 'com.squareup.okio', module:'okio'
     }
-    compile 'com.squareup.okio:okio:1.14.0'
-    compile 'com.squareup.okhttp3:okhttp:3.11.0'
-    compile 'io.grpc:grpc-protobuf-lite:1.21.0'
-    compile 'io.grpc:grpc-stub:1.21.0'
-    compile 'javax.annotation:javax.annotation-api:1.3.2'
-    compile ('com.google.api.grpc:googleapis-common-protos:0.0.3') {
+    implementation 'com.squareup.okio:okio:1.14.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'io.grpc:grpc-protobuf-lite:1.21.0'
+    implementation 'io.grpc:grpc-stub:1.21.0'
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation ('com.google.api.grpc:googleapis-common-protos:0.0.3') {
         exclude group: 'io.grpc', module:'grpc-protobuf'
     }
-    compile ('org.slf4j:slf4j-api:1.7.25') {
+    implementation ('org.slf4j:slf4j-api:1.7.25') {
         force = true // don't upgrade to "1.8.0-alpha2"
     }
     testCompile 'junit:junit:4.12'
+    testCompile "org.slf4j:slf4j-simple:1.7.9" //logger for testing
+
 }
 
 sourceSets {
     main {
         java {
-            srcDirs 'build/generated/source/proto/main/grpc'
-            srcDirs 'build/generated/source/proto/main/javalite'
+            srcDirs "src/main/java"
         }
+
         proto {
-            srcDir 'src/main/proto'
-            include "${gopath}/src/github.com/grpc-ecosystem/grpc-gateway/"
-            include "${gopath}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/"
+            exclude 'protoc-gen-swagger/**/*.proto'
         }
     }
 }
+
 
 idea {
     module {
         sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/grpc");
         sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/javalite");
+    }
+}
+
+/* Disable warnings from generated source code. */
+eclipse {
+    classpath {
+      file {
+            beforeMerged {
+                def grpcSource = entries.find {
+                    it.path == "build/generated/source/proto/main/grpc"
+                }
+
+                grpcSource.entryAttributes["ignore_optional_problems"] = 'true'
+
+                def javaLiteSource = entries.find {
+                    it.path == "build/generated/source/proto/main/javalite"
+                }
+
+                javaLiteSource.entryAttributes["ignore_optional_problems"] = 'true'
+            }
+        }
     }
 }
 
@@ -125,6 +152,7 @@ jar {
         attributes 'Implementation-Title': 'Nakama client',
                    'Implementation-Version': "$project.version"
     }
+    exclude '/**/*.proto'
 }
 
 def pomConfig = {
@@ -195,8 +223,17 @@ def pomConfig = {
          include '0.2.0/**'
          include '0.3.0/**'
      }
-     commitMessage = "Published javadoc" + project.version + "via Gradle " + GradleVersion.current().version + "."
+     commitMessage = "Published javadoc" + project.version + " via Gradle 6.5.1."
  }
+
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+}
 
  publishing {
      publications {
@@ -225,13 +262,14 @@ def pomConfig = {
      }
  }
 
-shadowJar {
+task relocateShadowJar(type: ConfigureShadowRelocation) {
+    target = tasks.shadowJar
+    prefix = "nakama" // prefix all classpath entries with `nakama`
 }
 
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-}
+tasks.shadowJar.dependsOn tasks.relocateShadowJar
 
-task javadocJar(type: Jar) {
-    from javadoc
+test {
+    testLogging.showStandardStreams = true
+    testLogging.exceptionFormat = 'full'
 }

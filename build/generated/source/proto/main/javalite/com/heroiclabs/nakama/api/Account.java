@@ -548,6 +548,82 @@ public  final class Account extends
     
   }
 
+  public static final int DISABLE_TIME_FIELD_NUMBER = 7;
+  private com.google.protobuf.Timestamp disableTime_;
+  /**
+   * <pre>
+   * The UNIX time when the user's account was disabled/banned.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp disable_time = 7;</code>
+   */
+  public boolean hasDisableTime() {
+    return disableTime_ != null;
+  }
+  /**
+   * <pre>
+   * The UNIX time when the user's account was disabled/banned.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp disable_time = 7;</code>
+   */
+  public com.google.protobuf.Timestamp getDisableTime() {
+    return disableTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : disableTime_;
+  }
+  /**
+   * <pre>
+   * The UNIX time when the user's account was disabled/banned.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp disable_time = 7;</code>
+   */
+  private void setDisableTime(com.google.protobuf.Timestamp value) {
+    if (value == null) {
+      throw new NullPointerException();
+    }
+    disableTime_ = value;
+    
+    }
+  /**
+   * <pre>
+   * The UNIX time when the user's account was disabled/banned.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp disable_time = 7;</code>
+   */
+  private void setDisableTime(
+      com.google.protobuf.Timestamp.Builder builderForValue) {
+    disableTime_ = builderForValue.build();
+    
+  }
+  /**
+   * <pre>
+   * The UNIX time when the user's account was disabled/banned.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp disable_time = 7;</code>
+   */
+  private void mergeDisableTime(com.google.protobuf.Timestamp value) {
+    if (disableTime_ != null &&
+        disableTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+      disableTime_ =
+        com.google.protobuf.Timestamp.newBuilder(disableTime_).mergeFrom(value).buildPartial();
+    } else {
+      disableTime_ = value;
+    }
+    
+  }
+  /**
+   * <pre>
+   * The UNIX time when the user's account was disabled/banned.
+   * </pre>
+   *
+   * <code>optional .google.protobuf.Timestamp disable_time = 7;</code>
+   */
+  private void clearDisableTime() {  disableTime_ = null;
+    
+  }
+
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (user_ != null) {
@@ -567,6 +643,9 @@ public  final class Account extends
     }
     if (verifyTime_ != null) {
       output.writeMessage(6, getVerifyTime());
+    }
+    if (disableTime_ != null) {
+      output.writeMessage(7, getDisableTime());
     }
   }
 
@@ -598,6 +677,10 @@ public  final class Account extends
     if (verifyTime_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, getVerifyTime());
+    }
+    if (disableTime_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, getDisableTime());
     }
     memoizedSerializedSize = size;
     return size;
@@ -1152,6 +1235,75 @@ public  final class Account extends
       return this;
     }
 
+    /**
+     * <pre>
+     * The UNIX time when the user's account was disabled/banned.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp disable_time = 7;</code>
+     */
+    public boolean hasDisableTime() {
+      return instance.hasDisableTime();
+    }
+    /**
+     * <pre>
+     * The UNIX time when the user's account was disabled/banned.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp disable_time = 7;</code>
+     */
+    public com.google.protobuf.Timestamp getDisableTime() {
+      return instance.getDisableTime();
+    }
+    /**
+     * <pre>
+     * The UNIX time when the user's account was disabled/banned.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp disable_time = 7;</code>
+     */
+    public Builder setDisableTime(com.google.protobuf.Timestamp value) {
+      copyOnWrite();
+      instance.setDisableTime(value);
+      return this;
+      }
+    /**
+     * <pre>
+     * The UNIX time when the user's account was disabled/banned.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp disable_time = 7;</code>
+     */
+    public Builder setDisableTime(
+        com.google.protobuf.Timestamp.Builder builderForValue) {
+      copyOnWrite();
+      instance.setDisableTime(builderForValue);
+      return this;
+    }
+    /**
+     * <pre>
+     * The UNIX time when the user's account was disabled/banned.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp disable_time = 7;</code>
+     */
+    public Builder mergeDisableTime(com.google.protobuf.Timestamp value) {
+      copyOnWrite();
+      instance.mergeDisableTime(value);
+      return this;
+    }
+    /**
+     * <pre>
+     * The UNIX time when the user's account was disabled/banned.
+     * </pre>
+     *
+     * <code>optional .google.protobuf.Timestamp disable_time = 7;</code>
+     */
+    public Builder clearDisableTime() {  copyOnWrite();
+      instance.clearDisableTime();
+      return this;
+    }
+
     // @@protoc_insertion_point(builder_scope:nakama.api.Account)
   }
   protected final Object dynamicMethod(
@@ -1183,6 +1335,7 @@ public  final class Account extends
         customId_ = visitor.visitString(!customId_.isEmpty(), customId_,
             !other.customId_.isEmpty(), other.customId_);
         verifyTime_ = visitor.visitMessage(verifyTime_, other.verifyTime_);
+        disableTime_ = visitor.visitMessage(disableTime_, other.disableTime_);
         if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
             .INSTANCE) {
           bitField0_ |= other.bitField0_;
@@ -1257,6 +1410,19 @@ public  final class Account extends
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(verifyTime_);
                   verifyTime_ = subBuilder.buildPartial();
+                }
+
+                break;
+              }
+              case 58: {
+                com.google.protobuf.Timestamp.Builder subBuilder = null;
+                if (disableTime_ != null) {
+                  subBuilder = disableTime_.toBuilder();
+                }
+                disableTime_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(disableTime_);
+                  disableTime_ = subBuilder.buildPartial();
                 }
 
                 break;

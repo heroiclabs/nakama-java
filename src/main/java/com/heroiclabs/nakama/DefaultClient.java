@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The Nakama Authors
+ * Copyright 2020 The Nakama Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
@@ -715,6 +716,11 @@ public class DefaultClient implements Client {
 
     private ListenableFuture<Session> authenticateGameCenter(@NonNull final AuthenticateGameCenterRequest request) {
         return convertSession(getStub().authenticateGameCenter(request));
+    }
+
+    @Override
+    public ListenableFuture<Empty> banGroupUsers(@NonNull final Session session, @NonNull String groupId, @NonNull final String... ids) {
+        return getStub(session).banGroupUsers(BanGroupUsersRequest.newBuilder().setGroupId(groupId).addAllUserIds(Arrays.asList(ids)).build());
     }
 
     @Override

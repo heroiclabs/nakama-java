@@ -274,4 +274,40 @@ public interface UserOrBuilder extends
    * <code>optional .google.protobuf.Timestamp update_time = 16;</code>
    */
   com.google.protobuf.Timestamp getUpdateTime();
+
+  /**
+   * <pre>
+   * The Facebook Instant Game ID in the user's account.
+   * </pre>
+   *
+   * <code>optional string facebook_instant_game_id = 17;</code>
+   */
+  java.lang.String getFacebookInstantGameId();
+  /**
+   * <pre>
+   * The Facebook Instant Game ID in the user's account.
+   * </pre>
+   *
+   * <code>optional string facebook_instant_game_id = 17;</code>
+   */
+  com.google.protobuf.ByteString
+      getFacebookInstantGameIdBytes();
+
+  /**
+   * <pre>
+   * The Apple Sign In ID in the user's account.
+   * </pre>
+   *
+   * <code>optional string apple_id = 18;</code>
+   */
+  java.lang.String getAppleId();
+  /**
+   * <pre>
+   * The Apple Sign In ID in the user's account.
+   * </pre>
+   *
+   * <code>optional string apple_id = 18;</code>
+   */
+  com.google.protobuf.ByteString
+      getAppleIdBytes();
 }
