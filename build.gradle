@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+
 buildscript {
     repositories {
         maven {
@@ -260,8 +262,12 @@ task javadocJar(type: Jar) {
      }
  }
 
-shadowJar {
+task relocateShadowJar(type: ConfigureShadowRelocation) {
+    target = tasks.shadowJar
+    prefix = "nakama" // prefix all classpath entries with `nakama`
 }
+
+tasks.shadowJar.dependsOn tasks.relocateShadowJar
 
 test {
     testLogging.showStandardStreams = true
