@@ -72,7 +72,7 @@ public class NotificationTest {
                 Assert.assertNotEquals(0, n.getCreateTime().getSeconds());
 
                 // should be within a couple seconds of one another
-                Assert.assertTrue(Instant.now().getEpochSecond() - n.getCreateTime().getSeconds() < 2);
+                Assert.assertTrue(Math.abs(Instant.now().getEpochSecond() - n.getCreateTime().getSeconds()) < 2);
 
                 latch.countDown();
             }
