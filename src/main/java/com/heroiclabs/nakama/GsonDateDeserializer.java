@@ -24,7 +24,7 @@ public class GsonDateDeserializer implements JsonDeserializer<Date> {
 			return formatter.parse(date);
 		}
 		catch (ParseException e) {
-			throw new JsonParseException("Could not deserialize DateTime.");
+			throw new JsonParseException("Could not deserialize Date.");
 		}
 	}
 }
