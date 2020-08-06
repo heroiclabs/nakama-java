@@ -17,15 +17,14 @@ public class GsonDateDeserializer implements JsonDeserializer<Date> {
 	@Override
 	public Date deserialize(JsonElement element, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
 		String date = element.getAsString();
-
-		SimpleDateFormat formatter = new SimpleDateFormat("M/d/yy hh:mm a");
+		SimpleDateFormat formatter = new SimpleDateFormat("y-M-d'T'H:m:s'Z'");
 		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 		try {
 			return formatter.parse(date);
 		}
 		catch (ParseException e) {
-			throw new JsonParseException("Could not deserialze DateTime.");
+			throw new JsonParseException("Could not deserialize DateTime.");
 		}
 	}
 }
