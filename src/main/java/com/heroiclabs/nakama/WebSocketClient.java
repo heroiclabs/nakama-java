@@ -70,7 +70,7 @@ public class WebSocketClient implements SocketClient {
     private final ExecutorService listenerThreadPoolExec = Executors.newCachedThreadPool();
 
     WebSocketClient(@NonNull final String host, final int port, final boolean ssl,
-                    final int socketTimeoutMs, final boolean trace) {
+                    final int socketTimeoutMs, final int socketPingMs, final boolean trace) {
         this.host = host;
         this.port = port;
         this.ssl = ssl;
@@ -81,7 +81,7 @@ public class WebSocketClient implements SocketClient {
                 .connectTimeout(socketTimeoutMs, TimeUnit.MILLISECONDS)
                 .readTimeout(socketTimeoutMs, TimeUnit.MILLISECONDS)
                 .writeTimeout(socketTimeoutMs, TimeUnit.MILLISECONDS)
-                .pingInterval(0, TimeUnit.SECONDS)
+                .pingInterval(socketPingMs, TimeUnit.SECONDS)
                 .build();
     }
 
