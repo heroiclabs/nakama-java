@@ -24,6 +24,7 @@ import com.google.gson.*;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Timestamp;
+import com.google.type.Date;
 import com.heroiclabs.nakama.api.NotificationList;
 import com.heroiclabs.nakama.api.Rpc;
 import lombok.NonNull;
@@ -57,7 +58,7 @@ public class WebSocketClient implements SocketClient {
     static final Gson GSON = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .registerTypeHierarchyAdapter(byte[].class, new ByteArrayToBase64TypeAdapter())
-            .setDateFormat("y-M-d'T'H:m:s'Z'")
+            .registerTypeAdapter(Date.class, new GsonDateDeserializer())
             .create();
 
     private final String host;

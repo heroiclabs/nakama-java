@@ -29,6 +29,8 @@ import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import java.time.Instant;
+
 public class NotificationTest {
     private Client client;
     private Session session;
@@ -68,6 +70,10 @@ public class NotificationTest {
                 Assert.assertEquals(session.getUserId(), n.getSenderId());
                 Assert.assertNotNull(n.getCreateTime());
                 Assert.assertNotEquals(0, n.getCreateTime().getSeconds());
+
+                // should be within a couple seconds of one another
+                Assert.assertTrue(Math.abs(Instant.now().getEpochSecond() - n.getCreateTime().getSeconds()) < 2);
+
                 latch.countDown();
             }
         }).get();
