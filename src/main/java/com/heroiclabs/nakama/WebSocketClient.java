@@ -54,6 +54,12 @@ public class WebSocketClient implements SocketClient {
         }
     }
 
+    // The connect, read and write timeout for new connections.
+    public static final int DEFAULT_TIMEOUT_MS = 5000;
+
+    // The interval at which to send Ping frames to the server.
+    public static final int DEFAULT_PING_MS = 5000;
+
     static final Gson GSON = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .registerTypeHierarchyAdapter(byte[].class, new ByteArrayToBase64TypeAdapter())
