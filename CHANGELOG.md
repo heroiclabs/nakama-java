@@ -9,6 +9,10 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 - Moved all external .proto dependencies into this repository.
 - Upgraded from Gradle 4 to Gradle 6.
 - Fixed bugs in Tournaments test suite.
+- Added configurable ping frame intervals to Web Socket.
+- Fixed incorrect time being parsed from timestamps.
+- Removed transitive dependency on Protobuf-Java.
+
 ## [2.0.4] - 2020-01-23
 ### Added
 - Updated gRPC, GSON and Lombok dependencies.
