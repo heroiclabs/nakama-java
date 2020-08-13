@@ -174,13 +174,18 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public SocketClient createSocket(final int port, final int socketTimeoutMs, final int socketPingMs) {
-        return new WebSocketClient(host, port, ssl, socketTimeoutMs, socketPingMs, this.trace);
+    public SocketClient createSocket(final int port, final int socketTimeoutMs) {
+        return new WebSocketClient(host, port, ssl, socketTimeoutMs, WebSocketClient.DEFAULT_PING_MS, this.trace);
     }
 
     @Override
     public SocketClient createSocket(final String host, final int port, final boolean ssl) {
         return new WebSocketClient(host, port, ssl, WebSocketClient.DEFAULT_TIMEOUT_MS, WebSocketClient.DEFAULT_PING_MS, this.trace);
+    }
+
+    @Override
+    public SocketClient createSocket(final String host, final int port, final boolean ssl, final int socketTimeoutMs) {
+        return new WebSocketClient(host, port, ssl, socketTimeoutMs, WebSocketClient.DEFAULT_PING_MS, this.trace);
     }
 
     @Override

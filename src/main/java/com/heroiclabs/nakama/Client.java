@@ -56,10 +56,9 @@ public interface Client {
      * Create a new socket from the client.
      * @param port The port number of the server. Default should be 7350.
      * @param socketTimeoutMs Sets the connect, read and write timeout for new connections.
-     * @param socketPingMs The interval at which to send Ping frames to the server.
      * @return a new SocketClient instance.
      */
-    SocketClient createSocket(final int port, final int socketTimeoutMs, final int socketPingMs);
+    SocketClient createSocket(final int port, final int socketTimeoutMs);
 
     /**
      * Create a new socket from the client.
@@ -77,6 +76,16 @@ public interface Client {
      * @return a new SocketClient instance.
      */
     SocketClient createSocket(final String host, final int port, final boolean ssl);
+
+    /**
+     * Create a new socket from the client.
+     * @param host The host URL of the server.
+     * @param port The port number of the server. Default should be 7350.
+     * @param ssl Whether to use SSL to connect to the server.
+     * @param socketTimeoutMs Sets the connect, read and write timeout for new connections.
+     * @return a new SocketClient instance.
+     */
+    SocketClient createSocket(final String host, final int port, final boolean ssl, final int socketTimeoutMs);
 
     /**
      * Create a new socket from the client.
