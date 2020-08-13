@@ -262,6 +262,10 @@ task javadocJar(type: Jar) {
      }
  }
 
+shadowJar {
+    mergeServiceFiles()
+}
+
 task relocateShadowJar(type: ConfigureShadowRelocation) {
     target = tasks.shadowJar
     prefix = "nakama" // prefix all classpath entries with `nakama`
