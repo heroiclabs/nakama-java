@@ -36,6 +36,9 @@ plugins {
     id 'com.jfrog.bintray' version '1.8.4'
     id 'maven-publish'
     id 'com.google.protobuf' version '0.8.12'
+
+    //for distTar which is called when importing this SDK w/ JitPack
+    id 'distribution'
 }
 
 group = 'com.heroiclabs.nakama'
