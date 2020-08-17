@@ -165,7 +165,7 @@ public class DefaultClient implements Client {
 
     @Override
     public SocketClient createSocket(final int port) {
-        return createSocket(port, WebSocketClient.DEFAULT_TIMEOUT_MS, WebSocketClient.DEFAULT_PING_MS);
+        return createSocket(port, WebSocketClient.DEFAULT_TIMEOUT_MS);
     }
 
     @Override
