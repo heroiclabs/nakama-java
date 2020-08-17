@@ -81,15 +81,6 @@ dependencies {
     }
     testCompile 'junit:junit:4.12'
     testCompile "org.slf4j:slf4j-simple:1.7.9" //logger for testing
-
-}
-
-configurations.all {
-    resolutionStrategy {
-        dependencySubstitution {
-            substitute module('com.google.protobuf:protobuf-java') with module('io.grpc:grpc-protobuf-lite:1.21.0')
-        }
-    }
 }
 
 sourceSets {
