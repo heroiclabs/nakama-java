@@ -16,8 +16,10 @@
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
 
+// dependencies required by the gradle build script itself
 buildscript {
     repositories {
+        // where to resolve the dependencies
         maven {
             url "https://maven-central.storage-download.googleapis.com/repos/central/data/"
         }
@@ -28,15 +30,14 @@ buildscript {
 }
 
 plugins {
-    id 'java'
-    id 'idea'
-    id 'eclipse'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
-    id 'maven-publish'
     id 'com.google.protobuf' version '0.8.12'
-
     //for distTar which is called when importing this SDK w/ JitPack
     id 'distribution'
+    id 'eclipse'
+    id 'maven-publish'
+    id 'idea'
+    id 'java'
 }
 
 group = 'com.heroiclabs.nakama'
@@ -47,6 +48,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
+    // where to pull dependencies from
     maven {
         url "https://maven-central.storage-download.googleapis.com/repos/central/data/"
     }
@@ -55,6 +57,7 @@ repositories {
 }
 
 dependencies {
+    // syntax sugaring for data models
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
     implementation "org.projectlombok:lombok:1.18.12"
 
@@ -199,7 +202,7 @@ publishing {
             }
 
             groupId "$project.group"
-            artifactId 'client'
+            artifactId 'thin'
             version "$project.version"
 
             pom.withXml {
@@ -212,6 +215,21 @@ publishing {
         }
 
         shadow(MavenPublication) {
+            artifact sourcesJar {
+                classifier 'sources'
+            }
+
+            groupId "$project.group"
+            artifactId 'fat'
+            version "$project.version"
+
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', description)
+                root.appendNode('name', 'Nakama client')
+                root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/')
+                root.children().last() + pomConfig
+            }
             project.shadow.component(it)
             artifact jar
         }
