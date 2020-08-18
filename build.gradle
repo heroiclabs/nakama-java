@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Heroic Labs
+ * Copyright 2020 Heroic Labs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,18 +59,19 @@ dependencies {
     implementation("org.projectlombok:lombok:1.18.12")
 
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.google.protobuf:protobuf-lite:3.0.1'
+    implementation 'com.google.protobuf:protobuf-javalite:3.13.0'
+
 
     //extract google's common protos like Timestamp from protobuf-java, since protobuf-lite does not package them
-    protobuf 'com.google.protobuf:protobuf-java:3.0.2'
+    protobuf 'com.google.protobuf:protobuf-java:3.13.0'
 
-    implementation ('io.grpc:grpc-okhttp:1.21.0') {
+    implementation ('io.grpc:grpc-okhttp:1.31.1') {
         exclude group: 'com.squareup.okio', module:'okio'
     }
     implementation 'com.squareup.okio:okio:1.14.0'
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
-    implementation 'io.grpc:grpc-protobuf-lite:1.21.0'
-    implementation 'io.grpc:grpc-stub:1.21.0'
+    implementation 'io.grpc:grpc-protobuf-lite:1.31.1'
+    implementation 'io.grpc:grpc-stub:1.31.1'
     implementation 'javax.annotation:javax.annotation-api:1.3.2'
 
     implementation ('com.google.api.grpc:googleapis-common-protos:0.0.3') {
@@ -127,27 +128,25 @@ eclipse {
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.6.0'
+        artifact = 'com.google.protobuf:protoc:3.13.0'
     }
+
     plugins {
-        javalite {
-            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
-        }
         grpc {
-            artifact = "io.grpc:protoc-gen-grpc-java:1.14.0"
+            artifact = "io.grpc:protoc-gen-grpc-java:1.31.1"
         }
     }
+
     generateProtoTasks {
         all().each { task ->
             task.builtins {
-                remove java // Don't generate a copy with "protobuf-java".
+                java {
+                    option "lite"
+                }
             }
+
             task.plugins {
-                javalite { // Must activate "javalite" plugin.
-                }
-                grpc { // Must activate "grpc" plugin.
-                    option 'lite'
-                }
+                grpc { option "lite" }
             }
         }
     }
