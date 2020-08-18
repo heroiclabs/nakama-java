@@ -239,9 +239,6 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
 }
 
-task javadocJar(type: Jar) {
-    from javadoc
-}
 
  publishing {
      publications {
@@ -251,9 +248,7 @@ task javadocJar(type: Jar) {
              artifact sourcesJar {
                  classifier 'sources'
              }
-             artifact javadocJar {
-                 classifier 'javadoc'
-             }
+
 
              groupId "$project.group"
              artifactId 'client'
@@ -267,6 +262,13 @@ task javadocJar(type: Jar) {
                  root.children().last() + pomConfig
              }
          }
+
+
+        shadow(MavenPublication) {
+          project.shadow.component(it)
+          artifact jar
+        }
+
      }
  }
 
