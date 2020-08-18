@@ -68,8 +68,9 @@ dependencies {
     implementation ('io.grpc:grpc-okhttp:1.31.1') {
         exclude group: 'com.squareup.okio', module:'okio'
     }
-    implementation 'com.squareup.okio:okio:1.14.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+
+    implementation 'com.squareup.okio:okio:2.7.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.8.1'
     implementation 'io.grpc:grpc-protobuf-lite:1.31.1'
     implementation 'io.grpc:grpc-stub:1.31.1'
     implementation 'javax.annotation:javax.annotation-api:1.3.2'
