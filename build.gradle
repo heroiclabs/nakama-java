@@ -56,14 +56,10 @@ repositories {
 
 dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
-    implementation("org.projectlombok:lombok:1.18.12")
+    implementation "org.projectlombok:lombok:1.18.12"
 
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.protobuf:protobuf-javalite:3.13.0'
-
-
-    //extract google's common protos like Timestamp from protobuf-java, since protobuf-lite does not package them
-    protobuf 'com.google.protobuf:protobuf-java:3.13.0'
 
     implementation ('io.grpc:grpc-okhttp:1.31.1') {
         exclude group: 'com.squareup.okio', module:'okio'
@@ -79,7 +75,8 @@ dependencies {
         exclude group: 'io.grpc', module:'grpc-protobuf'
     }
 
-    implementation ('org.slf4j:slf4j-api:1.7.30')
+    implementation 'org.slf4j:slf4j-api:1.7.30'
+
     testCompile 'junit:junit:4.12'
     testCompile "org.slf4j:slf4j-simple:1.7.9" //logger for testing
 }
@@ -95,7 +92,6 @@ sourceSets {
         }
     }
 }
-
 
 idea {
     module {
@@ -188,7 +184,6 @@ def pomConfig = {
         url 'https://github.com/heroiclabs/nakama-java'
     }
 }
-
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
