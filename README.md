@@ -47,18 +47,21 @@ dependencies {
   </repositories>
 
   ...
+  <dependencies>
+    <dependency>
+      <groupId>com.github.heroiclabs.nakama-java</groupId>
+      <artifactId>thin</artifactId>
+      <version>_commit_</version>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
 
-  <dependency>
-    <groupId>com.github.heroiclabs.nakama-java</groupId>
-    <artifactId>thin</artifactId>
-    <version>_commit_</version>
-    <type>jar</type>
-  </dependency>
 ```
 
 Or, if you would like to depend on a fat JAR with Maven:
 
 ```xml
+  <dependencies>
     <dependency>
       <groupId>com.github.heroiclabs.nakama-java</groupId>
       <artifactId>fat</artifactId>
@@ -66,6 +69,7 @@ Or, if you would like to depend on a fat JAR with Maven:
       <classifier>all</classifier>
       <type>jar</type>
     </dependency>
+  </dependencies>
 ```
 
 Alternatively, you can download the client from the [releases page](https://github.com/heroiclabs/nakama-java/releases) and import it into your project. You can also [build from source](#source-builds).
