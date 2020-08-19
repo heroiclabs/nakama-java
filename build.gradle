@@ -79,7 +79,6 @@ dependencies {
     }
 
     implementation 'org.slf4j:slf4j-api:1.7.30'
-    implementation 'org.slf4j:slf4j-simple:1.7.30'
 
     testCompile 'junit:junit:4.12'
 }
@@ -230,6 +229,10 @@ publishing {
 
 shadowJar {
     mergeServiceFiles()
+    dependencies {
+        // provide an actual logger implementation for self-contained shadow jar
+        include(dependency('org.slf4j:slf4j-simple:1.7.30'))
+    }
 }
 
 task relocateShadowJar(type: ConfigureShadowRelocation) {
