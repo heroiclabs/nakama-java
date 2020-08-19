@@ -40,10 +40,10 @@ dependencies {
 
 ```xml
   <repositories>
-		<repository>
+    <repository>
       <id>jitpack.io</id>
       <url>https://jitpack.io</url>
-		</repository>
+    </repository>
   </repositories>
 
   ...
@@ -61,7 +61,7 @@ Or, if you would like to depend on a fat JAR with Maven:
 ```xml
     <dependency>
       <groupId>com.github.heroiclabs.nakama-java</groupId>
-	    <artifactId>fat</artifactId>
+      <artifactId>fat</artifactId>
       <version>_commit_</version>
       <classifier>all</classifier>
       <type>jar</type>
