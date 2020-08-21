@@ -38,6 +38,7 @@ plugins {
     id 'maven-publish'
     id 'idea'
     id 'java'
+    id 'java-library'
 }
 
 group = 'com.heroiclabs.nakama'
@@ -79,6 +80,8 @@ dependencies {
     }
 
     implementation 'org.slf4j:slf4j-api:1.7.30'
+
+    api 'com.google.guava:guava:29.0-android' // listenable future is part of the SDK public API
 
     testCompile 'junit:junit:4.12'
 }
