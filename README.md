@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.heroiclabs.nakama-java:thin:<commit>'
+    implementation 'com.github.heroiclabs.nakama-java:main:<commit>'
 
  // or, depend on the fat Jar which bundles all of the Nakama Java dependencies into a single Jar.
  // implementation 'com.github.heroiclabs.nakama-java:fat:<commit>:all
@@ -50,7 +50,7 @@ dependencies {
   <dependencies>
     <dependency>
       <groupId>com.github.heroiclabs.nakama-java</groupId>
-      <artifactId>thin</artifactId>
+      <artifactId>main</artifactId>
       <version>_commit_</version>
       <type>jar</type>
     </dependency>

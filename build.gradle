@@ -216,7 +216,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-            artifactId 'thin'
+            artifactId 'main'
         }
 
         shadow(MavenPublication) {
