@@ -193,6 +193,12 @@ If you'd like to test a Jitpack publish task locally prior to pushing, run:
 
 If you need to re-download all .proto dependenies, run `./download-protos` from the root of this repository.
 
+### Jitpack
+
+Jitpack makes builds of each commit on its own servers. You can view the results of each build and the corresponding artifacts at the following url:
+
+https://jitpack.io/com/github/heroiclabs/nakama-java/<commit>/build.log
+
 ### License
 
 This project is licensed under the [Apache-2 License](https://github.com/heroiclabs/nakama-dotnet/blob/master/LICENSE).
