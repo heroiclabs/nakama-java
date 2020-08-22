@@ -15,24 +15,64 @@ You'll need to setup the server and database before you can connect with the cli
 
 1. Install and run the servers. Follow these [instructions](https://heroiclabs.com/docs/install-docker-quickstart).
 
-2. Download the client from the [releases page](https://github.com/heroiclabs/nakama-java/releases) and import it into your project. You can also [build from source](#source-builds).
+2. The Java SDK can be imported with either Grade or Maven through [Jitpack](https://jitpack.io/).
 
-<!-- Alternatively, if you use a build tool like Gradle you can skip the download and fetch it from the central repository.
+### Gradle
 
 ```groovy
+
 repositories {
     maven {
-        url 'https://dl.bintray.com/heroiclabs/default/'
+        url 'https://jitpack.io'
     }
 }
 
 dependencies {
-  compile(group: 'com.heroiclabs.nakama', name: 'client', version: '+')
-  compile('org.slf4j:slf4j-api:1.7.25') {
-    force = true // don't upgrade to "1.8.0-alpha2"
-  }
+    implementation 'com.github.heroiclabs.nakama-java:main:<commit>'
+
+ // or, depend on the fat Jar which bundles all of the Nakama Java dependencies into a single Jar.
+ // implementation 'com.github.heroiclabs.nakama-java:fat:<commit>:all
 }
-``` -->
+
+```
+
+### Maven
+
+```xml
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
+
+  ...
+  <dependencies>
+    <dependency>
+      <groupId>com.github.heroiclabs.nakama-java</groupId>
+      <artifactId>main</artifactId>
+      <version>_commit_</version>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
+
+```
+
+Or, if you would like to depend on a fat JAR with Maven:
+
+```xml
+  <dependencies>
+    <dependency>
+      <groupId>com.github.heroiclabs.nakama-java</groupId>
+      <artifactId>fat</artifactId>
+      <version>_commit_</version>
+      <classifier>all</classifier>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
+```
+
+Alternatively, you can download the client from the [releases page](https://github.com/heroiclabs/nakama-java/releases) and import it into your project. You can also [build from source](#source-builds).
 
 3. Use the connection credentials to build a client object.
 
@@ -145,9 +185,19 @@ To create a fat JAR with self-contained dependencies, run:
 
 All JAR artifacts are output to `build/libs`. The fat JAR will have an `-all` suffix.
 
+If you'd like to test a Jitpack publish task locally prior to pushing, run:
+
+`./gradlew publishToMavenLocal`
+
 ### Protobuf Sourcing
 
 If you need to re-download all .proto dependenies, run `./download-protos` from the root of this repository.
+
+### Jitpack
+
+Jitpack makes builds of each commit on its own servers. You can view the results of each build and the corresponding artifacts at the following url:
+
+https://jitpack.io/com/github/heroiclabs/nakama-java/<commit>/build.log
 
 ### License
 

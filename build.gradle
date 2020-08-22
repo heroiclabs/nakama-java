@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Heroic Labs
+ * Copyright 2020 Heroic Labs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,10 @@
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
 
+// dependencies required by the gradle build script itself
 buildscript {
     repositories {
+        // where to resolve the dependencies
         maven {
             url "https://maven-central.storage-download.googleapis.com/repos/central/data/"
         }
@@ -28,14 +30,15 @@ buildscript {
 }
 
 plugins {
-    id 'java'
-    id 'idea'
-    id 'eclipse'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
-    id 'org.ajoberstar.git-publish' version '2.1.3'
-    id 'com.jfrog.bintray' version '1.8.4'
-    id 'maven-publish'
     id 'com.google.protobuf' version '0.8.12'
+    //for distTar which is called when importing this SDK w/ JitPack
+    id 'distribution'
+    id 'eclipse'
+    id 'maven-publish'
+    id 'idea'
+    id 'java'
+    id 'java-library'
 }
 
 group = 'com.heroiclabs.nakama'
@@ -46,6 +49,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
+    // where to pull dependencies from
     maven {
         url "https://maven-central.storage-download.googleapis.com/repos/central/data/"
     }
@@ -54,33 +58,32 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor 'org.projectlombok:lombok:1.18.10'
-    implementation("org.projectlombok:lombok:1.18.10")
+    // syntax sugaring for data models
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    implementation "org.projectlombok:lombok:1.18.12"
 
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.google.protobuf:protobuf-lite:3.0.1'
+    implementation 'com.google.protobuf:protobuf-javalite:3.13.0'
 
-    //extract google's common protos like Timestamp from protobuf-java, since protobuf-lite does not package them
-    protobuf 'com.google.protobuf:protobuf-java:3.0.2'
-
-    implementation ('io.grpc:grpc-okhttp:1.21.0') {
+    implementation ('io.grpc:grpc-okhttp:1.31.1') {
         exclude group: 'com.squareup.okio', module:'okio'
     }
-    implementation 'com.squareup.okio:okio:1.14.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
-    implementation 'io.grpc:grpc-protobuf-lite:1.21.0'
-    implementation 'io.grpc:grpc-stub:1.21.0'
-    implementation 'javax.annotation:javax.annotation-api:1.3.2'
 
+    implementation 'com.squareup.okio:okio:2.7.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.8.1'
+    implementation 'io.grpc:grpc-protobuf-lite:1.31.1'
+    implementation 'io.grpc:grpc-stub:1.31.1'
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation 'org.slf4j:slf4j-simple:1.7.30'
     implementation ('com.google.api.grpc:googleapis-common-protos:0.0.3') {
         exclude group: 'io.grpc', module:'grpc-protobuf'
     }
 
-    implementation ('org.slf4j:slf4j-api:1.7.25') {
-        force = true // don't upgrade to "1.8.0-alpha2"
-    }
+    implementation 'org.slf4j:slf4j-api:1.7.30'
+
+    api 'com.google.guava:guava:29.0-android' // listenable future is part of the SDK public API
+
     testCompile 'junit:junit:4.12'
-    testCompile "org.slf4j:slf4j-simple:1.7.9" //logger for testing
 }
 
 sourceSets {
@@ -94,7 +97,6 @@ sourceSets {
         }
     }
 }
-
 
 idea {
     module {
@@ -126,27 +128,25 @@ eclipse {
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.6.0'
+        artifact = 'com.google.protobuf:protoc:3.13.0'
     }
+
     plugins {
-        javalite {
-            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
-        }
         grpc {
-            artifact = "io.grpc:protoc-gen-grpc-java:1.14.0"
+            artifact = "io.grpc:protoc-gen-grpc-java:1.31.1"
         }
     }
+
     generateProtoTasks {
         all().each { task ->
             task.builtins {
-                remove java // Don't generate a copy with "protobuf-java".
+                java {
+                    option "lite"
+                }
             }
+
             task.plugins {
-                javalite { // Must activate "javalite" plugin.
-                }
-                grpc { // Must activate "grpc" plugin.
-                    option 'lite'
-                }
+                grpc { option "lite" }
             }
         }
     }
@@ -190,85 +190,50 @@ def pomConfig = {
     }
 }
 
- bintray {
-     user = bintrayUser
-     key = bintrayKey
-     publications = ['mavenJava']
-     pkg {
-         repo = 'default'
-         name = 'nakama-client'
-         desc = description
-         userOrg = 'heroiclabs'
-         licenses = ['Apache-2.0']
-         vcsUrl = 'https://github.com/heroiclabs/nakama-java.git'
-         publicDownloadNumbers = true
-         version {
-             name = "$project.version"
-             released = new Date()
-             vcsTag = project.findProperty('vcsTag')
-         }
-     }
- }
-
- gitPublish {
-     repoUri = 'git@github.com:heroiclabs/nakama-java.git'
-     branch = 'gh-pages'
-     contents {
-         from(javadoc) {
-             into "$project.version"
-         }
-         from(javadoc) {
-             into 'current'
-         }
-     }
-     preserve {
-         include '0.1.0/**'
-         include '0.1.1/**'
-         include '0.1.2/**'
-         include '0.2.0/**'
-         include '0.3.0/**'
-     }
-     commitMessage = "Published javadoc" + project.version + " via Gradle 6.5.1."
- }
-
-
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
 }
 
-task javadocJar(type: Jar) {
-    from javadoc
+tasks.withType(AbstractPublishToMaven).all {
+    doFirst {
+        publication.artifact sourcesJar {
+            classifier 'sources'
+        }
+
+        publication.groupId "$project.group"
+        publication.version "$project.version"
+
+        publication.pom.withXml {
+            def root = asNode()
+            root.appendNode('description', description)
+            root.appendNode('name', 'Nakama client')
+            root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/')
+            root.children().last() + pomConfig
+        }
+    }
 }
 
- publishing {
-     publications {
-         mavenJava(MavenPublication) {
-             from components.java
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifactId 'main'
+        }
 
-             artifact sourcesJar {
-                 classifier 'sources'
-             }
-             artifact javadocJar {
-                 classifier 'javadoc'
-             }
-
-             groupId "$project.group"
-             artifactId 'client'
-             version "$project.version"
-
-             pom.withXml {
-                 def root = asNode()
-                 root.appendNode('description', description)
-                 root.appendNode('name', 'Nakama client')
-                 root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/')
-                 root.children().last() + pomConfig
-             }
-         }
-     }
- }
+        shadow(MavenPublication) {
+            project.shadow.component(it)
+            artifactId 'fat'
+            artifact jar
+        }
+    }
+}
 
 shadowJar {
     mergeServiceFiles()
+    dependencies {
+        // provide an actual logger implementation for self-contained shadow jar
+        exclude(dependency('org.slf4j:slf4j-simple:1.7.30'))
+    }
 }
 
 task relocateShadowJar(type: ConfigureShadowRelocation) {
