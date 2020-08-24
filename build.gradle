@@ -217,13 +217,12 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-            artifactId 'main'
+            artifactId 'nakama-java'
         }
 
         shadow(MavenPublication) {
             project.shadow.component(it)
-            artifactId 'fat'
-            artifact jar
+            artifactId 'nakama-java-all'
         }
     }
 }
@@ -234,6 +233,8 @@ shadowJar {
         // provide an actual logger implementation for self-contained shadow jar
         exclude(dependency('org.slf4j:slf4j-simple:1.7.30'))
     }
+    archiveClassifier.set("") //otherwise appends redundant default of '-all'
+
 }
 
 task relocateShadowJar(type: ConfigureShadowRelocation) {
