@@ -194,24 +194,6 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
 }
 
-tasks.withType(AbstractPublishToMaven).all {
-    doFirst {
-        publication.artifact sourcesJar {
-            classifier 'sources'
-        }
-
-        publication.groupId "$project.group"
-        publication.version "$project.version"
-
-        publication.pom.withXml {
-            def root = asNode()
-            root.appendNode('description', description)
-            root.appendNode('name', 'Nakama client')
-            root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/')
-            root.children().last() + pomConfig
-        }
-    }
-}
 
 publishing {
     publications {
@@ -227,6 +209,23 @@ publishing {
     }
 }
 
+
+tasks.withType(AbstractPublishToMaven).all {
+        publication.artifact sourcesJar {
+            classifier 'sources'
+        }
+
+        publication.groupId "$project.group"
+        publication.version "$project.version"
+
+        publication.pom.withXml {
+            def root = asNode()
+            root.appendNode('description', description)
+            root.appendNode('name', 'Nakama client')
+            root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/')
+            root.children().last() + pomConfig
+        }
+}
 shadowJar {
     mergeServiceFiles()
     dependencies {
