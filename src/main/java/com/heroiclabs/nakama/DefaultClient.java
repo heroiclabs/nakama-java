@@ -36,6 +36,8 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -175,22 +177,27 @@ public class DefaultClient implements Client {
 
     @Override
     public SocketClient createSocket(final int port, final int socketTimeoutMs) {
-        return new WebSocketClient(host, port, ssl, socketTimeoutMs, WebSocketClient.DEFAULT_PING_MS, this.trace);
+        return new WebSocketClient(host, port, ssl, socketTimeoutMs, WebSocketClient.DEFAULT_PING_MS, this.trace, Executors.newSingleThreadExecutor());
     }
 
     @Override
     public SocketClient createSocket(final String host, final int port, final boolean ssl) {
-        return new WebSocketClient(host, port, ssl, WebSocketClient.DEFAULT_TIMEOUT_MS, WebSocketClient.DEFAULT_PING_MS, this.trace);
+        return new WebSocketClient(host, port, ssl, WebSocketClient.DEFAULT_TIMEOUT_MS, WebSocketClient.DEFAULT_PING_MS, this.trace, Executors.newSingleThreadExecutor());
     }
 
     @Override
     public SocketClient createSocket(final String host, final int port, final boolean ssl, final int socketTimeoutMs) {
-        return new WebSocketClient(host, port, ssl, socketTimeoutMs, WebSocketClient.DEFAULT_PING_MS, this.trace);
+        return new WebSocketClient(host, port, ssl, socketTimeoutMs, WebSocketClient.DEFAULT_PING_MS, this.trace, Executors.newSingleThreadExecutor());
     }
 
     @Override
     public SocketClient createSocket(final String host, final int port, final boolean ssl, final int socketTimeoutMs, final int socketPingMs) {
-        return new WebSocketClient(host, port, ssl, socketTimeoutMs, socketPingMs, this.trace);
+        return new WebSocketClient(host, port, ssl, socketTimeoutMs, socketPingMs, this.trace, Executors.newSingleThreadExecutor());
+    }
+
+    @Override
+    public SocketClient createSocket(final String host, final int port, final boolean ssl, final int socketTimeoutMs, final int socketPingMs, ExecutorService listenerThreadExec) {
+        return new WebSocketClient(host, port, ssl, socketTimeoutMs, socketPingMs, this.trace, listenerThreadExec);
     }
 
     @Override
