@@ -157,6 +157,9 @@ socket.connect(session, listener).get();
 System.out.println("Socket connected successfully.");
 ```
 
+By default, all socket messages are processed in a single thread. Advanced users who want to pass a multithreaded `ExecutorService` to the `client.createSocket` method should be aware that incoming messages
+will not necessarily be processed in order by that socket.
+
 ### For Android
 
 Android uses a permissions system which determines which platform services the application will request to use and ask permission for from the user. The client uses the network to communicate with the server so you must add the "INTERNET" permission.
