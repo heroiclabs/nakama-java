@@ -157,8 +157,7 @@ socket.connect(session, listener).get();
 System.out.println("Socket connected successfully.");
 ```
 
-By default, all socket messages are processed in a single thread. Advanced users who want to pass a multithreaded `ExecutorService` to the `client.createSocket` method should be aware that incoming messages
-will not necessarily be processed in order by that socket.
+By default, all socket messages are processed in a single thread. Advanced users who want to pass a multithreaded `ExecutorService` to the `client.createSocket` method should be aware that incoming messages will not necessarily be processed in order by that socket.
 
 ### For Android
 
