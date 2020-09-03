@@ -74,7 +74,7 @@ public class WebSocketClient implements SocketClient {
     private final OkHttpClient client;
     private final Map<String, SettableFuture<?>> collationIds;
     private WebSocket socket;
-    private final ExecutorService listenerThreadPoolExec = Executors.newCachedThreadPool();
+    private final ExecutorService listenerThreadPoolExec = Executors.newSingleThreadExecutor();
 
     WebSocketClient(@NonNull final String host, final int port, final boolean ssl,
                     final int socketTimeoutMs, final int socketPingMs, final boolean trace) {
