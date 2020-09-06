@@ -15,6 +15,7 @@
  */
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+import org.gradle.plugins.ide.eclipse.model.SourceFolder
 
 // dependencies required by the gradle build script itself
 buildscript {
@@ -100,7 +101,7 @@ sourceSets {
 idea {
     module {
         sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/grpc");
-        sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/javalite");
+        sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/java");
     }
 }
 
@@ -108,7 +109,11 @@ idea {
 eclipse {
     classpath {
       file {
-            beforeMerged {
+            whenMerged {
+
+                entries += new SourceFolder("build/generated/source/proto/main/grpc", null)
+                entries += new SourceFolder("build/generated/source/proto/main/java", null)
+
                 def grpcSource = entries.find {
                     it.path == "build/generated/source/proto/main/grpc"
                 }
@@ -116,7 +121,7 @@ eclipse {
                 grpcSource.entryAttributes["ignore_optional_problems"] = 'true'
 
                 def javaLiteSource = entries.find {
-                    it.path == "build/generated/source/proto/main/javalite"
+                    it.path == "build/generated/source/proto/main/java"
                 }
 
                 javaLiteSource.entryAttributes["ignore_optional_problems"] = 'true'

@@ -22,6 +22,7 @@ import com.heroiclabs.nakama.api.*;
 import lombok.NonNull;
 
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -97,6 +98,18 @@ public interface Client {
      * @return a new SocketClient instance.
      */
     SocketClient createSocket(final String host, final int port, final boolean ssl, final int socketTimeoutMs, final int socketPingMs);
+
+    /**
+     * Create a new socket from the client.
+     * @param host The host URL of the server.
+     * @param port The port number of the server. Default should be 7350.
+     * @param ssl Whether to use SSL to connect to the server.
+     * @param socketTimeoutMs Sets the connect, read and write timeout for new connections.
+     * @param socketPingMs The interval at which to send Ping frames to the server.
+     * @param listenerThreadExec The threading model to use when processing socket messages from the server.
+     * @return a new SocketClient instance.
+     */
+    SocketClient createSocket(final String host, final int port, final boolean ssl, final int socketTimeoutMs, final int socketPingMs, ExecutorService listenerThreadExec);
 
     /**
      * Add one or more friends by id.

@@ -39,7 +39,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -74,15 +73,16 @@ public class WebSocketClient implements SocketClient {
     private final OkHttpClient client;
     private final Map<String, SettableFuture<?>> collationIds;
     private WebSocket socket;
-    private final ExecutorService listenerThreadPoolExec = Executors.newCachedThreadPool();
+    private final ExecutorService listenerThreadExec;
 
     WebSocketClient(@NonNull final String host, final int port, final boolean ssl,
-                    final int socketTimeoutMs, final int socketPingMs, final boolean trace) {
+                    final int socketTimeoutMs, final int socketPingMs, final boolean trace, ExecutorService listenerThreadExec) {
         this.host = host;
         this.port = port;
         this.ssl = ssl;
         this.trace = trace;
         this.collationIds = new ConcurrentHashMap<>();
+        this.listenerThreadExec = listenerThreadExec;
 
         client = new OkHttpClient.Builder()
                 .connectTimeout(socketTimeoutMs, TimeUnit.MILLISECONDS)
@@ -157,7 +157,7 @@ public class WebSocketClient implements SocketClient {
 
                 final String collationId = env.getCid();
                 if (collationId == null || "".equals(collationId)) {
-                    listenerThreadPoolExec.execute(new Runnable() {
+                    listenerThreadExec.execute(new Runnable() {
                         @Override
                         public void run() {
                             if (env.getError() != null) {
