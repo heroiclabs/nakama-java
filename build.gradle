@@ -42,7 +42,7 @@ plugins {
     id 'java-library'
 }
 
-group = 'com.heroiclabs.nakama'
+group = 'com.github.heroiclabs'
 version = '2.0.5-SNAPSHOT'
 def description = 'Android optimized Java client for Nakama server.'
 
