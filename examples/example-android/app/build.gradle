@@ -1,0 +1,48 @@
+apply plugin: 'com.android.application'
+
+repositories {
+    maven {
+        url 'https://jitpack.io'
+    }
+
+    mavenLocal()
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.0"
+
+    defaultConfig {
+        applicationId "com.example.nakama_java_test_android"
+        minSdkVersion 30
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+configurations {
+    implementation.exclude module:'proto-google-common-protos'
+    implementation.exclude module:'protolite-well-known-types'
+    implementation.exclude module:'protobuf-lite'
+    implementation.exclude module:'protobuf-java'
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'com.github.heroiclabs:nakama-java:724d882ef46bca2d685943f1d712729e8a7c4dff'
+}
