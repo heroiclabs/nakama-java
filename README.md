@@ -31,7 +31,7 @@ dependencies {
     implementation 'com.github.heroiclabs:nakama-java:<commit>'
 
  // or, depend on the fat Jar which bundles all of the Nakama Java dependencies into a single Jar.
- // implementation 'com.github.heroiclabs:nakama-java-all:<commit>
+ // implementation 'com.github.heroiclabs:nakama-java:<commit>:all
 }
 
 ```
@@ -64,8 +64,9 @@ Or, if you would like to depend on a fat JAR with Maven:
   <dependencies>
     <dependency>
       <groupId>com.github.heroiclabs</groupId>
-      <artifactId>nakama-java-all</artifactId>
+      <artifactId>nakama-java</artifactId>
       <version>_commit_</version>
+      <classifier>all</classifier>
       <type>jar</type>
     </dependency>
   </dependencies>
