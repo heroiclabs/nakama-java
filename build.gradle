@@ -208,7 +208,7 @@ publishing {
 
         shadow(MavenPublication) {
             project.shadow.component(it)
-            artifactId 'nakama-java-all'
+            artifactId 'nakama-java'
         }
     }
 }
@@ -232,7 +232,6 @@ tasks.withType(AbstractPublishToMaven).all {
 }
 shadowJar {
     mergeServiceFiles()
-    archiveClassifier.set("") //otherwise appends redundant default of '-all'
 }
 
 task relocateShadowJar(type: ConfigureShadowRelocation) {
