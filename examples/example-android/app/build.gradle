@@ -14,7 +14,7 @@ android {
     buildToolsVersion "30.0.0"
 
     defaultConfig {
-        applicationId "com.example.nakama_java_test_android"
+        applicationId "com.example.androidnakama"
         minSdkVersion 30
         targetSdkVersion 30
         versionCode 1
