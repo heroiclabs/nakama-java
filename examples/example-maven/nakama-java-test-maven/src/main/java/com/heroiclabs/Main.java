@@ -14,23 +14,32 @@
  * limitations under the License.
  */
 
-package com.heroiclabs;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.heroiclabs.nakama.*;
 
-public class App {
+public class Main {
 
     public static void main(String[] args) {
         DefaultClient client = new DefaultClient("defaultkey", "127.0.0.1", 7349, false);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
 
         try {
             String email = "super@heroes.com";
             String password = "batsignal";
-            Session session = client.authenticateEmail(email, password).get();
-            System.out.println(session);
+            Futures.addCallback(client.authenticateEmail(email, password), new FutureCallback<Session>() {
+                @Override
+                public void onSuccess(final Session result) {
+                    System.out.println("got session: " + result.getAuthToken());
+                }
+            }, executor);
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
+
+        executor.shutdownNow();
     }
 }

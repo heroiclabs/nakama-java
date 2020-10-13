@@ -60,5 +60,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation 'com.github.heroiclabs:nakama-java:724d882ef46bca2d685943f1d712729e8a7c4dff'
+    implementation 'com.github.heroiclabs:nakama-java:724d882ef46bca2d685943f1d712729e8a7c4dff:all'
 }

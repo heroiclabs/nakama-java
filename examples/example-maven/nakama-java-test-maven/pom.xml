@@ -48,7 +48,7 @@
     <dependency>
       <groupId>com.github.heroiclabs</groupId>
 	    <artifactId>nakama-java</artifactId>
-      <version>26fc0acad37b8944f6225e204fbc47eb32043e61</version>
+      <version>724d882ef46bca2d685943f1d712729e8a7c4dff</version>
       <classifier>all</classifier>
       <type>jar</type>
     </dependency>

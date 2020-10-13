@@ -24,13 +24,7 @@
 plugins {
     id 'application'
     id 'java'
-}
-
-configurations {
-    implementation.exclude module:'proto-google-common-protos'
-    implementation.exclude module:'protolite-well-known-types'
-    implementation.exclude module:'protobuf-lite'
-    implementation.exclude module:'protobuf-java'
+    id 'java-library'
 }
 
 repositories {
@@ -43,9 +37,7 @@ repositories {
 }
 
 dependencies {
-    implementation ('com.github.heroiclabs:nakama-java:26fc0acad37b8944f6225e204fbc47eb32043e61') {
-        exclude group: 'org.slf4j', module: 'slf4j-api'
-    }
+    api 'com.github.heroiclabs:nakama-java:724d882ef46bca2d685943f1d712729e8a7c4dff'
 }
 
 
