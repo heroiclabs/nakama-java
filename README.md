@@ -31,7 +31,7 @@ dependencies {
     implementation 'com.github.heroiclabs:nakama-java:<commit>'
 
  // or, depend on the fat Jar which bundles all of the Nakama Java dependencies into a single Jar.
- // implementation 'com.github.heroiclabs:nakama-java:<commit>:all
+ // implementation 'com.github.heroiclabs:nakama-java-all:<commit>'
 }
 
 ```
@@ -64,9 +64,8 @@ Or, if you would like to depend on a fat JAR with Maven:
   <dependencies>
     <dependency>
       <groupId>com.github.heroiclabs</groupId>
-      <artifactId>nakama-java</artifactId>
+      <artifactId>nakama-java-all</artifactId>
       <version>_commit_</version>
-      <classifier>all</classifier>
       <type>jar</type>
     </dependency>
   </dependencies>
@@ -187,7 +186,7 @@ To create a fat JAR with self-contained dependencies, run:
 
 `./gradlew shadow`
 
-All JAR artifacts are output to `build/libs`. The fat JAR will have an `-all` suffix.
+All JAR artifacts are output to `build/libs`. The fat JAR will have an artifact id of 'nakama-java-all` suffix.
 
 If you'd like to test a Jitpack publish task locally prior to pushing, run:
 
