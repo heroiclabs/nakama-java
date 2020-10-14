@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import com.google.common.util.concurrent.ListenableFuture;
+import java.util.concurrent.*;
+import com.google.common.util.concurrent.*;
+// fat jar
+// import nakama.com.google.common.util.concurrent.*;
 import com.heroiclabs.nakama.*;
 
 public class Main {
@@ -33,6 +33,12 @@ public class Main {
                 @Override
                 public void onSuccess(final Session result) {
                     System.out.println("got session: " + result.getAuthToken());
+                    executor.shutdown();
+                }
+                @Override
+                public void onFailure(final Throwable throwable) {
+                    System.out.println(throwable.getMessage());
+                    executor.shutdown();
                 }
             }, executor);
         }
@@ -40,6 +46,10 @@ public class Main {
             System.out.println(e.getMessage());
         }
 
-        executor.shutdownNow();
+        try {
+          executor.awaitTermination(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

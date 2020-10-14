@@ -21,7 +21,6 @@ repositories {
         url 'https://jitpack.io'
     }
 
-    mavenLocal()
     mavenCentral()
 }
 
@@ -60,5 +59,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation 'com.github.heroiclabs:nakama-java:724d882ef46bca2d685943f1d712729e8a7c4dff:all'
+    implementation 'com.github.heroiclabs.nakama-java:nakama-java:dde7330adfa1867881dc6c6c6e27c1176512c916'
+//  fat JAR
+//  implementation 'com.github.heroiclabs.nakama-java:nakama-java-all:dde7330adfa1867881dc6c6c6e27c1176512c916'
 }

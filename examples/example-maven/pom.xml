@@ -25,8 +25,7 @@
   <version>1.0-SNAPSHOT</version>
 
   <name>nakama-java-test-maven</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <url>https://github.com/heroiclabs/nakama-java</url>
   <repositories>
 		<repository>
 		    <id>jitpack.io</id>
@@ -46,12 +45,18 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.github.heroiclabs</groupId>
+      <groupId>com.github.heroiclabs.nakama-java</groupId>
 	    <artifactId>nakama-java</artifactId>
-      <version>724d882ef46bca2d685943f1d712729e8a7c4dff</version>
-      <classifier>all</classifier>
+      <version>dde7330adfa1867881dc6c6c6e27c1176512c916</version>
       <type>jar</type>
     </dependency>
+ <!-- fat jar   
+    <dependency>
+      <groupId>com.github.heroiclabs.nakama-java</groupId>
+	    <artifactId>nakama-java-all</artifactId>
+      <version>dde7330adfa1867881dc6c6c6e27c1176512c916</version>
+      <type>jar</type>
+    </dependency> -->
   </dependencies>
 
   <build>
@@ -63,7 +68,7 @@
           <artifactId>exec-maven-plugin</artifactId>
           <version>1.4.0</version>
           <configuration>
-            <mainClass>com.heroiclabs.App</mainClass>
+            <mainClass>Main</mainClass>
           </configuration>
         </plugin>
         <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
@@ -91,7 +96,7 @@
               <manifest>
                 <addClasspath>true</addClasspath>
                 <classpathPrefix>lib/</classpathPrefix>
-                <mainClass>com.heroiclabs.App</mainClass>
+                <mainClass>Main</mainClass>
               </manifest>
             </archive>
           </configuration>

@@ -24,7 +24,6 @@
 plugins {
     id 'application'
     id 'java'
-    id 'java-library'
 }
 
 repositories {
@@ -32,14 +31,15 @@ repositories {
         url 'https://jitpack.io'
     }
 
-    mavenLocal()
-    mavenCentral()
+    mavenCentral() // resolve Guava
 }
 
 dependencies {
-    api 'com.github.heroiclabs:nakama-java:724d882ef46bca2d685943f1d712729e8a7c4dff'
-}
+    implementation 'com.github.heroiclabs.nakama-java:nakama-java:dde7330adfa1867881dc6c6c6e27c1176512c916'
+//  fat Jar
+//  implementation 'com.github.heroiclabs.nakama-java:nakama-java-all:dde7330adfa1867881dc6c6c6e27c1176512c916'
 
+}
 
 application {
     mainClass = 'Main'
