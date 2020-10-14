@@ -300,7 +300,5 @@ $RECYCLE.BIN/
 
 # End of https://www.gitignore.io/api/git,java,macos,linux,gradle,eclipse,windows,sublimetext,intellij+all,intellij+iml
 
-
 # Maven
-
 **/target
