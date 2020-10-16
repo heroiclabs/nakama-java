@@ -200,7 +200,7 @@ If you need to re-download all .proto dependenies, run `./download-protos` from 
 
 Jitpack makes builds of each commit on its own servers. You can view the results of each build and the corresponding artifacts at the following url:
 
-https://jitpack.io/com/github/heroiclabs/nakama-java/\<commit>/build.log
+https://jitpack.io/com/github/heroiclabs/nakama-java/<_commit_>/build.log
 
 ### License
 
