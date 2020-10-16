@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.nakama_java_test_android">
+    package="com.example.testandroid">
 
     <application
         android:allowBackup="true"

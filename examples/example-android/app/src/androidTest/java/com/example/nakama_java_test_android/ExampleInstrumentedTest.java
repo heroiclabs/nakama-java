@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.nakama_java_test_android;
+package com.example.testandroid;
 
 import android.content.Context;
 
