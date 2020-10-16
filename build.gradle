@@ -208,7 +208,10 @@ publishing {
 
         shadow(MavenPublication) {
             project.shadow.component(it)
-            artifactId 'nakama-java'
+            artifactId 'nakama-java-all'
+
+            // override default classifier of 'all'
+            it.artifacts[0].classifier = ''
         }
     }
 }

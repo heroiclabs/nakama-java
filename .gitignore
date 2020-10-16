@@ -1,6 +1,6 @@
 # Created by https://www.gitignore.io/api/git,java,macos,linux,gradle,eclipse,windows,sublimetext,intellij+all,intellij+iml
 
-build/*
+**/build
 
 ### Custom ###
 .BINTRAY
@@ -284,13 +284,13 @@ $RECYCLE.BIN/
 *.lnk
 
 ### Gradle ###
-.gradle
+**/.gradle
 
 # Ignore Gradle GUI config
-gradle-app.setting
+**/gradle-app.setting
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
+**/gradle-wrapper.jar
 
 # Cache of project
 .gradletasknamecache
@@ -299,3 +299,6 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 
 # End of https://www.gitignore.io/api/git,java,macos,linux,gradle,eclipse,windows,sublimetext,intellij+all,intellij+iml
+
+# Maven
+**/target
