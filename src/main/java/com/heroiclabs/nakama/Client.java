@@ -944,6 +944,15 @@ public interface Client {
     ListenableFuture<Empty> linkFacebook(@NonNull final Session session, @NonNull final String accessToken, final boolean importFriends);
 
     /**
+     * Link a Facebook Instant Games profile to a user account.
+     *
+     * @param session The session of the user.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @return A future.
+     */
+    ListenableFuture<Empty> linkFacebookInstantGame(@NonNull final Session session, @NonNull final String accessToken);
+
+    /**
      * Link a Google profile to a user account.
      *
      * @param session The session of the user.
@@ -1597,6 +1606,15 @@ public interface Client {
      * @return A future.
      */
     ListenableFuture<Empty> unlinkFacebook(@NonNull final Session session, @NonNull final String accessToken);
+
+    /**
+     * Unlink a Facebook Instant Games profile from the user account owned by the session.
+     *
+     * @param session The session of the user.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @return A future.
+     */
+    ListenableFuture<Empty> unlinkFacebookInstantGame(@NonNull final Session session, @NonNull final String accessToken);
 
     /**
      * Unlink a Google profile from the user account owned by the session.

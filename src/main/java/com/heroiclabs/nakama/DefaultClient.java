@@ -1114,6 +1114,12 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<Empty> linkFacebookInstantGame(@NonNull final Session session, @NonNull final String accessToken) {
+        return getStub(session).linkFacebookInstantGame(AccountFacebookInstantGame.newBuilder()
+                .setSignedPlayerInfo(accessToken).build());
+    }
+
+    @Override
     public ListenableFuture<Empty> linkFacebook(@NonNull final Session session, @NonNull final String accessToken, final boolean importFriends) {
         return getStub(session).linkFacebook(LinkFacebookRequest.newBuilder()
                 .setAccount(AccountFacebook.newBuilder().setToken(accessToken).build())
@@ -1696,6 +1702,11 @@ public class DefaultClient implements Client {
     @Override
     public ListenableFuture<Empty> unlinkFacebook(@NonNull final Session session, @NonNull final String accessToken) {
         return getStub(session).unlinkFacebook(AccountFacebook.newBuilder().setToken(accessToken).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> unlinkFacebookInstantGame(@NonNull final Session session, @NonNull final String accessToken) {
+        return getStub(session).unlinkFacebookInstantGame(AccountFacebookInstantGame.newBuilder().setSignedPlayerInfo(accessToken).build());
     }
 
     @Override
