@@ -575,6 +575,72 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken) {
+        return authenticateFacebookInstantGame(AuthenticateFacebookInstantGameRequest.newBuilder()
+                .setAccount(AccountFacebookInstantGame.newBuilder()
+                        .setSignedPlayerInfo(accessToken)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, @NonNull final Map<String, String> vars) {
+        return authenticateFacebookInstantGame(AuthenticateFacebookInstantGameRequest.newBuilder()
+                .setAccount(AccountFacebookInstantGame.newBuilder()
+                        .putAllVars(vars)
+                        .setSignedPlayerInfo(accessToken)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, @NonNull final String username) {
+        return authenticateFacebookInstantGame(AuthenticateFacebookInstantGameRequest.newBuilder()
+                .setAccount(AccountFacebookInstantGame.newBuilder()
+                        .setSignedPlayerInfo(accessToken)
+                        .build())
+                .setUsername(username)
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, final boolean create) {
+        return authenticateFacebookInstantGame(AuthenticateFacebookInstantGameRequest.newBuilder()
+                .setAccount(AccountFacebookInstantGame.newBuilder()
+                        .setSignedPlayerInfo(accessToken)
+                        .build())
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, final boolean create, @NonNull final String username) {
+        return authenticateFacebookInstantGame(AuthenticateFacebookInstantGameRequest.newBuilder()
+                .setAccount(AccountFacebookInstantGame.newBuilder()
+                        .setSignedPlayerInfo(accessToken)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, final boolean create, final String username, @NonNull final Map<String, String> vars) {
+        return authenticateFacebookInstantGame(AuthenticateFacebookInstantGameRequest.newBuilder()
+                .setAccount(AccountFacebookInstantGame.newBuilder()
+                        .putAllVars(vars)
+                        .setSignedPlayerInfo(accessToken)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    private ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final AuthenticateFacebookInstantGameRequest request) {
+        return convertSession(getStub().authenticateFacebookInstantGame(request));
+    }
+
+    @Override
     public ListenableFuture<Session> authenticateGoogle(@NonNull final String accessToken) {
         return authenticateGoogle(AuthenticateGoogleRequest.newBuilder()
                 .setAccount(AccountGoogle.newBuilder()

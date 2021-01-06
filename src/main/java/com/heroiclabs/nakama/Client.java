@@ -405,6 +405,56 @@ public interface Client {
     ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, final boolean create, final String username, final boolean importFriends, @NonNull final Map<String, String> vars);
 
     /**
+     * Authenticate a user with a Facebook Instant auth token.
+     * @param accessToken An access token from the Facebook SDK.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken);
+
+    /**
+     * Authenticate a user with a Facebook Instant auth token.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, @NonNull final Map<String, String> vars);
+
+    /**
+     * Authenticate a user with a Facebook Instant auth token.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @param username A username used to create the user.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, @NonNull final String username);
+
+    /**
+     * Authenticate a user with a Facebook Instant auth token.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @param create True if the user should be created when authenticated.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, final boolean create);
+
+    /**
+     * Authenticate a user with a Facebook Instant auth token.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @param create True if the user should be created when authenticated.
+     * @param username A username used to create the user.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, final boolean create, @NonNull final String username);
+
+    /**
+     * Authenticate a user with a Facebook Instant auth token.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @param create True if the user should be created when authenticated.
+     * @param username A username used to create the user.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, final boolean create, final String username, @NonNull final Map<String, String> vars);
+
+    /**
      * Authenticate a user with a Google auth token.
      * @param accessToken An OAuth access token from the Google SDK.
      * @return A future to resolve a session object.
