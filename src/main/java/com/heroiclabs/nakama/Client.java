@@ -138,6 +138,56 @@ public interface Client {
     ListenableFuture<Empty> addGroupUsers(@NonNull final Session session, @NonNull final String groupId, @NonNull final String... ids);
 
     /**
+     * Authenticate a user with an Apple token.
+     * @param token The ID token received from Apple to validate.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateApple(@NonNull final String token);
+
+    /**
+     * Authenticate a user with an Apple token.
+     * @param token The ID token received from Apple to validate.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateApple(@NonNull final String token, @NonNull final Map<String, String> vars);
+
+    /**
+     * Authenticate a user with an Apple token.
+     * @param token The ID token received from Apple to validate.
+     * @param username A username used to create the user.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateApple(@NonNull final String token, @NonNull final String username);
+
+    /**
+     * Authenticate a user with an Apple token.
+     * @param token The ID token received from Apple to validate.
+     * @param create True if the user should be created when authenticated.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateApple(@NonNull final String token, final boolean create);
+
+    /**
+     * Authenticate a user with an Apple token.
+     * @param token The ID token received from Apple to validate.
+     * @param create True if the user should be created when authenticated.
+     * @param username A username used to create the user.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateApple(@NonNull final String token, final boolean create, @NonNull final String username);
+
+    /**
+     * Authenticate a user with an Apple token.
+     * @param token The ID token received from Apple to validate.
+     * @param create True if the user should be created when authenticated.
+     * @param username A username used to create the user.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateApple(@NonNull final String token, final boolean create, final String username, @NonNull final Map<String, String> vars);
+
+    /**
      * Authenticate a user with a custom id.
      * @param id A custom identifier usually obtained from an external authentication service.
      * @return A future to resolve a session object.
@@ -353,6 +403,56 @@ public interface Client {
      * @return A future to resolve a session object.
      */
     ListenableFuture<Session> authenticateFacebook(@NonNull final String accessToken, final boolean create, final String username, final boolean importFriends, @NonNull final Map<String, String> vars);
+
+    /**
+     * Authenticate a user with a Facebook Instant auth token.
+     * @param accessToken An access token from the Facebook SDK.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken);
+
+    /**
+     * Authenticate a user with a Facebook Instant auth token.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, @NonNull final Map<String, String> vars);
+
+    /**
+     * Authenticate a user with a Facebook Instant auth token.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @param username A username used to create the user.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, @NonNull final String username);
+
+    /**
+     * Authenticate a user with a Facebook Instant auth token.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @param create True if the user should be created when authenticated.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, final boolean create);
+
+    /**
+     * Authenticate a user with a Facebook Instant auth token.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @param create True if the user should be created when authenticated.
+     * @param username A username used to create the user.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, final boolean create, @NonNull final String username);
+
+    /**
+     * Authenticate a user with a Facebook Instant auth token.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @param create True if the user should be created when authenticated.
+     * @param username A username used to create the user.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, final boolean create, final String username, @NonNull final Map<String, String> vars);
 
     /**
      * Authenticate a user with a Google auth token.
@@ -678,6 +778,15 @@ public interface Client {
     ListenableFuture<Empty> deleteStorageObjects(@NonNull final Session session, @NonNull final StorageObjectId... objectIds);
 
     /**
+     * Demote a set of users in a group to the next role down.
+     *
+     * @param groupId The group ID to demote in.
+     * @param userIds The users to demote.
+     * @return A future.
+     */
+    ListenableFuture<Empty> demoteGroupUsers(@NonNull final Session session, @NonNull final String groupId, final String... userIds);
+
+    /**
      * Submit an event for processing in the server's registered runtime custom events handler.
      *
      * @param session The session of the user.
@@ -788,6 +897,15 @@ public interface Client {
     ListenableFuture<Empty> leaveGroup(@NonNull final Session session, @NonNull final String groupId);
 
     /**
+     * Add an Apple ID to the social profiles on the current user's account.
+     *
+     * @param session The session of the user.
+     * @param id The ID token received from Apple to validate.
+     * @return A future.
+     */
+    ListenableFuture<Empty> linkApple(@NonNull final Session session, @NonNull final String token);
+
+    /**
      * Link a custom id to the user account owned by the session.
      *
      * @param session The session of the user.
@@ -833,6 +951,15 @@ public interface Client {
      * @return A future.
      */
     ListenableFuture<Empty> linkFacebook(@NonNull final Session session, @NonNull final String accessToken, final boolean importFriends);
+
+    /**
+     * Link a Facebook Instant Games profile to a user account.
+     *
+     * @param session The session of the user.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @return A future.
+     */
+    ListenableFuture<Empty> linkFacebookInstantGame(@NonNull final Session session, @NonNull final String accessToken);
 
     /**
      * Link a Google profile to a user account.
@@ -1444,6 +1571,15 @@ public interface Client {
 //    ListenableFuture<Rpc> rpc(@NonNull final String httpKey, @NonNull final String id, @NonNull final String payload);
 
     /**
+     * Remove the Apple ID from the social profiles on the current user's account.
+     *
+     * @param session The session of the user.
+     * @param id The ID token received from Apple to validate.
+     * @return A future.
+     */
+    ListenableFuture<Empty> unlinkApple(@NonNull final Session session, @NonNull final String id);
+
+    /**
      * Unlink a custom id from the user account owned by the session.
      *
      * @param session The session of the user.
@@ -1479,6 +1615,15 @@ public interface Client {
      * @return A future.
      */
     ListenableFuture<Empty> unlinkFacebook(@NonNull final Session session, @NonNull final String accessToken);
+
+    /**
+     * Unlink a Facebook Instant Games profile from the user account owned by the session.
+     *
+     * @param session The session of the user.
+     * @param accessToken An OAuth access token from the Facebook SDK.
+     * @return A future.
+     */
+    ListenableFuture<Empty> unlinkFacebookInstantGame(@NonNull final Session session, @NonNull final String accessToken);
 
     /**
      * Unlink a Google profile from the user account owned by the session.

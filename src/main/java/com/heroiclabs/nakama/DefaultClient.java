@@ -226,6 +226,72 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<Session> authenticateApple(@NonNull final String token) {
+        return authenticateApple(AuthenticateAppleRequest.newBuilder()
+                .setAccount(AccountApple.newBuilder()
+                        .setToken(token)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateApple(@NonNull final String token, @NonNull final Map<String, String> vars) {
+        return authenticateApple(AuthenticateAppleRequest.newBuilder()
+                .setAccount(AccountApple.newBuilder()
+                        .putAllVars(vars)
+                        .setToken(token)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateApple(@NonNull final String token, @NonNull final String username) {
+        return authenticateApple(AuthenticateAppleRequest.newBuilder()
+                .setAccount(AccountApple.newBuilder()
+                        .setToken(token)
+                        .build())
+                .setUsername(username)
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateApple(@NonNull final String token, final boolean create) {
+        return authenticateApple(AuthenticateAppleRequest.newBuilder()
+                .setAccount(AccountApple.newBuilder()
+                        .setToken(token)
+                        .build())
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateApple(@NonNull final String token, final boolean create, @NonNull final String username) {
+        return authenticateApple(AuthenticateAppleRequest.newBuilder()
+                .setAccount(AccountApple.newBuilder()
+                        .setToken(token)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateApple(@NonNull final String token, final boolean create, final String username, @NonNull final Map<String, String> vars) {
+        return authenticateApple(AuthenticateAppleRequest.newBuilder()
+                .setAccount(AccountApple.newBuilder()
+                        .putAllVars(vars)
+                        .setToken(token)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    private ListenableFuture<Session> authenticateApple(@NonNull final AuthenticateAppleRequest request) {
+        return convertSession(getStub().authenticateApple(request));
+    }
+
+    @Override
     public ListenableFuture<Session> authenticateCustom(@NonNull final String id) {
         return authenticateCustom(AuthenticateCustomRequest.newBuilder()
                 .setAccount(AccountCustom.newBuilder()
@@ -506,6 +572,72 @@ public class DefaultClient implements Client {
 
     private ListenableFuture<Session> authenticateFacebook(@NonNull final AuthenticateFacebookRequest request) {
         return convertSession(getStub().authenticateFacebook(request));
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken) {
+        return authenticateFacebookInstantGame(AuthenticateFacebookInstantGameRequest.newBuilder()
+                .setAccount(AccountFacebookInstantGame.newBuilder()
+                        .setSignedPlayerInfo(accessToken)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, @NonNull final Map<String, String> vars) {
+        return authenticateFacebookInstantGame(AuthenticateFacebookInstantGameRequest.newBuilder()
+                .setAccount(AccountFacebookInstantGame.newBuilder()
+                        .putAllVars(vars)
+                        .setSignedPlayerInfo(accessToken)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, @NonNull final String username) {
+        return authenticateFacebookInstantGame(AuthenticateFacebookInstantGameRequest.newBuilder()
+                .setAccount(AccountFacebookInstantGame.newBuilder()
+                        .setSignedPlayerInfo(accessToken)
+                        .build())
+                .setUsername(username)
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, final boolean create) {
+        return authenticateFacebookInstantGame(AuthenticateFacebookInstantGameRequest.newBuilder()
+                .setAccount(AccountFacebookInstantGame.newBuilder()
+                        .setSignedPlayerInfo(accessToken)
+                        .build())
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, final boolean create, @NonNull final String username) {
+        return authenticateFacebookInstantGame(AuthenticateFacebookInstantGameRequest.newBuilder()
+                .setAccount(AccountFacebookInstantGame.newBuilder()
+                        .setSignedPlayerInfo(accessToken)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final String accessToken, final boolean create, final String username, @NonNull final Map<String, String> vars) {
+        return authenticateFacebookInstantGame(AuthenticateFacebookInstantGameRequest.newBuilder()
+                .setAccount(AccountFacebookInstantGame.newBuilder()
+                        .putAllVars(vars)
+                        .setSignedPlayerInfo(accessToken)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    private ListenableFuture<Session> authenticateFacebookInstantGame(@NonNull final AuthenticateFacebookInstantGameRequest request) {
+        return convertSession(getStub().authenticateFacebookInstantGame(request));
     }
 
     @Override
@@ -874,6 +1006,16 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<Empty> demoteGroupUsers(@NonNull final Session session, @NonNull final String groupId, final String... userIds) {
+        final DemoteGroupUsersRequest.Builder builder = DemoteGroupUsersRequest.newBuilder();
+        builder.setGroupId(groupId);
+        for (final String userId : userIds) {
+            builder.addUserIds(userId);
+        }
+        return getStub(session).demoteGroupUsers(builder.build());
+    }
+
+    @Override
     public ListenableFuture<Empty> emitEvent(@NonNull final Session session, @NonNull final String name, @NonNull final Map<String, String> properties) {
         return getStub(session).event(Event.newBuilder().setName(name).putAllProperties(properties).build());
     }
@@ -955,6 +1097,11 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<Empty> linkApple(@NonNull final Session session, @NonNull final String token) {
+        return getStub(session).linkApple(AccountApple.newBuilder().setToken(token).build());
+    }
+
+    @Override
     public ListenableFuture<Empty> linkCustom(@NonNull final Session session, @NonNull final String id) {
         return getStub(session).linkCustom(AccountCustom.newBuilder().setId(id).build());
     }
@@ -974,6 +1121,12 @@ public class DefaultClient implements Client {
         return getStub(session).linkFacebook(LinkFacebookRequest.newBuilder()
                 .setAccount(AccountFacebook.newBuilder().setToken(accessToken).build())
                 .build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> linkFacebookInstantGame(@NonNull final Session session, @NonNull final String accessToken) {
+        return getStub(session).linkFacebookInstantGame(AccountFacebookInstantGame.newBuilder()
+                .setSignedPlayerInfo(accessToken).build());
     }
 
     @Override
@@ -1537,6 +1690,11 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<Empty> unlinkApple(@NonNull final Session session, @NonNull final String token) {
+        return getStub(session).unlinkApple(AccountApple.newBuilder().setToken(token).build());
+    }
+
+    @Override
     public ListenableFuture<Empty> unlinkCustom(@NonNull final Session session, @NonNull final String id) {
         return getStub(session).unlinkCustom(AccountCustom.newBuilder().setId(id).build());
     }
@@ -1554,6 +1712,11 @@ public class DefaultClient implements Client {
     @Override
     public ListenableFuture<Empty> unlinkFacebook(@NonNull final Session session, @NonNull final String accessToken) {
         return getStub(session).unlinkFacebook(AccountFacebook.newBuilder().setToken(accessToken).build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> unlinkFacebookInstantGame(@NonNull final Session session, @NonNull final String accessToken) {
+        return getStub(session).unlinkFacebookInstantGame(AccountFacebookInstantGame.newBuilder().setSignedPlayerInfo(accessToken).build());
     }
 
     @Override

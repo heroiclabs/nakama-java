@@ -129,6 +129,35 @@ public class GroupTest {
         Assert.assertTrue(remainingUsers.getGroupUsersCount() == 2);
     }
 
+    @Test
+    public void testPromoteAndDemoteUsersFromGroup() throws Exception {
+
+        final String member1Id = UUID.randomUUID().toString();
+        final Client member1Client = new DefaultClient("defaultkey");
+        final Session member1Session = member1Client.authenticateCustom(member1Id).get();
+
+        Group group = createGroup(session);
+
+        client.addGroupUsers(session, group.getId(), member1Session.getUserId()).get();
+        final GroupUserList initialGroupUsers = member1Client.listGroupUsers(session, group.getId()).get();
+        final GroupUser member1 = initialGroupUsers.getGroupUsersList().stream().filter(user ->
+            user.getUser().getId().equals(member1Session.getUserId())).findFirst().get();
+
+        client.promoteGroupUsers(session, group.getId(), member1Session.getUserId()).get();
+        final GroupUserList promotedGroupUsers =  member1Client.listGroupUsers(session, group.getId()).get();
+        final GroupUser promotedMember1 = promotedGroupUsers.getGroupUsersList().stream().filter(user ->
+            user.getUser().getId().equals(member1Session.getUserId())).findFirst().get();
+
+        client.demoteGroupUsers(session, group.getId(), member1Session.getUserId()).get();
+        final GroupUserList demotedGroupUsers =  member1Client.listGroupUsers(session, group.getId()).get();
+        final GroupUser demotedMember1 = demotedGroupUsers.getGroupUsersList().stream().filter(user ->
+            user.getUser().getId().equals(member1Session.getUserId())).findFirst().get();
+
+        Assert.assertEquals(member1.getState().getValue(), 2);
+        Assert.assertEquals(promotedMember1.getState().getValue(), 1);
+        Assert.assertEquals(demotedMember1.getState().getValue(), 2);
+    }
+
     private Group createGroup(Session session) throws Exception {
         String generatedName = createGeneratedName();
 
