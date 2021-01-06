@@ -138,6 +138,56 @@ public interface Client {
     ListenableFuture<Empty> addGroupUsers(@NonNull final Session session, @NonNull final String groupId, @NonNull final String... ids);
 
     /**
+     * Authenticate a user with an Apple token.
+     * @param token The ID token received from Apple to validate.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateApple(@NonNull final String token);
+
+    /**
+     * Authenticate a user with an Apple token.
+     * @param token The ID token received from Apple to validate.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateApple(@NonNull final String token, @NonNull final Map<String, String> vars);
+
+    /**
+     * Authenticate a user with an Apple token.
+     * @param token The ID token received from Apple to validate.
+     * @param username A username used to create the user.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateApple(@NonNull final String token, @NonNull final String username);
+
+    /**
+     * Authenticate a user with an Apple token.
+     * @param token The ID token received from Apple to validate.
+     * @param create True if the user should be created when authenticated.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateApple(@NonNull final String token, final boolean create);
+
+    /**
+     * Authenticate a user with an Apple token.
+     * @param token The ID token received from Apple to validate.
+     * @param create True if the user should be created when authenticated.
+     * @param username A username used to create the user.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateApple(@NonNull final String token, final boolean create, @NonNull final String username);
+
+    /**
+     * Authenticate a user with an Apple token.
+     * @param token The ID token received from Apple to validate.
+     * @param create True if the user should be created when authenticated.
+     * @param username A username used to create the user.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> authenticateApple(@NonNull final String token, final boolean create, final String username, @NonNull final Map<String, String> vars);
+
+    /**
      * Authenticate a user with a custom id.
      * @param id A custom identifier usually obtained from an external authentication service.
      * @return A future to resolve a session object.
@@ -786,6 +836,15 @@ public interface Client {
      * @return A future.
      */
     ListenableFuture<Empty> leaveGroup(@NonNull final Session session, @NonNull final String groupId);
+
+    /**
+     * Add an Apple ID to the social profiles on the current user's account.
+     *
+     * @param session The session of the user.
+     * @param id The ID token received from Apple to validate.
+     * @return A future.
+     */
+    ListenableFuture<Empty> linkApple(@NonNull final Session session, @NonNull final String token);
 
     /**
      * Link a custom id to the user account owned by the session.
@@ -1442,6 +1501,15 @@ public interface Client {
 //    TODO(mo): Is this still needed from the client / doable using gRPC?
 //    ListenableFuture<Rpc> rpc(@NonNull final String httpKey, @NonNull final String id);
 //    ListenableFuture<Rpc> rpc(@NonNull final String httpKey, @NonNull final String id, @NonNull final String payload);
+
+    /**
+     * Remove the Apple ID from the social profiles on the current user's account.
+     *
+     * @param session The session of the user.
+     * @param id The ID token received from Apple to validate.
+     * @return A future.
+     */
+    ListenableFuture<Empty> unlinkApple(@NonNull final Session session, @NonNull final String id);
 
     /**
      * Unlink a custom id from the user account owned by the session.

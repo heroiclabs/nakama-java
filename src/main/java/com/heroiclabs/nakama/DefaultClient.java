@@ -226,6 +226,72 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<Session> authenticateApple(@NonNull final String token) {
+        return authenticateApple(AuthenticateAppleRequest.newBuilder()
+                .setAccount(AccountApple.newBuilder()
+                        .setToken(token)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateApple(@NonNull final String token, @NonNull final Map<String, String> vars) {
+        return authenticateApple(AuthenticateAppleRequest.newBuilder()
+                .setAccount(AccountApple.newBuilder()
+                        .putAllVars(vars)
+                        .setToken(token)
+                        .build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateApple(@NonNull final String token, @NonNull final String username) {
+        return authenticateApple(AuthenticateAppleRequest.newBuilder()
+                .setAccount(AccountApple.newBuilder()
+                        .setToken(token)
+                        .build())
+                .setUsername(username)
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateApple(@NonNull final String token, final boolean create) {
+        return authenticateApple(AuthenticateAppleRequest.newBuilder()
+                .setAccount(AccountApple.newBuilder()
+                        .setToken(token)
+                        .build())
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateApple(@NonNull final String token, final boolean create, @NonNull final String username) {
+        return authenticateApple(AuthenticateAppleRequest.newBuilder()
+                .setAccount(AccountApple.newBuilder()
+                        .setToken(token)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    @Override
+    public ListenableFuture<Session> authenticateApple(@NonNull final String token, final boolean create, final String username, @NonNull final Map<String, String> vars) {
+        return authenticateApple(AuthenticateAppleRequest.newBuilder()
+                .setAccount(AccountApple.newBuilder()
+                        .putAllVars(vars)
+                        .setToken(token)
+                        .build())
+                .setUsername(username)
+                .setCreate(BoolValue.newBuilder().setValue(create).build())
+                .build());
+    }
+
+    private ListenableFuture<Session> authenticateApple(@NonNull final AuthenticateAppleRequest request) {
+        return convertSession(getStub().authenticateApple(request));
+    }
+
+    @Override
     public ListenableFuture<Session> authenticateCustom(@NonNull final String id) {
         return authenticateCustom(AuthenticateCustomRequest.newBuilder()
                 .setAccount(AccountCustom.newBuilder()
@@ -955,6 +1021,11 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<Empty> linkApple(@NonNull final Session session, @NonNull final String token) {
+        return getStub(session).linkApple(AccountApple.newBuilder().setToken(token).build());
+    }
+
+    @Override
     public ListenableFuture<Empty> linkCustom(@NonNull final Session session, @NonNull final String id) {
         return getStub(session).linkCustom(AccountCustom.newBuilder().setId(id).build());
     }
@@ -1534,6 +1605,11 @@ public class DefaultClient implements Client {
             builder.setPayload(payload);
         }
         return getStub(session).rpcFunc(builder.build());
+    }
+
+    @Override
+    public ListenableFuture<Empty> unlinkApple(@NonNull final Session session, @NonNull final String token) {
+        return getStub(session).unlinkApple(AccountApple.newBuilder().setToken(token).build());
     }
 
     @Override
