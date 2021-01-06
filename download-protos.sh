@@ -17,20 +17,21 @@
 # This command is a utility for downloading all .proto files required
 # for making full source builds.
 
-GRPC_GATEWAY_COMMIT=3c7c499cefb3fb46d0c662bcf296408a66fc5acc
+GRPC_GATEWAY_COMMIT=5c1639cccb7d6abc747643ed07321b0052b809d5
 NAKAMA_COMMON_COMMIT=b013ccdfa0be37f97c716a477409dfe935b111f7
 NAKAMA_COMMIT=ec12afadd940cd779f5b1acadc0faf33ed9fa94c
 DOMAIN=https://raw.githubusercontent.com
 
-OPENAPI_URL=${DOMAIN}/grpc-ecosystem/grpc-gateway/${GRPC_GATEWAY_COMMIT}/protoc-gen-swagger/options/openapiv2.proto
-ANNOTATION_URL=${DOMAIN}/grpc-ecosystem/grpc-gateway/${GRPC_GATEWAY_COMMIT}/protoc-gen-swagger/options/annotations.proto
+
+OPENAPI_URL=${DOMAIN}/grpc-ecosystem/grpc-gateway/${GRPC_GATEWAY_COMMIT}/protoc-gen-openapiv2/options/openapiv2.proto
+ANNOTATION_URL=${DOMAIN}/grpc-ecosystem/grpc-gateway/${GRPC_GATEWAY_COMMIT}/protoc-gen-openapiv2/options/annotations.proto
 API_URL=${DOMAIN}/heroiclabs/nakama-common/${NAKAMA_COMMON_COMMIT}/api/api.proto
 REALTIME_URL=${DOMAIN}/heroiclabs/nakama-common/${NAKAMA_COMMON_COMMIT}/rtapi/realtime.proto
 APIGRPC_URL=${DOMAIN}/heroiclabs/nakama/${NAKAMA_COMMIT}/apigrpc/apigrpc.proto
 
 ROOT_DIR=src/main/proto
 NAKAMA_COMMON_DIR=github.com/heroiclabs/nakama-common/api
-SWAGGER_GEN_DIR=protoc-gen-swagger/options
+SWAGGER_GEN_DIR=protoc-gen-openapiv2/options
 
 curl $OPENAPI_URL -o ${ROOT_DIR}/${SWAGGER_GEN_DIR}/openapiv2.proto
 curl $ANNOTATION_URL -o ${ROOT_DIR}/${SWAGGER_GEN_DIR}/annotations.proto
