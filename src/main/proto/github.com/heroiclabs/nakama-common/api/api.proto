@@ -22,13 +22,13 @@ package nakama.api;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
-option go_package = "api";
+option go_package = "github.com/heroiclabs/nakama-common/api";
 
 option java_multiple_files = true;
 option java_outer_classname = "NakamaApi";
 option java_package = "com.heroiclabs.nakama.api";
 
-option csharp_namespace = "Nakama";
+option csharp_namespace = "Nakama.Protobuf";
 
 option objc_class_prefix = "NKPB";
 
@@ -294,10 +294,12 @@ message ChannelMessage {
 message ChannelMessageList {
   // A list of messages.
   repeated ChannelMessage messages = 1;
-  // The cursor to send when retireving the next page, if any.
+  // The cursor to send when retrieving the next page, if any.
   string next_cursor = 2;
   // The cursor to send when retrieving the previous page, if any.
   string prev_cursor = 3;
+  // Cacheable cursor to list newer messages. Durable and designed to be stored, unlike next/prev cursors.
+  string cacheable_cursor = 4;
 }
 
 // Create a group with the current user as owner.
@@ -726,6 +728,10 @@ message Match {
   google.protobuf.StringValue label = 3;
   // Current number of users in the match.
   int32 size = 4;
+  // Tick Rate
+  int32 tick_rate = 5;
+  // Handler name
+  string handler_name = 6;
 }
 
 // A list of realtime matches.
@@ -765,6 +771,14 @@ message PromoteGroupUsersRequest {
   // The group ID to promote in.
   string group_id = 1;
   // The users to promote.
+  repeated string user_ids = 2;
+}
+
+// Demote a set of users in a group to the next role down.
+message DemoteGroupUsersRequest {
+  // The group ID to demote in.
+  string group_id = 1;
+  // The users to demote.
   repeated string user_ids = 2;
 }
 

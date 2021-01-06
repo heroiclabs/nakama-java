@@ -18,8 +18,8 @@
 # for making full source builds.
 
 GRPC_GATEWAY_COMMIT=3c7c499cefb3fb46d0c662bcf296408a66fc5acc
-NAKAMA_COMMON_COMMIT=5254da5c83ced136a4c8014a2cf2eaa85875811d
-NAKAMA_COMMIT=8e8e74280915e77b02871955931f60bcea5b91a1
+NAKAMA_COMMON_COMMIT=b013ccdfa0be37f97c716a477409dfe935b111f7
+NAKAMA_COMMIT=ec12afadd940cd779f5b1acadc0faf33ed9fa94c
 DOMAIN=https://raw.githubusercontent.com
 
 OPENAPI_URL=${DOMAIN}/grpc-ecosystem/grpc-gateway/${GRPC_GATEWAY_COMMIT}/protoc-gen-swagger/options/openapiv2.proto
