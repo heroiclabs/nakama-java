@@ -1006,6 +1006,16 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<Empty> demoteGroupUsers(@NonNull final Session session, @NonNull final String groupId, final String... userIds) {
+        final DemoteGroupUsersRequest.Builder builder = DemoteGroupUsersRequest.newBuilder();
+        builder.setGroupId(groupId);
+        for (final String userId : userIds) {
+            builder.addUserIds(userId);
+        }
+        return getStub(session).demoteGroupUsers(builder.build());
+    }
+
+    @Override
     public ListenableFuture<Empty> emitEvent(@NonNull final Session session, @NonNull final String name, @NonNull final Map<String, String> properties) {
         return getStub(session).event(Event.newBuilder().setName(name).putAllProperties(properties).build());
     }

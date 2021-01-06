@@ -778,6 +778,15 @@ public interface Client {
     ListenableFuture<Empty> deleteStorageObjects(@NonNull final Session session, @NonNull final StorageObjectId... objectIds);
 
     /**
+     * Demote a set of users in a group to the next role down.
+     *
+     * @param groupId The group ID to demote in.
+     * @param userIds The users to demote.
+     * @return A future.
+     */
+    ListenableFuture<Empty> demoteGroupUsers(@NonNull final Session session, @NonNull final String groupId, final String... userIds);
+
+    /**
      * Submit an event for processing in the server's registered runtime custom events handler.
      *
      * @param session The session of the user.
