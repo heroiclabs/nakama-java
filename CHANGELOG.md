@@ -11,10 +11,10 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 ### Added
 - Added configurable ping frame intervals to Web Socket.
 - Ability to demote group users.
-- Ability to link and unlink Facebook Instant Game users
+- Ability to authenticate link and unlink Facebook Instant Game and Apple users
 - Example Android, Gradle and Maven projects.
 - Shadow Jar support.
-- Ability to customize web socket message thread executor.
+- Ability to customize the web socket message receive thread executor.
 
 ### Changed
 - We now use JitPack as our new build repository. Please see the README.md
