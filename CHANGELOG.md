@@ -6,12 +6,28 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.1.0] - 2020-01-25
+
+### Added
+- Added configurable ping frame intervals to Web Socket.
+- Ability to demote group users.
+- Ability to link and unlink Facebook Instant Game users
+- Example Android, Gradle and Maven projects.
+- Shadow Jar support.
+- Ability to customize web socket message thread executor.
+
+### Changed
+- We now use JitPack as our new build repository. Please see the README.md
+for instructions on how to integrate our package with your build system.
+- Removed transitive dependency on Protobuf-Java.
 - Moved all external .proto dependencies into this repository.
 - Upgraded from Gradle 4 to Gradle 6.
-- Fixed bugs in Tournaments test suite.
-- Added configurable ping frame intervals to Web Socket.
+- Upgraded third party dependencies to newer versions.
+
+### Fixed
 - Fixed incorrect time being parsed from timestamps.
-- Removed transitive dependency on Protobuf-Java.
+- Fixed bugs in Tournaments test suite.
+- Fixed UTC parsing.
 
 ## [2.0.4] - 2020-01-23
 ### Added
