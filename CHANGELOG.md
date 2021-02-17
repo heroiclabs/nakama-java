@@ -6,6 +6,10 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.1.1] - 2021-02-17
+### Changed
+- Allowed null values of `collationId` to be passed to the `DefaultError` object.
+
 ## [2.1.0] - 2020-01-25
 
 ### Added
