@@ -30,7 +30,7 @@ class DefaultError extends Error {
         this.collationId = null;
     }
 
-    DefaultError(@NonNull final String collationId, @NonNull final WebSocketError error) {
+    DefaultError(final String collationId, @NonNull final WebSocketError error) {
         super(error.getMessage());
         this.code = ErrorCode.fromInt(error.getCode());
         this.collationId = collationId;
