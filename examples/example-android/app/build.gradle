@@ -46,6 +46,14 @@ android {
     }
 }
 
+ext{
+    versionFirebaseCrashlytics = "17.3.0"
+    versionFirebaseBom = "26.2.0"
+    versionNakama = "a83e462"
+    versionProtobuf = "3.13.0"
+    versionPlayAuth = "19.0.0"
+}
+
 configurations {
     implementation.exclude module:'proto-google-common-protos'
     implementation.exclude module:'protolite-well-known-types'
@@ -59,7 +67,25 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation 'com.github.heroiclabs.nakama-java:nakama-java:dde7330adfa1867881dc6c6c6e27c1176512c916'
+    implementation  "com.github.heroiclabs.nakama-java:nakama-java:${versionNakama}"
+
 //  fat JAR
 //  implementation 'com.github.heroiclabs.nakama-java:nakama-java-all:dde7330adfa1867881dc6c6c6e27c1176512c916'
+
+    // Import the BoM for the Firebase platform
+    implementation platform("com.google.firebase:firebase-bom:26.2.0")
+
+    // Firebase
+    // Import the BoM for the Firebase platform
+    implementation platform("com.google.firebase:firebase-bom:${versionFirebaseBom}")
+
+    // Declare the dependencies for the Remote Config and Analytics libraries
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-config-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-crashlytics-ndk'
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-auth'
+    implementation "com.google.android.gms:play-services-auth:${versionPlayAuth}"
 }
