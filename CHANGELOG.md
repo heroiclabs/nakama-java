@@ -5,6 +5,8 @@ All notable changes to this project are documented below.
 The format is based on [keep a changelog](http://keepachangelog.com/) and this project uses [semantic versioning](http://semver.org/).
 
 ## [Unreleased]
+## [2.1.2] - 2021-3-16
+- Properly enable protobuf-javalite for Android builds.
 
 ## [2.1.1] - 2021-02-17
 ### Changed
