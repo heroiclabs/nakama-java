@@ -25,13 +25,13 @@ repositories {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.0"
+    compileSdkVersion 29
+    buildToolsVersion "29.0.0"
 
     defaultConfig {
         applicationId "com.example.androidnakama"
-        minSdkVersion 30
-        targetSdkVersion 30
+        minSdkVersion 29
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
@@ -55,9 +55,6 @@ ext{
 }
 
 configurations {
-    implementation.exclude module:'proto-google-common-protos'
-    implementation.exclude module:'protolite-well-known-types'
-    implementation.exclude module:'protobuf-lite'
     implementation.exclude module:'protobuf-java'
 }
 

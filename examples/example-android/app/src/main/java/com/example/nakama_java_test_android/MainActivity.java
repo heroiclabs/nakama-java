@@ -14,17 +14,26 @@
  * limitations under the License.
  */
 
+package com.example.nakama_java_test_android;
+
 import java.util.concurrent.*;
 import com.google.common.util.concurrent.*;
 import com.heroiclabs.nakama.*;
+import android.app.*;
+import android.os.Bundle;
+import android.util.*;
 
 // fat jar
 // import nakama.com.google.common.util.concurrent.*;
 
-public class Main {
 
-    public static void main(String[] args) {
-        DefaultClient client = new DefaultClient("defaultkey", "127.0.0.1", 7349, false);
+public class MainActivity extends Activity {
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        final DefaultClient client = new DefaultClient("defaultkey", "10.0.2.2", 7349, false);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
 
         try {
@@ -33,12 +42,13 @@ public class Main {
             Futures.addCallback(client.authenticateEmail(email, password), new FutureCallback<Session>() {
                 @Override
                 public void onSuccess(final Session result) {
-                    System.out.println("got session: " + result.getAuthToken());
+                    Log.i("auth","got session: " + result.getAuthToken());
+                    client.createSocket();
                     executor.shutdown();
                 }
                 @Override
                 public void onFailure(final Throwable throwable) {
-                    System.out.println(throwable.getMessage());
+                    Log.e("auth", throwable.getMessage());
                     executor.shutdown();
                 }
             }, executor);
@@ -48,7 +58,7 @@ public class Main {
         }
 
         try {
-          executor.awaitTermination(5, TimeUnit.SECONDS);
+            executor.awaitTermination(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             System.out.println(e.getMessage());
         }
