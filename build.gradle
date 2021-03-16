@@ -61,6 +61,7 @@ repositories {
 configurations {
     all {
         exclude group: 'io.grpc', module:'grpc-protobuf'
+        exclude group: "com.google.protobuf", module: "protobuf-java"
     }
 }
 
