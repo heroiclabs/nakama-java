@@ -20,6 +20,7 @@
 GRPC_GATEWAY_COMMIT=5c1639cccb7d6abc747643ed07321b0052b809d5
 NAKAMA_COMMON_COMMIT=b013ccdfa0be37f97c716a477409dfe935b111f7
 NAKAMA_COMMIT=ec12afadd940cd779f5b1acadc0faf33ed9fa94c
+PROTOBUF_COMMIT=dfab275eca9481b5de31122db6fc91b31db3382a
 DOMAIN=https://raw.githubusercontent.com
 
 
@@ -29,6 +30,9 @@ API_URL=${DOMAIN}/heroiclabs/nakama-common/${NAKAMA_COMMON_COMMIT}/api/api.proto
 REALTIME_URL=${DOMAIN}/heroiclabs/nakama-common/${NAKAMA_COMMON_COMMIT}/rtapi/realtime.proto
 APIGRPC_URL=${DOMAIN}/heroiclabs/nakama/${NAKAMA_COMMIT}/apigrpc/apigrpc.proto
 
+### java proto-lite does not contain descriptor.proto
+DESCRIPTOR_URL=${DOMAIN}/protocolbuffers/protobuf/${PROTOBUF_COMMIT}/src/google/protobuf/descriptor.proto
+
 ROOT_DIR=src/main/proto
 NAKAMA_COMMON_DIR=github.com/heroiclabs/nakama-common/api
 SWAGGER_GEN_DIR=protoc-gen-openapiv2/options
@@ -37,4 +41,5 @@ curl $OPENAPI_URL -o ${ROOT_DIR}/${SWAGGER_GEN_DIR}/openapiv2.proto
 curl $ANNOTATION_URL -o ${ROOT_DIR}/${SWAGGER_GEN_DIR}/annotations.proto
 curl $API_URL -o ${ROOT_DIR}/${NAKAMA_COMMON_DIR}/api.proto
 curl $REALTIME_URL -o ${ROOT_DIR}/${NAKAMA_COMMON_DIR}/realtime.proto
-curl $APIGRPC_URL -o src/main/proto/apigrpc.proto
+curl $APIGRPC_URL -o ${ROOT_DIR}/apigrpc.proto
+curl $DESCRIPTOR_URL -o ${ROOT_DIR}/google/protobuf/descriptor.proto

@@ -49,13 +49,9 @@ android {
 ext{
     versionFirebaseCrashlytics = "17.3.0"
     versionFirebaseBom = "26.2.0"
-    versionNakama = "a83e462"
+    versionNakama = "aa9c651bad8c3499f131d53b75bf323c91eedde6"
     versionProtobuf = "3.13.0"
     versionPlayAuth = "19.0.0"
-}
-
-configurations {
-    implementation.exclude module:'protobuf-java'
 }
 
 dependencies {
