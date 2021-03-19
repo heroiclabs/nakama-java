@@ -126,14 +126,14 @@ public class WebSocketClient implements SocketClient {
     }
 
     private ListenableFuture<Session> createWebsocket(@NonNull final Session session, @NonNull final SocketListener listener, @NonNull final Request request) {
-        final SettableFuture<Session> future = SettableFuture.create();
+        final SettableFuture<Session> connectFuture = SettableFuture.create();
         final Object lock = this;
         socket = client.newWebSocket(request, new WebSocketListener() {
             @Override
             public void onOpen(final WebSocket webSocket, final Response response) {
                 super.onOpen(webSocket, response);
                 // Notify the deferred caller that the client has connected and is ready to use.
-                future.set(session);
+                connectFuture.set(session);
             }
 
             @Override
@@ -298,7 +298,7 @@ public class WebSocketClient implements SocketClient {
                 listener.onDisconnect(t);
             }
         });
-        return future;
+        return connectFuture;
     }
 
     @Override
