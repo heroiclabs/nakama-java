@@ -279,8 +279,11 @@ public class WebSocketClient implements SocketClient {
                 // Graceful socket disconnect is complete, clean up.
                 synchronized (lock) {
                     socket = null;
-                    // TODO callback any leftover deferred items with a disconnect error message?
                     collationIds.clear();
+
+                    if (!connectFuture.isCancelled() && !connectFuture.isDone()) {
+                        connectFuture.setException(new Throwable("Socket closed."));
+                    }
                 }
                 listener.onDisconnect(null);
             }
@@ -291,8 +294,11 @@ public class WebSocketClient implements SocketClient {
                 // Socket has failed and is no longer connected, clean up.
                 synchronized (lock) {
                     socket = null;
-                    // TODO callback any leftover deferred items with a disconnect error message?
                     collationIds.clear();
+
+                    if (!connectFuture.isCancelled() && !connectFuture.isDone()) {
+                        connectFuture.setException(t);
+                    }
                 }
 
                 listener.onDisconnect(t);

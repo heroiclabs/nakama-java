@@ -5,7 +5,13 @@ All notable changes to this project are documented below.
 The format is based on [keep a changelog](http://keepachangelog.com/) and this project uses [semantic versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.1.3] - 2021-3-16
+### Fixed
+- Dispatch error callback when socket connect fails.
+
 ## [2.1.2] - 2021-3-16
+### Fixed
 - Properly enable protobuf-javalite for Android builds.
 
 ## [2.1.1] - 2021-02-17
