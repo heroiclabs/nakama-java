@@ -234,14 +234,14 @@ public class WebSocketClient implements SocketClient {
                         }
                     });
                 } else {
-                    final SettableFuture future = collationIds.remove(collationId);
-                    if (future == null) {
+                    final SettableFuture cidFuture = collationIds.remove(collationId);
+                    if (cidFuture == null) {
                         log.warn("No matching future for incoming collation ID: " + collationId);
                         return;
                     }
 
                     if (env.getError() != null) {
-                        future.setException(new DefaultError(collationId, env.getError()));
+                        cidFuture.setException(new DefaultError(collationId, env.getError()));
                     } else if (env.getRpc() != null) {
                         final com.heroiclabs.nakama.api.Rpc.Builder apiRpcBuilder = com.heroiclabs.nakama.api.Rpc.newBuilder();
                         if (env.getRpc().getId() != null) {
@@ -250,19 +250,19 @@ public class WebSocketClient implements SocketClient {
                         if (env.getRpc().getPayload() != null) {
                             apiRpcBuilder.setPayload(env.getRpc().getPayload());
                         }
-                        future.set(apiRpcBuilder.build());
+                        cidFuture.set(apiRpcBuilder.build());
                     } else if (env.getChannel() != null) {
-                        future.set(env.getChannel());
+                        cidFuture.set(env.getChannel());
                     } else if (env.getChannelMessageAck() != null) {
-                        future.set(env.getChannelMessageAck());
+                        cidFuture.set(env.getChannelMessageAck());
                     } else if (env.getMatch() != null) {
-                        future.set(env.getMatch());
+                        cidFuture.set(env.getMatch());
                     } else if (env.getMatchmakerTicket() != null) {
-                        future.set(env.getMatchmakerTicket());
+                        cidFuture.set(env.getMatchmakerTicket());
                     } else if (env.getStatus() != null) {
-                        future.set(env.getStatus());
+                        cidFuture.set(env.getStatus());
                     } else {
-                        future.set(null);
+                        cidFuture.set(null);
                     }
                 }
             }
