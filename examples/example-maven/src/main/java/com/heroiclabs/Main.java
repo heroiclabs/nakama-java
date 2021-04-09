@@ -19,6 +19,7 @@ import com.google.common.util.concurrent.*;
 // fat jar
 // import nakama.com.google.common.util.concurrent.*;
 import com.heroiclabs.nakama.*;
+import com.heroiclabs.nakama.api.Account;
 
 public class Main {
 
@@ -33,6 +34,11 @@ public class Main {
                 @Override
                 public void onSuccess(final Session result) {
                     System.out.println("got session: " + result.getAuthToken());
+
+                    Account account = client.getAccount(result).get();
+
+                    System.out.println("account email is: " + account.getEmail());
+
                     executor.shutdown();
                 }
                 @Override
