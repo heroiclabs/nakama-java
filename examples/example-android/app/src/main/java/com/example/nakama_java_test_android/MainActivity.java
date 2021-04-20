@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final DefaultClient client = new DefaultClient("defaultkey", "127.0.0.1", 7349, false);
+        final DefaultClient client = new DefaultClient("defaultkey", "10.0.2.2", 7349, false);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
 
         String email = "super@heroes.com";
