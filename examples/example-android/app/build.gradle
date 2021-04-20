@@ -49,7 +49,7 @@ android {
 ext{
     versionFirebaseCrashlytics = "17.3.0"
     versionFirebaseBom = "26.2.0"
-    versionNakama = "76b4af4d149f715eed491052f3fa9963e0b0d781"
+    versionNakama = "08587dcdecc18efce0a0592451f81b31af59bb42"
     versionProtobuf = "3.13.0"
     versionPlayAuth = "19.0.0"
 }

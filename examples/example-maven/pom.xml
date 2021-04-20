@@ -41,7 +41,7 @@
     <dependency>
       <groupId>com.github.heroiclabs.nakama-java</groupId>
 	    <artifactId>nakama-java</artifactId>
-      <version>v2.1.3</version>
+      <version>08587dcdecc18efce0a0592451f81b31af59bb42</version>
       <type>jar</type>
     </dependency>
  <!-- fat jar   

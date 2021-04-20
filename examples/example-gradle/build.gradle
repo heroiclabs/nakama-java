@@ -35,7 +35,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.heroiclabs.nakama-java:nakama-java:v2.1.3'
+    implementation 'com.github.heroiclabs.nakama-java:nakama-java:08587dcdecc18efce0a0592451f81b31af59bb42'
 //  fat Jar
 //  implementation 'com.github.heroiclabs.nakama-java:nakama-java-all:dde7330adfa1867881dc6c6c6e27c1176512c916'
 

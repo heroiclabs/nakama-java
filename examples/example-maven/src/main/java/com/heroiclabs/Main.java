@@ -16,10 +16,12 @@
 
 import java.util.concurrent.*;
 import com.google.common.util.concurrent.*;
+import com.heroiclabs.nakama.DefaultClient;
+import com.heroiclabs.nakama.Session;
+import com.heroiclabs.nakama.api.Account;
+
 // fat jar
 // import nakama.com.google.common.util.concurrent.*;
-import com.heroiclabs.nakama.*;
-import com.heroiclabs.nakama.api.Account;
 
 public class Main {
 
@@ -27,33 +29,35 @@ public class Main {
         DefaultClient client = new DefaultClient("defaultkey", "127.0.0.1", 7349, false);
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
+        String email = "super@heroes.com";
+        String password = "batsignal";
+
+        ListenableFuture<Session> authFuture = client.authenticateEmail(email, password);
+
+        AsyncFunction<Session, Account> accountFunction = new AsyncFunction<Session, Account>() {
+            public ListenableFuture<Account> apply(Session session) {
+                return client.getAccount(session);
+            }
+        };
+
+        ListenableFuture<Account> accountFuture = Futures.transformAsync(authFuture, accountFunction, executor);
+        Futures.addCallback(accountFuture, new FutureCallback<Account>() {
+            @Override
+            public void onSuccess(Account account) {
+                System.out.println("Got account: " + account.getUser().getId());
+                executor.shutdown();
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                System.out.println(e.getMessage());
+                executor.shutdown();
+            }
+
+        }, executor);
+
         try {
-            String email = "super@heroes.com";
-            String password = "batsignal";
-            Futures.addCallback(client.authenticateEmail(email, password), new FutureCallback<Session>() {
-                @Override
-                public void onSuccess(final Session result) {
-                    System.out.println("got session: " + result.getAuthToken());
-
-                    Account account = client.getAccount(result).get();
-
-                    System.out.println("account email is: " + account.getEmail());
-
-                    executor.shutdown();
-                }
-                @Override
-                public void onFailure(final Throwable throwable) {
-                    System.out.println(throwable.getMessage());
-                    executor.shutdown();
-                }
-            }, executor);
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        try {
-          executor.awaitTermination(5, TimeUnit.SECONDS);
+            executor.awaitTermination(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             System.out.println(e.getMessage());
         }

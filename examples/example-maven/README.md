@@ -1,0 +1,1 @@
+To run this example, run `mvn compile` and then `mvn exec:java`.

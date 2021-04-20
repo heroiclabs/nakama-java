@@ -18,7 +18,11 @@ package com.example.nakama_java_test_android;
 
 import java.util.concurrent.*;
 import com.google.common.util.concurrent.*;
-import com.heroiclabs.nakama.*;
+
+import com.heroiclabs.nakama.DefaultClient;
+import com.heroiclabs.nakama.Session;
+import com.heroiclabs.nakama.api.Account;
+
 import android.app.*;
 import android.os.Bundle;
 import android.util.*;
@@ -32,35 +36,41 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        final DefaultClient client = new DefaultClient("defaultkey", "10.0.2.2", 7349, false);
+        final DefaultClient client = new DefaultClient("defaultkey", "127.0.0.1", 7349, false);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        try {
-            String email = "super@heroes.com";
-            String password = "batsignal";
-            Futures.addCallback(client.authenticateEmail(email, password), new FutureCallback<Session>() {
-                @Override
-                public void onSuccess(final Session result) {
-                    Log.i("auth","got session: " + result.getAuthToken());
-                    client.createSocket();
-                    executor.shutdown();
-                }
-                @Override
-                public void onFailure(final Throwable throwable) {
-                    Log.e("auth", throwable.getMessage());
-                    executor.shutdown();
-                }
-            }, executor);
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        String email = "super@heroes.com";
+        String password = "batsignal";
+
+        ListenableFuture<Session> authFuture = client.authenticateEmail(email, password);
+
+        AsyncFunction<Session, Account> accountFunction = new AsyncFunction<Session, Account>() {
+            public ListenableFuture<Account> apply(Session session) {
+                return client.getAccount(session);
+            }
+        };
+
+        ListenableFuture<Account> accountFuture = Futures.transformAsync(authFuture, accountFunction, executor);
+        Futures.addCallback(accountFuture, new FutureCallback<Account>() {
+            @Override
+            public void onSuccess(Account account) {
+                System.out.println("Got account: " + account.getUser().getId());
+                executor.shutdown();
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                System.out.println(e.getMessage());
+                executor.shutdown();
+            }
+
+        }, executor);
 
         try {
             executor.awaitTermination(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             System.out.println(e.getMessage());
         }
+
     }
 }
