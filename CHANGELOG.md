@@ -6,6 +6,10 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.1.4] - 2021-4-20
+### Fixed
+- protobuf-lite is now properly exported to Maven and Gradle projects.
+
 ## [2.1.3] - 2021-3-16
 ### Fixed
 - Dispatch error callback when socket connect fails.
