@@ -18,7 +18,7 @@
 # for making full source builds.
 
 GRPC_GATEWAY_COMMIT=bcc34ef50bda81faae5d4bbfca2e7ea8fe4700c8 ## v2.3.0
-NAKAMA_COMMON_COMMIT=f56456e88e9116f9d37c05e0f3cb7b48f934ad73 #v1.9.0
+NAKAMA_COMMON_COMMIT=f56456e88e9116f9d37c05e0f3cb7b48f934ad73 ## v1.9.0
 NAKAMA_COMMIT=9e8accdcf3eb37b89674b8c9dbb54db989d377b0 ## v3.8.0
 PROTOBUF_COMMIT=dfab275eca9481b5de31122db6fc91b31db3382a
 DOMAIN=https://raw.githubusercontent.com
