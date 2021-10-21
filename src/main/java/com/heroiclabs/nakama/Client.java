@@ -559,7 +559,7 @@ public interface Client {
      * @param playerId The player id of the user in Game Center.
      * @param bundleId The bundle id of the Game Center application.
      * @param timestampSeconds The date and time that the signature was created.
-     * @param salt A random <c>NSString</c> used to compute the hash and keep it randomized.
+     * @param salt A random String used to compute the hash and keep it randomized.
      * @param signature The verification signature data generated.
      * @param publicKeyUrl The URL for the public encryption key.
      * @return A future to resolve a session object.
@@ -572,7 +572,7 @@ public interface Client {
      * @param playerId The player id of the user in Game Center.
      * @param bundleId The bundle id of the Game Center application.
      * @param timestampSeconds The date and time that the signature was created.
-     * @param salt A random <c>NSString</c> used to compute the hash and keep it randomized.
+     * @param salt A random String used to compute the hash and keep it randomized.
      * @param signature The verification signature data generated.
      * @param publicKeyUrl The URL for the public encryption key.
      * @param vars Extra information that will be bundled in the session token.
@@ -585,7 +585,7 @@ public interface Client {
      * @param playerId The player id of the user in Game Center.
      * @param bundleId The bundle id of the Game Center application.
      * @param timestampSeconds The date and time that the signature was created.
-     * @param salt A random <c>NSString</c> used to compute the hash and keep it randomized.
+     * @param salt A random String used to compute the hash and keep it randomized.
      * @param signature The verification signature data generated.
      * @param publicKeyUrl The URL for the public encryption key.
      * @param username A username used to create the user.
@@ -598,7 +598,7 @@ public interface Client {
      * @param playerId The player id of the user in Game Center.
      * @param bundleId The bundle id of the Game Center application.
      * @param timestampSeconds The date and time that the signature was created.
-     * @param salt A random <c>NSString</c> used to compute the hash and keep it randomized.
+     * @param salt A random String used to compute the hash and keep it randomized.
      * @param signature The verification signature data generated.
      * @param publicKeyUrl The URL for the public encryption key.
      * @param create True if the user should be created when authenticated.
@@ -611,7 +611,7 @@ public interface Client {
      * @param playerId The player id of the user in Game Center.
      * @param bundleId The bundle id of the Game Center application.
      * @param timestampSeconds The date and time that the signature was created.
-     * @param salt A random <c>NSString</c> used to compute the hash and keep it randomized.
+     * @param salt A random String used to compute the hash and keep it randomized.
      * @param signature The verification signature data generated.
      * @param publicKeyUrl The URL for the public encryption key.
      * @param create True if the user should be created when authenticated.
@@ -625,7 +625,7 @@ public interface Client {
      * @param playerId The player id of the user in Game Center.
      * @param bundleId The bundle id of the Game Center application.
      * @param timestampSeconds The date and time that the signature was created.
-     * @param salt A random <c>NSString</c> used to compute the hash and keep it randomized.
+     * @param salt A random String used to compute the hash and keep it randomized.
      * @param signature The verification signature data generated.
      * @param publicKeyUrl The URL for the public encryption key.
      * @param create True if the user should be created when authenticated.
@@ -780,6 +780,7 @@ public interface Client {
     /**
      * Demote a set of users in a group to the next role down.
      *
+     * @param session The session of the user.
      * @param groupId The group ID to demote in.
      * @param userIds The users to demote.
      * @return A future.
@@ -900,7 +901,7 @@ public interface Client {
      * Add an Apple ID to the social profiles on the current user's account.
      *
      * @param session The session of the user.
-     * @param id The ID token received from Apple to validate.
+     * @param token The token received from Apple to validate.
      * @return A future.
      */
     ListenableFuture<Empty> linkApple(@NonNull final Session session, @NonNull final String token);
@@ -986,7 +987,7 @@ public interface Client {
      * @param playerId The player id of the user in Game Center.
      * @param bundleId The bundle id of the Game Center application.
      * @param timestampSeconds The date and time that the signature was created.
-     * @param salt A random <c>NSString</c> used to compute the hash and keep it randomized.
+     * @param salt A random String used to compute the hash and keep it randomized.
      * @param signature The verification signature data generated.
      * @param publicKeyUrl The URL for the public encryption key.
      * @return A future.
@@ -1247,7 +1248,7 @@ public interface Client {
      * @param min The minimum number of match participants.
      * @param max The maximum number of match participants.
      * @param limit The number of matches to list.
-     * @param authoritative <c>True</c> to include authoritative matches.
+     * @param authoritative True to include authoritative matches.
      * @param label The label to filter the match list on.
      * @return A future to resolve match.
      */
@@ -1651,7 +1652,7 @@ public interface Client {
      * @param playerId The player id of the user in Game Center.
      * @param bundleId The bundle id of the Game Center application.
      * @param timestampSeconds The date and time that the signature was created.
-     * @param salt A random <c>NSString</c> used to compute the hash and keep it randomized.
+     * @param salt A random String used to compute the hash and keep it randomized.
      * @param signature The verification signature data generated.
      * @param publicKeyUrl The URL for the public encryption key.
      * @return A future.

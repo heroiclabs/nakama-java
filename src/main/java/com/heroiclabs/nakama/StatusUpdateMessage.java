@@ -18,10 +18,10 @@ package com.heroiclabs.nakama;
 
 import lombok.Data;
 
-@Data
 /**
  * Update the status of the current user.
  */
+@Data
 class StatusUpdateMessage {
     private final String status;
 }

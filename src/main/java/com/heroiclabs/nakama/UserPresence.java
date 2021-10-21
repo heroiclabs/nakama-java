@@ -18,12 +18,12 @@ package com.heroiclabs.nakama;
 
 import lombok.*;
 
-@Data
 /**
  * An object which represents a connected user in the server.
  * The server allows the same user to be connected with multiple sessions. To uniquely identify them a tuple of
- * <c>{ user_id, session_id }</c> is used which is exposed as this object.
+ * { user_id, session_id } is used which is exposed as this object.
  */
+@Data
 public class UserPresence {
     /**
      * True if this presence generates stored events like persistent chat messages or notifications.

@@ -18,10 +18,10 @@ package com.heroiclabs.nakama;
 
 import lombok.*;
 
-@Data
 /**
  * Send a channel join message to the server.
  */
+@Data
 class ChannelJoinMessage {
     private final String target;
     private final int type;

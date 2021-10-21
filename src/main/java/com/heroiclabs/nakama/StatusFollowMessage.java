@@ -20,10 +20,10 @@ import lombok.Data;
 
 import java.util.List;
 
-@Data
 /**
  * Follow one or more other users for status updates.
  */
+@Data
 class StatusFollowMessage {
     private final List<String> userIds;
     private final List<String> usernames;

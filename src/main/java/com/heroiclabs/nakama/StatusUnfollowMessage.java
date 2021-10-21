@@ -20,10 +20,10 @@ import lombok.Data;
 
 import java.util.List;
 
-@Data
 /**
  * Unfollow one or more other users for status updates.
  */
+@Data
 public class StatusUnfollowMessage {
     private final List<String> userIds;
 }

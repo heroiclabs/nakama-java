@@ -20,13 +20,13 @@ import lombok.*;
 
 import java.util.Map;
 
+/**
+ * The user with the parameters they sent to the server when asking for opponents.
+ */
 @Getter
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-/**
- * The user with the parameters they sent to the server when asking for opponents.
- */
 public class MatchmakerUser {
     /**
      * The numeric properties which this user asked to matchmake with.

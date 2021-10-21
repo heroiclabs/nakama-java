@@ -20,13 +20,13 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * Receive status updates for users.
+ */
 @Getter
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-/**
- * Receive status updates for users.
- */
 public class Status {
     /**
      * The status events for the users followed.

@@ -29,7 +29,7 @@ public interface Session {
     String getAuthToken();
 
     /**
-     * @return <c>True</c> if the user account for this session was just created.
+     * @return True if the user account for this session was just created.
      */
     boolean isCreated();
 
@@ -44,7 +44,7 @@ public interface Session {
     long getExpireTime();
 
     /**
-     * @return <c>True</c> if the session has expired against the current time.
+     * @return True if the session has expired against the current time.
      */
     boolean IsExpired();
 
@@ -61,7 +61,7 @@ public interface Session {
     /**
      * Check if the session has expired against the input time.
      * @param dateTime The time to compare against the session.
-     * @return <c>true</c> if the session has expired.
+     * @return true if the session has expired.
      */
     boolean isExpired(Date dateTime);
 

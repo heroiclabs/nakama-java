@@ -20,13 +20,13 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * A batch of join and leave presences on a chat channel.
+ */
 @Getter
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-/**
- * A batch of join and leave presences on a chat channel.
- */
 public class ChannelPresenceEvent {
     /**
      * The unique identifier of the chat channel.

@@ -20,14 +20,14 @@ import lombok.*;
 
 import java.util.List;
 
-@Getter
-@EqualsAndHashCode
-@ToString
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
 /**
  * List of notifications with cursor.
  */
 // This message type is only used for GSON, and not exposed to the Client interface.
+@Getter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 class NotificationList {
     private List<Notification> notifications;
     private String cacheableCursor;

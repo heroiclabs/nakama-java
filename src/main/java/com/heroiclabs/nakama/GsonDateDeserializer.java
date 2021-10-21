@@ -27,7 +27,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
-/*
+/**
 * A custom Date serializer to indicate to GSON that it is receiving UTC timestamps.
 */
 public class GsonDateDeserializer implements JsonDeserializer<Date> {

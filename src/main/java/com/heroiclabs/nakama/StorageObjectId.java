@@ -18,10 +18,10 @@ package com.heroiclabs.nakama;
 
 import lombok.Data;
 
-@Data
 /**
  * An identifier for a storage object.
  */
+@Data
 public class StorageObjectId {
     /**
      * The collection which stores the object.

@@ -20,10 +20,10 @@ import lombok.Data;
 
 import java.util.Map;
 
-@Data
 /**
  * A join message for a match on the server.
  */
+@Data
 class MatchJoinMessage {
     private String matchId;
     private String token;

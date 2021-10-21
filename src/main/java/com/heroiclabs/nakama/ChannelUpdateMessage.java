@@ -18,10 +18,10 @@ package com.heroiclabs.nakama;
 
 import lombok.Data;
 
-@Data
 /**
  * Update a chat message which has been sent to a channel.
  */
+@Data
 class ChannelUpdateMessage {
     private final String channelId;
     private final String messageId;

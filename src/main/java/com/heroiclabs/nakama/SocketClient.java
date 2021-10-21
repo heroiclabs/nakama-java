@@ -23,6 +23,9 @@ import lombok.NonNull;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A socket connection to the server.
+ */
 public interface SocketClient {
     /**
      * Connect to the server.
@@ -214,7 +217,7 @@ public interface SocketClient {
     /**
      * Leave the matchmaker pool by ticket.
      *
-     * @param ticket The ticket returned by the matchmaker on join. See <c>IMatchmakerTicket.Ticket</c>.
+     * @param ticket The ticket returned by the matchmaker on join. See IMatchmakerTicket.Ticket.
      * @return A future.
      */
     ListenableFuture<Void> removeMatchmaker(@NonNull final String ticket);

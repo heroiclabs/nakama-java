@@ -20,11 +20,11 @@ import lombok.Data;
 
 import java.util.Map;
 
-@Data
 /**
  * An error that occurred in the websocket transport.
  */
 // This message type is only used for GSON, and not exposed to the Client interface.
+@Data
 class WebSocketError {
     private int code;
     private String message;

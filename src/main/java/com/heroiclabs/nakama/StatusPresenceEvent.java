@@ -20,13 +20,13 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * A status update event about other users who've come online or gone offline.
+ */
 @Getter
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-/**
- * A status update event about other users who've come online or gone offline.
- */
 public class StatusPresenceEvent {
 
     /**
