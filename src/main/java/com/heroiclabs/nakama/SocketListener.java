@@ -26,7 +26,7 @@ public interface SocketListener {
     /**
      * Called when the client socket disconnects.
      *
-     * Throwable t is set if an error caused the disconnect.
+     * @param t Throwable t is set if an error caused the disconnect.
      */
     void onDisconnect(final Throwable t);
 

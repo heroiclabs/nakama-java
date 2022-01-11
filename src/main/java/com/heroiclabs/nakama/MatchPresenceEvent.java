@@ -20,13 +20,13 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * A batch of join and leave presences for a match.
+ */
 @Getter
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-/**
- * A batch of join and leave presences for a match.
- */
 public class MatchPresenceEvent {
     /**
      * The unique match identifier.

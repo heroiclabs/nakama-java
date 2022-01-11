@@ -19,13 +19,13 @@ package com.heroiclabs.nakama;
 import com.google.common.io.BaseEncoding;
 import lombok.*;
 
+/**
+ * Some game state update in a match.
+ */
 @Getter
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-/**
- * Some game state update in a match.
- */
 public class MatchData {
     /**
      * The unique match identifier.

@@ -20,14 +20,14 @@ import lombok.*;
 
 import java.util.Date;
 
-@Getter
-@EqualsAndHashCode
-@ToString
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
 /**
  * A notification object.
  */
 // This message type is only used for GSON, and not exposed to the Client interface.
+@Getter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 class Notification {
     private String id;
     private String subject;

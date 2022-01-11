@@ -18,10 +18,10 @@ package com.heroiclabs.nakama;
 
 import lombok.Data;
 
-@Data
 /**
  * A leave message to a chat channel.
  */
+@Data
 class ChannelLeaveMessage {
     private final String channelId;
 }

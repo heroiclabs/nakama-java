@@ -20,13 +20,13 @@ import lombok.*;
 
 import java.util.Date;
 
+/**
+ * An acknowledgement from the server when a chat message is delivered to a channel.
+ */
 @Getter
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-/**
- * An acknowledgement from the server when a chat message is delivered to a channel.
- */
 public class ChannelMessageAck {
     /**
      * A unique ID for the chat message.

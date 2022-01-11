@@ -20,14 +20,14 @@ import lombok.*;
 
 import java.util.List;
 
-@Getter
-@EqualsAndHashCode
-@ToString
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
 
 /**
  * The result of a successful matchmaker operation sent to the server.
  */
+@Getter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class MatchmakerMatched {
     /**
      * The id used to join the match.

@@ -41,6 +41,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * WebSocket implementation of Socket interface.
+ */
 @Slf4j
 public class WebSocketClient implements SocketClient {
     private static class ByteArrayToBase64TypeAdapter implements JsonSerializer<byte[]>, JsonDeserializer<byte[]> {

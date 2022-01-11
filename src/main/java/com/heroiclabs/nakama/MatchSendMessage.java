@@ -20,10 +20,10 @@ import lombok.Data;
 
 import java.util.List;
 
-@Data
 /**
  * Send new state to a match on the server.
  */
+@Data
 class MatchSendMessage {
     private final String matchId;
     private final long opCode;

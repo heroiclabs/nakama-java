@@ -26,6 +26,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Default implementation of Session interface.
+ */
 @Getter
 @EqualsAndHashCode
 @ToString
@@ -80,7 +83,7 @@ public class DefaultSession implements Session {
 
     /**
      * Restore a session from an authentication token.
-     * @param token The authentication token from a <c>Session</c>.
+     * @param token The authentication token from a Session.
      * @return A session restored from the authentication token.
      */
     public static Session restore(final String token) {

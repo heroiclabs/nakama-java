@@ -18,14 +18,14 @@ package com.heroiclabs.nakama;
 
 import lombok.*;
 
-@Getter
-@EqualsAndHashCode
-@ToString
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
 
 /**
  * A realtime socket stream on the server.
  */
+@Getter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Stream {
 
     /**

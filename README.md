@@ -202,6 +202,20 @@ Jitpack makes builds of each commit on its own servers. You can view the results
 
 https://jitpack.io/com/github/heroiclabs/nakama-java/<_commit_>/build.log
 
+
+## Generate Docs
+
+API docs are generated with javadoc and deployed to GitHub pages.
+
+When changing the API comments, rerun javadoc and commit the changes in `docs/*`.
+
+To run javadoc:
+
+```
+cd nakama-java/src/main/com/heroiclabs/nakama
+javadoc *.java
+```
+
 ### License
 
 This project is licensed under the [Apache-2 License](https://github.com/heroiclabs/nakama-dotnet/blob/master/LICENSE).

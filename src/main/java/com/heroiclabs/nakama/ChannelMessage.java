@@ -20,12 +20,12 @@ import lombok.*;
 
 import java.util.Date;
 
-@Data
 /**
  * A message sent on a channel.
  *
  */
 // This message type is only used for GSON, and not exposed to the Client interface.
+@Data
 class ChannelMessage {
     private String channelId;
     private String messageId;

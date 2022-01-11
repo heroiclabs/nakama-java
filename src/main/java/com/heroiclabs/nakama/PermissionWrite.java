@@ -16,6 +16,9 @@
 
 package com.heroiclabs.nakama;
 
+/**
+ * Storage write permissions.
+ */
 public enum PermissionWrite {
     NO_READ(0),
     OWNER_WRITE(1);

@@ -20,13 +20,13 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * A multiplayer match.
+ */
 @Getter
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-/**
- * A multiplayer match.
- */
 public class Match {
     /**
      * True if this match has an authoritative handler on the server.

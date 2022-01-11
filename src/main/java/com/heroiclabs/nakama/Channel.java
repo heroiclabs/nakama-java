@@ -20,13 +20,13 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * A chat channel on the server.
+ */
 @Getter
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-/**
- * A chat channel on the server.
- */
 public class Channel {
 
     /**

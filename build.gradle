@@ -34,6 +34,7 @@ buildscript {
 plugins {
     id 'com.github.johnrengelman.shadow' version '5.2.0'
     id 'com.google.protobuf' version '0.8.17'
+    id "io.freefair.lombok" version "5.1.1"
     //for distTar which is called when importing this SDK w/ JitPack
     id 'distribution'
     id 'eclipse'
@@ -41,6 +42,10 @@ plugins {
     id 'idea'
     id 'java'
     id 'java-library'
+}
+
+lombok {
+    version = "1.18.12"
 }
 
 group = 'com.github.heroiclabs'
@@ -68,13 +73,14 @@ configurations {
 
 dependencies {
     // syntax sugaring for data models
-    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    // commented out due to io.freefair.lombok setting these by default.
+    // annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    // implementation "org.projectlombok:lombok:1.18.12"
+
+    implementation 'com.google.code.gson:gson:2.8.6'
     api 'io.grpc:grpc-protobuf-lite:1.31.1'
     // listenable future is part of the SDK public API
     api 'com.google.guava:guava:29.0-android'
-    implementation "org.projectlombok:lombok:1.18.12"
-
-    implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.protobuf:protobuf-javalite:3.13.0'
 
     implementation ('io.grpc:grpc-okhttp:1.31.1') {
@@ -205,7 +211,6 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
 }
 
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -250,6 +255,11 @@ task relocateShadowJar(type: ConfigureShadowRelocation) {
 }
 
 tasks.shadowJar.dependsOn tasks.relocateShadowJar
+
+javadoc {
+    destinationDir = file("docs")
+    options.addBooleanOption("Xdoclint:-missing", true)
+}
 
 test {
     testLogging.showStandardStreams = true

@@ -18,14 +18,14 @@ package com.heroiclabs.nakama;
 
 import lombok.*;
 
-@Getter
-@EqualsAndHashCode
-@ToString
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
 
 /**
  * A state change received from a stream.
  */
+@Getter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class StreamData {
     /**
      * The user who sent the state change. May be <c>null</c>.

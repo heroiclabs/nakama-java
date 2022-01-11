@@ -18,6 +18,9 @@ package com.heroiclabs.nakama;
 
 import lombok.*;
 
+/**
+ * All errors exposed by the client library.
+ */
 @Getter
 @ToString
 class DefaultError extends Error {
