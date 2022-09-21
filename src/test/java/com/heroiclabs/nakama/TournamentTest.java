@@ -770,6 +770,7 @@ public class TournamentTest {
     @Test
     public void testTournamentAddAttempts() throws Exception {
         TournamentObject object = new TournamentObject();
+        object.authoritative = false;
         object.description = "checking set tournament duration 10s, add 1 attempt";
         object.duration = 10;
         object.category = 6;
@@ -872,6 +873,7 @@ class TournamentObject {
     public String title;
     public long start_time;
     public String reset_schedule;
+    public boolean authoritative;
 }
 
 class TournamentId {

@@ -83,7 +83,7 @@ dependencies {
     api 'com.google.guava:guava:29.0-android'
     implementation 'com.google.protobuf:protobuf-javalite:3.13.0'
 
-    implementation ('io.grpc:grpc-okhttp:1.31.1') {
+    implementation ('io.grpc:grpc-okhttp:1.48.0') {
         exclude group: 'com.squareup.okio', module:'okio'
     }
 
