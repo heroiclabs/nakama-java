@@ -160,6 +160,59 @@ System.out.println("Socket connected successfully.");
 
 By default, all socket messages are processed in a single thread. Advanced users who want to pass a multithreaded `ExecutorService` to the `client.createSocket` method should be aware that incoming messages will not necessarily be processed in order by that socket.
 
+# Satori
+
+Satori is a liveops server for games that powers actionable analytics, A/B testing and remote configuration. Use the Satori Java Client to communicate with Satori from your Java game or server.
+
+Full documentation is online - https://heroiclabs.com/docs/satori/client-libraries/java/index.html
+
+## Getting Started
+
+Create a client object that accepts the API you were given as a Satori customer.
+
+```java TODO rewrite in Java
+using Satori;
+
+const string scheme = "https";
+const string host = "127.0.0.1"; // add your host here
+const int port = 443;
+const string apiKey = "apiKey"; // add the api key that was given to you as a Satori customer.
+
+var client = new Client(scheme, host, port, apiKey);
+```
+
+Then authenticate with the server to obtain your session.
+
+
+```java TODO rewrite in Java
+// Authenticate with the Satori server.
+try
+{
+    session = await client.AuthenticateAsync(id);
+    Debug.Log("Authenticated successfully.");
+}
+catch(ApiResponseException ex)
+{
+    Debug.LogFormat("Error authenticating: {0}", ex.Message);
+}
+```
+
+Using the client you can get any experiments or feature flags, the user belongs to.
+
+```java TODO rewrite in Java
+var experiments = await client.GetExperimentsAsync(session);
+var flag = await client.GetFlagAsync(session, "FlagName");
+```
+
+You can also send arbitrary events to the server:
+
+```java TODO rewrite in Java
+
+await client.EventAsync(session, new Event("gameLaunched", DateTime.UtcNow));
+
+```
+This is only a subset of the Satori client API, so please see the documentation link listed earlier for the [full API](https://java.docs.heroiclabs.com/html/namespace_satori.html).
+
 ### For Android
 
 Android uses a permissions system which determines which platform services the application will request to use and ask permission for from the user. The client uses the network to communicate with the server so you must add the "INTERNET" permission.

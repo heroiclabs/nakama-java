@@ -49,8 +49,8 @@ lombok {
 }
 
 group = 'com.github.heroiclabs'
-version = '2.1.1'
-def description = 'Android optimized Java client for Nakama server.'
+version = '2.2.0'
+def description = 'Java client for Nakama server.'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -78,10 +78,10 @@ dependencies {
     // implementation "org.projectlombok:lombok:1.18.12"
 
     implementation 'com.google.code.gson:gson:2.8.9'
-    api 'io.grpc:grpc-protobuf-lite:1.43.2'
+    api 'io.grpc:grpc-protobuf-lite:1.56.1'
     // listenable future is part of the SDK public API
     api 'com.google.guava:guava:31.0.1-android'
-    implementation 'com.google.protobuf:protobuf-javalite:3.19.3'
+    implementation 'com.google.protobuf:protobuf-javalite:3.22.3'
 
     implementation ('io.grpc:grpc-okhttp:1.48.0') {
         exclude group: 'com.squareup.okio', module:'okio'
