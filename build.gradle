@@ -227,10 +227,14 @@ def pomConfig = {
 }
 
 task nakamaJar(type: Jar) {
+    archiveBaseName = 'nakama-java'
+    version = project.version
     from sourceSets.nakama.allJava
 }
 
 task satoriJar(type: Jar) {
+    archiveBaseName = 'satori-java'
+    version = project.version
     from sourceSets.satori.allJava
 }
 
@@ -280,8 +284,14 @@ publishing {
     }
 }
 
-shadowJar {
-    mergeServiceFiles()
+task nakamaShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    archiveClassifier = 'all'
+    from sourceSets.nakama.output
+}
+
+task satoriShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    archiveClassifier = 'all'
+    from sourceSets.satori.output
 }
 
 task relocateShadowJar(type: ConfigureShadowRelocation) {
@@ -290,6 +300,8 @@ task relocateShadowJar(type: ConfigureShadowRelocation) {
 }
 
 tasks.shadowJar.dependsOn tasks.relocateShadowJar
+nakamaShadowJar.dependsOn compileNakamaJava
+satoriShadowJar.dependsOn compileSatoriJava
 
 javadoc {
     destinationDir = file("docs")

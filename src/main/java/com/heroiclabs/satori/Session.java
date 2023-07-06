@@ -16,8 +16,6 @@
 
 package com.heroiclabs.satori;
 
-import java.util.Date;
-
 public interface Session {
 
     /**
