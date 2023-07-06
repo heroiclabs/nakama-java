@@ -265,8 +265,7 @@ public class DefaultClient implements Client {
 
     @Override
     public ListenableFuture<Empty> deleteIdentity(@NonNull final Session session) {
-        return getStub(session).deleteIdentity(DeleteIdentityRequest.newBuilder()
-                .build());
+        return getStub(session).deleteIdentity(Empty.newBuilder().build());
     }
 
     @Override

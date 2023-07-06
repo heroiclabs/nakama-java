@@ -54,18 +54,4 @@ public interface Session {
      * The ID of the user who owns this session.
      */
     String getIdentityId();
-
-    /**
-     * Check the session has expired against the offset time.
-     * @param offset The date to compare against this session.
-     * @return If the session has expired.
-     */
-    boolean hasExpired(Date offset);
-
-    /**
-     * Check if the refresh token has expired against the offset time.
-     * @param offset The date to compare against this refresh token.
-     * @return If refresh token has expired.
-     */
-    boolean hasRefreshExpired(Date offset);
 }
