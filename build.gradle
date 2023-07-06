@@ -50,7 +50,6 @@ lombok {
 
 group = 'com.github.heroiclabs'
 version = '2.2.0'
-def description = 'Java client for Nakama server.'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -100,9 +99,19 @@ dependencies {
 }
 
 sourceSets {
-    main {
+    nakama {
         java {
-            srcDirs "src/main/java"
+            srcDirs "src/main/java/com/heroiclabs/nakama"
+        }
+
+        proto {
+            exclude 'protoc-gen-swagger/**/*.proto'
+        }
+    }
+
+    satori {
+         java {
+            srcDirs "src/main/java/com/heroiclabs/satori"
         }
 
         proto {
@@ -175,6 +184,16 @@ jar {
                    'Implementation-Version': "$project.version"
     }
     exclude '/**/*.proto'
+    from sourceSets.nakama.output
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Satori client',
+                   'Implementation-Version': "$project.version"
+    }
+    exclude '/**/*.proto'
+    from sourceSets.satori.output
 }
 
 def pomConfig = {
@@ -207,20 +226,53 @@ def pomConfig = {
     }
 }
 
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
+task nakamaJar(type: Jar) {
+    from sourceSets.nakama.allJava
+}
+
+task satoriJar(type: Jar) {
+    from sourceSets.satori.allJava
 }
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            from components.java
+        nakama(MavenPublication) {
+            artifact nakamaJar {
+                classifier 'sources'
+            }
             artifactId 'nakama-java'
+            groupId "$project.group"
+            version "$project.version"
+
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Java client for Nakama server.')
+                root.appendNode('name', 'Nakama client')
+                root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/') // TODO update this
+                root.children().last() + pomConfig
+            }
+        }
+
+        satori(MavenPublication) {
+            artifact satoriJar {
+                classifier 'sources'
+            }
+            artifactId 'satori-java'
+            groupId "$project.group"
+            version "$project.version"
+
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Java client for Satori server.')
+                root.appendNode('name', 'Satori client')
+                root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/') // TODO update this
+                root.children().last() + pomConfig
+            }
         }
 
         shadow(MavenPublication) {
             project.shadow.component(it)
-            artifactId 'nakama-java-all'
+            artifactId "${tasks.shadowJar.baseName}-all"
 
             // override default classifier of 'all'
             it.artifacts[0].classifier = ''
@@ -228,30 +280,13 @@ publishing {
     }
 }
 
-
-tasks.withType(AbstractPublishToMaven).all {
-        publication.artifact sourcesJar {
-            classifier 'sources'
-        }
-
-        publication.groupId "$project.group"
-        publication.version "$project.version"
-
-        publication.pom.withXml {
-            def root = asNode()
-            root.appendNode('description', description)
-            root.appendNode('name', 'Nakama client')
-            root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/')
-            root.children().last() + pomConfig
-        }
-}
 shadowJar {
     mergeServiceFiles()
 }
 
 task relocateShadowJar(type: ConfigureShadowRelocation) {
     target = tasks.shadowJar
-    prefix = "nakama" // prefix all classpath entries with `nakama`
+    prefix = "heroiclabs" // prefix all classpath entries with `heroiclabs`
 }
 
 tasks.shadowJar.dependsOn tasks.relocateShadowJar

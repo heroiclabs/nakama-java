@@ -228,7 +228,7 @@ To build the codebase you will need to install these dependencies:
 * Java Runtime Environment 1.8 through 1.11
 * Java Development Kit 1.8 through 1.11
 
-Invoke the Gradle Wrapper with `./gradlew build` and Gradle will install your dependencies over
+Invoke the Gradle Wrapper with `./gradlew build nakamaJar` or `./gradlew build satoriJar` and Gradle will install your dependencies over
 the network for you prior to building. It will then make a build and run the full test suite.
 
 To test a specific test, run `./gradlew test --tests <ClassName.methodName>`
@@ -237,9 +237,9 @@ You can also run `./gradlew tasks` for a list of available build tasks.
 
 To create a fat JAR with self-contained dependencies, run:
 
-`./gradlew shadow`
+`./gradlew shadow nakamaJar` or `./gradlew shadow satoriJar`.
 
-All JAR artifacts are output to `build/libs`. The fat JAR will have an artifact id of 'nakama-java-all`.
+All JAR artifacts are output to `build/libs`. The fat JAR will have an `-all` suffix.
 
 If you'd like to test a Jitpack publish task locally prior to pushing, run:
 

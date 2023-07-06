@@ -18,11 +18,8 @@ package com.heroiclabs.satori;
 
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
@@ -57,8 +54,6 @@ import satori.api.SatoriOuterClass.IdentifyRequest;
 import satori.api.SatoriOuterClass.LiveEventList;
 import satori.api.SatoriOuterClass.Properties;
 import satori.api.SatoriOuterClass.UpdatePropertiesRequest;
-
-import com.heroiclabs.satori.Session;
 
 public class DefaultClient implements Client {
 
