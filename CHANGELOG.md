@@ -6,6 +6,11 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.2.0] - 2023-07-06
+### Changed
+- Updated grpc to 1.56 and protobuf-lite to 3.22.3.
+- Adds the Satori Java SDK. Satori is our liveops server for game studios. Please read more about it on the Heroic Labs website.
+
 ## [2.1.4] - 2021-4-20
 ### Fixed
 - protobuf-lite is now properly exported to Maven and Gradle projects.
