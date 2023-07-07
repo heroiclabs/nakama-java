@@ -234,7 +234,6 @@ task satoriJar(type: Jar) {
     version = project.version
     from sourceSets.satori.output
 }
-
 publishing {
     publications {
         nakama(MavenPublication) {
@@ -248,6 +247,15 @@ publishing {
                 root.appendNode('description', 'Java client for Nakama server.')
                 root.appendNode('name', 'Nakama client')
                 root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/') // TODO update this
+
+                def dependenciesNode = root.appendNode('dependencies')
+                configurations.implementation.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                }
+
                 root.children().last() + pomConfig
             }
         }
@@ -263,6 +271,15 @@ publishing {
                 root.appendNode('description', 'Java client for Satori server.')
                 root.appendNode('name', 'Satori client')
                 root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/') // TODO update this
+
+                def dependenciesNode = root.appendNode('dependencies')
+                configurations.implementation.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                }
+
                 root.children().last() + pomConfig
             }
         }
