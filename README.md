@@ -231,7 +231,10 @@ To build the codebase you will need to install these dependencies:
 Invoke the Gradle Wrapper with `./gradlew nakamaJar` or `./gradlew satoriJar` and Gradle will install your dependencies over
 the network for you prior to building. It will then build the .jar files.
 
-To test a specific test, run `./gradlew test --tests <ClassName.methodName>`
+To run tests for Nakama, run `./gradlew nakamaTest`.
+To run tests for Satori, run `./gradlew satoriTest`.
+
+To test a specific test, run `./gradlew nakamaTest --tests <ClassName.methodName>`
 
 You can also run `./gradlew tasks` for a list of available build tasks.
 

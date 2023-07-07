@@ -71,10 +71,10 @@ configurations {
     sharedProtobuf.extendsFrom protobuf
     sharedApi.extendsFrom api
     sharedImplementation.extendsFrom implementation
+    sharedTestImplementation.extendsFrom testImplementation
 }
 
 dependencies {
-
     shadow localGroovy()
     shadow gradleApi()
 
@@ -84,7 +84,7 @@ dependencies {
     api 'com.google.guava:guava:31.0.1-android'
     implementation 'com.google.protobuf:protobuf-javalite:3.19.3'
 
-    implementation ('io.grpc:grpc-okhttp:1.48.0') {
+    implementation('io.grpc:grpc-okhttp:1.48.0') {
         exclude group: 'com.squareup.okio', module:'okio'
     }
 
@@ -102,7 +102,7 @@ dependencies {
 
 tasks.named('shadowJar', ShadowJar) {
     enableRelocation true
-    relocationPrefix "heroic"
+    relocationPrefix 'heroiclabs'
 }
 
 sourceSets {
@@ -112,6 +112,9 @@ sourceSets {
             compileClasspath += configurations.sharedImplementation
             compileClasspath += configurations.sharedApi
             compileClasspath += configurations.sharedProtobuf
+            runtimeClasspath += configurations.sharedImplementation
+            runtimeClasspath += configurations.sharedApi
+            runtimeClasspath += configurations.sharedProtobuf
         }
 
         proto {
@@ -123,7 +126,12 @@ sourceSets {
     satori {
         java {
             srcDirs 'src/main/java/com/heroiclabs/satori'
-            compileClasspath += configurations.sharedImplementation + configurations.sharedApi + configurations.sharedProtobuf
+            compileClasspath += configurations.sharedImplementation
+            compileClasspath += configurations.sharedApi
+            compileClasspath += configurations.sharedProtobuf
+            runtimeClasspath += configurations.sharedImplementation
+            runtimeClasspath += configurations.sharedApi
+            runtimeClasspath += configurations.sharedProtobuf
         }
 
         proto {
@@ -131,6 +139,25 @@ sourceSets {
             srcDir 'src/main/proto'
         }
     }
+
+    nakamaTest {
+        java {
+            srcDirs 'src/test/java/com/heroiclabs/nakama'
+        }
+        compileClasspath += sourceSets.nakama.output
+        compileClasspath += configurations.sharedTestImplementation
+        runtimeClasspath += sourceSets.nakama.output
+        runtimeClasspath += configurations.sharedTestImplementation
+    }
+
+    satoriTest {
+        java {
+            srcDirs 'src/test/java/com/heroiclabs/satori'
+        }
+        compileClasspath += sourceSets.satori.output
+        compileClasspath += configurations.sharedTestImplementation
+    }
+
 }
 
 idea {
@@ -163,6 +190,7 @@ eclipse {
         }
     }
 }
+
 
 protobuf {
     protoc {
@@ -282,6 +310,16 @@ publishing {
             }
         }
     }
+}
+
+task nakamaTest(type: Test) {
+    testClassesDirs = sourceSets.nakamaTest.output.classesDirs
+    classpath = sourceSets.nakamaTest.runtimeClasspath
+}
+
+task satoriTest(type: Test) {
+    testClassesDirs = sourceSets.satoriTest.output.classesDirs
+    classpath = sourceSets.satoriTest.runtimeClasspath
 }
 
 task nakamaShadowJar(type: ShadowJar) {
