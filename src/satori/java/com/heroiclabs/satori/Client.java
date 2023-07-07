@@ -18,13 +18,9 @@ package com.heroiclabs.satori;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.protobuf.Empty;
+import com.heroiclabs.satori.api.*;
 
 import lombok.NonNull;
-import satori.api.SatoriOuterClass.ExperimentList;
-import satori.api.SatoriOuterClass.Flag;
-import satori.api.SatoriOuterClass.FlagList;
-import satori.api.SatoriOuterClass.LiveEventList;
-import satori.api.SatoriOuterClass.Properties;
 
 import java.util.List;
 import java.util.Map;

@@ -92,7 +92,7 @@ dependencies {
     implementation 'io.grpc:grpc-netty-shaded:1.43.2'
     implementation 'io.grpc:grpc-stub:1.43.2'
     compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
-    implementation 'org.slf4j:slf4j-api:1.7.33'
+    implementation 'org.slf4j:slf4j-simple:1.7.9'
 
     protobuf 'com.google.api.grpc:proto-google-common-protos:2.7.1'
     testImplementation 'junit:junit:4.13.2'

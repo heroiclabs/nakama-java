@@ -24,6 +24,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+
 import com.google.common.io.BaseEncoding;
 import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.Futures;
@@ -37,24 +40,9 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.Metadata;
 import io.grpc.okhttp.OkHttpChannelBuilder;
 import io.grpc.stub.MetadataUtils;
-import lombok.NonNull;
-import satori.api.SatoriGrpc;
-import satori.api.SatoriGrpc.SatoriFutureStub;
-import satori.api.SatoriOuterClass.AuthenticateLogoutRequest;
-import satori.api.SatoriOuterClass.AuthenticateRefreshRequest;
-import satori.api.SatoriOuterClass.AuthenticateRequest;
-import satori.api.SatoriOuterClass.EventRequest;
-import satori.api.SatoriOuterClass.ExperimentList;
-import satori.api.SatoriOuterClass.Flag;
-import satori.api.SatoriOuterClass.FlagList;
-import satori.api.SatoriOuterClass.GetExperimentsRequest;
-import satori.api.SatoriOuterClass.GetFlagsRequest;
-import satori.api.SatoriOuterClass.GetLiveEventsRequest;
-import satori.api.SatoriOuterClass.IdentifyRequest;
-import satori.api.SatoriOuterClass.LiveEventList;
-import satori.api.SatoriOuterClass.Properties;
-import satori.api.SatoriOuterClass.UpdatePropertiesRequest;
+import com.heroiclabs.satori.api.*;
 
+@Slf4j
 public class DefaultClient implements Client {
 
     private final ManagedChannel managedChannel;
@@ -131,7 +119,7 @@ public class DefaultClient implements Client {
                     "Bearer " + session.getAuthToken());
         }
 
-        SatoriFutureStub newStub = MetadataUtils.attachHeaders(this.stub, metadata);
+        SatoriGrpc.SatoriFutureStub newStub = MetadataUtils.attachHeaders(this.stub, metadata);
         if (this.deadlineAfterMs > 0) {
             newStub = newStub.withDeadlineAfter(deadlineAfterMs, TimeUnit.MILLISECONDS);
         }
@@ -152,6 +140,8 @@ public class DefaultClient implements Client {
     @Override
     public ListenableFuture<Empty> authenticateLogout(@NonNull final Session session) {
         return getStub(session).authenticateLogout(AuthenticateLogoutRequest.newBuilder()
+                .setToken(session.getAuthToken())
+                .setRefreshToken(session.getRefreshToken())
                 .build());
     }
 
@@ -292,10 +282,10 @@ public class DefaultClient implements Client {
             AuthenticateRefreshRequest.newBuilder().setRefreshToken(session.getRefreshToken()).build()));
     }
 
-    private ListenableFuture<Session> convertSession(final ListenableFuture<satori.api.SatoriOuterClass.Session> future) {
-      return Futures.transformAsync(future, new AsyncFunction<satori.api.SatoriOuterClass.Session, Session>() {
+    private ListenableFuture<Session> convertSession(final ListenableFuture<com.heroiclabs.satori.api.Session> future) {
+      return Futures.transformAsync(future, new AsyncFunction<com.heroiclabs.satori.api.Session, Session>() {
           @Override
-          public ListenableFuture<Session> apply(@Nullable final satori.api.SatoriOuterClass.Session input) {
+          public ListenableFuture<Session> apply(@Nullable final com.heroiclabs.satori.api.Session input) {
               final Session result = new DefaultSession(input.getToken(), input.getRefreshToken());
               return Futures.immediateFuture(result);
           }
@@ -309,8 +299,8 @@ public class DefaultClient implements Client {
             .build();
     }
 
-    private satori.api.SatoriOuterClass.Event toProtoEvent(Event event) {
-        satori.api.SatoriOuterClass.Event.Builder eventBuilder = satori.api.SatoriOuterClass.Event.newBuilder();
+    private com.heroiclabs.satori.api.Event toProtoEvent(Event event) {
+        com.heroiclabs.satori.api.Event.Builder eventBuilder = com.heroiclabs.satori.api.Event.newBuilder();
         eventBuilder
             .setName(event.getName())
             .setValue(event.getValue())

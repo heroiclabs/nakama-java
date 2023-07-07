@@ -170,15 +170,10 @@ Full documentation is online - https://heroiclabs.com/docs/satori/client-librari
 
 Create a client object that accepts the API you were given as a Satori customer.
 
-```java TODO rewrite in Java
-using Satori;
+```java
+import com.heroiclabs.satori;
 
-const string scheme = "https";
-const string host = "127.0.0.1"; // add your host here
-const int port = 443;
-const string apiKey = "apiKey"; // add the api key that was given to you as a Satori customer.
-
-var client = new Client(scheme, host, port, apiKey);
+Client client = new DefaultClient("https", "your.host.here", 443, "yourApiKey");
 ```
 
 Then authenticate with the server to obtain your session.
@@ -231,10 +226,10 @@ To build the codebase you will need to install these dependencies:
 Invoke the Gradle Wrapper with `./gradlew nakamaJar` or `./gradlew satoriJar` and Gradle will install your dependencies over
 the network for you prior to building. It will then build the .jar files.
 
-To run tests for Nakama, run `./gradlew nakamaTest`.
-To run tests for Satori, run `./gradlew satoriTest`.
+To run tests for Nakama, run `./gradlew nakamaTest -i`.
+To run tests for Satori, run `./gradlew satoriTest -i`.
 
-To test a specific test, run `./gradlew nakamaTest --tests <ClassName.methodName>`
+To test a specific test, run `./gradlew nakamaTest --tests <ClassName.methodName> -i`
 
 You can also run `./gradlew tasks` for a list of available build tasks.
 
