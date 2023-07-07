@@ -248,7 +248,7 @@ publishing {
                 def root = asNode()
                 root.appendNode('description', 'Java client for Nakama server.')
                 root.appendNode('name', 'Nakama client')
-                root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/') // TODO update this
+                root.appendNode('url', 'https://heroiclabs.com/docs/satori/client-libraries/java/')
 
                 def dependenciesNode = root.appendNode('dependencies')
                 configurations.implementation.allDependencies.each {
@@ -272,7 +272,7 @@ publishing {
                 def root = asNode()
                 root.appendNode('description', 'Java client for Satori server.')
                 root.appendNode('name', 'Satori client')
-                root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/') // TODO update this
+                root.appendNode('url', 'https://heroiclabs.com/docs/satori/client-libraries/java/')
 
                 def dependenciesNode = root.appendNode('dependencies')
                 configurations.implementation.allDependencies.each {

@@ -10,7 +10,7 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 ### Fixed
 - Fixed packing of external dependencies into fat jars.
 - Removed unnecessary generated protobuf code from Satori, resulting in a smaller .jar file.
-
+- Fixed links to documentation in pom.xml.
 
 ## [2.2.0] - 2023-07-06
 ### Added
