@@ -28,7 +28,7 @@ import org.junit.Test;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
-import satori.api.SatoriOuterClass.ExperimentList;
+import com.heroiclabs.satori.api.*;
 
 public class SatoriTest {
     private Client client;
@@ -58,7 +58,7 @@ public class SatoriTest {
     public void testGetExperiments() throws Exception {
         final Session session = client.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
         final ExperimentList experimentList = client.getAllExperiments(session).get();
-
+        Assert.assertTrue(experimentList.getExperiments().length() == 1);
     }
 
 
