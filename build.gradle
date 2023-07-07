@@ -116,7 +116,8 @@ sourceSets {
         }
 
         proto {
-            exclude 'protoc-gen-swagger/**/*.proto'
+            srcDir 'src/main/proto'
+            exclude "satori.proto"
         }
     }
 
@@ -132,7 +133,8 @@ sourceSets {
         }
 
         proto {
-            exclude 'protoc-gen-swagger/**/*.proto'
+            srcDir 'src/main/proto'
+            exclude "apigrpc.proto"
         }
     }
 
@@ -155,7 +157,6 @@ sourceSets {
         runtimeClasspath += sourceSets.nakama.output
         runtimeClasspath += configurations.sharedTestImplementation
     }
-
 }
 
 protobuf {
@@ -219,7 +220,6 @@ task nakamaJar(type: Jar) {
         attributes 'Implementation-Title': 'Nakama client',
                    'Implementation-Version': "$project.version"
     }
-    exclude '/**/*.proto'
     from sourceSets.nakama.output
     archiveBaseName = 'nakama-java'
     version = project.version
@@ -231,7 +231,6 @@ task satoriJar(type: Jar) {
         attributes 'Implementation-Title': 'Satori client',
                    'Implementation-Version': "$project.version"
     }
-    exclude '/**/*.proto'
     archiveBaseName = 'satori-java'
     version = project.version
     from sourceSets.satori.allJava
