@@ -6,6 +6,12 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.2.1] - 2023-07-07
+### Fixed
+- Fixed packing of external dependencies into fat jars.
+- Removed unnecessary generated protobuf code from Satori, resulting in a smaller .jar file.
+
+
 ## [2.2.0] - 2023-07-06
 ### Added
 - Adds the Satori Java SDK. Satori is our liveops server for game studios. Please read more about it on the Heroic Labs website.
