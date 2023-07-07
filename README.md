@@ -29,9 +29,12 @@ repositories {
 
 dependencies {
     implementation 'com.github.heroiclabs.nakama-java:nakama-java:<commit>'
+    implementation 'com.github.heroiclabs.nakama-java:satori-java:<commit>'
+
 
  // or, depend on the fat Jar which bundles all of the Nakama Java dependencies into a single Jar.
  // implementation 'com.github.heroiclabs.nakama-java:nakama-java-all:<commit>'
+ // implementation 'com.github.heroiclabs.nakama-java:satori-java-all:<commit>'
 }
 
 ```
@@ -181,15 +184,10 @@ Then authenticate with the server to obtain your session.
 
 ```java
 // Authenticate with the Satori server.
-try
-{
-    session = await client.AuthenticateAsync(id);
-    Debug.Log("Authenticated successfully.");
-}
-catch(ApiResponseException ex)
-{
-    Debug.LogFormat("Error authenticating: {0}", ex.Message);
-}
+Map<string, string> defaultProperties = new HashMap<string, string>();
+Map<string, string> customProperties = new HashMap<string, string>();
+
+session = client.authenticate("identityId", defaultProperties, customProperties);
 ```
 
 Using the client you can get any experiments or feature flags, the user belongs to.
