@@ -45,7 +45,7 @@ SATORI_APIGRPC_URL=${DOMAIN}/heroiclabs/satori/${SATORI_COMMIT}/api/satori.proto
 ### java proto-lite does not contain descriptor.proto
 DESCRIPTOR_URL=${DOMAIN}/protocolbuffers/protobuf/${PROTOBUF_COMMIT}/src/google/protobuf/descriptor.proto
 
-ROOT_DIR=src/main/proto
+ROOT_DIR=src/proto
 NAKAMA_COMMON_DIR=github.com/heroiclabs/nakama-common/api
 SWAGGER_GEN_DIR=protoc-gen-openapiv2/options
 

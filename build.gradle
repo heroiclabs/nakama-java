@@ -37,9 +37,7 @@ plugins {
     id 'io.freefair.lombok' version '5.1.1'
     //for distTar which is called when importing this SDK w/ JitPack
     id 'distribution'
-    id 'eclipse'
     id 'maven-publish'
-    id 'idea'
     id 'java'
     id 'java-library'
 }
@@ -108,7 +106,7 @@ tasks.named('shadowJar', ShadowJar) {
 sourceSets {
     nakama {
         java {
-            srcDirs 'src/main/java/com/heroiclabs/nakama'
+            srcDirs 'src/nakama/java/com/heroiclabs/nakama'
             compileClasspath += configurations.sharedImplementation
             compileClasspath += configurations.sharedApi
             compileClasspath += configurations.sharedProtobuf
@@ -119,13 +117,13 @@ sourceSets {
 
         proto {
             exclude 'protoc-gen-swagger/**/*.proto'
-            srcDir 'src/main/proto'
+            srcDir 'src/proto'
         }
     }
 
     satori {
         java {
-            srcDirs 'src/main/java/com/heroiclabs/satori'
+            srcDirs 'src/satori/java/com/heroiclabs/satori'
             compileClasspath += configurations.sharedImplementation
             compileClasspath += configurations.sharedApi
             compileClasspath += configurations.sharedProtobuf
@@ -136,13 +134,13 @@ sourceSets {
 
         proto {
             exclude 'protoc-gen-swagger/**/*.proto'
-            srcDir 'src/main/proto'
+            srcDir 'src/proto'
         }
     }
 
     nakamaTest {
         java {
-            srcDirs 'src/test/java/com/heroiclabs/nakama'
+            srcDirs 'src/nakama/test/com/heroiclabs/nakama'
         }
         compileClasspath += sourceSets.nakama.output
         compileClasspath += configurations.sharedTestImplementation
@@ -152,45 +150,13 @@ sourceSets {
 
     satoriTest {
         java {
-            srcDirs 'src/test/java/com/heroiclabs/satori'
+            srcDirs 'src/satori/test/com/heroiclabs/satori'
         }
         compileClasspath += sourceSets.satori.output
         compileClasspath += configurations.sharedTestImplementation
     }
 
 }
-
-idea {
-    module {
-        sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/grpc")
-        sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/java")
-    }
-}
-
-/* Disable warnings from generated source code. */
-eclipse {
-    classpath {
-        file {
-            whenMerged {
-                entries += new SourceFolder('build/generated/source/proto/main/grpc', null)
-                entries += new SourceFolder('build/generated/source/proto/main/java', null)
-
-                def grpcSource = entries.find {
-                    it.path == 'build/generated/source/proto/main/grpc'
-                }
-
-                grpcSource.entryAttributes['ignore_optional_problems'] = 'true'
-
-                def javaLiteSource = entries.find {
-                    it.path == 'build/generated/source/proto/main/java'
-                }
-
-                javaLiteSource.entryAttributes['ignore_optional_problems'] = 'true'
-            }
-        }
-    }
-}
-
 
 protobuf {
     protoc {
