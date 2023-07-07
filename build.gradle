@@ -135,6 +135,8 @@ sourceSets {
         proto {
             srcDir 'src/main/proto'
             exclude "apigrpc.proto"
+            exclude "github.com/heroiclabs/nakama-common/api/*.proto"
+
         }
     }
 
