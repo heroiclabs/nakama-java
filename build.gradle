@@ -106,7 +106,7 @@ tasks.named('shadowJar', ShadowJar) {
 sourceSets {
     nakama {
         java {
-            srcDirs 'src/nakama/java/com/heroiclabs/nakama'
+            srcDirs 'src/nakama/java'
             compileClasspath += configurations.sharedImplementation
             compileClasspath += configurations.sharedApi
             compileClasspath += configurations.sharedProtobuf
@@ -117,13 +117,12 @@ sourceSets {
 
         proto {
             exclude 'protoc-gen-swagger/**/*.proto'
-            srcDir 'src/proto'
         }
     }
 
     satori {
         java {
-            srcDirs 'src/satori/java/com/heroiclabs/satori'
+            srcDirs 'src/satori/java'
             compileClasspath += configurations.sharedImplementation
             compileClasspath += configurations.sharedApi
             compileClasspath += configurations.sharedProtobuf
@@ -134,13 +133,12 @@ sourceSets {
 
         proto {
             exclude 'protoc-gen-swagger/**/*.proto'
-            srcDir 'src/proto'
         }
     }
 
     nakamaTest {
         java {
-            srcDirs 'src/nakama/test/com/heroiclabs/nakama'
+            srcDirs 'src/nakama/test'
         }
         compileClasspath += sourceSets.nakama.output
         compileClasspath += configurations.sharedTestImplementation
@@ -150,10 +148,12 @@ sourceSets {
 
     satoriTest {
         java {
-            srcDirs 'src/satori/test/com/heroiclabs/satori'
+            srcDirs 'src/satori/test'
         }
         compileClasspath += sourceSets.satori.output
         compileClasspath += configurations.sharedTestImplementation
+        runtimeClasspath += sourceSets.nakama.output
+        runtimeClasspath += configurations.sharedTestImplementation
     }
 
 }
@@ -182,24 +182,6 @@ protobuf {
             }
         }
     }
-}
-
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'Nakama client',
-                   'Implementation-Version': "$project.version"
-    }
-    exclude '/**/*.proto'
-    from sourceSets.nakama.output
-}
-
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'Satori client',
-                   'Implementation-Version': "$project.version"
-    }
-    exclude '/**/*.proto'
-    from sourceSets.satori.output
 }
 
 def pomConfig = {
@@ -233,12 +215,23 @@ def pomConfig = {
 }
 
 task nakamaJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Nakama client',
+                   'Implementation-Version': "$project.version"
+    }
+    exclude '/**/*.proto'
+    from sourceSets.nakama.output
     archiveBaseName = 'nakama-java'
     version = project.version
     from sourceSets.nakama.allJava
 }
 
 task satoriJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Satori client',
+                   'Implementation-Version': "$project.version"
+    }
+    exclude '/**/*.proto'
     archiveBaseName = 'satori-java'
     version = project.version
     from sourceSets.satori.allJava
