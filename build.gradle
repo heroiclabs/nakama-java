@@ -220,10 +220,9 @@ task nakamaJar(type: Jar) {
         attributes 'Implementation-Title': 'Nakama client',
                    'Implementation-Version': "$project.version"
     }
-    from sourceSets.nakama.output
     archiveBaseName = 'nakama-java'
     version = project.version
-    from sourceSets.nakama.allJava
+    from sourceSets.nakama.output
 }
 
 task satoriJar(type: Jar) {
@@ -233,7 +232,7 @@ task satoriJar(type: Jar) {
     }
     archiveBaseName = 'satori-java'
     version = project.version
-    from sourceSets.satori.allJava
+    from sourceSets.satori.output
 }
 
 publishing {

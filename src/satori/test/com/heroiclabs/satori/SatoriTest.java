@@ -16,46 +16,37 @@
 
 package com.heroiclabs.satori;
 
+import java.util.HashMap;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.google.common.util.concurrent.ListenableFuture;
+
+import junit.framework.Assert;
 
 public class SatoriTest {
     private Client client;
 
     @Before
     public void init() {
-        client = new DefaultClient("defaultkey");
-        Assert.assertNotNull(client);
+        client = new DefaultClient("bb4b2da1-71ba-429e-b5f3-36556abbf4c9", "127.0.0.1", 7351, true);
+    }
+
+    @Test
+    public void testCustomVars() throws Exception {
+        final ListenableFuture<Session> future = client.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>());
+        final Session session = future.get();
+        Assert.assertNotNull(session);
+        Assert.assertNotNull(session.getRefreshToken());
+        Assert.assertNotNull(session.getAuthToken());
     }
 
     @After
     public void shutdown() throws Exception {
         client.disconnect(5000, TimeUnit.MILLISECONDS);
-    }
-
-    @Test
-    public void testDevice() throws Exception {
-        final ListenableFuture<Session> future = client.authenticateDevice(UUID.randomUUID().toString());
-        Assert.assertNotNull(future);
-        Assert.assertNotNull(future.get());
-
-    }
-
-    @Test
-    public void testCustom() throws Exception {
-        final ListenableFuture<Session> future = client.authenticateCustom(UUID.randomUUID().toString());
-        Assert.assertNotNull(future);
-        Assert.assertNotNull(future.get());
-    }
-
-    @Test
-    public void testCustomVars() throws Exception {
-        final Map<String, String> vars = new HashMap<>();
-        vars.put("hello", "world");
-        final ListenableFuture<Session> future = client.authenticateCustom(UUID.randomUUID().toString(), vars);
-        Assert.assertNotNull(future);
-        final Session session = future.get();
-        Assert.assertNotNull(session);
-        final Map<String, String> sessionVars = session.getVars();
-        Assert.assertNotNull(sessionVars);
-        Assert.assertEquals("world", sessionVars.get("hello"));
     }
 }
