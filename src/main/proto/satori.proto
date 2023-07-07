@@ -333,29 +333,3 @@ message UpdatePropertiesRequest {
   // Event custom properties.
   map<string,string> custom = 2;
 }
-
-// EXPERIMENTS
-    // AUDIENCES (SEGMENTS)
-        // CAN BE FILTERED BY EVENT NAME, EVENT ATTRIBUTES, OR USER ATTRIBUTES, OR USER IDS
-        // WEIGHTED ACCESS TO THE VARIANTS
-        // VARIANTS HAVE KEY/VALUE PAIRS
-
-// ---- NOTES ----
-
-// EXPERIMENT - "global" (BUILTIN - NO DELETE)
-   // SEGMENT #1 - "control" / "default"
-   // { "minorVersion": "blah", "majorVersion": "foo" }
-
-// EXPERIMENT - "virtual_store"
-   // SEGMENT #1 - "freeloaders"
-   // SEGMENT #2 - "payers"
-
-// WHOLE PLAYER BASE
-    // AUDIENCE - FILTER BASED ON RULES
-        // EXPERIMENTS
-
-// USERWISE
-    // USERS
-        // ATTRIBUTES
-    // EVENTS
-        // ATTRIBUTES
