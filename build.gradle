@@ -154,7 +154,7 @@ sourceSets {
         }
         compileClasspath += sourceSets.satori.output
         compileClasspath += configurations.sharedTestImplementation
-        runtimeClasspath += sourceSets.nakama.output
+        runtimeClasspath += sourceSets.satori.output
         runtimeClasspath += configurations.sharedTestImplementation
     }
 }
