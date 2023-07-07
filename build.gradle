@@ -135,6 +135,8 @@ sourceSets {
         proto {
             srcDir 'src/main/proto'
             exclude "apigrpc.proto"
+            exclude "github.com/heroiclabs/nakama-common/api/*.proto"
+
         }
     }
 
@@ -246,7 +248,7 @@ publishing {
                 def root = asNode()
                 root.appendNode('description', 'Java client for Nakama server.')
                 root.appendNode('name', 'Nakama client')
-                root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/') // TODO update this
+                root.appendNode('url', 'https://heroiclabs.com/docs/satori/client-libraries/java/')
 
                 def dependenciesNode = root.appendNode('dependencies')
                 configurations.implementation.allDependencies.each {
@@ -270,7 +272,7 @@ publishing {
                 def root = asNode()
                 root.appendNode('description', 'Java client for Satori server.')
                 root.appendNode('name', 'Satori client')
-                root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/') // TODO update this
+                root.appendNode('url', 'https://heroiclabs.com/docs/satori/client-libraries/java/')
 
                 def dependenciesNode = root.appendNode('dependencies')
                 configurations.implementation.allDependencies.each {
@@ -297,14 +299,18 @@ task satoriTest(type: Test) {
 }
 
 task nakamaShadowJar(type: ShadowJar) {
+    configurations = [project.configurations.sharedImplementation,
+                    project.configurations.sharedApi,
+                    project.configurations.sharedProtobuf]
     from sourceSets.nakama.output
-    configurations = [configurations.sharedImplementation, configurations.sharedApi, configurations.sharedProtobuf]
     archiveFileName.set("nakama-java-${version}-all.jar")
 }
 
 task satoriShadowJar(type: ShadowJar) {
+    configurations = [project.configurations.sharedImplementation,
+                    project.configurations.sharedApi,
+                    project.configurations.sharedProtobuf]
     from sourceSets.satori.output
-    configurations = [configurations.sharedImplementation, configurations.sharedApi, configurations.sharedProtobuf]
     archiveFileName.set("satori-java-${version}-all.jar")
 }
 
