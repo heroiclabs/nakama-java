@@ -17,10 +17,21 @@
 # This command is a utility for downloading all .proto files required
 # for making full source builds.
 
+
+TOKEN=$1
+
+# Check if TOKEN is empty
+if [ -z "$TOKEN" ]
+then
+    echo "Error: GitHub personal access token is missing. Please pass the token as a parameter."
+    exit 1
+fi
+
 GRPC_GATEWAY_COMMIT=5c1639cccb7d6abc747643ed07321b0052b809d5
 NAKAMA_COMMON_COMMIT=b013ccdfa0be37f97c716a477409dfe935b111f7
 NAKAMA_COMMIT=ec12afadd940cd779f5b1acadc0faf33ed9fa94c
 PROTOBUF_COMMIT=dfab275eca9481b5de31122db6fc91b31db3382a
+SATORI_COMMIT=111239fbd9a132aad346a1c6eeafae2550c23667
 DOMAIN=https://raw.githubusercontent.com
 
 
@@ -29,6 +40,7 @@ ANNOTATION_URL=${DOMAIN}/grpc-ecosystem/grpc-gateway/${GRPC_GATEWAY_COMMIT}/prot
 API_URL=${DOMAIN}/heroiclabs/nakama-common/${NAKAMA_COMMON_COMMIT}/api/api.proto
 REALTIME_URL=${DOMAIN}/heroiclabs/nakama-common/${NAKAMA_COMMON_COMMIT}/rtapi/realtime.proto
 APIGRPC_URL=${DOMAIN}/heroiclabs/nakama/${NAKAMA_COMMIT}/apigrpc/apigrpc.proto
+SATORI_APIGRPC_URL=${DOMAIN}/heroiclabs/satori/${SATORI_COMMIT}/api/satori.proto
 
 ### java proto-lite does not contain descriptor.proto
 DESCRIPTOR_URL=${DOMAIN}/protocolbuffers/protobuf/${PROTOBUF_COMMIT}/src/google/protobuf/descriptor.proto
@@ -43,3 +55,4 @@ curl $API_URL -o ${ROOT_DIR}/${NAKAMA_COMMON_DIR}/api.proto
 curl $REALTIME_URL -o ${ROOT_DIR}/${NAKAMA_COMMON_DIR}/realtime.proto
 curl $APIGRPC_URL -o ${ROOT_DIR}/apigrpc.proto
 curl $DESCRIPTOR_URL -o ${ROOT_DIR}/google/protobuf/descriptor.proto
+curl -H "Authorization: token $TOKEN" $SATORI_APIGRPC_URL -o ${ROOT_DIR}/satori.proto

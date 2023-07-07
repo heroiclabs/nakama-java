@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Heroic Labs
+ * Copyright 2023 Heroic Labs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.plugins.ide.eclipse.model.SourceFolder
 
 // dependencies required by the gradle build script itself
@@ -22,7 +22,7 @@ buildscript {
     repositories {
         // where to resolve the dependencies
         maven {
-            url "https://maven-central.storage-download.googleapis.com/repos/central/data/"
+            url 'https://maven-central.storage-download.googleapis.com/repos/central/data/'
         }
         google()
     }
@@ -32,25 +32,22 @@ buildscript {
 }
 
 plugins {
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'com.google.protobuf' version '0.8.18'
-    id "io.freefair.lombok" version "5.1.1"
+    id 'io.freefair.lombok' version '5.1.1'
     //for distTar which is called when importing this SDK w/ JitPack
     id 'distribution'
-    id 'eclipse'
     id 'maven-publish'
-    id 'idea'
     id 'java'
     id 'java-library'
 }
 
 lombok {
-    version = "1.18.12"
+    version = '1.18.12'
 }
 
 group = 'com.github.heroiclabs'
-version = '2.1.1'
-def description = 'Android optimized Java client for Nakama server.'
+version = '2.2.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -58,7 +55,7 @@ targetCompatibility = 1.8
 repositories {
     // where to pull dependencies from
     maven {
-        url "https://maven-central.storage-download.googleapis.com/repos/central/data/"
+        url 'https://maven-central.storage-download.googleapis.com/repos/central/data/'
     }
     mavenLocal()
     mavenCentral()
@@ -67,15 +64,17 @@ repositories {
 configurations {
     all {
         exclude group: 'io.grpc', module:'grpc-protobuf'
-        exclude group: "com.google.protobuf", module: "protobuf-java"
+        exclude group: 'com.google.protobuf', module: 'protobuf-java'
     }
+    sharedProtobuf.extendsFrom protobuf
+    sharedApi.extendsFrom api
+    sharedImplementation.extendsFrom implementation
+    sharedTestImplementation.extendsFrom testImplementation
 }
 
 dependencies {
-    // syntax sugaring for data models
-    // commented out due to io.freefair.lombok setting these by default.
-    // annotationProcessor 'org.projectlombok:lombok:1.18.12'
-    // implementation "org.projectlombok:lombok:1.18.12"
+    shadow localGroovy()
+    shadow gradleApi()
 
     implementation 'com.google.code.gson:gson:2.8.9'
     api 'io.grpc:grpc-protobuf-lite:1.43.2'
@@ -83,7 +82,7 @@ dependencies {
     api 'com.google.guava:guava:31.0.1-android'
     implementation 'com.google.protobuf:protobuf-javalite:3.19.3'
 
-    implementation ('io.grpc:grpc-okhttp:1.48.0') {
+    implementation('io.grpc:grpc-okhttp:1.48.0') {
         exclude group: 'com.squareup.okio', module:'okio'
     }
 
@@ -93,53 +92,70 @@ dependencies {
     implementation 'io.grpc:grpc-netty-shaded:1.43.2'
     implementation 'io.grpc:grpc-stub:1.43.2'
     compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
-    implementation 'org.slf4j:slf4j-api:1.7.33'
+    implementation 'org.slf4j:slf4j-simple:1.7.9'
 
     protobuf 'com.google.api.grpc:proto-google-common-protos:2.7.1'
-    testCompile 'junit:junit:4.13.2'
+    testImplementation 'junit:junit:4.13.2'
+}
+
+tasks.named('shadowJar', ShadowJar) {
+    enableRelocation true
+    relocationPrefix 'heroiclabs'
 }
 
 sourceSets {
-    main {
+    nakama {
         java {
-            srcDirs "src/main/java"
+            srcDirs 'src/nakama/java'
+            compileClasspath += configurations.sharedImplementation
+            compileClasspath += configurations.sharedApi
+            compileClasspath += configurations.sharedProtobuf
+            runtimeClasspath += configurations.sharedImplementation
+            runtimeClasspath += configurations.sharedApi
+            runtimeClasspath += configurations.sharedProtobuf
         }
 
         proto {
-            exclude 'protoc-gen-swagger/**/*.proto'
+            srcDir 'src/main/proto'
+            exclude "satori.proto"
         }
     }
-}
 
-idea {
-    module {
-        sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/grpc");
-        sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/java");
-    }
-}
-
-/* Disable warnings from generated source code. */
-eclipse {
-    classpath {
-      file {
-            whenMerged {
-
-                entries += new SourceFolder("build/generated/source/proto/main/grpc", null)
-                entries += new SourceFolder("build/generated/source/proto/main/java", null)
-
-                def grpcSource = entries.find {
-                    it.path == "build/generated/source/proto/main/grpc"
-                }
-
-                grpcSource.entryAttributes["ignore_optional_problems"] = 'true'
-
-                def javaLiteSource = entries.find {
-                    it.path == "build/generated/source/proto/main/java"
-                }
-
-                javaLiteSource.entryAttributes["ignore_optional_problems"] = 'true'
-            }
+    satori {
+        java {
+            srcDirs 'src/satori/java'
+            compileClasspath += configurations.sharedImplementation
+            compileClasspath += configurations.sharedApi
+            compileClasspath += configurations.sharedProtobuf
+            runtimeClasspath += configurations.sharedImplementation
+            runtimeClasspath += configurations.sharedApi
+            runtimeClasspath += configurations.sharedProtobuf
         }
+
+        proto {
+            srcDir 'src/main/proto'
+            exclude "apigrpc.proto"
+        }
+    }
+
+    nakamaTest {
+        java {
+            srcDirs 'src/nakama/test'
+        }
+        compileClasspath += sourceSets.nakama.output
+        compileClasspath += configurations.sharedTestImplementation
+        runtimeClasspath += sourceSets.nakama.output
+        runtimeClasspath += configurations.sharedTestImplementation
+    }
+
+    satoriTest {
+        java {
+            srcDirs 'src/satori/test'
+        }
+        compileClasspath += sourceSets.satori.output
+        compileClasspath += configurations.sharedTestImplementation
+        runtimeClasspath += sourceSets.satori.output
+        runtimeClasspath += configurations.sharedTestImplementation
     }
 }
 
@@ -150,7 +166,7 @@ protobuf {
 
     plugins {
         grpc {
-            artifact = "io.grpc:protoc-gen-grpc-java:1.43.2"
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.43.2'
         }
     }
 
@@ -158,23 +174,15 @@ protobuf {
         all().each { task ->
             task.builtins {
                 java {
-                    option "lite"
+                    option 'lite'
                 }
             }
 
             task.plugins {
-                grpc { option "lite" }
+                grpc { option 'lite' }
             }
         }
     }
-}
-
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'Nakama client',
-                   'Implementation-Version': "$project.version"
-    }
-    exclude '/**/*.proto'
 }
 
 def pomConfig = {
@@ -207,58 +215,102 @@ def pomConfig = {
     }
 }
 
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
+task nakamaJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Nakama client',
+                   'Implementation-Version': "$project.version"
+    }
+    archiveBaseName = 'nakama-java'
+    version = project.version
+    from sourceSets.nakama.output
 }
 
+task satoriJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Satori client',
+                   'Implementation-Version': "$project.version"
+    }
+    archiveBaseName = 'satori-java'
+    version = project.version
+    from sourceSets.satori.output
+}
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            from components.java
+        nakama(MavenPublication) {
+            artifact nakamaJar
             artifactId 'nakama-java'
+            groupId "$project.group"
+            version "$project.version"
+
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Java client for Nakama server.')
+                root.appendNode('name', 'Nakama client')
+                root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/') // TODO update this
+
+                def dependenciesNode = root.appendNode('dependencies')
+                configurations.implementation.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                }
+
+                root.children().last() + pomConfig
+            }
         }
 
-        shadow(MavenPublication) {
-            project.shadow.component(it)
-            artifactId 'nakama-java-all'
+        satori(MavenPublication) {
+            artifact satoriJar
+            artifactId 'satori-java'
+            groupId "$project.group"
+            version "$project.version"
 
-            // override default classifier of 'all'
-            it.artifacts[0].classifier = ''
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Java client for Satori server.')
+                root.appendNode('name', 'Satori client')
+                root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/') // TODO update this
+
+                def dependenciesNode = root.appendNode('dependencies')
+                configurations.implementation.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                }
+
+                root.children().last() + pomConfig
+            }
         }
     }
 }
 
-
-tasks.withType(AbstractPublishToMaven).all {
-        publication.artifact sourcesJar {
-            classifier 'sources'
-        }
-
-        publication.groupId "$project.group"
-        publication.version "$project.version"
-
-        publication.pom.withXml {
-            def root = asNode()
-            root.appendNode('description', description)
-            root.appendNode('name', 'Nakama client')
-            root.appendNode('url', 'https://heroiclabs.com/docs/android-java-client-guide/')
-            root.children().last() + pomConfig
-        }
-}
-shadowJar {
-    mergeServiceFiles()
+task nakamaTest(type: Test) {
+    testClassesDirs = sourceSets.nakamaTest.output.classesDirs
+    classpath = sourceSets.nakamaTest.runtimeClasspath
 }
 
-task relocateShadowJar(type: ConfigureShadowRelocation) {
-    target = tasks.shadowJar
-    prefix = "nakama" // prefix all classpath entries with `nakama`
+task satoriTest(type: Test) {
+    testClassesDirs = sourceSets.satoriTest.output.classesDirs
+    classpath = sourceSets.satoriTest.runtimeClasspath
 }
 
-tasks.shadowJar.dependsOn tasks.relocateShadowJar
+task nakamaShadowJar(type: ShadowJar) {
+    from sourceSets.nakama.output
+    configurations = [configurations.sharedImplementation, configurations.sharedApi, configurations.sharedProtobuf]
+    archiveFileName.set("nakama-java-${version}-all.jar")
+}
+
+task satoriShadowJar(type: ShadowJar) {
+    from sourceSets.satori.output
+    configurations = [configurations.sharedImplementation, configurations.sharedApi, configurations.sharedProtobuf]
+    archiveFileName.set("satori-java-${version}-all.jar")
+}
 
 javadoc {
-    destinationDir = file("docs")
-    options.addBooleanOption("Xdoclint:-missing", true)
+    destinationDir = file('docs')
+    options.addBooleanOption('Xdoclint:-missing', true)
 }
 
 test {

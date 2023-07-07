@@ -29,9 +29,12 @@ repositories {
 
 dependencies {
     implementation 'com.github.heroiclabs.nakama-java:nakama-java:<commit>'
+    implementation 'com.github.heroiclabs.nakama-java:satori-java:<commit>'
+
 
  // or, depend on the fat Jar which bundles all of the Nakama Java dependencies into a single Jar.
  // implementation 'com.github.heroiclabs.nakama-java:nakama-java-all:<commit>'
+ // implementation 'com.github.heroiclabs.nakama-java:satori-java-all:<commit>'
 }
 
 ```
@@ -160,6 +163,49 @@ System.out.println("Socket connected successfully.");
 
 By default, all socket messages are processed in a single thread. Advanced users who want to pass a multithreaded `ExecutorService` to the `client.createSocket` method should be aware that incoming messages will not necessarily be processed in order by that socket.
 
+# Satori
+
+Satori is a liveops server for games that powers actionable analytics, A/B testing and remote configuration. Use the Satori Java Client to communicate with Satori from your Java game or server.
+
+Full documentation is online - https://heroiclabs.com/docs/satori/client-libraries/java/index.html
+
+## Getting Started
+
+Create a client object that accepts the API you were given as a Satori customer.
+
+```java
+import com.heroiclabs.satori;
+
+Client client = new DefaultClient("https", "your.host.here", 443, "yourApiKey");
+```
+
+Then authenticate with the server to obtain your session.
+
+
+```java
+// Authenticate with the Satori server.
+Map<string, string> defaultProperties = new HashMap<string, string>();
+Map<string, string> customProperties = new HashMap<string, string>();
+
+session = client.authenticate("identityId", defaultProperties, customProperties);
+```
+
+Using the client you can get any experiments or feature flags, the user belongs to.
+
+```java
+ExperimentList experiments = client.getExperiments(session).get();
+Flag flag = client.getFlag(session, "FlagName").get();
+```
+
+You can also send arbitrary events to the server:
+
+```java
+Map<string, string> metadata = new HashMap<string, string>();
+client.Event(session, new Event("gameLaunched", Instant.now(), "my value", metadata);
+```
+
+This is only a subset of the Satori client API, so please see the documentation link listed earlier for the [full API](https://java.docs.heroiclabs.com/html/namespace_satori.html).
+
 ### For Android
 
 Android uses a permissions system which determines which platform services the application will request to use and ask permission for from the user. The client uses the network to communicate with the server so you must add the "INTERNET" permission.
@@ -175,18 +221,21 @@ To build the codebase you will need to install these dependencies:
 * Java Runtime Environment 1.8 through 1.11
 * Java Development Kit 1.8 through 1.11
 
-Invoke the Gradle Wrapper with `./gradlew build` and Gradle will install your dependencies over
-the network for you prior to building. It will then make a build and run the full test suite.
+Invoke the Gradle Wrapper with `./gradlew nakamaJar` or `./gradlew satoriJar` and Gradle will install your dependencies over
+the network for you prior to building. It will then build the .jar files.
 
-To test a specific test, run `./gradlew test --tests <ClassName.methodName>`
+To run tests for Nakama, run `./gradlew nakamaTest -i`.
+To run tests for Satori, run `./gradlew satoriTest -i`.
+
+To test a specific test, run `./gradlew nakamaTest --tests <ClassName.methodName> -i`
 
 You can also run `./gradlew tasks` for a list of available build tasks.
 
 To create a fat JAR with self-contained dependencies, run:
 
-`./gradlew shadow`
+`./gradlew nakamaShadowJar` or `./gradlew satoriShadowJar`.
 
-All JAR artifacts are output to `build/libs`. The fat JAR will have an artifact id of 'nakama-java-all`.
+All JAR artifacts are output to `build/libs`. The fat JAR will have an `-all` suffix.
 
 If you'd like to test a Jitpack publish task locally prior to pushing, run:
 
