@@ -299,14 +299,18 @@ task satoriTest(type: Test) {
 }
 
 task nakamaShadowJar(type: ShadowJar) {
+    configurations = [project.configurations.sharedImplementation,
+                    project.configurations.sharedApi,
+                    project.configurations.sharedProtobuf]
     from sourceSets.nakama.output
-    configurations = [configurations.sharedImplementation, configurations.sharedApi, configurations.sharedProtobuf]
     archiveFileName.set("nakama-java-${version}-all.jar")
 }
 
 task satoriShadowJar(type: ShadowJar) {
+    configurations = [project.configurations.sharedImplementation,
+                    project.configurations.sharedApi,
+                    project.configurations.sharedProtobuf]
     from sourceSets.satori.output
-    configurations = [configurations.sharedImplementation, configurations.sharedApi, configurations.sharedProtobuf]
     archiveFileName.set("satori-java-${version}-all.jar")
 }
 
