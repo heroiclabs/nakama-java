@@ -9,6 +9,7 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 ## [2.2.0] - 2023-07-06
 ### Added
 - Adds the Satori Java SDK. Satori is our liveops server for game studios. Please read more about it on the Heroic Labs website.
+
 ### Changed
 - Update shadow to 8.1.1
 - Update to Gradle 8.2.0.

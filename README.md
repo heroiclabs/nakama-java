@@ -179,7 +179,7 @@ Client client = new DefaultClient("https", "your.host.here", 443, "yourApiKey");
 Then authenticate with the server to obtain your session.
 
 
-```java TODO rewrite in Java
+```java
 // Authenticate with the Satori server.
 try
 {
