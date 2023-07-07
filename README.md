@@ -194,18 +194,18 @@ catch(ApiResponseException ex)
 
 Using the client you can get any experiments or feature flags, the user belongs to.
 
-```java TODO rewrite in Java
-var experiments = await client.GetExperimentsAsync(session);
-var flag = await client.GetFlagAsync(session, "FlagName");
+```java
+ExperimentList experiments = client.getExperiments(session).get();
+Flag flag = client.getFlag(session, "FlagName").get();
 ```
 
 You can also send arbitrary events to the server:
 
-```java TODO rewrite in Java
-
-await client.EventAsync(session, new Event("gameLaunched", DateTime.UtcNow));
-
+```java
+Map<string, string> metadata = new HashMap<string, string>();
+client.Event(session, new Event("gameLaunched", Instant.now(), "my value", metadata);
 ```
+
 This is only a subset of the Satori client API, so please see the documentation link listed earlier for the [full API](https://java.docs.heroiclabs.com/html/namespace_satori.html).
 
 ### For Android

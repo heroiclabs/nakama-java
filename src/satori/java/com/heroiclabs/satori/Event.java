@@ -55,6 +55,21 @@ public class Event {
     }
 
     /**
+     * The event constructor.
+     * @param name The name of the event.
+     * @param timestamp The time when the event was triggered.
+     * @param value Optional value.
+     * @param metadata Event metadata, if any.
+    */
+    public Event(@NotNull final String name, @NotNull final Instant timestamp, @NotNull final String value, final Map<String, String> metadata) {
+        this.name = name;
+        this.timestamp = timestamp;
+        this.value = value;
+        this.metadata = metadata == null ? new HashMap<>() : new HashMap<>(metadata);
+        this.id = "";
+    }
+
+    /**
      * The name of the event.
      * @return name
      */
