@@ -58,7 +58,7 @@ public class SatoriTest {
     public void testGetExperiments() throws Exception {
         final Session session = client.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
         final ExperimentList experimentList = client.getAllExperiments(session).get();
-        Assert.assertTrue(experimentList.getExperiments().length() == 1);
+        Assert.assertTrue(experimentList.getExperimentsCount() == 1);
     }
 
 

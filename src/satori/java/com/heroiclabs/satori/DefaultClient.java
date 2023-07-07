@@ -180,10 +180,8 @@ public class DefaultClient implements Client {
     public ListenableFuture<Flag> getFlag(@NonNull final Session session, @NonNull final String name) {
         ListenableFuture<FlagList> futureFlagsList = getFlags(session, name);
         return Futures.transform(futureFlagsList, flagList -> {
-            for (Flag flag : flagList.getFlagsList()) {
-                if (flag.getName().equals(name)) {
-                    return flag;
-                }
+            if (flagList.getFlagsList().size() == 1) {
+                flagList.getFlagsList().get(0);
             }
 
             throw new IllegalArgumentException("Flag '" + name + "' not found.");
@@ -201,10 +199,8 @@ public class DefaultClient implements Client {
     public ListenableFuture<Flag> getFlagDefault(@NonNull String name) {
         ListenableFuture<FlagList> futureFlagsList = getFlagsDefault(name);
         return Futures.transform(futureFlagsList, flagList -> {
-            for (Flag flag : flagList.getFlagsList()) {
-                if (flag.getName().equals(name)) {
-                    return flag;
-                }
+            if (flagList.getFlagsList().size() == 1) {
+                flagList.getFlagsList().get(0);
             }
 
             throw new IllegalArgumentException("Flag '" + name + "' not found.");
@@ -215,10 +211,8 @@ public class DefaultClient implements Client {
     public ListenableFuture<Flag> getFlagDefault(@NonNull String name, @NonNull String defaultValue) {
         ListenableFuture<FlagList> futureFlagsList = getFlagsDefault(name);
         return Futures.transform(futureFlagsList, flagList -> {
-            for (Flag flag : flagList.getFlagsList()) {
-                if (flag.getName().equals(name)) {
-                    return flag;
-                }
+            if (flagList.getFlagsList().size() == 1) {
+                flagList.getFlagsList().get(0);
             }
 
             Flag.Builder builder = Flag.newBuilder();
