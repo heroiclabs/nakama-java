@@ -48,7 +48,6 @@ public class HttpClient implements Client {
     private final OkHttpClient client;
 
     private final String basicAuth;
-
     private final HttpUrl url;
 
     private static final String USERAGENT = "satori-java-client";
@@ -64,7 +63,7 @@ public class HttpClient implements Client {
      * server documentation for more information.
      */
     public HttpClient(@NonNull final String apiKey, @NonNull final String host, final int port, final boolean ssl) {
-        this(apiKey, host, port, ssl, 10, 0, 0L);
+        this(apiKey, host, port, ssl, 10_000, 0, 0L);
     }
 
     /**
@@ -74,8 +73,9 @@ public class HttpClient implements Client {
      * @param port The port number of the server. Defaults to 7349.
      * @param ssl Set connection strings to use the secure mode with the server. Defaults to false. The server must be configured to make use of this option. The server must
      * be configured with an SSL certificate or use a load balancer which performs SSL termination.
-     * @param connectTimeoutMs Sets the default connect timeout for new connections. A value of 0 means no timeout.
-     * @param callTimeoutMs Sets the default timeout for complete calls. A value of 0 means no timeout.
+     * @param connectTimeoutMs Sets the default connect timeout for new connections. A value of 0 means no timeout, otherwise values must be between 1 and {@code Integer.MAX_VALUE} when converted to milliseconds.
+     * The default value is 10 seconds.
+     * @param callTimeoutMs Sets the default timeout for complete calls. A value of 0 means no timeout, otherwise values must be between 1 and {@code Integer.MAX_VALUE} when converted to milliseconds.
      * @param pingIntervalMs Sets the interval between HTTP/2 pings initiated by this client. Use this to automatically send ping frames until either the connection fails or it is closed.
      * This keeps the connection alive and may detect connectivity failures. The default value of 0 disables client-initiated pings.
      */
@@ -92,13 +92,6 @@ public class HttpClient implements Client {
                 .connectTimeout(connectTimeoutMs, TimeUnit.MILLISECONDS)
                 .callTimeout(callTimeoutMs, TimeUnit.MILLISECONDS)
                 .pingInterval(pingIntervalMs, TimeUnit.MILLISECONDS)
-                .addInterceptor(chain -> {
-                    Request originalRequest = chain.request();
-                    Request requestWithUserAgent = originalRequest.newBuilder()
-                            .header("User-Agent", USERAGENT)
-                            .build();
-                    return chain.proceed(requestWithUserAgent);
-                })
                 .build();
 
         final String base64Auth = BaseEncoding.base64().encode((apiKey + ":").getBytes());
@@ -115,6 +108,7 @@ public class HttpClient implements Client {
         return new Request.Builder()
                 .url(this.url)
                 .header("authorization", authValue)
+                .header("User-Agent", USERAGENT)
                 .build();
     }
 
