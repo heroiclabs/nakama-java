@@ -80,7 +80,8 @@ dependencies {
     api 'io.grpc:grpc-protobuf-lite:1.43.2'
     // listenable future is part of the SDK public API
     api 'com.google.guava:guava:31.0.1-android'
-    implementation 'com.google.protobuf:protobuf-javalite:3.19.3'
+    implementation 'com.google.protobuf:protobuf-javalite:3.19.6'
+    implementation 'com.google.protobuf:protobuf-java-util:3.23.2'
 
     implementation('io.grpc:grpc-okhttp:1.48.0') {
         exclude group: 'com.squareup.okio', module:'okio'
