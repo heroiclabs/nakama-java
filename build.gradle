@@ -124,6 +124,7 @@ sourceSets {
     satori {
         java {
             srcDirs 'src/satori/java'
+            srcDirs += 'build/generated/source/proto/satori/java'
             compileClasspath += configurations.sharedImplementation
             compileClasspath += configurations.sharedApi
             compileClasspath += configurations.sharedProtobuf
