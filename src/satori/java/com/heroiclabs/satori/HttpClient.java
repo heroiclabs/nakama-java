@@ -251,13 +251,14 @@ public class HttpClient implements Client {
 
     @Override
     public void disconnect() {
-//        this.managedChannel.shutdownNow();
+        this.client.dispatcher().executorService().shutdown();
+        this.client.connectionPool().evictAll();
     }
 
     @Override
     public void disconnect(final long timeout, @NonNull final TimeUnit unit) throws InterruptedException {
-//        this.managedChannel.shutdown();
-//        this.managedChannel.awaitTermination(timeout, unit);
+        disconnect();
+        this.client.dispatcher().executorService().awaitTermination(timeout, unit);
     }
 
     @Override
