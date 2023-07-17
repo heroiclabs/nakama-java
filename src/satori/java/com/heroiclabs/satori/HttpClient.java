@@ -56,10 +56,8 @@ public class HttpClient implements Client {
      * @param apiKey The key used to authenticate with the server without a session.
      * @param host The host address of the server. Defaults to "127.0.0.1".
      * @param port The port number of the server. Defaults to 7349.
-     * @param ssl Set connection strings to use the secure mode with the server. Defaults to false. The server must be configured to make use of this option. With HTTP, GRPC, and WebSockets the server must
-     * be configured with an SSL certificate or use a load balancer which performs SSL termination. For rUDP you
-     * must configure the server to expose its IP address, so it can be bundled within session tokens. See the
-     * server documentation for more information.
+     * @param ssl Set connection strings to use the secure mode with the server. Defaults to false. The server must be configured
+     *            with an SSL certificate or use a load balancer which performs SSL termination.
      */
     public HttpClient(@NonNull final String apiKey, @NonNull final String host, final int port, final boolean ssl) {
         this(apiKey, host, port, ssl, 10_000, 0, 0L);
@@ -111,6 +109,7 @@ public class HttpClient implements Client {
         return new Request.Builder()
                 .header("authorization", authValue)
                 .header("User-Agent", USERAGENT)
+                .url(url)
                 .build();
     }
 
