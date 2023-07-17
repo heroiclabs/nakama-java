@@ -17,31 +17,28 @@
 package com.heroiclabs.satori;
 
 import com.google.common.io.BaseEncoding;
-import com.google.common.util.concurrent.*;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.SettableFuture;
 import com.google.protobuf.Empty;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
-import io.grpc.Metadata;
+import com.google.protobuf.util.JsonFormat;
+import com.heroiclabs.satori.api.*;
 import io.grpc.okhttp.OkHttpChannelBuilder;
-import io.grpc.stub.MetadataUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
-import java.sql.Time;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import com.heroiclabs.satori.api.*;
-import com.google.protobuf.util.JsonFormat;
+import java.util.function.Function;
 
 @Slf4j
 public class HttpClient implements Client {
@@ -49,7 +46,7 @@ public class HttpClient implements Client {
     private final OkHttpClient client;
 
     private final String basicAuth;
-    private final HttpUrl url;
+    private final HttpUrl.Builder url;
 
     private final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static final String USERAGENT = "satori-java-client";
@@ -87,8 +84,7 @@ public class HttpClient implements Client {
         this.url = new HttpUrl.Builder()
                 .scheme(scheme)
                 .host(host)
-                .port(port)
-                .build();
+                .port(port);
 
         this.client = new OkHttpClient.Builder()
                 .connectTimeout(connectTimeoutMs, TimeUnit.MILLISECONDS)
@@ -116,7 +112,6 @@ public class HttpClient implements Client {
         String authValue = session != null ? "Bearer " + session.getAuthToken() : this.basicAuth;
 
         return new Request.Builder()
-                .url(this.url)
                 .header("authorization", authValue)
                 .header("User-Agent", USERAGENT);
     }
@@ -129,46 +124,17 @@ public class HttpClient implements Client {
                 .putAllDefault(defaultProperties)
                 .putAllCustom(customProperties)
                 .build();
-        String body;
-        try {
-            body = JsonFormat.printer().print(authRequest);
-        } catch (InvalidProtocolBufferException e) {
-            throw new RuntimeException(e);
-        }
-        Request request = request().post(RequestBody.create(body, JSON)).build();
-
-        SettableFuture<Session> future = SettableFuture.create();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                future.setException(e);
-            }
-
-            @Override
-            public void onResponse(Call call, final Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    future.setException(new IOException("Unexpected code " + response));
-                } else {
-                    com.heroiclabs.satori.api.Session.Builder msg = com.heroiclabs.satori.api.Session.newBuilder();
-                    if (response.body() != null) {
-                        JsonFormat.parser().ignoringUnknownFields().merge(response.body().string(), msg);
-                    }
-                    com.heroiclabs.satori.api.Session session = msg.build();
-                    future.set(new DefaultSession(session.getToken(), session.getRefreshToken()));
-                }
-            }
-        });
-
-        return future;
+        return post(authRequest, "v1/authenticate", com.heroiclabs.satori.api.Session.newBuilder(), convertSession);
     }
 
     @Override
     public ListenableFuture<Empty> authenticateLogout(@NonNull final Session session) {
-//        return getStub(session).authenticateLogout(AuthenticateLogoutRequest.newBuilder()
-//                .setToken(session.getAuthToken())
-//                .setRefreshToken(session.getRefreshToken())
-//                .build());
-        return null;
+        AuthenticateLogoutRequest logoutRequest = AuthenticateLogoutRequest.newBuilder()
+                .setToken(session.getAuthToken())
+                .setRefreshToken(session.getRefreshToken())
+                .build();
+
+        return post(logoutRequest, "v1/authenticate/logout", Empty.newBuilder());
     }
 
     @Override
@@ -292,24 +258,16 @@ public class HttpClient implements Client {
     @Override
     public ListenableFuture<Session> identify(@NonNull Session session, @NonNull String id,
             @NonNull Map<String, String> defaultProperties, @NonNull Map<String, String> customProperties) {
-        return convertSession(getStub(session).identify(IdentifyRequest.newBuilder().setId(id).build()));
+//        return convertSession(getStub(session).identify(IdentifyRequest.newBuilder().setId(id).build()));
+        return null;
     }
 
 
     @Override
     public ListenableFuture<Session> sessionRefresh(Session session) {
-        return convertSession(getStub(session).authenticateRefresh(
-            AuthenticateRefreshRequest.newBuilder().setRefreshToken(session.getRefreshToken()).build()));
-    }
-
-    private ListenableFuture<Session> convertSession(final com.heroiclabs.satori.api.Session future) {
-        final Session result = new DefaultSession(input.getToken(), input.getRefreshToken());
-        return Futures.immediateFuture(result);
-
-//        return Futures.transformAsync(future, input -> {
-//          final Session result = new DefaultSession(input.getToken(), input.getRefreshToken());
-//          return Futures.immediateFuture(result);
-//      }, MoreExecutors.directExecutor());
+//        return convertSession(getStub(session).authenticateRefresh(
+//            AuthenticateRefreshRequest.newBuilder().setRefreshToken(session.getRefreshToken()).build()));
+        return null;
     }
 
     private Timestamp toProtoTimestamp(Instant instant) {
@@ -328,5 +286,48 @@ public class HttpClient implements Client {
             .putAllMetadata(event.getMetadata());
 
         return eventBuilder.build();
+    }
+
+    private final Function<com.heroiclabs.satori.api.Session, Session> convertSession = (input)
+            -> new DefaultSession(input.getToken(), input.getRefreshToken());
+
+    private <T extends Message> ListenableFuture<T> post(Message requestBody, String path, T.Builder responseBuilder) {
+        return post(requestBody, path, responseBuilder, Function.identity());
+    }
+
+    private <T extends Message, O> ListenableFuture<O> post(Message requestBody, String path, T.Builder responseBuilder, Function<T, O> responseConverter) {
+        SettableFuture<O> future = SettableFuture.create();
+        String body;
+        try {
+            body = JsonFormat.printer().print(requestBody);
+        } catch (InvalidProtocolBufferException e) {
+            future.setException(e);
+            return future;
+        }
+        Request request = request()
+                .url(url.addPathSegments(path).build())
+                .post(RequestBody.create(body, JSON)).build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                future.setException(e);
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    future.setException(new IOException("Response error: " + response));
+                } else {
+                    if (response.body() != null) {
+                        JsonFormat.parser().ignoringUnknownFields().merge(response.body().string(), responseBuilder);
+                    }
+                    T protoResponse = (T) responseBuilder.build();
+                    future.set(responseConverter.apply(protoResponse));
+                }
+            }
+        });
+
+        return future;
     }
 }
