@@ -16,6 +16,7 @@
 
 package com.heroiclabs.satori;
 
+import com.google.protobuf.Empty;
 import org.junit.Assert;
 
 import java.util.HashMap;
@@ -48,6 +49,7 @@ public class SatoriTest {
         Assert.assertNotNull(session);
         Assert.assertNotNull(session.getRefreshToken());
         Assert.assertNotNull(session.getAuthToken());
+
         session = httpClient.authenticate(UUID.randomUUID().toString(), props, new HashMap<>()).get();
         Assert.assertNotNull(session);
         Assert.assertNotNull(session.getRefreshToken());
@@ -60,20 +62,55 @@ public class SatoriTest {
         Assert.assertNotNull(session);
         grpcClient.authenticateLogout(session).get();
         Assert.assertThrows(Exception.class, () -> grpcClient.getFlags(session, new String[]{}).get());
+
+        final Session session2 = httpClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        Assert.assertNotNull(session2);
+        httpClient.authenticateLogout(session2).get();
+        Assert.assertThrows(Exception.class, () -> httpClient.getFlags(session2, new String[]{}).get());
     }
 
     @Test
     public void testGetExperiments() throws Exception {
-        final Session session = grpcClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
-        final ExperimentList experimentList = grpcClient.getAllExperiments(session).get();
-        Assert.assertTrue(experimentList.getExperimentsCount() == 1);
+        Session session = grpcClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        ExperimentList experimentList = grpcClient.getAllExperiments(session).get();
+        Assert.assertEquals(1, experimentList.getExperimentsCount());
+
+        session = httpClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        experimentList = httpClient.getAllExperiments(session).get();
+        Assert.assertEquals(1, experimentList.getExperimentsCount());
+    }
+
+    @Test
+    public void testGetFlags() throws Exception {
+        Session session = grpcClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        FlagList flagList = grpcClient.getFlags(session).get();
+        Assert.assertEquals(3, flagList.getFlagsCount());
+
+        session = httpClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        flagList = httpClient.getFlags(session).get();
+        Assert.assertEquals(3, flagList.getFlagsCount());
     }
 
     @Test
     public void testGetFlag() throws Exception {
-        final Session session = grpcClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
-        final Flag flag = grpcClient.getFlag(session, "MinBuildNumber").get();
+        Session session = grpcClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        Flag flag = grpcClient.getFlag(session, "MinBuildNumber").get();
         Assert.assertNotNull(flag);
+
+        session = httpClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        flag = httpClient.getFlag(session, "MinBuildNumber").get();
+        Assert.assertNotNull(flag);
+    }
+
+    @Test
+    public void testDeleteIdentity() throws Exception {
+        Session session = grpcClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        Empty empty = grpcClient.deleteIdentity(session).get();
+        Assert.assertNotNull(empty);
+
+        session = httpClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        empty = httpClient.deleteIdentity(session).get();
+        Assert.assertNotNull(empty);
     }
 
 
