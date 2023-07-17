@@ -27,16 +27,16 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
 import com.heroiclabs.satori.api.*;
+import com.heroiclabs.satori.api.Properties;
 import io.grpc.okhttp.OkHttpChannelBuilder;
+import kotlin.Pair;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -46,7 +46,7 @@ public class HttpClient implements Client {
     private final OkHttpClient client;
 
     private final String basicAuth;
-    private final HttpUrl.Builder url;
+    private final HttpUrl url;
 
     private final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static final String USERAGENT = "satori-java-client";
@@ -84,7 +84,8 @@ public class HttpClient implements Client {
         this.url = new HttpUrl.Builder()
                 .scheme(scheme)
                 .host(host)
-                .port(port);
+                .port(port)
+                .build();
 
         this.client = new OkHttpClient.Builder()
                 .connectTimeout(connectTimeoutMs, TimeUnit.MILLISECONDS)
@@ -139,33 +140,36 @@ public class HttpClient implements Client {
 
     @Override
     public ListenableFuture<Empty> event(@NonNull final Session session, @NonNull final Event event) {
-        return getStub(session).event(EventRequest.newBuilder()
+        EventRequest eventRequest = EventRequest.newBuilder()
                 .addEvents(toProtoEvent(event))
-                .build());
+                .build();
+
+        return post(eventRequest, "v1/event", Empty.newBuilder());
     }
 
     @Override
     public ListenableFuture<Empty> events(@NonNull final Session session, @NonNull final List<Event> events) {
         EventRequest.Builder builder = EventRequest.newBuilder();
 
-        for (int i = 0; i < events.size(); i++) {
-            builder.addEvents(toProtoEvent(events.get(i)));
+        for (Event event : events) {
+            builder.addEvents(toProtoEvent(event));
         }
 
-        return getStub(session).event(builder.build());
+        return post(builder.build(), "v1/event", Empty.newBuilder());
     }
 
     @Override
     public ListenableFuture<ExperimentList> getAllExperiments(@NonNull final Session session) {
-        return getStub(session).getExperiments(GetExperimentsRequest.newBuilder()
-                .build());
+        return get("v1/experiment", Collections.emptyList(), ExperimentList.newBuilder());
     }
 
     @Override
     public ListenableFuture<ExperimentList> getExperiments(@NonNull final Session session, @NonNull final String... names) {
-        return getStub(session).getExperiments(GetExperimentsRequest.newBuilder()
-                .addAllNames(Arrays.asList(names))
-                .build());
+        List<Pair<String, String>> params = new ArrayList<>();
+        for (String name : names) {
+            params.add(new Pair<>("names", name));
+        }
+        return get("v1/experiment", params, ExperimentList.newBuilder());
     }
 
     @Override
@@ -182,9 +186,7 @@ public class HttpClient implements Client {
 
     @Override
     public ListenableFuture<FlagList> getFlags(@NonNull final Session session, String... names) {
-        return getStub(session).getFlags(GetFlagsRequest.newBuilder()
-                .addAllNames(Arrays.asList(names))
-                .build());
+        return get("v1/flag", Collections.emptyList(), FlagList.newBuilder());
     }
 
     @Override
@@ -305,8 +307,9 @@ public class HttpClient implements Client {
             return future;
         }
         Request request = request()
-                .url(url.addPathSegments(path).build())
-                .post(RequestBody.create(body, JSON)).build();
+                .url(url.newBuilder().addPathSegments(path).build())
+                .post(RequestBody.create(body, JSON))
+                .build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -324,6 +327,40 @@ public class HttpClient implements Client {
                     }
                     T protoResponse = (T) responseBuilder.build();
                     future.set(responseConverter.apply(protoResponse));
+                }
+            }
+        });
+
+        return future;
+    }
+
+    private <T extends Message> ListenableFuture<T> get(String path, List<Pair<String, String>> params, T.Builder responseBuilder) {
+        SettableFuture<T> future = SettableFuture.create();
+        HttpUrl.Builder urlBuilder = url.newBuilder().addPathSegments(path);
+        for (Pair<String, String> param : params ) {
+            urlBuilder.addEncodedQueryParameter(param.getFirst(), param.getSecond());
+        }
+        Request request = request()
+                .url(urlBuilder.build())
+                .get()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                future.setException(e);
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    future.setException(new IOException("Response error: " + response));
+                } else {
+                    if (response.body() != null) {
+                        JsonFormat.parser().ignoringUnknownFields().merge(response.body().string(), responseBuilder);
+                    }
+                    T protoResponse = (T) responseBuilder.build();
+                    future.set(protoResponse);
                 }
             }
         });
