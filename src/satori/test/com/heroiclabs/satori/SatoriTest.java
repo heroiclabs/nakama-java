@@ -69,6 +69,13 @@ public class SatoriTest {
         Assert.assertTrue(experimentList.getExperimentsCount() == 1);
     }
 
+    @Test
+    public void testGetFlag() throws Exception {
+        final Session session = grpcClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        final Flag flag = grpcClient.getFlag(session, "MinBuildNumber").get();
+        Assert.assertNotNull(flag);
+    }
+
 
     @After
     public void shutdown() throws Exception {
