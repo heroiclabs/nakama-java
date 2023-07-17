@@ -122,7 +122,7 @@ public class HttpClient implements Client {
                 .putAllDefault(defaultProperties)
                 .putAllCustom(customProperties)
                 .build();
-        return post(null, authRequest, "v1/authenticate", com.heroiclabs.satori.api.Session.newBuilder(), convertSession);
+        return call(null, "POST", authRequest, "v1/authenticate", com.heroiclabs.satori.api.Session.newBuilder(), sessionConverter);
     }
 
     @Override
@@ -171,10 +171,14 @@ public class HttpClient implements Client {
 
     @Override
     public ListenableFuture<Flag> getFlag(@NonNull final Session session, @NonNull final String name) {
-        List<Pair<String, String>> params = new ArrayList<>();
-        params.add(new Pair<>("names", name));
+        ListenableFuture<FlagList> futureFlagsList = getFlags(session, name);
+        return Futures.transform(futureFlagsList, flagList -> {
+            if (flagList.getFlagsList().size() == 1) {
+                return flagList.getFlagsList().get(0);
+            }
 
-        return get(session, "v1/flag", params, FlagList.newBuilder());
+            throw new IllegalArgumentException("Flag '" + name + "' not found.");
+        }, MoreExecutors.directExecutor());
     }
 
     @Override
@@ -191,7 +195,7 @@ public class HttpClient implements Client {
         ListenableFuture<FlagList> futureFlagsList = getFlagsDefault(name);
         return Futures.transform(futureFlagsList, flagList -> {
             if (flagList.getFlagsList().size() == 1) {
-                flagList.getFlagsList().get(0);
+                return flagList.getFlagsList().get(0);
             }
 
             throw new IllegalArgumentException("Flag '" + name + "' not found.");
@@ -203,7 +207,7 @@ public class HttpClient implements Client {
         ListenableFuture<FlagList> futureFlagsList = getFlagsDefault(name);
         return Futures.transform(futureFlagsList, flagList -> {
             if (flagList.getFlagsList().size() == 1) {
-                flagList.getFlagsList().get(0);
+                return flagList.getFlagsList().get(0);
             }
 
             Flag.Builder builder = Flag.newBuilder();
@@ -214,23 +218,30 @@ public class HttpClient implements Client {
 
     @Override
     public ListenableFuture<FlagList> getFlagsDefault(String... names) {
-        return getStub().getFlags(GetFlagsRequest.newBuilder().addAllNames(Arrays.asList(names)).build());
+        List<Pair<String, String>> params = new ArrayList<>();
+        for (String name : names) {
+            params.add(new Pair<>("names", name));
+        }
+        return get(null, "v1/flag", params, FlagList.newBuilder());
     }
 
     @Override
     public ListenableFuture<LiveEventList> getLiveEvents(@NonNull final Session session, String... names) {
-        return getStub(session).getLiveEvents(GetLiveEventsRequest.newBuilder()
-                .addAllNames(Arrays.asList(names))
-                .build());
+        List<Pair<String, String>> params = new ArrayList<>();
+        for (String name : names) {
+            params.add(new Pair<>("names", name));
+        }
+        return get(session, "v1/live-event", params, LiveEventList.newBuilder());
     }
 
     @Override
     public ListenableFuture<Empty> updateProperties(@NonNull final Session session, @NonNull final Map<String, String> defaultProperties, @NonNull final Map<String, String> customProperties) {
         // Assuming we have a method to convert Properties to a Map
-        return getStub(session).updateProperties(UpdatePropertiesRequest.newBuilder()
+        UpdatePropertiesRequest updatePropertiesRequest = UpdatePropertiesRequest.newBuilder()
                 .putAllDefault(defaultProperties)
                 .putAllCustom(customProperties)
-                .build());
+                .build();
+        return put(session, updatePropertiesRequest, "v1/properties", Empty.newBuilder());
     }
 
     @Override
@@ -251,22 +262,21 @@ public class HttpClient implements Client {
 
     @Override
     public ListenableFuture<Properties> listProperties(@NonNull Session session) {
-        return getStub(session).listProperties(Empty.newBuilder().build());
+        return get(session, "v1/properties", Collections.emptyList(), Properties.newBuilder());
     }
 
     @Override
     public ListenableFuture<Session> identify(@NonNull Session session, @NonNull String id,
             @NonNull Map<String, String> defaultProperties, @NonNull Map<String, String> customProperties) {
-//        return convertSession(getStub(session).identify(IdentifyRequest.newBuilder().setId(id).build()));
-        return null;
+        IdentifyRequest identifyRequest = IdentifyRequest.newBuilder().setId(id).build();
+        return call(session, "PUT", identifyRequest, "v1/identify", com.heroiclabs.satori.api.Session.newBuilder(), sessionConverter);
     }
 
 
     @Override
     public ListenableFuture<Session> sessionRefresh(Session session) {
-//        return convertSession(getStub(session).authenticateRefresh(
-//            AuthenticateRefreshRequest.newBuilder().setRefreshToken(session.getRefreshToken()).build()));
-        return null;
+        AuthenticateRefreshRequest authenticateRefreshRequest = AuthenticateRefreshRequest.newBuilder().setRefreshToken(session.getRefreshToken()).build();
+        return call(session, "POST", authenticateRefreshRequest, "v1/authenticate/refresh", com.heroiclabs.satori.api.Session.newBuilder(), sessionConverter);
     }
 
     private Timestamp toProtoTimestamp(Instant instant) {
@@ -287,14 +297,18 @@ public class HttpClient implements Client {
         return eventBuilder.build();
     }
 
-    private final Function<com.heroiclabs.satori.api.Session, Session> convertSession = (input)
+    private final Function<com.heroiclabs.satori.api.Session, Session> sessionConverter = (input)
             -> new DefaultSession(input.getToken(), input.getRefreshToken());
 
     private <T extends Message> ListenableFuture<T> post(Session session, Message requestBody, String path, T.Builder responseBuilder) {
-        return post(session, requestBody, path, responseBuilder, Function.identity());
+        return call(session, "POST", requestBody, path, responseBuilder, Function.identity());
     }
 
-    private <T extends Message, O> ListenableFuture<O> post(Session session, Message requestBody, String path, T.Builder responseBuilder, Function<T, O> responseConverter) {
+    private <T extends Message> ListenableFuture<T> put(Session session, Message requestBody, String path, T.Builder responseBuilder) {
+        return call(session, "PUT", requestBody, path, responseBuilder, Function.identity());
+    }
+
+    private <T extends Message, O> ListenableFuture<O> call(Session session, String method, Message requestBody, String path, T.Builder responseBuilder, Function<T, O> responseConverter) {
         SettableFuture<O> future = SettableFuture.create();
         String body;
         try {
@@ -303,10 +317,22 @@ public class HttpClient implements Client {
             future.setException(e);
             return future;
         }
-        Request request = request(session).newBuilder()
-                .url(url.newBuilder().addPathSegments(path).build())
-                .post(RequestBody.create(body, JSON))
-                .build();
+        Request.Builder reqBuilder = request(session).newBuilder()
+                .url(url.newBuilder().addPathSegments(path).build());
+
+        switch (method) {
+            case "POST":
+                reqBuilder.post(RequestBody.create(body, JSON));
+                break;
+            case "PUT":
+                reqBuilder.put(RequestBody.create(body, JSON));
+                break;
+            default:
+                future.setException(new IllegalArgumentException("Unknown method: "+method));
+                return future;
+        }
+
+        Request request = reqBuilder.build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
