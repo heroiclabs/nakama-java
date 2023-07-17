@@ -246,7 +246,7 @@ public class HttpClient implements Client {
 
     @Override
     public ListenableFuture<Empty> deleteIdentity(@NonNull final Session session) {
-        return getStub(session).deleteIdentity(Empty.newBuilder().build());
+        return delete(session, Empty.newBuilder().build(), "v1/identity", Empty.newBuilder());
     }
 
     @Override
@@ -308,6 +308,10 @@ public class HttpClient implements Client {
         return call(session, "PUT", requestBody, path, responseBuilder, Function.identity());
     }
 
+    private <T extends Message> ListenableFuture<T> delete(Session session, Message requestBody, String path, T.Builder responseBuilder) {
+        return call(session, "DELETE", requestBody, path, responseBuilder, Function.identity());
+    }
+
     private <T extends Message, O> ListenableFuture<O> call(Session session, String method, Message requestBody, String path, T.Builder responseBuilder, Function<T, O> responseConverter) {
         SettableFuture<O> future = SettableFuture.create();
         String body;
@@ -326,6 +330,9 @@ public class HttpClient implements Client {
                 break;
             case "PUT":
                 reqBuilder.put(RequestBody.create(body, JSON));
+                break;
+            case "DELETE":
+                reqBuilder.delete(RequestBody.create(body, JSON));
                 break;
             default:
                 future.setException(new IllegalArgumentException("Unknown method: "+method));
