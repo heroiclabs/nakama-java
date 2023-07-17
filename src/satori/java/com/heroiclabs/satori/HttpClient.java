@@ -105,16 +105,13 @@ public class HttpClient implements Client {
         return SatoriGrpc.newFutureStub(OkHttpChannelBuilder.forAddress("", 0).build());
     }
 
-    private Request.Builder request() {
-        return request(null);
-    }
-
-    private Request.Builder request(final Session session) {
+    private Request request(final Session session) {
         String authValue = session != null ? "Bearer " + session.getAuthToken() : this.basicAuth;
 
         return new Request.Builder()
                 .header("authorization", authValue)
-                .header("User-Agent", USERAGENT);
+                .header("User-Agent", USERAGENT)
+                .build();
     }
 
     @Override
@@ -125,7 +122,7 @@ public class HttpClient implements Client {
                 .putAllDefault(defaultProperties)
                 .putAllCustom(customProperties)
                 .build();
-        return post(authRequest, "v1/authenticate", com.heroiclabs.satori.api.Session.newBuilder(), convertSession);
+        return post(null, authRequest, "v1/authenticate", com.heroiclabs.satori.api.Session.newBuilder(), convertSession);
     }
 
     @Override
@@ -135,7 +132,7 @@ public class HttpClient implements Client {
                 .setRefreshToken(session.getRefreshToken())
                 .build();
 
-        return post(logoutRequest, "v1/authenticate/logout", Empty.newBuilder());
+        return post(session, logoutRequest, "v1/authenticate/logout", Empty.newBuilder());
     }
 
     @Override
@@ -144,7 +141,7 @@ public class HttpClient implements Client {
                 .addEvents(toProtoEvent(event))
                 .build();
 
-        return post(eventRequest, "v1/event", Empty.newBuilder());
+        return post(session, eventRequest, "v1/event", Empty.newBuilder());
     }
 
     @Override
@@ -155,12 +152,12 @@ public class HttpClient implements Client {
             builder.addEvents(toProtoEvent(event));
         }
 
-        return post(builder.build(), "v1/event", Empty.newBuilder());
+        return post(session, builder.build(), "v1/event", Empty.newBuilder());
     }
 
     @Override
     public ListenableFuture<ExperimentList> getAllExperiments(@NonNull final Session session) {
-        return get("v1/experiment", Collections.emptyList(), ExperimentList.newBuilder());
+        return get(session, "v1/experiment", Collections.emptyList(), ExperimentList.newBuilder());
     }
 
     @Override
@@ -169,24 +166,24 @@ public class HttpClient implements Client {
         for (String name : names) {
             params.add(new Pair<>("names", name));
         }
-        return get("v1/experiment", params, ExperimentList.newBuilder());
+        return get(session, "v1/experiment", params, ExperimentList.newBuilder());
     }
 
     @Override
     public ListenableFuture<Flag> getFlag(@NonNull final Session session, @NonNull final String name) {
-        ListenableFuture<FlagList> futureFlagsList = getFlags(session, name);
-        return Futures.transform(futureFlagsList, flagList -> {
-            if (flagList.getFlagsList().size() == 1) {
-                flagList.getFlagsList().get(0);
-            }
+        List<Pair<String, String>> params = new ArrayList<>();
+        params.add(new Pair<>("names", name));
 
-            throw new IllegalArgumentException("Flag '" + name + "' not found.");
-        }, MoreExecutors.directExecutor());
+        return get(session, "v1/flag", params, FlagList.newBuilder());
     }
 
     @Override
     public ListenableFuture<FlagList> getFlags(@NonNull final Session session, String... names) {
-        return get("v1/flag", Collections.emptyList(), FlagList.newBuilder());
+        List<Pair<String, String>> params = new ArrayList<>();
+        for (String name : names) {
+            params.add(new Pair<>("names", name));
+        }
+        return get(session, "v1/flag", params, FlagList.newBuilder());
     }
 
     @Override
@@ -293,11 +290,11 @@ public class HttpClient implements Client {
     private final Function<com.heroiclabs.satori.api.Session, Session> convertSession = (input)
             -> new DefaultSession(input.getToken(), input.getRefreshToken());
 
-    private <T extends Message> ListenableFuture<T> post(Message requestBody, String path, T.Builder responseBuilder) {
-        return post(requestBody, path, responseBuilder, Function.identity());
+    private <T extends Message> ListenableFuture<T> post(Session session, Message requestBody, String path, T.Builder responseBuilder) {
+        return post(session, requestBody, path, responseBuilder, Function.identity());
     }
 
-    private <T extends Message, O> ListenableFuture<O> post(Message requestBody, String path, T.Builder responseBuilder, Function<T, O> responseConverter) {
+    private <T extends Message, O> ListenableFuture<O> post(Session session, Message requestBody, String path, T.Builder responseBuilder, Function<T, O> responseConverter) {
         SettableFuture<O> future = SettableFuture.create();
         String body;
         try {
@@ -306,7 +303,7 @@ public class HttpClient implements Client {
             future.setException(e);
             return future;
         }
-        Request request = request()
+        Request request = request(session).newBuilder()
                 .url(url.newBuilder().addPathSegments(path).build())
                 .post(RequestBody.create(body, JSON))
                 .build();
@@ -334,13 +331,13 @@ public class HttpClient implements Client {
         return future;
     }
 
-    private <T extends Message> ListenableFuture<T> get(String path, List<Pair<String, String>> params, T.Builder responseBuilder) {
+    private <T extends Message> ListenableFuture<T> get(Session session, String path, List<Pair<String, String>> params, T.Builder responseBuilder) {
         SettableFuture<T> future = SettableFuture.create();
         HttpUrl.Builder urlBuilder = url.newBuilder().addPathSegments(path);
         for (Pair<String, String> param : params ) {
             urlBuilder.addEncodedQueryParameter(param.getFirst(), param.getSecond());
         }
-        Request request = request()
+        Request request = request(session).newBuilder()
                 .url(urlBuilder.build())
                 .get()
                 .build();
