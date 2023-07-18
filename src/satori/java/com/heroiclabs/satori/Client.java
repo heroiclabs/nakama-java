@@ -92,6 +92,15 @@ public interface Client {
      * Get a single flag for this identity.
      * @param session The session of the user.
      * @param name The name of the flag.
+     * @param defaultValue The default value if the server is unreachable or the flag does not exist.
+     * @return A future which resolves to a single feature flag.
+     */
+    ListenableFuture<Flag> getFlag(@NonNull Session session, @NonNull final String name, @NonNull final String defaultValue);
+
+    /**
+     * Get a single flag for this identity.
+     * @param session The session of the user.
+     * @param name The name of the flag.
      * @return A future which resolves to a single feature flag.
      */
     ListenableFuture<Flag> getFlag(@NonNull Session session, @NonNull final String name);
@@ -126,7 +135,7 @@ public interface Client {
      * value specified and will not raise an exception if the network is unreachable.
      *
      * @param name The name of the flag.
-     * @param defaultValue The default value if the server is unreachable.
+     * @param defaultValue The default value if the server is unreachable or the flag does not exist.
      * @return A ListenableFuture which resolves to a single default feature flag.
      */
     ListenableFuture<Flag> getFlagDefault(@NonNull final String name, @NonNull final String defaultValue);

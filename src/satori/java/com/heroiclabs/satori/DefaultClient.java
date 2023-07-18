@@ -189,6 +189,26 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<Flag> getFlag(@NonNull final Session session, @NonNull final String name, @NonNull final String defaultValue) {
+        ListenableFuture<FlagList> futureFlagsList = getFlags(session, name);
+
+        futureFlagsList = Futures.catching(futureFlagsList, Throwable.class, throwable -> {
+            FlagList.Builder flagListBuilder = FlagList.newBuilder();
+            flagListBuilder.getFlagsList().add(Flag.newBuilder().setName(name).setValue(defaultValue).build());
+            return flagListBuilder.build();
+        }, MoreExecutors.directExecutor());
+
+        return Futures.transform(futureFlagsList, flagList -> {
+            if (flagList.getFlagsList().size() == 1) {
+                return flagList.getFlagsList().get(0);
+            }
+
+            Flag.Builder builder = Flag.newBuilder();
+            return builder.setName(name).setValue(defaultValue).build();
+        }, MoreExecutors.directExecutor());
+    }
+
+    @Override
     public ListenableFuture<FlagList> getFlags(@NonNull final Session session, String... names) {
         return getStub(session).getFlags(GetFlagsRequest.newBuilder()
                 .addAllNames(Arrays.asList(names))
@@ -210,6 +230,13 @@ public class DefaultClient implements Client {
     @Override
     public ListenableFuture<Flag> getFlagDefault(@NonNull String name, @NonNull String defaultValue) {
         ListenableFuture<FlagList> futureFlagsList = getFlagsDefault(name);
+
+        futureFlagsList = Futures.catching(futureFlagsList, Throwable.class, throwable -> {
+            FlagList.Builder flagListBuilder = FlagList.newBuilder();
+            flagListBuilder.getFlagsList().add(Flag.newBuilder().setName(name).setValue(defaultValue).build());
+            return flagListBuilder.build();
+        }, MoreExecutors.directExecutor());
+
         return Futures.transform(futureFlagsList, flagList -> {
             if (flagList.getFlagsList().size() == 1) {
                 return flagList.getFlagsList().get(0);
@@ -219,7 +246,6 @@ public class DefaultClient implements Client {
             return builder.setName(name).setValue(defaultValue).build();
         }, MoreExecutors.directExecutor());
     }
-
 
     @Override
     public ListenableFuture<FlagList> getFlagsDefault(String... names) {
