@@ -181,7 +181,7 @@ public class DefaultClient implements Client {
         ListenableFuture<FlagList> futureFlagsList = getFlags(session, name);
         return Futures.transform(futureFlagsList, flagList -> {
             if (flagList.getFlagsList().size() == 1) {
-                flagList.getFlagsList().get(0);
+                return flagList.getFlagsList().get(0);
             }
 
             throw new IllegalArgumentException("Flag '" + name + "' not found.");
@@ -200,7 +200,7 @@ public class DefaultClient implements Client {
         ListenableFuture<FlagList> futureFlagsList = getFlagsDefault(name);
         return Futures.transform(futureFlagsList, flagList -> {
             if (flagList.getFlagsList().size() == 1) {
-                flagList.getFlagsList().get(0);
+                return flagList.getFlagsList().get(0);
             }
 
             throw new IllegalArgumentException("Flag '" + name + "' not found.");
@@ -212,7 +212,7 @@ public class DefaultClient implements Client {
         ListenableFuture<FlagList> futureFlagsList = getFlagsDefault(name);
         return Futures.transform(futureFlagsList, flagList -> {
             if (flagList.getFlagsList().size() == 1) {
-                flagList.getFlagsList().get(0);
+                return flagList.getFlagsList().get(0);
             }
 
             Flag.Builder builder = Flag.newBuilder();

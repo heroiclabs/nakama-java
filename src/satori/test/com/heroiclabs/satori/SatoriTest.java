@@ -16,9 +16,11 @@
 
 package com.heroiclabs.satori;
 
+import com.google.protobuf.Empty;
 import org.junit.Assert;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -26,21 +28,29 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.util.concurrent.ListenableFuture;
-
 import com.heroiclabs.satori.api.*;
 
 public class SatoriTest {
-    private Client client;
+    private Client grpcClient, httpClient;
 
     @Before
     public void init() {
-        client = new DefaultClient("bb4b2da1-71ba-429e-b5f3-36556abbf4c9", "127.0.0.1", 7449, false);
+        grpcClient = new DefaultClient("bb4b2da1-71ba-429e-b5f3-36556abbf4c9", "127.0.0.1", 7449, false);
+        httpClient = new HttpClient("bb4b2da1-71ba-429e-b5f3-36556abbf4c9", "127.0.0.1", 7450, false);
     }
 
     @Test
     public void testAuthenticate() throws Exception {
-        final Session session = client.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        Map<String, String> props = new HashMap<String, String>() {{
+            put("region", "EU");
+            put("language", "en");
+        }};
+        Session session = grpcClient.authenticate(UUID.randomUUID().toString(), props, new HashMap<>()).get();
+        Assert.assertNotNull(session);
+        Assert.assertNotNull(session.getRefreshToken());
+        Assert.assertNotNull(session.getAuthToken());
+
+        session = httpClient.authenticate(UUID.randomUUID().toString(), props, new HashMap<>()).get();
         Assert.assertNotNull(session);
         Assert.assertNotNull(session.getRefreshToken());
         Assert.assertNotNull(session.getAuthToken());
@@ -48,22 +58,65 @@ public class SatoriTest {
 
     @Test
     public void testLogout() throws Exception {
-        final Session session = client.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        final Session session = grpcClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
         Assert.assertNotNull(session);
-        client.authenticateLogout(session).get();
-        Assert.assertThrows(Exception.class, () -> client.getFlags(session, new String[]{}).get());
+        grpcClient.authenticateLogout(session).get();
+        Assert.assertThrows(Exception.class, () -> grpcClient.getFlags(session, new String[]{}).get());
+
+        final Session session2 = httpClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        Assert.assertNotNull(session2);
+        httpClient.authenticateLogout(session2).get();
+        Assert.assertThrows(Exception.class, () -> httpClient.getFlags(session2, new String[]{}).get());
     }
 
     @Test
     public void testGetExperiments() throws Exception {
-        final Session session = client.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
-        final ExperimentList experimentList = client.getAllExperiments(session).get();
-        Assert.assertTrue(experimentList.getExperimentsCount() == 1);
+        Session session = grpcClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        ExperimentList experimentList = grpcClient.getAllExperiments(session).get();
+        Assert.assertEquals(1, experimentList.getExperimentsCount());
+
+        session = httpClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        experimentList = httpClient.getAllExperiments(session).get();
+        Assert.assertEquals(1, experimentList.getExperimentsCount());
+    }
+
+    @Test
+    public void testGetFlags() throws Exception {
+        Session session = grpcClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        FlagList flagList = grpcClient.getFlags(session).get();
+        Assert.assertEquals(3, flagList.getFlagsCount());
+
+        session = httpClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        flagList = httpClient.getFlags(session).get();
+        Assert.assertEquals(3, flagList.getFlagsCount());
+    }
+
+    @Test
+    public void testGetFlag() throws Exception {
+        Session session = grpcClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        Flag flag = grpcClient.getFlag(session, "MinBuildNumber").get();
+        Assert.assertNotNull(flag);
+
+        session = httpClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        flag = httpClient.getFlag(session, "MinBuildNumber").get();
+        Assert.assertNotNull(flag);
+    }
+
+    @Test
+    public void testDeleteIdentity() throws Exception {
+        Session session = grpcClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        Empty empty = grpcClient.deleteIdentity(session).get();
+        Assert.assertNotNull(empty);
+
+        session = httpClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
+        empty = httpClient.deleteIdentity(session).get();
+        Assert.assertNotNull(empty);
     }
 
 
     @After
     public void shutdown() throws Exception {
-        client.disconnect(5000, TimeUnit.MILLISECONDS);
+        grpcClient.disconnect(5000, TimeUnit.MILLISECONDS);
     }
 }
+

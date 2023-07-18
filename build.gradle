@@ -62,10 +62,6 @@ repositories {
 }
 
 configurations {
-    all {
-        exclude group: 'io.grpc', module:'grpc-protobuf'
-        exclude group: 'com.google.protobuf', module: 'protobuf-java'
-    }
     sharedProtobuf.extendsFrom protobuf
     sharedApi.extendsFrom api
     sharedImplementation.extendsFrom implementation
@@ -77,10 +73,11 @@ dependencies {
     shadow gradleApi()
 
     implementation 'com.google.code.gson:gson:2.8.9'
-    api 'io.grpc:grpc-protobuf-lite:1.43.2'
+    api 'io.grpc:grpc-protobuf:1.43.2'
     // listenable future is part of the SDK public API
     api 'com.google.guava:guava:31.0.1-android'
-    implementation 'com.google.protobuf:protobuf-javalite:3.19.3'
+    implementation 'com.google.protobuf:protobuf-java:3.19.6'
+    implementation 'com.google.protobuf:protobuf-java-util:3.19.6'
 
     implementation('io.grpc:grpc-okhttp:1.48.0') {
         exclude group: 'com.squareup.okio', module:'okio'
@@ -124,6 +121,8 @@ sourceSets {
     satori {
         java {
             srcDirs 'src/satori/java'
+            srcDirs += 'build/generated/source/proto/satori/java'
+            srcDirs += 'build/generated/source/proto/satori/grpc'
             compileClasspath += configurations.sharedImplementation
             compileClasspath += configurations.sharedApi
             compileClasspath += configurations.sharedProtobuf
@@ -175,13 +174,11 @@ protobuf {
     generateProtoTasks {
         all().each { task ->
             task.builtins {
-                java {
-                    option 'lite'
-                }
+                java {}
             }
 
             task.plugins {
-                grpc { option 'lite' }
+                grpc {}
             }
         }
     }
