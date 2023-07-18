@@ -103,6 +103,23 @@ public class SatoriTest {
     }
 
     @Test
+    public void testGetFlagDefaultValue() throws Exception {
+
+        String bogusAuthToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiJmYTk1NDkxMS0xOGQ5LTQyODAtYTQ5ZC0yOGVmODAzNTdlNGUiLCJpaWQiOiIwNTk1MzAxNy00ODY4LTQ2MDQtYjM2Ni1kZWMxZWUyZjIyYWEiLCJleHAiOjE2ODk2OTYzNjQsImlhdCI6MTY4OTY5Mjc2NCwiYXBpIjoiYW5kcm9pZCJ9.J_KohdF3A_huhim8w9OUxVQ18UcCrmeUZeBkwgaSBwU";
+        String bogusRefreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiJmYTk1NDkxMS0xOGQ5LTQyODAtYTQ5ZC0yOGVmODAzNTdlNGUiLCJpaWQiOiIwNTk1MzAxNy00ODY4LTQ2MDQtYjM2Ni1kZWMxZWUyZjIyYWEiLCJleHAiOjE2ODk2OTYzNjQsImlhdCI6MTY4OTY5Mjc2NH0.6K3WoIg1RsSI1Uwfqn6EPg5Kum7VLwq_eu0Inwl4nMk";
+
+        Client grpcClientNoNetwork = new DefaultClient("bb4b2da1-71ba-429e-b5f3-36556abbf4c9", "0.0.0.0", 7449, false);
+        Flag flag = grpcClientNoNetwork.getFlag(new DefaultSession(bogusAuthToken, bogusRefreshToken), "MinBuildNumber", "true").get();
+        Assert.assertNotNull(flag);
+        Assert.assertEquals("true", flag.getValue());
+
+        Client httpClientNoNetwork = new HttpClient("bb4b2da1-71ba-429e-b5f3-36556abbf4c9", "0.0.0.0", 7450, false);
+        flag = httpClientNoNetwork.getFlag(new DefaultSession(bogusAuthToken, bogusRefreshToken), "MinBuildNumber", "true").get();
+        Assert.assertNotNull(flag);
+        Assert.assertEquals("true", flag.getValue());
+    }
+
+    @Test
     public void testDeleteIdentity() throws Exception {
         Session session = grpcClient.authenticate(UUID.randomUUID().toString(), new HashMap<String, String>(), new HashMap<String, String>()).get();
         Empty empty = grpcClient.deleteIdentity(session).get();

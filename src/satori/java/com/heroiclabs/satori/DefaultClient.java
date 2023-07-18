@@ -194,7 +194,7 @@ public class DefaultClient implements Client {
 
         futureFlagsList = Futures.catching(futureFlagsList, Throwable.class, throwable -> {
             FlagList.Builder flagListBuilder = FlagList.newBuilder();
-            flagListBuilder.getFlagsList().add(Flag.newBuilder().setName(name).setValue(defaultValue).build());
+            flagListBuilder.addFlags(Flag.newBuilder().setName(name).setValue(defaultValue).build());
             return flagListBuilder.build();
         }, MoreExecutors.directExecutor());
 
@@ -233,7 +233,7 @@ public class DefaultClient implements Client {
 
         futureFlagsList = Futures.catching(futureFlagsList, Throwable.class, throwable -> {
             FlagList.Builder flagListBuilder = FlagList.newBuilder();
-            flagListBuilder.getFlagsList().add(Flag.newBuilder().setName(name).setValue(defaultValue).build());
+            flagListBuilder.addFlags(Flag.newBuilder().setName(name).setValue(defaultValue).build());
             return flagListBuilder.build();
         }, MoreExecutors.directExecutor());
 
