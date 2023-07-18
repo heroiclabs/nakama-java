@@ -6,6 +6,15 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.3.0] - 2023-07-18
+
+### Added
+- Satori: Adds HTTP support to the Satori client via using the `HttpClient` instead of the grpc-based `DefaultClient`.
+- Satori: Added ability to specify default flag value in `GetFlag` calls.
+
+### Fixed
+- Satori: Fixed handling of network errors when calling `GetDefaultFlag` and returning of default flag value in such cases.
+
 ## [2.2.1] - 2023-07-07
 ### Fixed
 - Fixed packing of external dependencies into fat jars.

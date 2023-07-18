@@ -179,8 +179,9 @@ import com.heroiclabs.satori;
 Client client = new DefaultClient("https", "your.host.here", 443, "yourApiKey");
 ```
 
-Then authenticate with the server to obtain your session.
+Alternatively, for HTTP support rather than gRPC you can create an `HttpClient` with the same parameters.
 
+Then authenticate with the server to obtain your session.
 
 ```java
 // Authenticate with the Satori server.
