@@ -6,6 +6,10 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.3.0] - 2023-07-18
+### Added
+- Adds HTTP support to the Satori client via using the `HttpClient` instead of the grpc-based `DefaultClient`.
+
 ## [2.2.1] - 2023-07-07
 ### Fixed
 - Fixed packing of external dependencies into fat jars.
