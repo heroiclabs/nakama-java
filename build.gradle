@@ -27,14 +27,14 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.18'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.9.4'
     }
 }
 
 plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
-    id 'com.google.protobuf' version '0.8.18'
-    id 'io.freefair.lombok' version '5.1.1'
+    id 'com.google.protobuf' version '0.9.4'
+    id 'io.freefair.lombok' version '8.1.0'
     //for distTar which is called when importing this SDK w/ JitPack
     id 'distribution'
     id 'maven-publish'
@@ -43,7 +43,7 @@ plugins {
 }
 
 lombok {
-    version = '1.18.12'
+    version = '1.18.28'
 }
 
 group = 'com.github.heroiclabs'

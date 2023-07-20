@@ -262,8 +262,7 @@ When changing the API comments, rerun javadoc and commit the changes in `docs/*`
 To run javadoc:
 
 ```
-cd nakama-java/src/main/com/heroiclabs/nakama
-javadoc *.java
+./gradlew javadoc
 ```
 
 ### License
