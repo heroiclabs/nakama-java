@@ -104,7 +104,7 @@ public class DefaultSession implements Session {
      * Get a Session from a Signing Key. For Server Side use ONLY.
      * The signing key should never be shared with the clients.
      */
-    public static Session fromSigningKey(@NonNull String signingKey, @NonNull String apiKeyName, @NonNull String identityId, @NonNull Duration tokenDurationSeconds) {
+    public static Session fromSigningKey(@NonNull String signingKey, @NonNull String apiKeyName, @NonNull String identityId, @NonNull Duration tokenDurationSeconds) throws JWTCreationException, IllegalArgumentException {
         if (signingKey.isEmpty()) {
             throw new IllegalArgumentException("signingKey cannot be empty");
         }
