@@ -101,10 +101,14 @@ public class DefaultSession implements Session {
     }
 
     /**
-     * Get a Session from a Signing Key. For Server Side use ONLY.
-     * The signing key should never be shared with the clients.
+     * Utility function to create a new Session from a Signing Key. This function is to be used for server-to-server
+     * calls only. The signing key should never be shared with the clients.
+     * @param signingKey The session signing key configured in Satori.
+     * @param apiKeyName The api key name to be used in the token. This has to be an existing value configured in thei Satori dashboard.
+     * @param identityId The user identity id for the session.
+     * @oaram tokenDuration The duration of the validity of the session.
      */
-    public static Session fromSigningKey(@NonNull String signingKey, @NonNull String apiKeyName, @NonNull String identityId, @NonNull Duration tokenDurationSeconds) throws JWTCreationException, IllegalArgumentException {
+    public static Session fromSigningKey(@NonNull String signingKey, @NonNull String apiKeyName, @NonNull String identityId, @NonNull Duration tokenDuration) throws JWTCreationException, IllegalArgumentException {
         if (signingKey.isEmpty()) {
             throw new IllegalArgumentException("signingKey cannot be empty");
         }
@@ -114,12 +118,12 @@ public class DefaultSession implements Session {
         if (identityId.isEmpty()) {
             throw new IllegalArgumentException("identityId cannot be empty");
         }
-        if (tokenDurationSeconds.isNegative() || tokenDurationSeconds.isNegative()) {
-            throw new IllegalArgumentException("tokenDurationSeconds is invalid");
+        if (tokenDuration.isNegative() || tokenDuration.isNegative()) {
+            throw new IllegalArgumentException("tokenDuration is invalid");
         }
 
         Instant now = Instant.now();
-        Instant issuedAt = now.plus(tokenDurationSeconds);
+        Instant issuedAt = now.plus(tokenDuration);
 
         Map<String, Object> claims = new HashMap<String, Object>();
         claims.put("SessionId", "");
