@@ -141,7 +141,16 @@ public class SatoriTest {
         Assert.assertNotNull(flagList);
     }
 
+    @Test
+    public void testRestore() throws Exception {
+        Duration d = Duration.ofDays(1);
+        Session session1 = DefaultSession.fromSigningKey("defaultsigningkey", "default", "21052f26-2a06-11ee-99bf-637d1a117e47", d);
+        Session session2 = DefaultSession.restore(session1.getAuthToken(), null);
 
+        Assert.assertNotNull(session2);
+        Assert.assertEquals(session1.getIdentityId(), session2.getIdentityId());
+        Assert.assertEquals(session1.getExpireTime(), session2.getExpireTime());
+    }
     @After
     public void shutdown() throws Exception {
         grpcClient.disconnect(5000, TimeUnit.MILLISECONDS);
