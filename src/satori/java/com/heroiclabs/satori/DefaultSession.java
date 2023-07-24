@@ -122,15 +122,15 @@ public class DefaultSession implements Session {
             throw new IllegalArgumentException("tokenDuration is invalid");
         }
 
-        Instant now = Instant.now();
-        Instant issuedAt = now.plus(tokenDuration);
+        Instant issuedAt = Instant.now();
+        Instant expiresAt = issuedAt.plus(tokenDuration);
 
         Map<String, Object> claims = new HashMap<String, Object>();
-        claims.put("SessionId", "");
-        claims.put("IdentityId", identityId);
-        claims.put("IssuedAt", now.getEpochSecond());
-        claims.put("ExpiresAt", issuedAt.getEpochSecond());
-        claims.put("ApiKeyName", apiKeyName);
+        claims.put("sid", "");
+        claims.put("iid", identityId);
+        claims.put("iat", issuedAt.getEpochSecond());
+        claims.put("exp", expiresAt.getEpochSecond());
+        claims.put("api", apiKeyName);
 
         Algorithm algorithm = Algorithm.HMAC256(signingKey);
         String token = JWT.create()
