@@ -90,6 +90,7 @@ dependencies {
     implementation 'io.grpc:grpc-stub:1.43.2'
     compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
     implementation 'org.slf4j:slf4j-simple:1.7.9'
+    implementation 'com.auth0:java-jwt:4.4.0'
 
     protobuf 'com.google.api.grpc:proto-google-common-protos:2.7.1'
     testImplementation 'junit:junit:4.13.2'

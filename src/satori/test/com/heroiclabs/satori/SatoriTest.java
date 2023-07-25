@@ -17,8 +17,10 @@
 package com.heroiclabs.satori;
 
 import com.google.protobuf.Empty;
+import org.graalvm.compiler.nodes.NodeView;
 import org.junit.Assert;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -29,6 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.heroiclabs.satori.api.*;
+
 
 public class SatoriTest {
     private Client grpcClient, httpClient;
@@ -104,7 +107,6 @@ public class SatoriTest {
 
     @Test
     public void testGetFlagDefaultValue() throws Exception {
-
         String bogusAuthToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiJmYTk1NDkxMS0xOGQ5LTQyODAtYTQ5ZC0yOGVmODAzNTdlNGUiLCJpaWQiOiIwNTk1MzAxNy00ODY4LTQ2MDQtYjM2Ni1kZWMxZWUyZjIyYWEiLCJleHAiOjE2ODk2OTYzNjQsImlhdCI6MTY4OTY5Mjc2NCwiYXBpIjoiYW5kcm9pZCJ9.J_KohdF3A_huhim8w9OUxVQ18UcCrmeUZeBkwgaSBwU";
         String bogusRefreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiJmYTk1NDkxMS0xOGQ5LTQyODAtYTQ5ZC0yOGVmODAzNTdlNGUiLCJpaWQiOiIwNTk1MzAxNy00ODY4LTQ2MDQtYjM2Ni1kZWMxZWUyZjIyYWEiLCJleHAiOjE2ODk2OTYzNjQsImlhdCI6MTY4OTY5Mjc2NH0.6K3WoIg1RsSI1Uwfqn6EPg5Kum7VLwq_eu0Inwl4nMk";
 
@@ -130,7 +132,25 @@ public class SatoriTest {
         Assert.assertNotNull(empty);
     }
 
+    @Test
+    public void testFromSigningKeySession() throws Exception {
+        Duration d = Duration.ofDays(1);
+        Session session = DefaultSession.fromSigningKey("defaultsigningkey", "default", "21052f26-2a06-11ee-99bf-637d1a117e47", d);
 
+        FlagList flagList = httpClient.getFlags(session).get();
+        Assert.assertNotNull(flagList);
+    }
+
+    @Test
+    public void testRestore() throws Exception {
+        Duration d = Duration.ofDays(1);
+        Session session1 = DefaultSession.fromSigningKey("defaultsigningkey", "default", "21052f26-2a06-11ee-99bf-637d1a117e47", d);
+        Session session2 = DefaultSession.restore(session1.getAuthToken(), null);
+
+        Assert.assertNotNull(session2);
+        Assert.assertEquals(session1.getIdentityId(), session2.getIdentityId());
+        Assert.assertEquals(session1.getExpireTime(), session2.getExpireTime());
+    }
     @After
     public void shutdown() throws Exception {
         grpcClient.disconnect(5000, TimeUnit.MILLISECONDS);

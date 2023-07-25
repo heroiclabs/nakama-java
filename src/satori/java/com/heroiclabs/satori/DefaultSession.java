@@ -16,16 +16,26 @@
 
 package com.heroiclabs.satori;
 
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.ToString;
 import okio.ByteString;
+import com.auth0.jwt.JWT;
 
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.security.interfaces.RSAPublicKey;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalUnit;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -83,9 +93,50 @@ public class DefaultSession implements Session {
     private static Map<String, Object> jwtUnpack(String jwt) {
         String payload = jwt.split("\\.")[1];
         String decodedJson = ByteString.decodeBase64(payload).string(Charset.defaultCharset());
-        Type type = new TypeToken<Map<String, Object>>(){}.getType();
+        Type type = new TypeToken<Map<String, Object>>() {
+        }.getType();
 
         Gson gson = new Gson();
         return gson.fromJson(decodedJson, type);
+    }
+
+    /**
+     * Utility function to create a new Session from a Signing Key. This function is to be used for server-to-server
+     * calls only. The signing key should never be shared with the clients.
+     * @param signingKey The session signing key configured in Satori.
+     * @param apiKeyName The api key name to be used in the token. This has to be an existing value configured in thei Satori dashboard.
+     * @param identityId The user identity id for the session.
+     * @oaram tokenDuration The duration of the validity of the session.
+     */
+    public static Session fromSigningKey(@NonNull String signingKey, @NonNull String apiKeyName, @NonNull String identityId, @NonNull Duration tokenDuration) throws JWTCreationException, IllegalArgumentException {
+        if (signingKey.isEmpty()) {
+            throw new IllegalArgumentException("signingKey cannot be empty");
+        }
+        if (apiKeyName.isEmpty()) {
+            throw new IllegalArgumentException("apiKeyName cannot be empty");
+        }
+        if (identityId.isEmpty()) {
+            throw new IllegalArgumentException("identityId cannot be empty");
+        }
+        if (tokenDuration.isNegative() || tokenDuration.isNegative()) {
+            throw new IllegalArgumentException("tokenDuration is invalid");
+        }
+
+        Instant issuedAt = Instant.now();
+        Instant expiresAt = issuedAt.plus(tokenDuration);
+
+        Map<String, Object> claims = new HashMap<String, Object>();
+        claims.put("sid", "");
+        claims.put("iid", identityId);
+        claims.put("iat", issuedAt.getEpochSecond());
+        claims.put("exp", expiresAt.getEpochSecond());
+        claims.put("api", apiKeyName);
+
+        Algorithm algorithm = Algorithm.HMAC256(signingKey);
+        String token = JWT.create()
+                .withPayload(claims)
+                .sign(algorithm);
+
+        return new DefaultSession(token, null);
     }
 }
