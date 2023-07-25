@@ -222,7 +222,7 @@ To build the codebase you will need to install these dependencies:
 * Java Runtime Environment 1.8 through 1.11
 * Java Development Kit 1.8 through 1.11
 
-Invoke the Gradle Wrapper with `./gradlew nakamaJar` or `./gradlew satoriJar` and Gradle will install your dependencies over
+Then run `./gradlew nakamaJar` or `./gradlew satoriJar` and Gradle will install your dependencies over
 the network for you prior to building. It will then build the .jar files.
 
 To run tests for Nakama, run `./gradlew nakamaTest -i`.
