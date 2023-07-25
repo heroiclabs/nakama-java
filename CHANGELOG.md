@@ -4,7 +4,10 @@ All notable changes to this project are documented below.
 
 The format is based on [keep a changelog](http://keepachangelog.com/) and this project uses [semantic versioning](http://semver.org/).
 
-## [Unreleased]
+## [2.4.0] - 2023-07-25
+
+### Added
+- Added ability to create a new Session from a Signing Key for server-to-server calls. See `Session.fromSigningKey()`.
 
 ## [2.3.0] - 2023-07-18
 
