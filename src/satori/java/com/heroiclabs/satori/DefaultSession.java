@@ -104,9 +104,9 @@ public class DefaultSession implements Session {
      * Utility function to create a new Session from a Signing Key. This function is to be used for server-to-server
      * calls only. The signing key should never be shared with the clients.
      * @param signingKey The session signing key configured in Satori.
-     * @param apiKeyName The api key name to be used in the token. This has to be an existing value configured in thei Satori dashboard.
+     * @param apiKeyName The api key name to be used in the token. This has to be an existing value configured in the Satori dashboard.
      * @param identityId The user identity id for the session.
-     * @oaram tokenDuration The duration of the validity of the session.
+     * @param tokenDuration The duration of the validity of the session.
      */
     public static Session fromSigningKey(@NonNull String signingKey, @NonNull String apiKeyName, @NonNull String identityId, @NonNull Duration tokenDuration) throws JWTCreationException, IllegalArgumentException {
         if (signingKey.isEmpty()) {
