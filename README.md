@@ -221,6 +221,17 @@ To build the codebase you will need to install these dependencies:
 
 * Java Runtime Environment 1.8 through 1.11
 * Java Development Kit 1.8 through 1.11
+* Buf build tools for protobuf. 
+
+For local development on Apple Mac M chipset, you'll need to install:
+```
+brew install --cask adoptopenjdk8
+```
+
+Then run the script to download Nakama and Satori protobuf files:
+`./download-protos.sh <TOKEN>`
+
+Then run `buf dep upgrade`, followed by `buf generate` to download the dependencies for our protos as well as compiling the protos to Java.  
 
 Then run `./gradlew nakamaJar` or `./gradlew satoriJar` and Gradle will install your dependencies over
 the network for you prior to building. It will then build the .jar files.
@@ -242,16 +253,11 @@ If you'd like to test a Jitpack publish task locally prior to pushing, run:
 
 `./gradlew publishToMavenLocal`
 
-### Protobuf Sourcing
-
-If you need to re-download all .proto dependenies, run `./download-protos` from the root of this repository.
-
 ### Jitpack
 
 Jitpack makes builds of each commit on its own servers. You can view the results of each build and the corresponding artifacts at the following url:
 
 https://jitpack.io/com/github/heroiclabs/nakama-java/<_commit_>/build.log
-
 
 ## Generate Docs
 

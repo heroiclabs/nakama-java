@@ -2,6 +2,16 @@
 
 **/build
 
+## Downloaded code by the shell script
+**/proto
+
+## Generated Java code by Buf
+**/src/main/java/com/google/
+**/src/main/java/com/grpc/
+**/src/main/java/com/heroiclabs/nakama/api/
+**/src/main/java/com/heroiclabs/nakama/rtapi/
+**/src/main/java/com/heroiclabs/satori/api/
+
 ### Custom ###
 .BINTRAY
 
