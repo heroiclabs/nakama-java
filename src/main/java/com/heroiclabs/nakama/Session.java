@@ -29,6 +29,11 @@ public interface Session {
     String getAuthToken();
 
     /**
+     * @return The refresh token used to construct this session.
+     */
+    String getRefreshToken();
+
+    /**
      * @return True if the user account for this session was just created.
      */
     boolean isCreated();
@@ -47,6 +52,23 @@ public interface Session {
      * @return True if the session has expired against the current time.
      */
     boolean IsExpired();
+
+    /**
+     * If the refresh token has expired.
+     */
+    boolean isRefreshExpired();
+
+    /**
+     * If the refresh token has expired.
+     * @param dateTime The time to compare against the refresh token against.
+     * @return true if the refresh token has expired.
+     */
+    boolean isRefreshExpired(Date dateTime);
+
+    /**
+     * The UNIX timestamp when the refresh token will expire.
+     */
+    long getRefreshExpireTime();
 
     /**
      * @return The username of the user who owns this session.
@@ -69,4 +91,11 @@ public interface Session {
      * @return Get session vars.
      */
     Map<String, String> getVars();
+
+    /**
+     * In-place update a session with new token/refresh-token.
+     * @param token Authentication token.
+     * @param refreshToken Refresh token.
+     */
+    void update(String token, String refreshToken);
 }

@@ -23,4 +23,8 @@ import lombok.Data;
  */
 @Data
 class MatchCreateMessage {
+    /**
+     * Optional name to use when creating the match.
+     */
+    private String name;
 }

@@ -99,4 +99,18 @@ public interface SocketListener {
      * @param data Stream {@code StreamData} data received.
      */
     void onStreamData(final StreamData data);
+
+    /**
+     * Called when the client receives party presence updates.
+     *
+     * @param presence Updated {@code PartyPresenceEvent} presence.
+     */
+    void onPartyPresence(final PartyPresenceEvent presence);
+
+    /**
+     * Called when a new party data is received.
+     *
+     * @param partyData The {@code PartyData} received.
+     */
+    void onPartyData(final PartyData partyData);
 }

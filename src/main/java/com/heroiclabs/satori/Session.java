@@ -16,6 +16,8 @@
 
 package com.heroiclabs.satori;
 
+import java.util.Date;
+
 public interface Session {
 
     /**
@@ -34,9 +36,23 @@ public interface Session {
     boolean isExpired();
 
     /**
+     * Check if the session has expired against the input time.
+     * @param dateTime The time to compare against the session.
+     * @return true if the session has expired.
+     */
+    boolean isExpired(Date dateTime);
+
+    /**
      * If the refresh token has expired.
      */
     boolean isRefreshExpired();
+
+    /**
+     * If the refresh token has expired.
+     * @param dateTime The time to compare against the refresh token against.
+     * @return true if the refresh token has expired.
+     */
+    boolean isRefreshExpired(Date dateTime);
 
     /**
      * The UNIX timestamp when the refresh token will expire.
@@ -52,4 +68,11 @@ public interface Session {
      * The ID of the user who owns this session.
      */
     String getIdentityId();
+
+    /**
+     * In-place update a session with new token/refresh-token.
+     * @param token Authentication token.
+     * @param refreshToken Refresh token.
+     */
+    void update(String token, String refreshToken);
 }

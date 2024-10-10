@@ -29,6 +29,10 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class MatchmakerUser {
     /**
+     * Party identifier, if this user was matched as a party member.
+     */
+    private String partyId;
+    /**
      * The numeric properties which this user asked to matchmake with.
      */
     private Map<String, Double> numericProperties;

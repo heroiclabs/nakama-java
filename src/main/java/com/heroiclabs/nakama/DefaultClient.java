@@ -23,23 +23,21 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.*;
 import com.heroiclabs.nakama.api.*;
-import com.heroiclabs.satori.api.SatoriGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Metadata;
 import io.grpc.okhttp.OkHttpChannelBuilder;
 import io.grpc.stub.MetadataUtils;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Default implementation of Client interface.
@@ -58,6 +56,11 @@ public class DefaultClient implements Client {
     private final ManagedChannel managedChannel;
     private final NakamaGrpc.NakamaFutureStub stub;
     private final Metadata basicAuthMetadata;
+
+    @Getter @Setter
+    private boolean autoRefreshSession = true;
+    @Getter @Setter
+    private int defaultExpiryTimeMinutes = 61;
 
     /**
      * A client to interact with Nakama server.
@@ -145,13 +148,39 @@ public class DefaultClient implements Client {
     }
 
     private ListenableFuture<Session> convertSession(final ListenableFuture<com.heroiclabs.nakama.api.Session> future) {
+        return convertSession(future, null);
+    }
+
+    private ListenableFuture<Session> convertSession(final ListenableFuture<com.heroiclabs.nakama.api.Session> future, Session existingSession) {
       return Futures.transformAsync(future, new AsyncFunction<com.heroiclabs.nakama.api.Session, Session>() {
           @Override
-          public ListenableFuture<Session> apply(@Nullable final com.heroiclabs.nakama.api.Session input) {
-              final Session result = new DefaultSession(input.getToken(), input.getCreated());
-              return Futures.immediateFuture(result);
+          public ListenableFuture<Session> apply(@NonNull final com.heroiclabs.nakama.api.Session input) {
+              if (existingSession != null) {
+                  existingSession.update(input.getToken(), input.getRefreshToken());
+                  return Futures.immediateFuture(existingSession);
+              } else {
+                  final Session result = new DefaultSession(input.getToken(), input.getRefreshToken(), input.getCreated());
+                  return Futures.immediateFuture(result);
+              }
+
           }
       }, MoreExecutors.directExecutor());
+    }
+
+    private <V> ListenableFuture<V> autoRefreshSession(Session session, ListenableFuture<V> future) {
+        Date now = Date.from(Instant.now().atZone(ZoneId.of("UTC")).plusMinutes(defaultExpiryTimeMinutes).toInstant());
+
+        if (autoRefreshSession && session.getRefreshToken() != null && !session.getRefreshToken().isEmpty() && session.isRefreshExpired(now)) {
+            ListenableFuture<List<Object>> futures = Futures.allAsList(refreshSession(session), future);
+            return Futures.transformAsync(futures, new AsyncFunction<List<Object>, V>() {
+                @Override
+                public ListenableFuture<V> apply(@Nullable final List<Object> input) {
+                    return Futures.immediateFuture((V)input.get(1)); // ignore 0 as that's the session itself.
+                }
+            }, MoreExecutors.directExecutor());
+        } else {
+            return future;
+        }
     }
 
     @Override
@@ -206,7 +235,7 @@ public class DefaultClient implements Client {
 
     @Override
     public ListenableFuture<Empty> addFriends(@NonNull final Session session, @NonNull final String... ids) {
-        return getStub(session).addFriends(AddFriendsRequest.newBuilder().addAllIds(Arrays.asList(ids)).build());
+        return autoRefreshSession(session, getStub(session).addFriends(AddFriendsRequest.newBuilder().addAllIds(Arrays.asList(ids)).build()));
     }
 
     @Override
@@ -218,15 +247,15 @@ public class DefaultClient implements Client {
         if (usernames != null) {
             builder.addAllUsernames(Arrays.asList(usernames));
         }
-        return getStub(session).addFriends(builder.build());
+        return autoRefreshSession(session, getStub(session).addFriends(builder.build()));
     }
 
     @Override
     public ListenableFuture<Empty> addGroupUsers(@NonNull final Session session, @NonNull final String groupId, @NonNull final String... ids) {
-        return getStub(session).addGroupUsers(AddGroupUsersRequest.newBuilder()
+        return autoRefreshSession(session, getStub(session).addGroupUsers(AddGroupUsersRequest.newBuilder()
                 .setGroupId(groupId)
                 .addAllUserIds(Arrays.asList(ids))
-                .build());
+                .build()));
     }
 
     @Override
@@ -867,13 +896,13 @@ public class DefaultClient implements Client {
     }
 
     @Override
-    public ListenableFuture<Empty> banGroupUsers(@NonNull final Session session, @NonNull String groupId, @NonNull final String... ids) {
-        return getStub(session).banGroupUsers(BanGroupUsersRequest.newBuilder().setGroupId(groupId).addAllUserIds(Arrays.asList(ids)).build());
+    public ListenableFuture<Empty> banGroupUsers(@NonNull Session session, @NonNull String groupId, @NonNull final String... ids) {
+        return autoRefreshSession(session, getStub(session).banGroupUsers(BanGroupUsersRequest.newBuilder().setGroupId(groupId).addAllUserIds(Arrays.asList(ids)).build()));
     }
 
     @Override
     public ListenableFuture<Empty> blockFriends(@NonNull final Session session, @NonNull final String... ids) {
-        return getStub(session).blockFriends(BlockFriendsRequest.newBuilder().addAllIds(Arrays.asList(ids)).build());
+        return autoRefreshSession(session, getStub(session).blockFriends(BlockFriendsRequest.newBuilder().addAllIds(Arrays.asList(ids)).build()));
     }
 
     @Override
@@ -885,7 +914,7 @@ public class DefaultClient implements Client {
         if (usernames != null) {
             builder.addAllUsernames(Arrays.asList(usernames));
         }
-        return getStub(session).blockFriends(builder.build());
+        return autoRefreshSession(session, getStub(session).blockFriends(builder.build()));
     }
 
     @Override
@@ -917,7 +946,7 @@ public class DefaultClient implements Client {
             builder.setLangTag(langTag);
         }
 
-        return getStub(session).createGroup(builder.build());
+        return autoRefreshSession(session, getStub(session).createGroup(builder.build()));
     }
 
     @Override
@@ -934,7 +963,7 @@ public class DefaultClient implements Client {
             builder.setLangTag(langTag);
         }
 
-        return getStub(session).createGroup(builder.build());
+        return autoRefreshSession(session, getStub(session).createGroup(builder.build()));
     }
 
     @Override
@@ -954,12 +983,17 @@ public class DefaultClient implements Client {
             builder.setMaxCount(maxCount);
         }
 
-        return getStub(session).createGroup(builder.build());
+        return autoRefreshSession(session, getStub(session).createGroup(builder.build()));
+    }
+
+    @Override
+    public ListenableFuture<Empty> deleteAccount(@NonNull final Session session) {
+        return autoRefreshSession(session, getStub(session).deleteAccount(Empty.getDefaultInstance()));
     }
 
     @Override
     public ListenableFuture<Empty> deleteFriends(@NonNull final Session session, @NonNull final String... ids) {
-        return getStub(session).deleteFriends(DeleteFriendsRequest.newBuilder().addAllIds(Arrays.asList(ids)).build());
+        return autoRefreshSession(session, getStub(session).deleteFriends(DeleteFriendsRequest.newBuilder().addAllIds(Arrays.asList(ids)).build()));
     }
 
     @Override
@@ -971,22 +1005,22 @@ public class DefaultClient implements Client {
         if (usernames != null) {
             builder.addAllUsernames(Arrays.asList(usernames));
         }
-        return getStub(session).deleteFriends(builder.build());
+        return autoRefreshSession(session, getStub(session).deleteFriends(builder.build()));
     }
 
     @Override
     public ListenableFuture<Empty> deleteGroup(@NonNull final Session session, @NonNull final String groupId) {
-        return getStub(session).deleteGroup(DeleteGroupRequest.newBuilder().setGroupId(groupId).build());
+        return autoRefreshSession(session, getStub(session).deleteGroup(DeleteGroupRequest.newBuilder().setGroupId(groupId).build()));
     }
 
     @Override
     public ListenableFuture<Empty> deleteLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId) {
-        return getStub(session).deleteLeaderboardRecord(DeleteLeaderboardRecordRequest.newBuilder().setLeaderboardId(leaderboardId).build());
+        return autoRefreshSession(session, getStub(session).deleteLeaderboardRecord(DeleteLeaderboardRecordRequest.newBuilder().setLeaderboardId(leaderboardId).build()));
     }
 
     @Override
     public ListenableFuture<Empty> deleteNotifications(@NonNull final Session session, @NonNull final String... notificationIds) {
-        return getStub(session).deleteNotifications(DeleteNotificationsRequest.newBuilder().addAllIds(Arrays.asList(notificationIds)).build());
+        return autoRefreshSession(session, getStub(session).deleteNotifications(DeleteNotificationsRequest.newBuilder().addAllIds(Arrays.asList(notificationIds)).build()));
     }
 
     @Override
@@ -1006,7 +1040,12 @@ public class DefaultClient implements Client {
 
             builder.addObjectIds(b.build());
         }
-        return getStub(session).deleteStorageObjects(builder.build());
+        return autoRefreshSession(session, getStub(session).deleteStorageObjects(builder.build()));
+    }
+
+    @Override
+    public ListenableFuture<Empty> deleteTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId) {
+        return autoRefreshSession(session, getStub(session).deleteTournamentRecord(DeleteTournamentRecordRequest.newBuilder().setTournamentId(tournamentId).build()));
     }
 
     @Override
@@ -1016,23 +1055,33 @@ public class DefaultClient implements Client {
         for (final String userId : userIds) {
             builder.addUserIds(userId);
         }
-        return getStub(session).demoteGroupUsers(builder.build());
+        return autoRefreshSession(session, getStub(session).demoteGroupUsers(builder.build()));
     }
 
     @Override
     public ListenableFuture<Empty> emitEvent(@NonNull final Session session, @NonNull final String name, @NonNull final Map<String, String> properties) {
-        return getStub(session).event(Event.newBuilder().setName(name).putAllProperties(properties).build());
+        return autoRefreshSession(session, getStub(session).event(Event.newBuilder().setName(name).putAllProperties(properties).build()));
     }
 
     @Override
     public ListenableFuture<Account> getAccount(@NonNull final Session session) {
-        return getStub(session).getAccount(Empty.getDefaultInstance());
+        return autoRefreshSession(session, getStub(session).getAccount(Empty.getDefaultInstance()));
+    }
+
+    @Override
+    public ListenableFuture<MatchmakerStats> getMatchmakerStats(@NonNull final Session session) {
+        return autoRefreshSession(session, getStub(session).getMatchmakerStats(Empty.getDefaultInstance()));
+    }
+
+    @Override
+    public ListenableFuture<ValidatedSubscription> getSubscription(@NonNull final Session session, @NonNull final String productId) {
+        return autoRefreshSession(session, getStub(session).getSubscription(GetSubscriptionRequest.newBuilder().setProductId(productId).build()));
     }
 
     @Override
     public ListenableFuture<Users> getUsers(@NonNull final Session session, @NonNull final String... ids) {
         final GetUsersRequest.Builder builder = GetUsersRequest.newBuilder().addAllIds(Arrays.asList(ids));
-        return getStub(session).getUsers(builder.build());
+        return autoRefreshSession(session, getStub(session).getUsers(builder.build()));
     }
 
     @Override
@@ -1044,7 +1093,7 @@ public class DefaultClient implements Client {
         if (usernames != null) {
             builder.addAllUsernames(Arrays.asList(usernames));
         }
-        return getStub(session).getUsers(builder.build());
+        return autoRefreshSession(session, getStub(session).getUsers(builder.build()));
     }
 
     @Override
@@ -1059,108 +1108,126 @@ public class DefaultClient implements Client {
         if (facebookIds != null) {
             builder.addAllFacebookIds(Arrays.asList(facebookIds));
         }
-        return getStub(session).getUsers(builder.build());
+        return autoRefreshSession(session, getStub(session).getUsers(builder.build()));
     }
 
     @Override
     public ListenableFuture<Empty> importFacebookFriends(@NonNull final Session session, @NonNull final String token) {
-        return getStub(session).importFacebookFriends(ImportFacebookFriendsRequest.newBuilder()
+        return autoRefreshSession(session, getStub(session).importFacebookFriends(ImportFacebookFriendsRequest.newBuilder()
                 .setAccount(AccountFacebook.newBuilder().setToken(token).build())
-                .build());
+                .build()));
     }
 
     @Override
     public ListenableFuture<Empty> importFacebookFriends(@NonNull final Session session, @NonNull final String token, final boolean reset) {
-        return getStub(session).importFacebookFriends(ImportFacebookFriendsRequest.newBuilder()
+        return autoRefreshSession(session, getStub(session).importFacebookFriends(ImportFacebookFriendsRequest.newBuilder()
                 .setAccount(AccountFacebook.newBuilder().setToken(token).build())
                 .setReset(BoolValue.newBuilder().setValue(reset).getDefaultInstanceForType())
-                .build());
+                .build()));
+    }
+
+    @Override
+    public ListenableFuture<Empty> importSteamFriends(@NonNull final Session session, @NonNull final String token) {
+        return autoRefreshSession(session, getStub(session).importSteamFriends(ImportSteamFriendsRequest.newBuilder()
+                .setAccount(AccountSteam.newBuilder().setToken(token).build())
+                .build()));
+    }
+
+    @Override
+    public ListenableFuture<Empty> importSteamFriends(@NonNull final Session session, @NonNull final String token, final boolean reset) {
+        return autoRefreshSession(session, getStub(session).importSteamFriends(ImportSteamFriendsRequest.newBuilder()
+                .setAccount(AccountSteam.newBuilder().setToken(token).build())
+                .setReset(BoolValue.newBuilder().setValue(reset).getDefaultInstanceForType())
+                .build()));
     }
 
     @Override
     public ListenableFuture<Empty> joinGroup(@NonNull final Session session, @NonNull final String groupId) {
-        return getStub(session).joinGroup(JoinGroupRequest.newBuilder().setGroupId(groupId).build());
+        return autoRefreshSession(session, getStub(session).joinGroup(JoinGroupRequest.newBuilder().setGroupId(groupId).build()));
     }
 
     @Override
     public ListenableFuture<Empty> joinTournament(@NonNull final Session session, @NonNull final String tournamentId) {
-        return getStub(session).joinTournament(JoinTournamentRequest.newBuilder().setTournamentId(tournamentId).build());
+        return autoRefreshSession(session, getStub(session).joinTournament(JoinTournamentRequest.newBuilder().setTournamentId(tournamentId).build()));
     }
 
     @Override
     public ListenableFuture<Empty> kickGroupUsers(@NonNull final Session session, @NonNull final String groupId, @NonNull final String... ids) {
-        return getStub(session).kickGroupUsers(KickGroupUsersRequest.newBuilder()
+        return autoRefreshSession(session, getStub(session).kickGroupUsers(KickGroupUsersRequest.newBuilder()
                 .setGroupId(groupId)
                 .addAllUserIds(Arrays.asList(ids))
-                .build());
+                .build()));
     }
 
     @Override
     public ListenableFuture<Empty> leaveGroup(@NonNull final Session session, @NonNull final String groupId) {
-        return getStub(session).leaveGroup(LeaveGroupRequest.newBuilder().setGroupId(groupId).build());
+        return autoRefreshSession(session, getStub(session).leaveGroup(LeaveGroupRequest.newBuilder().setGroupId(groupId).build()));
     }
 
     @Override
     public ListenableFuture<Empty> linkApple(@NonNull final Session session, @NonNull final String token) {
-        return getStub(session).linkApple(AccountApple.newBuilder().setToken(token).build());
+        return autoRefreshSession(session, getStub(session).linkApple(AccountApple.newBuilder().setToken(token).build()));
     }
 
     @Override
     public ListenableFuture<Empty> linkCustom(@NonNull final Session session, @NonNull final String id) {
-        return getStub(session).linkCustom(AccountCustom.newBuilder().setId(id).build());
+        return autoRefreshSession(session, getStub(session).linkCustom(AccountCustom.newBuilder().setId(id).build()));
     }
 
     @Override
     public ListenableFuture<Empty> linkDevice(@NonNull final Session session, @NonNull final String id) {
-        return getStub(session).linkDevice(AccountDevice.newBuilder().setId(id).build());
+        return autoRefreshSession(session, getStub(session).linkDevice(AccountDevice.newBuilder().setId(id).build()));
     }
 
     @Override
     public ListenableFuture<Empty> linkEmail(@NonNull final Session session, @NonNull final String email, @NonNull final String password) {
-        return getStub(session).linkEmail(AccountEmail.newBuilder().setEmail(email).setPassword(password).build());
+        return autoRefreshSession(session, getStub(session).linkEmail(AccountEmail.newBuilder().setEmail(email).setPassword(password).build()));
     }
 
     @Override
     public ListenableFuture<Empty> linkFacebook(@NonNull final Session session, @NonNull final String accessToken) {
-        return getStub(session).linkFacebook(LinkFacebookRequest.newBuilder()
+        return autoRefreshSession(session, getStub(session).linkFacebook(LinkFacebookRequest.newBuilder()
                 .setAccount(AccountFacebook.newBuilder().setToken(accessToken).build())
-                .build());
+                .build()));
     }
 
     @Override
     public ListenableFuture<Empty> linkFacebookInstantGame(@NonNull final Session session, @NonNull final String accessToken) {
-        return getStub(session).linkFacebookInstantGame(AccountFacebookInstantGame.newBuilder()
-                .setSignedPlayerInfo(accessToken).build());
+        return autoRefreshSession(session, getStub(session).linkFacebookInstantGame(AccountFacebookInstantGame.newBuilder()
+                .setSignedPlayerInfo(accessToken).build()));
     }
 
     @Override
     public ListenableFuture<Empty> linkFacebook(@NonNull final Session session, @NonNull final String accessToken, final boolean importFriends) {
-        return getStub(session).linkFacebook(LinkFacebookRequest.newBuilder()
+        return autoRefreshSession(session, getStub(session).linkFacebook(LinkFacebookRequest.newBuilder()
                 .setAccount(AccountFacebook.newBuilder().setToken(accessToken).build())
                 .setSync(BoolValue.newBuilder().setValue(importFriends).build())
-                .build());
+                .build()));
     }
 
     @Override
     public ListenableFuture<Empty> linkGoogle(@NonNull final Session session, @NonNull final String accessToken) {
-        return getStub(session).linkGoogle(AccountGoogle.newBuilder().setToken(accessToken).build());
+        return autoRefreshSession(session, getStub(session).linkGoogle(AccountGoogle.newBuilder().setToken(accessToken).build()));
     }
 
     @Override
-    public ListenableFuture<Empty> linkSteam(@NonNull final Session session, @NonNull final String token) {
-        return getStub(session).linkSteam(AccountSteam.newBuilder().setToken(token).build());
+    public ListenableFuture<Empty> linkSteam(@NonNull final Session session, @NonNull final String token, final boolean syncFriends) {
+        return autoRefreshSession(session, getStub(session).linkSteam(LinkSteamRequest.newBuilder()
+                .setAccount(AccountSteam.newBuilder().setToken(token).build())
+                .setSync(BoolValue.newBuilder().setValue(syncFriends).build())
+                .build()));
     }
 
     @Override
     public ListenableFuture<Empty> linkGameCenter(@NonNull final Session session, @NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl) {
-        return getStub(session).linkGameCenter(AccountGameCenter.newBuilder()
+        return autoRefreshSession(session, getStub(session).linkGameCenter(AccountGameCenter.newBuilder()
                 .setPlayerId(playerId)
                 .setBundleId(bundleId)
                 .setTimestampSeconds(timestampSeconds)
                 .setSalt(salt)
                 .setSignature(signature)
                 .setPublicKeyUrl(publicKeyUrl)
-                .build());
+                .build()));
     }
 
     @Override
@@ -1182,7 +1249,7 @@ public class DefaultClient implements Client {
         if (cursor != null) {
             builder.setCursor(cursor);
         }
-        return getStub(session).listChannelMessages(builder.build());
+        return autoRefreshSession(session, getStub(session).listChannelMessages(builder.build()));
     }
 
     @Override
@@ -1195,12 +1262,12 @@ public class DefaultClient implements Client {
         if (cursor != null) {
             builder.setCursor(cursor);
         }
-        return getStub(session).listChannelMessages(builder.build());
+        return autoRefreshSession(session, getStub(session).listChannelMessages(builder.build()));
     }
 
     @Override
     public ListenableFuture<FriendList> listFriends(@NonNull final Session session) {
-        return getStub(session).listFriends(ListFriendsRequest.newBuilder().build());
+        return autoRefreshSession(session, getStub(session).listFriends(ListFriendsRequest.newBuilder().build()));
     }
 
     @Override
@@ -1217,12 +1284,26 @@ public class DefaultClient implements Client {
             builder.setCursor(cursor);
         }
 
-        return getStub(session).listFriends(builder.build());
+        return autoRefreshSession(session, getStub(session).listFriends(builder.build()));
+    }
+
+    @Override
+    public ListenableFuture<FriendsOfFriendsList> listFriendsOfFriends(@NonNull final Session session, final int limit, final String cursor) {
+        final ListFriendsOfFriendsRequest.Builder builder = ListFriendsOfFriendsRequest.newBuilder();
+
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+
+        return autoRefreshSession(session, getStub(session).listFriendsOfFriends(builder.build()));
     }
 
     @Override
     public ListenableFuture<GroupUserList> listGroupUsers(@NonNull final Session session, @NonNull final String groupId) {
-        return getStub(session).listGroupUsers(ListGroupUsersRequest.newBuilder().setGroupId(groupId).build());
+        return autoRefreshSession(session, getStub(session).listGroupUsers(ListGroupUsersRequest.newBuilder().setGroupId(groupId).build()));
     }
 
     @Override
@@ -1239,7 +1320,7 @@ public class DefaultClient implements Client {
             builder.setCursor(cursor);
         }
 
-        return getStub(session).listGroupUsers(builder.build());
+        return autoRefreshSession(session, getStub(session).listGroupUsers(builder.build()));
     }
 
     @Override
@@ -1264,7 +1345,31 @@ public class DefaultClient implements Client {
         if (cursor != null) {
             builder.setCursor(cursor);
         }
-        return getStub(session).listGroups(builder.build());
+        return autoRefreshSession(session, getStub(session).listGroups(builder.build()));
+    }
+
+    @Override
+    public ListenableFuture<GroupList> listGroups(@NonNull final Session session, final String name, final String langTag, final Integer members, final Boolean open, final int limit, final String cursor) {
+        final ListGroupsRequest.Builder builder = ListGroupsRequest.newBuilder();
+        if (name != null) {
+            builder.setName(name);
+        }
+        if (langTag != null) {
+            builder.setLangTag(langTag);
+        }
+        if (members != null) {
+            builder.setMembers(Int32Value.newBuilder().setValue(members).build());
+        }
+        if (open != null) {
+            builder.setOpen(BoolValue.newBuilder().setValue(open).build());
+        }
+        if (limit > 0) {
+            builder.setLimit(Int32Value.newBuilder().setValue(limit).build());
+        }
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+        return autoRefreshSession(session, getStub(session).listGroups(builder.build()));
     }
 
     @Override
@@ -1301,21 +1406,26 @@ public class DefaultClient implements Client {
         if (cursor != null) {
             builder.setCursor(cursor);
         }
-        return getStub(session).listLeaderboardRecords(builder.build());
+        return autoRefreshSession(session, getStub(session).listLeaderboardRecords(builder.build()));
     }
 
     @Override
     public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, final String ownerId) {
-        return listLeaderboardRecordsAroundOwner(session, leaderboardId, ownerId, -1, 0);
+        return listLeaderboardRecordsAroundOwner(session, leaderboardId, ownerId, -1, 0, null);
     }
 
     @Override
     public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, final String ownerId, final int expiry) {
-        return listLeaderboardRecordsAroundOwner(session, leaderboardId, ownerId, expiry, 0);
+        return listLeaderboardRecordsAroundOwner(session, leaderboardId, ownerId, expiry, 0, null);
     }
 
     @Override
     public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, final String ownerId, final int expiry, final int limit) {
+        return listLeaderboardRecordsAroundOwner(session, leaderboardId, ownerId, expiry, limit, null);
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, final String ownerId, final int expiry, final int limit, final String cursor) {
         final ListLeaderboardRecordsAroundOwnerRequest.Builder builder = ListLeaderboardRecordsAroundOwnerRequest.newBuilder().setLeaderboardId(leaderboardId).setOwnerId(ownerId);
         if (expiry > 0) {
             builder.setExpiry(Int64Value.newBuilder().setValue(expiry).build());
@@ -1323,7 +1433,10 @@ public class DefaultClient implements Client {
         if (limit > 0) {
             builder.setLimit(UInt32Value.newBuilder().setValue(limit).build());
         }
-        return getStub(session).listLeaderboardRecordsAroundOwner(builder.build());
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+        return autoRefreshSession(session, getStub(session).listLeaderboardRecordsAroundOwner(builder.build()));
     }
 
     @Override
@@ -1361,7 +1474,7 @@ public class DefaultClient implements Client {
         if (label != null) {
             builder.setLabel(StringValue.newBuilder().setValue(label).build());
         }
-        return getStub(session).listMatches(builder.build());
+        return autoRefreshSession(session, getStub(session).listMatches(builder.build()));
     }
 
     @Override
@@ -1380,7 +1493,7 @@ public class DefaultClient implements Client {
             builder.setLabel(StringValue.newBuilder().setValue(label).build());
         }
         builder.setAuthoritative(BoolValue.newBuilder().setValue(authoritative).build());
-        return getStub(session).listMatches(builder.build());
+        return autoRefreshSession(session, getStub(session).listMatches(builder.build()));
     }
 
     @Override
@@ -1402,7 +1515,7 @@ public class DefaultClient implements Client {
         if (cacheableCursor != null) {
             builder.setCacheableCursor(cacheableCursor);
         }
-        return getStub(session).listNotifications(builder.build());
+        return autoRefreshSession(session, getStub(session).listNotifications(builder.build()));
     }
 
     @Override
@@ -1421,8 +1534,23 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public ListenableFuture<SubscriptionList> listSubscriptions(@NonNull final Session session) {
+        return autoRefreshSession(session, getStub(session).listSubscriptions(ListSubscriptionsRequest.newBuilder().build()));
+    }
+
+    @Override
+    public ListenableFuture<SubscriptionList> listSubscriptions(@NonNull final Session session, final int limit) {
+        return autoRefreshSession(session, getStub(session).listSubscriptions(ListSubscriptionsRequest.newBuilder().setLimit(Int32Value.newBuilder().setValue(limit).build()).build()));
+    }
+
+    @Override
+    public ListenableFuture<SubscriptionList> listSubscriptions(@NonNull final Session session, final int limit, @NonNull final String cursor) {
+        return autoRefreshSession(session, getStub(session).listSubscriptions(ListSubscriptionsRequest.newBuilder().setLimit(Int32Value.newBuilder().setValue(limit).build()).setCursor(cursor).build()));
+    }
+
+    @Override
     public ListenableFuture<TournamentList> listTournaments(@NonNull final Session session) {
-        return getStub(session).listTournaments(ListTournamentsRequest.newBuilder().build());
+        return autoRefreshSession(session, getStub(session).listTournaments(ListTournamentsRequest.newBuilder().build()));
     }
 
     @Override
@@ -1434,7 +1562,7 @@ public class DefaultClient implements Client {
         if (cursor != null) {
             builder.setCursor(cursor);
         }
-        return getStub(session).listTournaments(builder.build());
+        return autoRefreshSession(session, getStub(session).listTournaments(builder.build()));
     }
 
     @Override
@@ -1443,7 +1571,7 @@ public class DefaultClient implements Client {
         if (categoryStart >= 0) {
             builder.setCategoryStart(UInt32Value.newBuilder().setValue(categoryStart).build());
         }
-        return getStub(session).listTournaments(builder.build());
+        return autoRefreshSession(session, getStub(session).listTournaments(builder.build()));
     }
 
     @Override
@@ -1456,7 +1584,7 @@ public class DefaultClient implements Client {
         if (categoryEnd >= 0) {
             builder.setCategoryEnd(UInt32Value.newBuilder().setValue(categoryEnd).build());
         }
-        return getStub(session).listTournaments(builder.build());
+        return autoRefreshSession(session, getStub(session).listTournaments(builder.build()));
     }
 
     @Override
@@ -1472,7 +1600,7 @@ public class DefaultClient implements Client {
         if (startTime >= 0) {
             builder.setStartTime(UInt32Value.newBuilder().setValue((int) startTime).build());
         }
-        return getStub(session).listTournaments(builder.build());
+        return autoRefreshSession(session, getStub(session).listTournaments(builder.build()));
     }
 
     @Override
@@ -1491,7 +1619,7 @@ public class DefaultClient implements Client {
         if (endTime >= 0) {
             builder.setEndTime(UInt32Value.newBuilder().setValue((int) endTime).build());
         }
-        return getStub(session).listTournaments(builder.build());
+        return autoRefreshSession(session, getStub(session).listTournaments(builder.build()));
     }
 
     @Override
@@ -1515,7 +1643,7 @@ public class DefaultClient implements Client {
         if (cursor != null) {
             builder.setCursor(cursor);
         }
-        return getStub(session).listTournaments(builder.build());
+        return autoRefreshSession(session, getStub(session).listTournaments(builder.build()));
     }
 
     @Override
@@ -1545,7 +1673,7 @@ public class DefaultClient implements Client {
         if (cursor != null) {
             builder.setCursor(cursor);
         }
-        return getStub(session).listTournamentRecords(builder.build());
+        return autoRefreshSession(session, getStub(session).listTournamentRecords(builder.build()));
     }
 
     @Override
@@ -1554,7 +1682,7 @@ public class DefaultClient implements Client {
         if (ownerIds != null) {
             builder.addAllOwnerIds(Arrays.asList(ownerIds));
         }
-        return getStub(session).listTournamentRecords(builder.build());
+        return autoRefreshSession(session, getStub(session).listTournamentRecords(builder.build()));
     }
 
     @Override
@@ -1572,21 +1700,26 @@ public class DefaultClient implements Client {
         if (cursor != null) {
             builder.setCursor(cursor);
         }
-        return getStub(session).listTournamentRecords(builder.build());
+        return autoRefreshSession(session, getStub(session).listTournamentRecords(builder.build()));
     }
 
     @Override
     public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, final String ownerId) {
-        return listTournamentRecordsAroundOwner(session, tournamentId, ownerId, -1, 0);
+        return listTournamentRecordsAroundOwner(session, tournamentId, ownerId, -1, 0, null);
     }
 
     @Override
     public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, final String ownerId, final int expiry) {
-        return listTournamentRecordsAroundOwner(session, tournamentId, ownerId, expiry, 0);
+        return listTournamentRecordsAroundOwner(session, tournamentId, ownerId, expiry, 0, null);
     }
 
     @Override
     public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, final String ownerId, final int expiry, final int limit) {
+        return listTournamentRecordsAroundOwner(session, tournamentId, ownerId, expiry, limit, null);
+    }
+
+    @Override
+    public ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, final String ownerId, final int expiry, final int limit, final String cursor) {
         final ListTournamentRecordsAroundOwnerRequest.Builder builder = ListTournamentRecordsAroundOwnerRequest.newBuilder().setTournamentId(tournamentId).setOwnerId(ownerId);
         if (expiry > 0) {
             builder.setExpiry(Int64Value.newBuilder().setValue(expiry).build());
@@ -1594,7 +1727,10 @@ public class DefaultClient implements Client {
         if (limit > 0) {
             builder.setLimit(UInt32Value.newBuilder().setValue(limit).build());
         }
-        return getStub(session).listTournamentRecordsAroundOwner(builder.build());
+        if (cursor != null) {
+            builder.setCursor(cursor);
+        }
+        return autoRefreshSession(session, getStub(session).listTournamentRecordsAroundOwner(builder.build()));
     }
 
     @Override
@@ -1608,7 +1744,7 @@ public class DefaultClient implements Client {
         if (userId != null) {
             builder.setUserId(userId);
         }
-        return getStub(session).listUserGroups(builder.build());
+        return autoRefreshSession(session, getStub(session).listUserGroups(builder.build()));
     }
 
     @Override
@@ -1625,7 +1761,7 @@ public class DefaultClient implements Client {
             builder.setCursor(cursor);
         }
 
-        return getStub(session).listUserGroups(builder.build());
+        return autoRefreshSession(session, getStub(session).listUserGroups(builder.build()));
     }
 
     @Override
@@ -1650,13 +1786,18 @@ public class DefaultClient implements Client {
         if (cursor != null) {
             builder.setCursor(cursor);
         }
-        return getStub(session).listStorageObjects(builder.build());
+        return autoRefreshSession(session, getStub(session).listStorageObjects(builder.build()));
+    }
+
+    @Override
+    public ListenableFuture<Empty> logoutSession(@NonNull final Session session) {
+        return autoRefreshSession(session, getStub(session).sessionLogout(SessionLogoutRequest.newBuilder().setToken(session.getAuthToken()).setRefreshToken(session.getRefreshToken()).build()));
     }
 
     @Override
     public ListenableFuture<Empty> promoteGroupUsers(@NonNull final Session session, @NonNull final String groupId, @NonNull final String... ids) {
         final List<String> userIds = Arrays.asList(ids);
-        return getStub(session).promoteGroupUsers(PromoteGroupUsersRequest.newBuilder().setGroupId(groupId).addAllUserIds(userIds).build());
+        return autoRefreshSession(session, getStub(session).promoteGroupUsers(PromoteGroupUsersRequest.newBuilder().setGroupId(groupId).addAllUserIds(userIds).build()));
     }
 
     @Override
@@ -1676,7 +1817,7 @@ public class DefaultClient implements Client {
 
             builder.addObjectIds(b.build());
         }
-        return getStub(session).readStorageObjects(builder.build());
+        return autoRefreshSession(session, getStub(session).readStorageObjects(builder.build()));
     }
 
     @Override
@@ -1690,59 +1831,69 @@ public class DefaultClient implements Client {
         if (payload != null) {
             builder.setPayload(payload);
         }
-        return getStub(session).rpcFunc(builder.build());
+        return autoRefreshSession(session, getStub(session).rpcFunc(builder.build()));
+    }
+
+    @Override
+    public ListenableFuture<Session> refreshSession(@NonNull final Session session) {
+        return convertSession(getStub().sessionRefresh(SessionRefreshRequest.newBuilder().setToken(session.getRefreshToken()).build()), session);
+    }
+
+    @Override
+    public ListenableFuture<Session> refreshSession(@NonNull final Session session, @NonNull final Map<String, String> vars) {
+        return convertSession(getStub().sessionRefresh(SessionRefreshRequest.newBuilder().putAllVars(vars).setToken(session.getRefreshToken()).build()), session);
     }
 
     @Override
     public ListenableFuture<Empty> unlinkApple(@NonNull final Session session, @NonNull final String token) {
-        return getStub(session).unlinkApple(AccountApple.newBuilder().setToken(token).build());
+        return autoRefreshSession(session, getStub(session).unlinkApple(AccountApple.newBuilder().setToken(token).build()));
     }
 
     @Override
     public ListenableFuture<Empty> unlinkCustom(@NonNull final Session session, @NonNull final String id) {
-        return getStub(session).unlinkCustom(AccountCustom.newBuilder().setId(id).build());
+        return autoRefreshSession(session, getStub(session).unlinkCustom(AccountCustom.newBuilder().setId(id).build()));
     }
 
     @Override
     public ListenableFuture<Empty> unlinkDevice(@NonNull final Session session, @NonNull final String id) {
-        return getStub(session).unlinkDevice(AccountDevice.newBuilder().setId(id).build());
+        return autoRefreshSession(session, getStub(session).unlinkDevice(AccountDevice.newBuilder().setId(id).build()));
     }
 
     @Override
     public ListenableFuture<Empty> unlinkEmail(@NonNull final Session session, @NonNull final String email, @NonNull final String password) {
-        return getStub(session).unlinkEmail(AccountEmail.newBuilder().setEmail(email).setPassword(password).build());
+        return autoRefreshSession(session, getStub(session).unlinkEmail(AccountEmail.newBuilder().setEmail(email).setPassword(password).build()));
     }
 
     @Override
     public ListenableFuture<Empty> unlinkFacebook(@NonNull final Session session, @NonNull final String accessToken) {
-        return getStub(session).unlinkFacebook(AccountFacebook.newBuilder().setToken(accessToken).build());
+        return autoRefreshSession(session, getStub(session).unlinkFacebook(AccountFacebook.newBuilder().setToken(accessToken).build()));
     }
 
     @Override
     public ListenableFuture<Empty> unlinkFacebookInstantGame(@NonNull final Session session, @NonNull final String accessToken) {
-        return getStub(session).unlinkFacebookInstantGame(AccountFacebookInstantGame.newBuilder().setSignedPlayerInfo(accessToken).build());
+        return autoRefreshSession(session, getStub(session).unlinkFacebookInstantGame(AccountFacebookInstantGame.newBuilder().setSignedPlayerInfo(accessToken).build()));
     }
 
     @Override
     public ListenableFuture<Empty> unlinkGoogle(@NonNull final Session session, @NonNull final String accessToken) {
-        return getStub(session).unlinkGoogle(AccountGoogle.newBuilder().setToken(accessToken).build());
+        return autoRefreshSession(session, getStub(session).unlinkGoogle(AccountGoogle.newBuilder().setToken(accessToken).build()));
     }
 
     @Override
     public ListenableFuture<Empty> unlinkSteam(@NonNull final Session session, @NonNull final String token) {
-        return getStub(session).unlinkSteam(AccountSteam.newBuilder().setToken(token).build());
+        return autoRefreshSession(session, getStub(session).unlinkSteam(AccountSteam.newBuilder().setToken(token).build()));
     }
 
     @Override
     public ListenableFuture<Empty> unlinkGameCenter(@NonNull final Session session, @NonNull final String playerId, @NonNull final String bundleId, final long timestampSeconds, @NonNull final String salt, @NonNull final String signature, @NonNull final String publicKeyUrl) {
-        return getStub(session).unlinkGameCenter(AccountGameCenter.newBuilder()
+        return autoRefreshSession(session, getStub(session).unlinkGameCenter(AccountGameCenter.newBuilder()
                 .setPlayerId(playerId)
                 .setBundleId(bundleId)
                 .setTimestampSeconds(timestampSeconds)
                 .setSalt(salt)
                 .setSignature(signature)
                 .setPublicKeyUrl(publicKeyUrl)
-                .build());
+                .build()));
     }
 
     @Override
@@ -1791,7 +1942,7 @@ public class DefaultClient implements Client {
         if (timezone != null) {
             builder.setTimezone(StringValue.newBuilder().setValue(timezone).build());
         }
-        return getStub(session).updateAccount(builder.build());
+        return autoRefreshSession(session, getStub(session).updateAccount(builder.build()));
     }
 
     @Override
@@ -1824,7 +1975,7 @@ public class DefaultClient implements Client {
         if (langTag != null) {
             builder.setLangTag(StringValue.newBuilder().setValue(langTag).build());
         }
-        return getStub(session).updateGroup(builder.build());
+        return autoRefreshSession(session, getStub(session).updateGroup(builder.build()));
     }
 
     @Override
@@ -1843,7 +1994,37 @@ public class DefaultClient implements Client {
             builder.setLangTag(StringValue.newBuilder().setValue(langTag).build());
         }
         builder.setOpen(BoolValue.newBuilder().setValue(open).build());
-        return getStub(session).updateGroup(builder.build());
+        return autoRefreshSession(session, getStub(session).updateGroup(builder.build()));
+    }
+
+    @Override
+    public ListenableFuture<ValidatePurchaseResponse> validatePurchaseApple(@NonNull final Session session, @NonNull final String receipt, final boolean persist) {
+        return autoRefreshSession(session, getStub(session).validatePurchaseApple(ValidatePurchaseAppleRequest.newBuilder().setReceipt(receipt).setPersist(BoolValue.newBuilder().setValue(persist).build()).build()));
+    }
+
+    @Override
+    public ListenableFuture<ValidatePurchaseResponse> validatePurchaseFacebookInstant(@NonNull final Session session, @NonNull final String signedRequest, final boolean persist) {
+        return autoRefreshSession(session, getStub(session).validatePurchaseFacebookInstant(ValidatePurchaseFacebookInstantRequest.newBuilder().setSignedRequest(signedRequest).setPersist(BoolValue.newBuilder().setValue(persist).build()).build()));
+    }
+
+    @Override
+    public ListenableFuture<ValidatePurchaseResponse> validatePurchaseGoogle(@NonNull final Session session, @NonNull final String receipt, final boolean persist) {
+        return autoRefreshSession(session, getStub(session).validatePurchaseGoogle(ValidatePurchaseGoogleRequest.newBuilder().setPurchase(receipt).setPersist(BoolValue.newBuilder().setValue(persist).build()).build()));
+    }
+
+    @Override
+    public ListenableFuture<ValidatePurchaseResponse> validatePurchaseHuawei(@NonNull final Session session, @NonNull final String receipt, final boolean persist) {
+        return autoRefreshSession(session, getStub(session).validatePurchaseHuawei(ValidatePurchaseHuaweiRequest.newBuilder().setPurchase(receipt).setPersist(BoolValue.newBuilder().setValue(persist).build()).build()));
+    }
+
+    @Override
+    public ListenableFuture<ValidateSubscriptionResponse> validateSubscriptionApple(@NonNull final Session session, @NonNull final String receipt, final boolean persist) {
+        return autoRefreshSession(session, getStub(session).validateSubscriptionApple(ValidateSubscriptionAppleRequest.newBuilder().setReceipt(receipt).setPersist(BoolValue.newBuilder().setValue(persist).build()).build()));
+    }
+
+    @Override
+    public ListenableFuture<ValidateSubscriptionResponse> validateSubscriptionGoogle(@NonNull final Session session, @NonNull final String receipt, final boolean persist) {
+        return autoRefreshSession(session, getStub(session).validateSubscriptionGoogle(ValidateSubscriptionGoogleRequest.newBuilder().setReceipt(receipt).setPersist(BoolValue.newBuilder().setValue(persist).build()).build()));
     }
 
     @Override
@@ -1851,7 +2032,7 @@ public class DefaultClient implements Client {
         final WriteLeaderboardRecordRequest.Builder builder = WriteLeaderboardRecordRequest.newBuilder().setLeaderboardId(leaderboardId);
         final WriteLeaderboardRecordRequest.LeaderboardRecordWrite.Builder recordBuilder = WriteLeaderboardRecordRequest.LeaderboardRecordWrite.newBuilder().setScore(score);
         builder.setRecord(recordBuilder.build());
-        return getStub(session).writeLeaderboardRecord(builder.build());
+        return autoRefreshSession(session, getStub(session).writeLeaderboardRecord(builder.build()));
     }
 
     @Override
@@ -1861,28 +2042,40 @@ public class DefaultClient implements Client {
                 .setScore(score)
                 .setSubscore(subscore);
         builder.setRecord(recordBuilder.build());
-        return getStub(session).writeLeaderboardRecord(builder.build());
+        return autoRefreshSession(session, getStub(session).writeLeaderboardRecord(builder.build()));
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score, final String metadata) {
+    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score, @NonNull final String metadata) {
         final WriteLeaderboardRecordRequest.Builder builder = WriteLeaderboardRecordRequest.newBuilder().setLeaderboardId(leaderboardId);
         final WriteLeaderboardRecordRequest.LeaderboardRecordWrite.Builder recordBuilder = WriteLeaderboardRecordRequest.LeaderboardRecordWrite.newBuilder()
                 .setScore(score)
                 .setMetadata(metadata);
         builder.setRecord(recordBuilder.build());
-        return getStub(session).writeLeaderboardRecord(builder.build());
+        return autoRefreshSession(session, getStub(session).writeLeaderboardRecord(builder.build()));
     }
 
     @Override
-    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score, final long subscore, final String metadata) {
+    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score, final long subscore, @NonNull final String metadata) {
         final WriteLeaderboardRecordRequest.Builder builder = WriteLeaderboardRecordRequest.newBuilder().setLeaderboardId(leaderboardId);
         final WriteLeaderboardRecordRequest.LeaderboardRecordWrite.Builder recordBuilder = WriteLeaderboardRecordRequest.LeaderboardRecordWrite.newBuilder()
                 .setScore(score)
                 .setSubscore(subscore)
                 .setMetadata(metadata);
         builder.setRecord(recordBuilder.build());
-        return getStub(session).writeLeaderboardRecord(builder.build());
+        return autoRefreshSession(session, getStub(session).writeLeaderboardRecord(builder.build()));
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score, final long subscore, @NonNull final String metadata, @NonNull final Operator operator) {
+        final WriteLeaderboardRecordRequest.Builder builder = WriteLeaderboardRecordRequest.newBuilder().setLeaderboardId(leaderboardId);
+        final WriteLeaderboardRecordRequest.LeaderboardRecordWrite.Builder recordBuilder = WriteLeaderboardRecordRequest.LeaderboardRecordWrite.newBuilder()
+                .setScore(score)
+                .setSubscore(subscore)
+                .setMetadata(metadata)
+                .setOperator(operator);
+        builder.setRecord(recordBuilder.build());
+        return autoRefreshSession(session, getStub(session).writeLeaderboardRecord(builder.build()));
     }
 
     @Override
@@ -1907,7 +2100,7 @@ public class DefaultClient implements Client {
             }
             builder.addObjects(b);
         }
-        return getStub(session).writeStorageObjects(builder.build());
+        return autoRefreshSession(session, getStub(session).writeStorageObjects(builder.build()));
     }
 
     @Override
@@ -1915,7 +2108,7 @@ public class DefaultClient implements Client {
         final WriteTournamentRecordRequest.Builder builder = WriteTournamentRecordRequest.newBuilder().setTournamentId(tournamentId);
         final WriteTournamentRecordRequest.TournamentRecordWrite.Builder recordBuilder = WriteTournamentRecordRequest.TournamentRecordWrite.newBuilder().setScore(score);
         builder.setRecord(recordBuilder.build());
-        return getStub(session).writeTournamentRecord(builder.build());
+        return autoRefreshSession(session, getStub(session).writeTournamentRecord(builder.build()));
     }
 
     @Override
@@ -1925,7 +2118,7 @@ public class DefaultClient implements Client {
                 .setScore(score)
                 .setSubscore(subscore);
         builder.setRecord(recordBuilder.build());
-        return getStub(session).writeTournamentRecord(builder.build());
+        return autoRefreshSession(session, getStub(session).writeTournamentRecord(builder.build()));
     }
 
     @Override
@@ -1935,7 +2128,7 @@ public class DefaultClient implements Client {
                 .setScore(score)
                 .setMetadata(metadata);
         builder.setRecord(recordBuilder.build());
-        return getStub(session).writeTournamentRecord(builder.build());
+        return autoRefreshSession(session, getStub(session).writeTournamentRecord(builder.build()));
     }
 
     @Override
@@ -1946,6 +2139,18 @@ public class DefaultClient implements Client {
                 .setSubscore(subscore)
                 .setMetadata(metadata);
         builder.setRecord(recordBuilder.build());
-        return getStub(session).writeTournamentRecord(builder.build());
+        return autoRefreshSession(session, getStub(session).writeTournamentRecord(builder.build()));
+    }
+
+    @Override
+    public ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, final long score, final long subscore, @NonNull final String metadata, @NonNull final Operator operator) {
+        final WriteTournamentRecordRequest.Builder builder = WriteTournamentRecordRequest.newBuilder().setTournamentId(tournamentId);
+        final WriteTournamentRecordRequest.TournamentRecordWrite.Builder recordBuilder = WriteTournamentRecordRequest.TournamentRecordWrite.newBuilder()
+                .setScore(score)
+                .setSubscore(subscore)
+                .setMetadata(metadata)
+                .setOperator(operator);
+        builder.setRecord(recordBuilder.build());
+        return autoRefreshSession(session, getStub(session).writeTournamentRecord(builder.build()));
     }
 }

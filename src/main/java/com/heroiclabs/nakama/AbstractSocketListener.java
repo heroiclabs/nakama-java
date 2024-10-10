@@ -99,4 +99,18 @@ public abstract class AbstractSocketListener implements SocketListener {
      * @param data Stream {@code StreamData} data received.
      */
     @Override public void onStreamData(final StreamData data) {}
+
+    /**
+     * Called when the client receives party presence updates.
+     *
+     * @param presence Updated {@code PartyPresenceEvent} presence.
+     */
+    @Override public void onPartyPresence(final PartyPresenceEvent presence) {}
+
+    /**
+     * Called when a new party data is received.
+     *
+     * @param partyData The {@code PartyData} received.
+     */
+    @Override public void onPartyData(final PartyData partyData) {}
 }

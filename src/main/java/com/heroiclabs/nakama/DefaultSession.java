@@ -22,6 +22,7 @@ import okio.ByteString;
 
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,15 +34,43 @@ import java.util.Map;
 @EqualsAndHashCode
 @ToString
 public class DefaultSession implements Session {
-    private final long createTime;
-    private final long expireTime;
-    private final boolean created;
-    private final String username;
-    private final String userId;
-    private final String authToken;
-    private final Map<String, String> vars;
+    private long createTime;
+    private long expireTime;
+    private boolean created;
+    private String username;
+    private String userId;
+    private String authToken;
+    private String refreshToken;
+    private long refreshExpireTime;
+    private Map<String, String> vars;
 
-    DefaultSession(final String token, final boolean created) {
+    DefaultSession(final String token, final String refreshToken, final boolean created) {
+        this.update(token, refreshToken);
+        this.created = created;
+    }
+
+    @Override
+    public boolean IsExpired() {
+        return isExpired(new Date());
+    }
+
+    @Override
+    public boolean isExpired(Date dateTime) {
+        return (expireTime - dateTime.getTime()) < 0L;
+    }
+
+    @Override
+    public boolean isRefreshExpired() {
+        return isRefreshExpired(new Date());
+    }
+
+    @Override
+    public boolean isRefreshExpired(Date dateTime) {
+        return (refreshExpireTime - dateTime.getTime()) < 0L;
+    }
+
+    @Override
+    public void update(final String token, final String refreshToken) {
         final String[] decoded = token.split("\\.");
         if (decoded.length != 3) {
             throw new IllegalArgumentException("Not a valid token.");
@@ -58,35 +87,43 @@ public class DefaultSession implements Session {
         this.userId = jsonMap.get("uid").toString();
         this.vars = new HashMap();
         if (jsonMap.get("vrs") != null) {
-            var v = jsonMap.get("vrs");
+            val v = jsonMap.get("vrs");
             if (v instanceof Map) {
-                var vm = (Map) v;
+                val vm = (Map) v;
                 for (Object key : vm.keySet()) {
                     this.vars.put(key.toString(), vm.get(key).toString());
                 }
             }
         }
 
-        this.created = created;
         this.authToken = token;
-    }
+        this.refreshToken = refreshToken;
 
-    @Override
-    public boolean IsExpired() {
-        return isExpired(new Date());
-    }
-
-    @Override
-    public boolean isExpired(Date dateTime) {
-        return (expireTime - dateTime.getTime()) < 0L;
+        if (refreshToken != null && !refreshToken.isEmpty()) {
+            Map<String, Object> decoded2 = jwtUnpack(refreshToken);
+            this.refreshExpireTime = Math.round(((Double) decoded2.get("exp")) * 1000L);
+        } else {
+            this.refreshExpireTime = 0L;
+        }
     }
 
     /**
      * Restore a session from an authentication token.
      * @param token The authentication token from a Session.
+     * @param refreshToken The authentication refresh token from a Session.
      * @return A session restored from the authentication token.
      */
-    public static Session restore(final String token) {
-        return new DefaultSession(token, false);
+    public static Session restore(final String token, final String refreshToken) {
+        return new DefaultSession(token, refreshToken, false);
+    }
+
+    private static Map<String, Object> jwtUnpack(String jwt) {
+        String payload = jwt.split("\\.")[1];
+        String decodedJson = ByteString.decodeBase64(payload).string(Charset.defaultCharset());
+        Type type = new TypeToken<Map<String, Object>>() {
+        }.getType();
+
+        Gson gson = new Gson();
+        return gson.fromJson(decodedJson, type);
     }
 }

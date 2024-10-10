@@ -18,6 +18,8 @@ package com.heroiclabs.nakama;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.heroiclabs.nakama.api.Rpc;
+import com.heroiclabs.nakama.rtapi.PartyJoin;
+import com.heroiclabs.nakama.rtapi.PartyMatchmakerTicket;
 import lombok.NonNull;
 
 import java.util.List;
@@ -294,4 +296,96 @@ public interface SocketClient {
      * @return A future.
      */
     ListenableFuture<Void> updateStatus(final String status);
+
+    /**
+     * Create a party.
+     *
+     * @param open Whether the party will require join requests to be approved by the party leader.
+     * @param maxSize Maximum number of party members.
+     * @return A future which resolves to the party created.
+     */
+    ListenableFuture<Party> createParty(final boolean open, final int maxSize);
+
+    /**
+     * Join a party.
+     *
+     * @param partyId A party ID.
+     */
+    ListenableFuture<Void> joinParty(@NonNull final String partyId);
+
+    /**
+     * Leave a party.
+     *
+     * @param partyId A party ID.
+     */
+    ListenableFuture<Void> leaveParty(@NonNull final String partyId);
+
+    /**
+     * Promote a member to party leader.
+     *
+     * @param partyId A party ID.
+     * @param userPresence The presence of an existing party member to promote as the new leader.
+     */
+    ListenableFuture<Void> promoteParty(@NonNull final String partyId, UserPresence userPresence);
+
+    /**
+     * Accept a member to a party.
+     *
+     * @param partyId Party ID to accept a join request for.
+     * @param userPresence The presence to accept as a party member.
+     */
+    ListenableFuture<Void> acceptParty(@NonNull final String partyId, UserPresence userPresence);
+
+    /**
+     * Remove/reject a member from a party.
+     *
+     * @param partyId Party ID to remove/reject from.
+     * @param userPresence The presence to remove or reject.
+     */
+    ListenableFuture<Void> removeParty(@NonNull final String partyId, UserPresence userPresence);
+
+    /**
+     * End a party.
+     *
+     * @param partyId A party ID.
+     */
+    ListenableFuture<Party> closeParty(@NonNull final String partyId);
+
+    /**
+     * Lists pending join requests for a party.
+     *
+     * @param partyId A party ID.
+     */
+    ListenableFuture<PartyJoinRequest> listPartyJoinRequest(@NonNull final String partyId);
+
+    /**
+     * Begin matchmaking as a party.
+     *
+     * @param minCount Minimum total user count to match together.
+     * @param maxCount Maximum total user count to match together.
+     * @param query Filter query used to identify suitable users.
+     * @param stringProperties A set of k/v properties to provide in searches.
+     * @param numericProperties A set of k/v numeric properties to provide in searches.
+     * @param countMultiple Optional multiple of the count that must be satisfied.
+     * @return A future which resolves to a party matchmaker ticket object.
+     */
+    ListenableFuture<PartyMatchmakerTicket> addPartyMatchmaker(@NonNull final String partyId, final int minCount, final int maxCount, @NonNull final String query,
+                                                               final Map<String, String> stringProperties, final Map<String, Double> numericProperties, final int countMultiple);
+
+    /**
+     * Cancel a party matchmaking process using a ticket.
+     *
+     * @param partyId A party ID.
+     * @param partyId The ticket to cancel.
+     */
+    ListenableFuture<Void> removePartyMatchmaker(@NonNull final String partyId, @NonNull final String ticket);
+
+    /**
+     * Send party data.
+     *
+     * @param partyId The ID of the party.
+     * @param opCode An operation code for the party state.
+     * @param data The new state to send to the party.
+     */
+    void sendPartyData(@NonNull final String partyId, final int opCode, @NonNull byte[] data);
 }

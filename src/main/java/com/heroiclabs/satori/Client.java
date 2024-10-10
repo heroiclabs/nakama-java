@@ -21,6 +21,7 @@ import com.google.protobuf.Empty;
 import com.heroiclabs.satori.api.*;
 
 import lombok.NonNull;
+import org.checkerframework.checker.units.qual.N;
 
 import java.util.List;
 import java.util.Map;
@@ -30,16 +31,6 @@ import java.util.concurrent.TimeUnit;
  * A client for the API in the Satori server.
  */
 public interface Client {
-
-    /**
-     * Disconnects the client. This function kills all outgoing exchanges and waits until the channel is shutdown.
-     */
-    void disconnect(final long timeout, @NonNull final TimeUnit unit) throws InterruptedException;
-
-    /**
-     * Disconnects the client. This function kills all outgoing exchanges immediately without waiting.
-     */
-    void disconnect();
 
     /**
      * Authenticate against the server.
@@ -56,6 +47,31 @@ public interface Client {
      * @return A future object which represents the asynchronous operation.
      */
     ListenableFuture<Empty> authenticateLogout(@NonNull final Session session);
+
+    /**
+     * Delete the caller's identity and associated data.
+     * @param session The session of the user.
+     * @return A future object.
+     */
+    ListenableFuture<Empty> deleteIdentity(@NonNull Session session);
+
+    /**
+     * The request to delete a scheduled message.
+     * @param session The session of the user.
+     * @param messageId The ID of the message to delete.
+     * @return A future object.
+     */
+    ListenableFuture<Empty> deleteMessage(@NonNull Session session, @NonNull final String messageId);
+
+    /**
+     * Disconnects the client. This function kills all outgoing exchanges immediately without waiting.
+     */
+    void disconnect();
+
+    /**
+     * Disconnects the client. This function kills all outgoing exchanges and waits until the channel is shutdown.
+     */
+    void disconnect(final long timeout, @NonNull final TimeUnit unit) throws InterruptedException;
 
     /**
      * Send an event for this session.
@@ -149,20 +165,38 @@ public interface Client {
     ListenableFuture<LiveEventList> getLiveEvents(@NonNull final Session session, String... names);
 
     /**
-     * Update or create properties for an identity.
+     * Get the list of messages for the identity.
      * @param session The session of the user.
-     * @param defaultProperties The properties to update or create.
-     * @param customProperties The properties to update or create.
-     * @return A future object.
+     * @return A future which resolves to all messages.
      */
-    public ListenableFuture<Empty> updateProperties(@NonNull final Session session, @NonNull final Map<String, String> defaultProperties, @NonNull final Map<String, String> customProperties);
+    ListenableFuture<GetMessageListResponse> getMessageList(@NonNull final Session session);
 
     /**
-     * Delete the caller's identity and associated data.
+     * Get the list of messages for the identity.
      * @param session The session of the user.
-     * @return A future object.
+     * @param limit Max number of messages to return. Between 1 and 100.
+     * @return A future which resolves to all messages.
      */
-    ListenableFuture<Empty> deleteIdentity(@NonNull Session session);
+    ListenableFuture<GetMessageListResponse> getMessageList(@NonNull final Session session, @NonNull final int limit);
+
+    /**
+     * Get the list of messages for the identity.
+     * @param session The session of the user.
+     * @param limit Max number of messages to return. Between 1 and 100.
+     * @param forward True if listing should be older messages to newer, false if reverse.
+     * @return A future which resolves to all messages.
+     */
+    ListenableFuture<GetMessageListResponse> getMessageList(@NonNull final Session session, @NonNull final int limit, @NonNull final boolean forward);
+
+    /**
+     * Get the list of messages for the identity.
+     * @param session The session of the user.
+     * @param limit Max number of messages to return. Between 1 and 100.
+     * @param forward True if listing should be older messages to newer, false if reverse.
+     * @param cursor A pagination cursor.
+     * @return A future which resolves to all messages.
+     */
+    ListenableFuture<GetMessageListResponse> getMessageList(@NonNull final Session session, @NonNull final int limit, @NonNull final boolean forward, @NonNull final String cursor);
 
     /**
      * List properties associated with this identity.
@@ -193,4 +227,42 @@ public interface Client {
      * @return A future which resolves to a user session.
      */
     ListenableFuture<Session> sessionRefresh(Session session);
+
+    /**
+     * The request to update the status of a message.
+     * @param session The session of the user.
+     * @param id The identifier of the message.
+     * @param readTime The time the message was read at the client.
+     * @return A future.
+     */
+    ListenableFuture<Empty> updateMessage(@NonNull final Session session, @NonNull final String id, @NonNull final long readTime);
+
+    /**
+     * The request to update the status of a message.
+     * @param session The session of the user.
+     * @param id The identifier of the message.
+     * @param readTime The time the message was read at the client.
+     * @param consumeTime The time the message was consumed by the identity.
+     * @return A future.
+     */
+    ListenableFuture<Empty> updateMessage(@NonNull final Session session, @NonNull final String id, @NonNull final long readTime, @NonNull final long consumeTime);
+
+    /**
+     * Update or create properties for an identity.
+     * @param session The session of the user.
+     * @param defaultProperties The properties to update or create.
+     * @param customProperties The properties to update or create.
+     * @return A future object.
+     */
+    ListenableFuture<Empty> updateProperties(@NonNull final Session session, @NonNull final Map<String, String> defaultProperties, @NonNull final Map<String, String> customProperties);
+
+    /**
+     * Update or create properties for an identity.
+     * @param session The session of the user.
+     * @param defaultProperties The properties to update or create.
+     * @param customProperties The properties to update or create.
+     * @param recompute Informs the server to recompute the audience membership of the identity.
+     * @return A future object.
+     */
+    ListenableFuture<Empty> updateProperties(@NonNull final Session session, @NonNull final Map<String, String> defaultProperties, @NonNull final Map<String, String> customProperties, @NonNull final boolean recompute);
 }

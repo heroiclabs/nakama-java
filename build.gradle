@@ -42,7 +42,7 @@ lombok {
 }
 
 group = 'com.github.heroiclabs'
-version = '2.4.0'
+version = '2.5.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -209,6 +209,8 @@ task satoriTest(type: Test) {
 tasks.named('shadowJar', ShadowJar) {
     enableRelocation true
     relocationPrefix 'heroiclabs'
+    configurations = [project.configurations.sharedImplementation,
+                      project.configurations.sharedApi]
 }
 
 task nakamaShadowJar(type: ShadowJar) {
@@ -217,7 +219,6 @@ task nakamaShadowJar(type: ShadowJar) {
 
     configurations = [project.configurations.sharedImplementation,
                     project.configurations.sharedApi]
-    from sourceSets.main.output
     exclude 'com/heroiclabs/satori'
     archiveFileName.set("nakama-java-${version}-all.jar")
 }
@@ -228,7 +229,6 @@ task satoriShadowJar(type: ShadowJar) {
 
     configurations = [project.configurations.sharedImplementation,
                     project.configurations.sharedApi]
-    from sourceSets.main.output
     exclude 'com/heroiclabs/nakama'
     archiveFileName.set("satori-java-${version}-all.jar")
 }

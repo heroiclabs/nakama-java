@@ -30,4 +30,5 @@ class MatchmakerAddMessage {
     private String Query;
     private Map<String, Double> NumericProperties;
     private Map<String, String> StringProperties;
+    private int countMultiple;
 }
