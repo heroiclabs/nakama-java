@@ -17,7 +17,6 @@
 package com.heroiclabs.satori;
 
 import com.google.protobuf.Empty;
-import org.graalvm.compiler.nodes.NodeView;
 import org.junit.Assert;
 
 import java.time.Duration;

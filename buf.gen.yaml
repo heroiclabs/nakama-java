@@ -1,0 +1,17 @@
+version: v2
+managed:
+  enabled: true
+  override:
+    - module: buf.build/heroiclabs/nakama-java
+      file_option: java_package_prefix
+      value: com.heroiclabs
+  disable:
+    - module: buf.build/heroiclabs/nakama-java
+      file_option: java_package_prefix
+plugins:
+  - remote: buf.build/protocolbuffers/java:v28.2
+    out: src/main/java
+    include_imports: true
+  - remote: buf.build/grpc/java:v1.66.0
+    out: src/main/java
+    include_imports: true

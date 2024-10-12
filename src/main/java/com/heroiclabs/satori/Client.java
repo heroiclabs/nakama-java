@@ -151,7 +151,8 @@ public interface Client {
     /**
      * Update or create properties for an identity.
      * @param session The session of the user.
-     * @param properties The properties to update or create.
+     * @param defaultProperties The properties to update or create.
+     * @param customProperties The properties to update or create.
      * @return A future object.
      */
     public ListenableFuture<Empty> updateProperties(@NonNull final Session session, @NonNull final Map<String, String> defaultProperties, @NonNull final Map<String, String> customProperties);

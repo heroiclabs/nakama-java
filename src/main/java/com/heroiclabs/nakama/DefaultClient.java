@@ -23,6 +23,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.*;
 import com.heroiclabs.nakama.api.*;
+import com.heroiclabs.satori.api.SatoriGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Metadata;
@@ -135,7 +136,7 @@ public class DefaultClient implements Client {
             metadata.put(Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER), "Bearer " + session.getAuthToken());
         }
 
-        NakamaGrpc.NakamaFutureStub newStub = MetadataUtils.attachHeaders(this.stub, metadata);
+        NakamaGrpc.NakamaFutureStub newStub = this.stub.withInterceptors(MetadataUtils.newAttachHeadersInterceptor(metadata));
         if (this.deadlineAfterMs > 0) {
             newStub = newStub.withDeadlineAfter(deadlineAfterMs, TimeUnit.MILLISECONDS);
         }

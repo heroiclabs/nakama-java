@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
+import com.heroiclabs.nakama.api.NakamaGrpc;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -119,7 +120,7 @@ public class DefaultClient implements Client {
                     "Bearer " + session.getAuthToken());
         }
 
-        SatoriGrpc.SatoriFutureStub newStub = MetadataUtils.attachHeaders(this.stub, metadata);
+        SatoriGrpc.SatoriFutureStub newStub = this.stub.withInterceptors(MetadataUtils.newAttachHeadersInterceptor(metadata));
         if (this.deadlineAfterMs > 0) {
             newStub = newStub.withDeadlineAfter(deadlineAfterMs, TimeUnit.MILLISECONDS);
         }
