@@ -219,6 +219,7 @@ task nakamaShadowJar(type: ShadowJar) {
 
     configurations = [project.configurations.sharedImplementation,
                     project.configurations.sharedApi]
+    from sourceSets.main.output
     exclude 'com/heroiclabs/satori'
     archiveFileName.set("nakama-java-${version}-all.jar")
 }
@@ -229,6 +230,7 @@ task satoriShadowJar(type: ShadowJar) {
 
     configurations = [project.configurations.sharedImplementation,
                     project.configurations.sharedApi]
+    from sourceSets.main.output
     exclude 'com/heroiclabs/nakama'
     archiveFileName.set("satori-java-${version}-all.jar")
 }
