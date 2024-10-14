@@ -1,0 +1,7 @@
+com.google.api
+com.grpc.gateway.protoc_gen_openapiv2.options
+com.heroiclabs.nakama
+com.heroiclabs.nakama.api
+com.heroiclabs.nakama.rtapi
+com.heroiclabs.satori
+com.heroiclabs.satori.api

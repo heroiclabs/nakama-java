@@ -11,11 +11,8 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 - Added auto-refresh logic for the session token in Nakama and Satori.  
 
 ### Changed
-- Moved Protobuf build tooling to use Buf, and simplifying the Gradle build scripts.
-- Round of dependency upgrades.
-
-### Added
-- Added ability to create a new Session from a Signing Key for server-to-server calls. See `Session.fromSigningKey()`.
+- Moved Protobuf build tooling to use Buf, and simplify the Gradle build scripts.
+- Various dependency upgrades.
 
 ## [2.4.0] - 2023-07-25
 
