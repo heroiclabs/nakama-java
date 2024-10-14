@@ -231,7 +231,7 @@ brew install --cask adoptopenjdk8
 Then run the script to download Nakama and Satori protobuf files:
 `./download-protos.sh <TOKEN>`
 
-Then run `buf dep upgrade`, followed by `buf generate` to download the dependencies for our protos as well as compiling the protos to Java.  
+Then run `buf dep update`, followed by `buf generate` to download the dependencies for our protos as well as compiling the protos to Java.  
 
 Then run `./gradlew nakamaJar` or `./gradlew satoriJar` and Gradle will install your dependencies over
 the network for you prior to building. It will then build the .jar files.

@@ -21,10 +21,8 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import com.google.protobuf.Empty;
-import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.*;
 import com.google.protobuf.Message;
-import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
 import com.heroiclabs.satori.api.*;
 import com.heroiclabs.satori.api.Properties;
@@ -261,12 +259,76 @@ public class HttpClient implements Client {
         return get(session, "v1/live-event", params, LiveEventList.newBuilder());
     }
 
+    /**
+     * Get the list of messages for the identity.
+     *
+     * @param session The session of the user.
+     * @return A future which resolves to all messages.
+     */
     @Override
-    public ListenableFuture<Empty> updateProperties(@NonNull final Session session, @NonNull final Map<String, String> defaultProperties, @NonNull final Map<String, String> customProperties) {
+    public ListenableFuture<GetMessageListResponse> getMessageList(@NonNull Session session) {
+        List<Pair<String, String>> params = new ArrayList<>();
+        return get(session, "/v1/message", params, GetMessageListResponse.newBuilder());
+    }
+
+    /**
+     * Get the list of messages for the identity.
+     *
+     * @param session The session of the user.
+     * @param limit   Max number of messages to return. Between 1 and 100.
+     * @return A future which resolves to all messages.
+     */
+    @Override
+    public ListenableFuture<GetMessageListResponse> getMessageList(@NonNull Session session, int limit) {
+        List<Pair<String, String>> params = new ArrayList<>();
+        params.add(new Pair<>("limit", String.valueOf(limit)));
+
+        return get(session, "/v1/message", params, GetMessageListResponse.newBuilder());
+    }
+
+    /**
+     * Get the list of messages for the identity.
+     *
+     * @param session The session of the user.
+     * @param limit   Max number of messages to return. Between 1 and 100.
+     * @param forward True if listing should be older messages to newer, false if reverse.
+     * @return A future which resolves to all messages.
+     */
+    @Override
+    public ListenableFuture<GetMessageListResponse> getMessageList(@NonNull Session session, int limit, boolean forward) {
+        List<Pair<String, String>> params = new ArrayList<>();
+        params.add(new Pair<>("limit", String.valueOf(limit)));
+        params.add(new Pair<>("forward", String.valueOf(forward)));
+
+        return get(session, "/v1/message", params, GetMessageListResponse.newBuilder());
+    }
+
+    /**
+     * Get the list of messages for the identity.
+     *
+     * @param session The session of the user.
+     * @param limit   Max number of messages to return. Between 1 and 100.
+     * @param forward True if listing should be older messages to newer, false if reverse.
+     * @param cursor  A pagination cursor.
+     * @return A future which resolves to all messages.
+     */
+    @Override
+    public ListenableFuture<GetMessageListResponse> getMessageList(@NonNull Session session, int limit, boolean forward, @NonNull String cursor) {
+        List<Pair<String, String>> params = new ArrayList<>();
+        params.add(new Pair<>("limit", String.valueOf(limit)));
+        params.add(new Pair<>("forward", String.valueOf(forward)));
+        params.add(new Pair<>("cursor", cursor));
+
+        return get(session, "/v1/message", params, GetMessageListResponse.newBuilder());
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateProperties(@NonNull final Session session, @NonNull final Map<String, String> defaultProperties, @NonNull final Map<String, String> customProperties, final boolean recompute) {
         // Assuming we have a method to convert Properties to a Map
         UpdatePropertiesRequest updatePropertiesRequest = UpdatePropertiesRequest.newBuilder()
                 .putAllDefault(defaultProperties)
                 .putAllCustom(customProperties)
+                .setRecompute(BoolValue.newBuilder().setValue(recompute).build())
                 .build();
         return put(session, updatePropertiesRequest, "v1/properties", Empty.newBuilder());
     }
@@ -274,6 +336,18 @@ public class HttpClient implements Client {
     @Override
     public ListenableFuture<Empty> deleteIdentity(@NonNull final Session session) {
         return delete(session, Empty.newBuilder().build(), "v1/identity", Empty.newBuilder());
+    }
+
+    /**
+     * The request to delete a scheduled message.
+     *
+     * @param session   The session of the user.
+     * @param messageId The ID of the message to delete.
+     * @return A future object.
+     */
+    @Override
+    public ListenableFuture<Empty> deleteMessage(@NonNull Session session, @NonNull String messageId) {
+        return delete(session, Empty.newBuilder().build(), "/v1/message/" + messageId, Empty.newBuilder());
     }
 
     @Override
@@ -305,6 +379,53 @@ public class HttpClient implements Client {
     public ListenableFuture<Session> sessionRefresh(Session session) {
         AuthenticateRefreshRequest authenticateRefreshRequest = AuthenticateRefreshRequest.newBuilder().setRefreshToken(session.getRefreshToken()).build();
         return call(session, "POST", authenticateRefreshRequest, "v1/authenticate/refresh", com.heroiclabs.satori.api.Session.newBuilder(), sessionConverter);
+    }
+
+    /**
+     * The request to update the status of a message.
+     *
+     * @param session  The session of the user.
+     * @param id       The identifier of the message.
+     * @param readTime The time the message was read at the client.
+     * @return A future.
+     */
+    @Override
+    public ListenableFuture<Empty> updateMessage(@NonNull Session session, @NonNull String id, long readTime) {
+        UpdateMessageRequest req = UpdateMessageRequest.newBuilder().setId(id).setReadTime(readTime).build();
+        return put(session, req, "v1/message/" + id, Empty.newBuilder());
+    }
+
+    /**
+     * The request to update the status of a message.
+     *
+     * @param session     The session of the user.
+     * @param id          The identifier of the message.
+     * @param readTime    The time the message was read at the client.
+     * @param consumeTime The time the message was consumed by the identity.
+     * @return A future.
+     */
+    @Override
+    public ListenableFuture<Empty> updateMessage(@NonNull Session session, @NonNull String id, long readTime, long consumeTime) {
+        UpdateMessageRequest req = UpdateMessageRequest.newBuilder().setId(id).setReadTime(readTime).setConsumeTime(consumeTime).build();
+        return put(session, req, "v1/message/" + id, Empty.newBuilder());
+    }
+
+    /**
+     * Update or create properties for an identity.
+     *
+     * @param session           The session of the user.
+     * @param defaultProperties The properties to update or create.
+     * @param customProperties  The properties to update or create.
+     * @return A future object.
+     */
+    @Override
+    public ListenableFuture<Empty> updateProperties(@NonNull Session session, @NonNull Map<String, String> defaultProperties, @NonNull Map<String, String> customProperties) {
+        // Assuming we have a method to convert Properties to a Map
+        UpdatePropertiesRequest updatePropertiesRequest = UpdatePropertiesRequest.newBuilder()
+                .putAllDefault(defaultProperties)
+                .putAllCustom(customProperties)
+                .build();
+        return put(session, updatePropertiesRequest, "v1/properties", Empty.newBuilder());
     }
 
     private Timestamp toProtoTimestamp(Instant instant) {

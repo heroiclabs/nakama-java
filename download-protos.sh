@@ -17,7 +17,6 @@
 # This command is a utility for downloading all .proto files required
 # for making full source builds.
 
-
 TOKEN=$1
 
 # Check if TOKEN is empty
@@ -27,9 +26,9 @@ then
     exit 1
 fi
 
-NAKAMA_COMMON_COMMIT=b013ccdfa0be37f97c716a477409dfe935b111f7
-NAKAMA_COMMIT=ec12afadd940cd779f5b1acadc0faf33ed9fa94c
-SATORI_COMMIT=111239fbd9a132aad346a1c6eeafae2550c23667
+NAKAMA_COMMON_COMMIT=v1.33.0
+NAKAMA_COMMIT=v3.23.0
+SATORI_COMMIT=v2.0.2
 DOMAIN=https://raw.githubusercontent.com
 
 API_URL=${DOMAIN}/heroiclabs/nakama-common/${NAKAMA_COMMON_COMMIT}/api/api.proto
@@ -39,6 +38,8 @@ SATORI_APIGRPC_URL=${DOMAIN}/heroiclabs/satori/${SATORI_COMMIT}/api/satori.proto
 
 ROOT_DIR=proto
 curl $API_URL --create-dirs -o ${ROOT_DIR}/github.com/heroiclabs/nakama-common/api/api.proto
-curl $REALTIME_URL --create-dirs -o ${ROOT_DIR}/github.com/heroiclabs/nakama-common/api/realtime.proto
+curl $REALTIME_URL --create-dirs -o ${ROOT_DIR}/github.com/heroiclabs/nakama-common/rtapi/realtime.proto
+sed -ie 's,import "api/api.proto",import "github.com/heroiclabs/nakama-common/api/api.proto",' ${ROOT_DIR}/github.com/heroiclabs/nakama-common/rtapi/realtime.proto
+
 curl $APIGRPC_URL --create-dirs -o ${ROOT_DIR}/github.com/heroiclabs/nakama/api/apigrpc.proto
 curl -H "Authorization: token $TOKEN" $SATORI_APIGRPC_URL --create-dirs -o ${ROOT_DIR}/github.com/heroiclabs/satori/api/satori.proto

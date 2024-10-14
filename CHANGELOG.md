@@ -4,6 +4,19 @@ All notable changes to this project are documented below.
 
 The format is based on [keep a changelog](http://keepachangelog.com/) and this project uses [semantic versioning](http://semver.org/).
 
+## [2.5.0] - 2024-10-14
+
+### Added
+- Updated SDK to add functionality for APIs in Nakama 3.23 and Satori 2.0.
+- Added auto-refresh logic for the session token in Nakama and Satori.  
+
+### Changed
+- Moved Protobuf build tooling to use Buf, and simplifying the Gradle build scripts.
+- Round of dependency upgrades.
+
+### Added
+- Added ability to create a new Session from a Signing Key for server-to-server calls. See `Session.fromSigningKey()`.
+
 ## [2.4.0] - 2023-07-25
 
 ### Added

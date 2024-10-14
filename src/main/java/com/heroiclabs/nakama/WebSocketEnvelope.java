@@ -54,4 +54,21 @@ class WebSocketEnvelope {
     private StatusUpdateMessage statusUpdate;
     private StreamData streamData;
     private StreamPresenceEvent streamPresenceEvent;
+    private Party party;
+    private PartyCreateMessage partyCreate;
+    private PartyJoinMessage partyJoin;
+    private PartyLeaveMessage partyLeave;
+    private PartyPromoteMessage partyPromote;
+    private PartyLeader partyLeader;
+    private PartyAcceptMessage partyAccept;
+    private PartyRemoveMessage partyRemove;
+    private PartyCloseMessage partyClose;
+    private PartyJoinRequestListMessage partyJoinRequestList;
+    private PartyJoinRequest partyJoinRequest;
+    private PartyMatchmakerAddMessage partyMatchmakerAdd;
+    private PartyMatchmakerRemoveMessage partyMatchmakerRemove;
+    private PartyMatchmakerTicket partyMatchmakerTicket;
+    private PartyData partyData;
+    private PartyDataSendMessage partyDataSend;
+    private PartyPresenceEvent partyPresenceEvent;
 }

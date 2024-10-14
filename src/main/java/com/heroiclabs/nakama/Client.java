@@ -725,6 +725,13 @@ public interface Client {
     ListenableFuture<Group> createGroup(@NonNull final Session session, @NonNull final String name, final String description, final String avatarUrl, final String langTag, final boolean open, final int maxCount);
 
     /**
+     * Delete account.
+     * @param session The session of the user.
+     * @return A future.
+     */
+    ListenableFuture<Empty> deleteAccount(@NonNull final Session session);
+
+    /**
      * Delete one more or users by id.
      * @param session The session of the user.
      * @param ids the user ids to remove as friends.
@@ -778,6 +785,15 @@ public interface Client {
     ListenableFuture<Empty> deleteStorageObjects(@NonNull final Session session, @NonNull final StorageObjectId... objectIds);
 
     /**
+     * Delete a tournament record.
+     *
+     * @param session The session of the user.
+     * @param tournamentId The id of the tournament with the record to be deleted.
+     * @return A future.
+     */
+    ListenableFuture<Empty> deleteTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId);
+
+    /**
      * Demote a set of users in a group to the next role down.
      *
      * @param session The session of the user.
@@ -804,6 +820,23 @@ public interface Client {
      * @return A future to resolve an account object.
      */
     ListenableFuture<Account> getAccount(@NonNull final Session session);
+
+    /**
+     * Get the Matchmaker stats.
+     *
+     * @param session The session of the user.
+     * @return A future to resolve a Matchmaker stats object.
+     */
+    ListenableFuture<MatchmakerStats> getMatchmakerStats(@NonNull final Session session);
+
+    /**
+     * Fetch a subscription by product id.
+     *
+     * @param session The session of the user.
+     * @param productId Product id of the subscription.
+     * @return A future to resolve a Validated subscription object.
+     */
+    ListenableFuture<ValidatedSubscription> getSubscription(@NonNull final Session session, @NonNull final String productId);
 
     /**
      * Fetch one or more users by id, usernames, and Facebook ids.
@@ -859,6 +892,31 @@ public interface Client {
      * @return A future.
      */
     ListenableFuture<Empty> importFacebookFriends(@NonNull final Session session, @NonNull final String token, final boolean reset);
+
+    /**
+     * Import Steam friends and add them to the user's account.
+     *
+     * The server will import friends when the user authenticates with steam. This function can be used to be
+     * explicit with the import operation.
+     *
+     * @param session The session of the user.
+     * @param token An access token from the Steam.
+     * @return A future.
+     */
+    ListenableFuture<Empty> importSteamFriends(@NonNull final Session session, @NonNull final String token);
+
+    /**
+     * Import Steam friends and add them to the user's account.
+     *
+     * The server will import friends when the user authenticates with steam. This function can be used to be
+     * explicit with the import operation.
+     *
+     * @param session The session of the user.
+     * @param token An access token from the Steam.
+     * @param reset True if the Steam friend import for the user should be reset.
+     * @return A future.
+     */
+    ListenableFuture<Empty> importSteamFriends(@NonNull final Session session, @NonNull final String token, final boolean reset);
 
     /**
      * Join a group if it has open membership or request to join it.
@@ -976,9 +1034,10 @@ public interface Client {
      *
      * @param session The session of the user.
      * @param token An authentication token from the Steam network.
+     * @param syncFriends True if the Stream friends should be synced.
      * @return A future.
      */
-    ListenableFuture<Empty> linkSteam(@NonNull final Session session, @NonNull final String token);
+    ListenableFuture<Empty> linkSteam(@NonNull final Session session, @NonNull final String token, final boolean syncFriends);
 
     /**
      * Link a Game Center profile to a user account.
@@ -1056,6 +1115,16 @@ public interface Client {
     ListenableFuture<FriendList> listFriends(@NonNull final Session session, final int state, final int limit, final String cursor);
 
     /**
+     * List friends of my firends who are not my friends yet.
+     *
+     * @param session The session of the user.
+     * @param limit Max number of records to return. Between 1 and 100.
+     * @param cursor An optional next page cursor.
+     * @return A future to resolve friend of friends objects.
+     */
+    ListenableFuture<FriendsOfFriendsList> listFriendsOfFriends(@NonNull final Session session, final int limit, final String cursor);
+
+    /**
      * List all users part of the group.
      *
      * @param session The session of the user.
@@ -1105,6 +1174,20 @@ public interface Client {
      * @return A future to resolve group objects.
      */
     ListenableFuture<GroupList> listGroups(@NonNull final Session session, final String name, final int limit, final String cursor);
+
+    /**
+     * List groups on the server.
+     *
+     * @param session The session of the user.
+     * @param name The name filter to apply to the group list.
+     * @param langTag the language tag to filter on.
+     * @param members Number of group members.
+     * @param open Whether the group is open or closed.
+     * @param limit The number of groups to list.
+     * @param cursor A cursor for the current position in the groups to list.
+     * @return A future to resolve group objects.
+     */
+    ListenableFuture<GroupList> listGroups(@NonNull final Session session, final String name, final String langTag, final Integer members, final Boolean open, final int limit, final String cursor);
 
     /**
      * List records from a leaderboard.
@@ -1190,6 +1273,18 @@ public interface Client {
      * @return A future to resolve leaderboard record objects.
      */
     ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final String ownerId, final int expiry, final int limit);
+
+    /**
+     * List leaderrboard records from a given leaderboard around the owner.
+     * @param session The session of the user.
+     * @param leaderboardId The id of the leaderboard to list.
+     * @param ownerId The owner to retrieve records around.
+     * @param expiry Expiry in seconds (since epoch) to begin fetching records from.
+     * @param limit Max number of records to return. Between 1 and 100.
+     * @param cursor A cursor for the current position in the leaderboard records to list.
+     * @return A future to resolve leaderboard record objects.
+     */
+    ListenableFuture<LeaderboardRecordList> listLeaderboardRecordsAroundOwner(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final String ownerId, final int expiry, final int limit, final String cursor);
 
     /**
      * Fetch a list of matches active on the server.
@@ -1310,6 +1405,33 @@ public interface Client {
      * @return A future which resolves to a storage object list.
      */
     ListenableFuture<StorageObjectList> listStorageObjects(@NonNull final Session session, @NonNull final String collection, final int limit, final String cursor);
+
+    /**
+     * List user subscriptions.
+     *
+     * @param session The session of the user.
+     * @return A future which resolves to a subscription list.
+     */
+    ListenableFuture<SubscriptionList> listSubscriptions(@NonNull final Session session);
+
+    /**
+     * List user subscriptions.
+     *
+     * @param session The session of the user.
+     * @param limit Max number of results per page.
+     * @return A future which resolves to a subscription list.
+     */
+    ListenableFuture<SubscriptionList> listSubscriptions(@NonNull final Session session, @NonNull final int limit);
+
+    /**
+     * List user subscriptions.
+     *
+     * @param session The session of the user.
+     * @param limit Max number of results per page.
+     * @param cursor Cursor to retrieve a page of records from.
+     * @return A future which resolves to a subscription list.
+     */
+    ListenableFuture<SubscriptionList> listSubscriptions(@NonNull final Session session, @NonNull final int limit, @NonNull final String cursor);
 
     /**
      * List active/upcoming tournaments based on given filters.
@@ -1468,6 +1590,18 @@ public interface Client {
     ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final String ownerId, final int expiry, final int limit);
 
     /**
+     * List tournament records from a given tournament around the owner.
+     * @param session The session of the user.
+     * @param tournamentId The ID of the tournament to list for.
+     * @param ownerId The owner to retrieve records around.
+     * @param expiry Expiry in seconds (since epoch) to begin fetching records from.
+     * @param limit Max number of records to return. Between 1 and 100.
+     * @param cursor A next or previous page cursor.
+     * @return A future to resolve tournament record objects.
+     */
+    ListenableFuture<TournamentRecordList> listTournamentRecordsAroundOwner(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final String ownerId, final int expiry, final int limit, String cursor);
+
+    /**
      * List of groups the current user is a member of.
      *
      * @param session The session of the user.
@@ -1530,6 +1664,13 @@ public interface Client {
     ListenableFuture<StorageObjectList> listUsersStorageObjects(@NonNull final Session session, @NonNull final String collection, final String userId, final int limit, final String cursor);
 
     /**
+     * Log out a session, invalidate a refresh token, or log out all sessions/refresh tokens for a user.
+     * @param session The session to invalidate and log out.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Empty> logoutSession(@NonNull final Session session);
+
+    /**
      * Promote one or more users in the group.
      *
      * @param session The session of the user.
@@ -1570,6 +1711,21 @@ public interface Client {
 //    TODO(mo): Is this still needed from the client / doable using gRPC?
 //    ListenableFuture<Rpc> rpc(@NonNull final String httpKey, @NonNull final String id);
 //    ListenableFuture<Rpc> rpc(@NonNull final String httpKey, @NonNull final String id, @NonNull final String payload);
+
+    /**
+     * Refresh a user's session using a refresh token retrieved from a previous authentication request.
+     * @param session An existing session.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> refreshSession(@NonNull final Session session);
+
+    /**
+     * Refresh a user's session using a refresh token retrieved from a previous authentication request.
+     * @param session An existing session.
+     * @param vars Extra information that will be bundled in the session token.
+     * @return A future to resolve a session object.
+     */
+    ListenableFuture<Session> refreshSession(@NonNull final Session session, @NonNull final Map<String, String> vars);
 
     /**
      * Remove the Apple ID from the social profiles on the current user's account.
@@ -1799,6 +1955,66 @@ public interface Client {
     ListenableFuture<Empty> updateGroup(@NonNull final Session session, @NonNull final String groupId, final String name, final String description, final String avatarUrl, final String langTag, final boolean open);
 
     /**
+     * Validate Apple IAP Receipt.
+     *
+     * @param session The session of the user.
+     * @param receipt Base64 encoded Apple receipt data payload.
+     * @param persist Persist the purchase.
+     * @return A future that contains a validated receipt.
+     */
+    ListenableFuture<ValidatePurchaseResponse> validatePurchaseApple(@NonNull final Session session, @NonNull final String receipt, @NonNull final boolean persist);
+
+    /**
+     * Validate FB Instant IAP Receipt.
+     *
+     * @param session The session of the user.
+     * @param signedRequest Base64 encoded Facebook Instant signedRequest receipt data payload.
+     * @param persist Persist the purchase.
+     * @return A future that contains a validated receipt.
+     */
+    ListenableFuture<ValidatePurchaseResponse> validatePurchaseFacebookInstant(@NonNull final Session session, @NonNull final String signedRequest, @NonNull final boolean persist);
+
+    /**
+     * Validate Google IAP Receipt.
+     *
+     * @param session The session of the user.
+     * @param receipt JSON encoded Google purchase payload.
+     * @param persist Persist the purchase.
+     * @return A future that contains a validated receipt.
+     */
+    ListenableFuture<ValidatePurchaseResponse> validatePurchaseGoogle(@NonNull final Session session, @NonNull final String receipt, @NonNull final boolean persist);
+
+    /**
+     * Validate Huawei IAP Receipt.
+     *
+     * @param session The session of the user.
+     * @param receipt JSON encoded Huawei InAppPurchaseData.
+     * @param persist Persist the purchase.
+     * @return A future that contains a validated receipt.
+     */
+    ListenableFuture<ValidatePurchaseResponse> validatePurchaseHuawei(@NonNull final Session session, @NonNull final String receipt, @NonNull final boolean persist);
+
+    /**
+     * Validate Apple Subscription Receipt
+     *
+     * @param session The session of the user.
+     * @param receipt Base64 encoded Apple receipt data payload.
+     * @param persist Persist the purchase.
+     * @return A future that contains a validated receipt.
+     */
+    ListenableFuture<ValidateSubscriptionResponse> validateSubscriptionApple(@NonNull final Session session, @NonNull final String receipt, @NonNull final boolean persist);
+
+    /**
+     * Validate Google Subscription Receipt
+     *
+     * @param session The session of the user.
+     * @param receipt Base64 encoded Apple receipt data payload.
+     * @param persist Persist the purchase.
+     * @return A future that contains a validated receipt.
+     */
+    ListenableFuture<ValidateSubscriptionResponse> validateSubscriptionGoogle(@NonNull final Session session, @NonNull final String receipt, @NonNull final boolean persist);
+
+    /**
      * Write a record to a leaderboard.
      *
      * @param session The session for the user.
@@ -1806,7 +2022,7 @@ public interface Client {
      * @param score The score for the leaderboard record.
      * @return A future to complete the leaderboard record write.
      */
-    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score);
+    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score);
 
     /**
      * Write a record to a leaderboard.
@@ -1817,7 +2033,7 @@ public interface Client {
      * @param subscore The subscore for the leaderboard record.
      * @return A future to complete the leaderboard record write.
      */
-    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score, final long subscore);
+    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score, @NonNull final long subscore);
 
     /**
      * Write a record to a leaderboard.
@@ -1828,7 +2044,7 @@ public interface Client {
      * @param metadata The metadata for the leaderboard record.
      * @return A future to complete the leaderboard record write.
      */
-    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score, final String metadata);
+    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score, @NonNull final String metadata);
 
     /**
      * Write a record to a leaderboard.
@@ -1840,7 +2056,20 @@ public interface Client {
      * @param metadata The metadata for the leaderboard record.
      * @return A future to complete the leaderboard record write.
      */
-    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, final long score, final long subscore, final String metadata);
+    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score, @NonNull final long subscore, @NonNull final String metadata);
+
+    /**
+     * Write a record to a leaderboard.
+     *
+     * @param session The session for the user.
+     * @param leaderboardId The id of the leaderboard to write.
+     * @param score The score for the leaderboard record.
+     * @param subscore The subscore for the leaderboard record.
+     * @param metadata The metadata for the leaderboard record.
+     * @param operator Operator override.
+     * @return A future to complete the leaderboard record write.
+     */
+    ListenableFuture<LeaderboardRecord> writeLeaderboardRecord(@NonNull final Session session, @NonNull final String leaderboardId, @NonNull final long score, @NonNull final long subscore, @NonNull final String metadata, @NonNull final Operator operator);
 
     /**
      * Write objects to the storage engine.
@@ -1859,7 +2088,7 @@ public interface Client {
      * @param score The score value to submit.
      * @return A future to complete the tournament record write.
      */
-    ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, final long score);
+    ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final long score);
 
     /**
      * A request to submit a score to a tournament.
@@ -1870,7 +2099,7 @@ public interface Client {
      * @param subscore An optional secondary value.
      * @return A future to complete the tournament record write.
      */
-    ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, final long score, final long subscore);
+    ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final long score, @NonNull final long subscore);
 
     /**
      * A request to submit a score to a tournament.
@@ -1881,7 +2110,7 @@ public interface Client {
      * @param metadata A JSON object of additional properties.
      * @return A future to complete the tournament record write.
      */
-    ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, final long score, final String metadata);
+    ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final long score, @NonNull final String metadata);
 
     /**
      * A request to submit a score to a tournament.
@@ -1893,5 +2122,18 @@ public interface Client {
      * @param metadata A JSON object of additional properties.
      * @return A future to complete the tournament record write.
      */
-    ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, final long score, final long subscore, final String metadata);
+    ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final long score, @NonNull final long subscore, @NonNull final String metadata);
+
+    /**
+     * A request to submit a score to a tournament.
+     *
+     * @param session The session for the user.
+     * @param tournamentId The tournament ID to write the record for.
+     * @param score The score value to submit.
+     * @param subscore  An optional secondary value.
+     * @param metadata A JSON object of additional properties.
+     * @param operator Operator override.
+     * @return A future to complete the tournament record write.
+     */
+    ListenableFuture<LeaderboardRecord> writeTournamentRecord(@NonNull final Session session, @NonNull final String tournamentId, @NonNull final long score, @NonNull final long subscore, @NonNull final String metadata, @NonNull final Operator operator);
 }

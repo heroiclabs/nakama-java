@@ -27,6 +27,10 @@ import com.google.protobuf.Timestamp;
 import com.google.type.Date;
 import com.heroiclabs.nakama.api.NotificationList;
 import com.heroiclabs.nakama.api.Rpc;
+import com.heroiclabs.nakama.rtapi.PartyJoin;
+import com.heroiclabs.nakama.rtapi.PartyJoinRequestList;
+import com.heroiclabs.nakama.rtapi.PartyMatchmakerAdd;
+import com.heroiclabs.nakama.rtapi.PartyMatchmakerTicket;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
@@ -231,6 +235,10 @@ public class WebSocketClient implements SocketClient {
                                 listener.onStreamData(env.getStreamData());
                             } else if (env.getStreamPresenceEvent() != null) {
                                 listener.onStreamPresence(env.getStreamPresenceEvent());
+                            } else if (env.getPartyPresenceEvent() != null) {
+                                listener.onPartyPresence(env.getPartyPresenceEvent());
+                            } else if (env.getPartyData() != null) {
+                                listener.onPartyData(env.getPartyData());
                             } else {
                                 log.error("Unrecognised incoming uncollated message from server: " + env.toString());
                             }
@@ -264,6 +272,12 @@ public class WebSocketClient implements SocketClient {
                         cidFuture.set(env.getMatchmakerTicket());
                     } else if (env.getStatus() != null) {
                         cidFuture.set(env.getStatus());
+                    } else if (env.getParty() != null) {
+                        cidFuture.set(env.getParty());
+                    } else if (env.getPartyJoinRequest() != null) {
+                        cidFuture.set(env.getPartyJoinRequest());
+                    } else if (env.getPartyMatchmakerTicket() != null) {
+                        cidFuture.set(env.getPartyMatchmakerTicket());
                     } else {
                         cidFuture.set(null);
                     }
@@ -563,6 +577,126 @@ public class WebSocketClient implements SocketClient {
         final WebSocketEnvelope env = new WebSocketEnvelope();
         env.setStatusUpdate(message);
         return send(env);
+    }
+
+    @Override
+    public ListenableFuture<Party> createParty(boolean open, int maxSize) {
+        final PartyCreateMessage msg = new PartyCreateMessage();
+        msg.setOpen(open);
+        msg.setMaxSize(maxSize);
+
+        final WebSocketEnvelope env = new WebSocketEnvelope();
+        env.setPartyCreate(msg);
+        return send(env);
+    }
+
+    @Override
+    public ListenableFuture<Void> joinParty(@NonNull String partyId) {
+        final PartyJoinMessage msg = new PartyJoinMessage();
+        msg.setPartyId(partyId);
+
+        final WebSocketEnvelope env = new WebSocketEnvelope();
+        env.setPartyJoin(msg);
+        return send(env);
+    }
+
+    @Override
+    public ListenableFuture<Void> leaveParty(@NonNull String partyId) {
+        final PartyLeaveMessage msg = new PartyLeaveMessage();
+        msg.setPartyId(partyId);
+
+        final WebSocketEnvelope env = new WebSocketEnvelope();
+        env.setPartyLeave(msg);
+        return send(env);
+    }
+
+    @Override
+    public ListenableFuture<Void> promoteParty(@NonNull String partyId, UserPresence userPresence) {
+        final PartyPromoteMessage msg = new PartyPromoteMessage();
+        msg.setPartyId(partyId);
+        msg.setPresence(userPresence);
+
+        final WebSocketEnvelope env = new WebSocketEnvelope();
+        env.setPartyPromote(msg);
+        return send(env);
+    }
+
+    @Override
+    public ListenableFuture<Void> acceptParty(@NonNull String partyId, UserPresence userPresence) {
+        final PartyAcceptMessage msg = new PartyAcceptMessage();
+        msg.setPartyId(partyId);
+        msg.setPresence(userPresence);
+
+        final WebSocketEnvelope env = new WebSocketEnvelope();
+        env.setPartyAccept(msg);
+        return send(env);
+    }
+
+    @Override
+    public ListenableFuture<Void> removeParty(@NonNull String partyId, UserPresence userPresence) {
+        final PartyRemoveMessage msg = new PartyRemoveMessage();
+        msg.setPartyId(partyId);
+        msg.setPresence(userPresence);
+
+        final WebSocketEnvelope env = new WebSocketEnvelope();
+        env.setPartyRemove(msg);
+        return send(env);
+    }
+
+    @Override
+    public ListenableFuture<Party> closeParty(@NonNull String partyId) {
+        final PartyCloseMessage msg = new PartyCloseMessage();
+        msg.setPartyId(partyId);
+
+        final WebSocketEnvelope env = new WebSocketEnvelope();
+        env.setPartyClose(msg);
+        return send(env);
+    }
+
+    @Override
+    public ListenableFuture<PartyJoinRequest> listPartyJoinRequest(@NonNull String partyId) {
+        final PartyJoinRequestListMessage msg = new PartyJoinRequestListMessage();
+        msg.setPartyId(partyId);
+
+        final WebSocketEnvelope env = new WebSocketEnvelope();
+        env.setPartyJoinRequestList(msg);
+        return send(env);
+    }
+
+    @Override
+    public ListenableFuture<PartyMatchmakerTicket> addPartyMatchmaker(@NonNull String partyId, int minCount, int maxCount, @NonNull String query, Map<String, String> stringProperties, Map<String, Double> numericProperties, int countMultiple) {
+        final PartyMatchmakerAddMessage msg = new PartyMatchmakerAddMessage();
+        msg.setPartyId(partyId);
+        msg.setMaxCount(minCount);
+        msg.setMaxCount(maxCount);
+        msg.setQuery(query);
+        msg.setStringProperties(stringProperties);
+        msg.setNumericProperties(numericProperties);
+        msg.setCountMultiple(countMultiple);
+
+        final WebSocketEnvelope env = new WebSocketEnvelope();
+        env.setPartyMatchmakerAdd(msg);
+        return send(env);
+    }
+
+    @Override
+    public ListenableFuture<Void> removePartyMatchmaker(@NonNull String partyId, @NonNull String ticket) {
+        final PartyMatchmakerRemoveMessage msg = new PartyMatchmakerRemoveMessage();
+        msg.setPartyId(partyId);
+        msg.setTicket(ticket);
+
+        final WebSocketEnvelope env = new WebSocketEnvelope();
+        env.setPartyMatchmakerRemove(msg);
+        return send(env);
+    }
+
+    @Override
+    public void sendPartyData(@NonNull String partyId, int opCode, @NonNull byte[] data) {
+        final PartyDataSendMessage msg = new PartyDataSendMessage(partyId, opCode, data);
+
+        final WebSocketEnvelope env = new WebSocketEnvelope();
+        env.setPartyDataSend(msg);
+        sendAsync(env);
     }
 
     private void sendAsync(@NonNull final WebSocketEnvelope webSocketEnvelope) {

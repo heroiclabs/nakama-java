@@ -29,11 +29,8 @@ import com.auth0.jwt.JWT;
 
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +39,6 @@ import java.util.Map;
 @EqualsAndHashCode
 @ToString
 public class DefaultSession implements Session {
-
     private long createTime;
     private long expireTime;
     private long refreshExpireTime;
@@ -51,6 +47,37 @@ public class DefaultSession implements Session {
     private String authToken;
 
     DefaultSession(final String authToken, final String refreshToken) {
+        this.update(authToken, refreshToken);
+    }
+
+    @Override
+    public boolean isExpired() {
+        return isExpired(new Date());
+    }
+
+    @Override
+    public boolean isExpired(Date dateTime) {
+        return (expireTime - dateTime.getTime()) < 0L;
+    }
+
+    @Override
+    public boolean isRefreshExpired() {
+        return isRefreshExpired(new Date());
+    }
+
+    @Override
+    public boolean isRefreshExpired(Date dateTime) {
+        return (refreshExpireTime - dateTime.getTime()) < 0L;
+    }
+
+    /**
+     * In-place update a session with new token/refresh-token.
+     *
+     * @param token        Authentication token.
+     * @param refreshToken Refresh token.
+     */
+    @Override
+    public void update(String token, String refreshToken) {
         this.createTime = System.currentTimeMillis();
         this.authToken = authToken;
         this.refreshToken = refreshToken;
@@ -65,22 +92,6 @@ public class DefaultSession implements Session {
         } else {
             this.refreshExpireTime = 0L;
         }
-    }
-
-    public boolean isExpired() {
-        return isExpired(new Date());
-    }
-
-    public boolean isExpired(Date dateTime) {
-        return (expireTime - dateTime.getTime()) < 0L;
-    }
-
-    public boolean isRefreshExpired() {
-        return isRefreshExpired(new Date());
-    }
-
-    public boolean isRefreshExpired(Date dateTime) {
-        return (refreshExpireTime - dateTime.getTime()) < 0L;
     }
 
     public static Session restore(String authToken, String refreshToken) {
@@ -118,7 +129,7 @@ public class DefaultSession implements Session {
         if (identityId.isEmpty()) {
             throw new IllegalArgumentException("identityId cannot be empty");
         }
-        if (tokenDuration.isNegative() || tokenDuration.isNegative()) {
+        if (tokenDuration.isNegative()) {
             throw new IllegalArgumentException("tokenDuration is invalid");
         }
 

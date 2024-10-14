@@ -17,15 +17,20 @@
 package com.heroiclabs.satori;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
+import com.google.protobuf.BoolValue;
 import com.heroiclabs.nakama.api.NakamaGrpc;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import com.google.common.io.BaseEncoding;
@@ -53,6 +58,11 @@ public class DefaultClient implements Client {
     private static final String USERAGENT = "satori-java-client";
 
     private final Metadata basicAuthMetadata;
+
+    @Getter @Setter
+    private boolean autoRefreshSession = true;
+    @Getter @Setter
+    private int defaultExpiryTimeMinutes = 5;
 
     /**
      * A client to interact with the Satori server.
@@ -140,17 +150,38 @@ public class DefaultClient implements Client {
 
     @Override
     public ListenableFuture<Empty> authenticateLogout(@NonNull final Session session) {
-        return getStub(session).authenticateLogout(AuthenticateLogoutRequest.newBuilder()
+        return autoRefreshSession(session, getStub(session).authenticateLogout(AuthenticateLogoutRequest.newBuilder()
                 .setToken(session.getAuthToken())
                 .setRefreshToken(session.getRefreshToken())
-                .build());
+                .build()));
+    }
+
+    @Override
+    public ListenableFuture<Empty> deleteIdentity(@NonNull final Session session) {
+        return autoRefreshSession(session, getStub(session).deleteIdentity(Empty.newBuilder().build()));
+    }
+
+    @Override
+    public ListenableFuture<Empty> deleteMessage(@NonNull final Session session, @NonNull final String messageId) {
+        return autoRefreshSession(session, getStub(session).deleteMessage(DeleteMessageRequest.newBuilder().setId(messageId).build()));
+    }
+
+    @Override
+    public void disconnect() {
+        this.managedChannel.shutdownNow();
+    }
+
+    @Override
+    public void disconnect(final long timeout, @NonNull final TimeUnit unit) throws InterruptedException {
+        this.managedChannel.shutdown();
+        this.managedChannel.awaitTermination(timeout, unit);
     }
 
     @Override
     public ListenableFuture<Empty> event(@NonNull final Session session, @NonNull final Event event) {
-        return getStub(session).event(EventRequest.newBuilder()
+        return autoRefreshSession(session, getStub(session).event(EventRequest.newBuilder()
                 .addEvents(toProtoEvent(event))
-                .build());
+                .build()));
     }
 
     @Override
@@ -161,20 +192,20 @@ public class DefaultClient implements Client {
             builder.addEvents(toProtoEvent(events.get(i)));
         }
 
-        return getStub(session).event(builder.build());
+        return autoRefreshSession(session, getStub(session).event(builder.build()));
     }
 
     @Override
     public ListenableFuture<ExperimentList> getAllExperiments(@NonNull final Session session) {
-        return getStub(session).getExperiments(GetExperimentsRequest.newBuilder()
-                .build());
+        return autoRefreshSession(session, getStub(session).getExperiments(GetExperimentsRequest.newBuilder()
+                .build()));
     }
 
     @Override
     public ListenableFuture<ExperimentList> getExperiments(@NonNull final Session session, @NonNull final String... names) {
-        return getStub(session).getExperiments(GetExperimentsRequest.newBuilder()
+        return autoRefreshSession(session, getStub(session).getExperiments(GetExperimentsRequest.newBuilder()
                 .addAllNames(Arrays.asList(names))
-                .build());
+                .build()));
     }
 
     @Override
@@ -211,9 +242,9 @@ public class DefaultClient implements Client {
 
     @Override
     public ListenableFuture<FlagList> getFlags(@NonNull final Session session, String... names) {
-        return getStub(session).getFlags(GetFlagsRequest.newBuilder()
+        return autoRefreshSession(session, getStub(session).getFlags(GetFlagsRequest.newBuilder()
                 .addAllNames(Arrays.asList(names))
-                .build());
+                .build()));
     }
 
     @Override
@@ -255,39 +286,34 @@ public class DefaultClient implements Client {
 
     @Override
     public ListenableFuture<LiveEventList> getLiveEvents(@NonNull final Session session, String... names) {
-        return getStub(session).getLiveEvents(GetLiveEventsRequest.newBuilder()
+        return autoRefreshSession(session, getStub(session).getLiveEvents(GetLiveEventsRequest.newBuilder()
                 .addAllNames(Arrays.asList(names))
-                .build());
+                .build()));
     }
 
     @Override
-    public ListenableFuture<Empty> updateProperties(@NonNull final Session session, @NonNull final Map<String, String> defaultProperties, @NonNull final Map<String, String> customProperties) {
-        // Assuming we have a method to convert Properties to a Map
-        return getStub(session).updateProperties(UpdatePropertiesRequest.newBuilder()
-                .putAllDefault(defaultProperties)
-                .putAllCustom(customProperties)
-                .build());
+    public ListenableFuture<GetMessageListResponse> getMessageList(@NonNull final Session session) {
+        return autoRefreshSession(session, getStub(session).getMessageList(GetMessageListRequest.newBuilder().build()));
     }
 
     @Override
-    public ListenableFuture<Empty> deleteIdentity(@NonNull final Session session) {
-        return getStub(session).deleteIdentity(Empty.newBuilder().build());
+    public ListenableFuture<GetMessageListResponse> getMessageList(@NonNull final Session session, final int limit) {
+        return autoRefreshSession(session, getStub(session).getMessageList(GetMessageListRequest.newBuilder().setLimit(limit).build()));
     }
 
     @Override
-    public void disconnect() {
-        this.managedChannel.shutdownNow();
+    public ListenableFuture<GetMessageListResponse> getMessageList(@NonNull final Session session, final int limit, final boolean forward) {
+        return autoRefreshSession(session, getStub(session).getMessageList(GetMessageListRequest.newBuilder().setLimit(limit).setForward(forward).build()));
     }
 
     @Override
-    public void disconnect(final long timeout, @NonNull final TimeUnit unit) throws InterruptedException {
-        this.managedChannel.shutdown();
-        this.managedChannel.awaitTermination(timeout, unit);
+    public ListenableFuture<GetMessageListResponse> getMessageList(@NonNull final Session session, final int limit, final boolean forward, @NonNull final String cursor) {
+        return autoRefreshSession(session, getStub(session).getMessageList(GetMessageListRequest.newBuilder().setLimit(limit).setForward(forward).setCursor(cursor).build()));
     }
 
     @Override
     public ListenableFuture<Properties> listProperties(@NonNull Session session) {
-        return getStub(session).listProperties(Empty.newBuilder().build());
+        return autoRefreshSession(session, getStub(session).listProperties(Empty.newBuilder().build()));
     }
 
     @Override
@@ -296,21 +322,73 @@ public class DefaultClient implements Client {
         return convertSession(getStub(session).identify(IdentifyRequest.newBuilder().setId(id).build()));
     }
 
-
     @Override
     public ListenableFuture<Session> sessionRefresh(Session session) {
         return convertSession(getStub(session).authenticateRefresh(
-            AuthenticateRefreshRequest.newBuilder().setRefreshToken(session.getRefreshToken()).build()));
+            AuthenticateRefreshRequest.newBuilder().setRefreshToken(session.getRefreshToken()).build()), session);
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateMessage(@NonNull final Session session, @NonNull final String id, final long readTime) {
+        return autoRefreshSession(session, getStub(session).updateMessage(UpdateMessageRequest.newBuilder().setId(id).setReadTime(readTime).build()));
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateMessage(@NonNull final Session session, @NonNull final String id, final long readTime, final long consumeTime) {
+        return autoRefreshSession(session, getStub(session).updateMessage(UpdateMessageRequest.newBuilder().setId(id).setReadTime(readTime).setConsumeTime(consumeTime).build()));
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateProperties(@NonNull final Session session, @NonNull final Map<String, String> defaultProperties, @NonNull final Map<String, String> customProperties) {
+        // Assuming we have a method to convert Properties to a Map
+        return autoRefreshSession(session, getStub(session).updateProperties(UpdatePropertiesRequest.newBuilder()
+                .putAllDefault(defaultProperties)
+                .putAllCustom(customProperties)
+                .build()));
+    }
+
+    @Override
+    public ListenableFuture<Empty> updateProperties(@NonNull final Session session, @NonNull final Map<String, String> defaultProperties, @NonNull final Map<String, String> customProperties, final boolean recompute) {
+        // Assuming we have a method to convert Properties to a Map
+        return autoRefreshSession(session, getStub(session).updateProperties(UpdatePropertiesRequest.newBuilder()
+                .putAllDefault(defaultProperties)
+                .putAllCustom(customProperties)
+                .setRecompute(BoolValue.newBuilder().setValue(recompute).build())
+                .build()));
     }
 
     private ListenableFuture<Session> convertSession(final ListenableFuture<com.heroiclabs.satori.api.Session> future) {
+        return convertSession(future, null);
+    }
+
+    private ListenableFuture<Session> convertSession(final ListenableFuture<com.heroiclabs.satori.api.Session> future, Session existingSession) {
       return Futures.transformAsync(future, new AsyncFunction<com.heroiclabs.satori.api.Session, Session>() {
           @Override
-          public ListenableFuture<Session> apply(@Nullable final com.heroiclabs.satori.api.Session input) {
-              final Session result = new DefaultSession(input.getToken(), input.getRefreshToken());
-              return Futures.immediateFuture(result);
+          public ListenableFuture<Session> apply(@NonNull final com.heroiclabs.satori.api.Session input) {
+              if (existingSession != null) {
+                  existingSession.update(input.getToken(), input.getRefreshToken());
+                  return Futures.immediateFuture(existingSession);
+              } else {
+                  final Session result = new DefaultSession(input.getToken(), input.getRefreshToken());
+                  return Futures.immediateFuture(result);
+              }
           }
       }, MoreExecutors.directExecutor());
+    }
+
+    private <V> ListenableFuture<V> autoRefreshSession(Session session, ListenableFuture<V> future) {
+        Date now = Date.from(Instant.now().atZone(ZoneId.of("UTC")).plusMinutes(defaultExpiryTimeMinutes).toInstant());
+        if (autoRefreshSession && session.getRefreshToken() != null && !session.getRefreshToken().isEmpty() && session.isRefreshExpired(now)) {
+            ListenableFuture<List<Object>> futures = Futures.allAsList(sessionRefresh(session), future);
+            return Futures.transformAsync(futures, new AsyncFunction<List<Object>, V>() {
+                @Override
+                public ListenableFuture<V> apply(@Nullable final List<Object> input) {
+                    return Futures.immediateFuture((V)input.get(1)); // ignore 0 as that's the session itself.
+                }
+            }, MoreExecutors.directExecutor());
+        } else {
+            return future;
+        }
     }
 
     private Timestamp toProtoTimestamp(Instant instant) {

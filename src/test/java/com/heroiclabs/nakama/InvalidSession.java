@@ -28,6 +28,9 @@ class InvalidSession implements Session {
     }
 
     @Override
+    public String getRefreshToken() {return "badrefreshtoken";}
+
+    @Override
     public boolean isCreated() {
         return true;
     }
@@ -48,6 +51,15 @@ class InvalidSession implements Session {
     }
 
     @Override
+    public boolean isRefreshExpired() { return false; }
+
+    @Override
+    public boolean isRefreshExpired(Date dateTime) { return false; }
+
+    @Override
+    public long getRefreshExpireTime() { return new Date().getTime() + 5000L; }
+
+    @Override
     public String getUsername() {
         return "invalid_username";
     }
@@ -66,4 +78,13 @@ class InvalidSession implements Session {
     public Map<String, String> getVars() {
         return new Hashtable<String, String>();
     }
+
+    /**
+     * In-place update a session with new token/refresh-token.
+     *
+     * @param token        Authentication token.
+     * @param refreshToken Refresh token.
+     */
+    @Override
+    public void update(String token, String refreshToken) {}
 }
