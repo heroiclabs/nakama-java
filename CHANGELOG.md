@@ -4,6 +4,11 @@ All notable changes to this project are documented below.
 
 The format is based on [keep a changelog](http://keepachangelog.com/) and this project uses [semantic versioning](http://semver.org/).
 
+## [2.5.1] - 2024-10-16
+
+### Changed
+- Include generated Protobuf code in the repository to allow CI tools to build the codebase without Buf tooling. 
+
 ## [2.5.0] - 2024-10-14
 
 ### Added
