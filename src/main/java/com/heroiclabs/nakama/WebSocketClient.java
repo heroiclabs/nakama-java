@@ -146,7 +146,7 @@ public class WebSocketClient implements SocketClient {
             @Override
             public void onMessage(final WebSocket webSocket, final ByteString bytes) {
                 super.onMessage(webSocket, bytes);
-                // No text messages are expected.
+                // No binary messages are expected.
                 log.warn("Unexpected binary message from server: " + bytes.base64());
             }
 
@@ -334,6 +334,17 @@ public class WebSocketClient implements SocketClient {
             socket = null;
         }
         return Futures.immediateFuture(true);
+    }
+
+    @Override
+    public synchronized void disconnectSocket() {
+        if (socket != null) {
+            // Returns true if a shutdown was initiated, false if already shutting down or disconnected.
+            // Either result is acceptable here.
+            // Socket reference will be set to null when disconnect is completed.
+            socket.close(1000, null);
+            socket = null;
+        }
     }
 
     @Override
