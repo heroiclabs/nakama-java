@@ -331,7 +331,8 @@ public class WebSocketClient implements SocketClient {
             // Either result is acceptable here.
             // Socket reference will be set to null when disconnect is completed.
             socket.close(1000, null);
-            socket = null;
+            // Don't nullify the socket at this stage as we'll need to have the OnClose called.
+            // socket = null;
         }
         return Futures.immediateFuture(true);
     }
@@ -343,7 +344,8 @@ public class WebSocketClient implements SocketClient {
             // Either result is acceptable here.
             // Socket reference will be set to null when disconnect is completed.
             socket.close(1000, null);
-            socket = null;
+            // Don't nullify the socket at this stage as we'll need to have the OnClose called.
+            // socket = null;
         }
     }
 
