@@ -4,6 +4,16 @@ All notable changes to this project are documented below.
 
 The format is based on [keep a changelog](http://keepachangelog.com/) and this project uses [semantic versioning](http://semver.org/).
 
+## [2.5.2] - 2024-10-28
+
+### Changed
+- WebSocketClient now closes the thread executor service if internal executor was used once the socket is closed.
+- Improve client and socket disconnection process.
+
+### Fixed
+- Corrected Channel Type enum values to match the protocol.
+- Session logout function no longer attempts to renew the token after logout.
+
 ## [2.5.1] - 2024-10-16
 
 ### Changed

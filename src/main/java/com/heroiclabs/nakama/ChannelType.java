@@ -23,17 +23,17 @@ public enum ChannelType {
     /**
      * A chat room which can be created dynamically with a name.
      */
-    ROOM(0),
+    ROOM(1),
 
     /**
      * A private chat between two users.
      */
-    DIRECT_MESSAGE(1),
+    DIRECT_MESSAGE(2),
 
     /**
      * A chat within a group on the server.
      */
-    GROUP(2);
+    GROUP(3);
 
     private final int value;
     ChannelType(int value) {

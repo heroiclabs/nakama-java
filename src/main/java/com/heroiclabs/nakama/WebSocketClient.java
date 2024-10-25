@@ -27,9 +27,6 @@ import com.google.protobuf.Timestamp;
 import com.google.type.Date;
 import com.heroiclabs.nakama.api.NotificationList;
 import com.heroiclabs.nakama.api.Rpc;
-import com.heroiclabs.nakama.rtapi.PartyJoin;
-import com.heroiclabs.nakama.rtapi.PartyJoinRequestList;
-import com.heroiclabs.nakama.rtapi.PartyMatchmakerAdd;
 import com.heroiclabs.nakama.rtapi.PartyMatchmakerTicket;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +40,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -79,8 +77,9 @@ public class WebSocketClient implements SocketClient {
     private final boolean trace;
     private final OkHttpClient client;
     private final Map<String, SettableFuture<?>> collationIds;
+    private final boolean shouldShutdownThreadExecService;
+    private ExecutorService listenerThreadExec;
     private WebSocket socket;
-    private final ExecutorService listenerThreadExec;
 
     WebSocketClient(@NonNull final String host, final int port, final boolean ssl,
                     final int socketTimeoutMs, final int socketPingMs, final boolean trace, ExecutorService listenerThreadExec) {
@@ -89,7 +88,13 @@ public class WebSocketClient implements SocketClient {
         this.ssl = ssl;
         this.trace = trace;
         this.collationIds = new ConcurrentHashMap<>();
-        this.listenerThreadExec = listenerThreadExec;
+        if (listenerThreadExec != null) {
+            this.listenerThreadExec = listenerThreadExec;
+            this.shouldShutdownThreadExecService = false;
+        } else {
+            this.listenerThreadExec = Executors.newSingleThreadExecutor();
+            this.shouldShutdownThreadExecService = true;
+        }
 
         client = new OkHttpClient.Builder()
                 .connectTimeout(socketTimeoutMs, TimeUnit.MILLISECONDS)
@@ -133,6 +138,11 @@ public class WebSocketClient implements SocketClient {
     }
 
     private ListenableFuture<Session> createWebsocket(@NonNull final Session session, @NonNull final SocketListener listener, @NonNull final Request request) {
+        if (this.listenerThreadExec == null || this.listenerThreadExec.isShutdown() || this.listenerThreadExec.isTerminated()) {
+            // in case of previously closed/failed socket.
+            this.listenerThreadExec = Executors.newSingleThreadExecutor();
+        }
+
         final SettableFuture<Session> connectFuture = SettableFuture.create();
         final Object lock = this;
         socket = client.newWebSocket(request, new WebSocketListener() {
@@ -295,6 +305,7 @@ public class WebSocketClient implements SocketClient {
                 super.onClosed(webSocket, code, reason);
                 // Graceful socket disconnect is complete, clean up.
                 synchronized (lock) {
+                    socket.cancel();
                     socket = null;
                     collationIds.clear();
 
@@ -303,6 +314,9 @@ public class WebSocketClient implements SocketClient {
                     }
                 }
                 listener.onDisconnect(null);
+                if (shouldShutdownThreadExecService) {
+                    listenerThreadExec.shutdown();
+                }
             }
 
             @Override
@@ -310,6 +324,7 @@ public class WebSocketClient implements SocketClient {
                 super.onFailure(webSocket, t, response);
                 // Socket has failed and is no longer connected, clean up.
                 synchronized (lock) {
+                    socket.cancel();
                     socket = null;
                     collationIds.clear();
 
@@ -319,6 +334,9 @@ public class WebSocketClient implements SocketClient {
                 }
 
                 listener.onDisconnect(t);
+                if (shouldShutdownThreadExecService) {
+                    listenerThreadExec.shutdown();
+                }
             }
         });
         return connectFuture;
