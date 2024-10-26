@@ -45,6 +45,8 @@ public class MatchmakerTest {
 
     @After
     public void shutdown() throws Exception {
+        socket.disconnectSocket();
+        socket2.disconnectSocket();
         client.disconnect(5000, TimeUnit.MILLISECONDS);
     }
 

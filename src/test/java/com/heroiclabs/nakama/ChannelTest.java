@@ -42,7 +42,7 @@ public class ChannelTest {
 
     @After
     public void shutdown() throws Exception {
-        socket.disconnect();
+        socket.disconnectSocket();
         client.disconnect(5000, TimeUnit.MILLISECONDS);
     }
 
@@ -56,7 +56,7 @@ public class ChannelTest {
         Assert.assertNotNull(channel.getSelf());
         Assert.assertEquals(session.getUserId(), channel.getSelf().getUserId());
         socket.leaveChat(channel.getId()).get();
-        socket.disconnect();
+        socket.disconnectSocket();
     }
 
     @Test

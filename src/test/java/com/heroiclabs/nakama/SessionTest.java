@@ -22,6 +22,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -54,5 +55,13 @@ public class SessionTest {
 
         Assert.assertNotEquals(0, session.getCreateTime());
         Assert.assertNotEquals(0, session.getExpireTime());
+
+        // let's make sure that we terminate all threads correctly.
+        for (Thread thread: Thread.getAllStackTraces().keySet()) {
+//            System.out.printf("%s: %s %s\n", thread.getName(), thread.getState(), thread.isDaemon() ? "(daemon)" : "");
+            if (!thread.getName().equalsIgnoreCase("main")) {
+                Assert.assertTrue(thread.isDaemon());
+            }
+        }
     }
 }

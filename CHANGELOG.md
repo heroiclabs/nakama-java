@@ -13,6 +13,7 @@ The format is based on [keep a changelog](http://keepachangelog.com/) and this p
 ### Fixed
 - Corrected Channel Type enum values to match the protocol.
 - Session logout function no longer attempts to renew the token after logout.
+- WebSocket client resources are released immediately after disconnection and are made ready again in case of reconnection.
 
 ## [2.5.1] - 2024-10-16
 
