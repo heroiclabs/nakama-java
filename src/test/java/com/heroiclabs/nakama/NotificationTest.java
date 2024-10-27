@@ -45,7 +45,7 @@ public class NotificationTest {
 
     @After
     public void shutdown() throws Exception {
-        socket.disconnect();
+        socket.disconnectSocket();
         client.disconnect(5000, TimeUnit.MILLISECONDS);
     }
 

@@ -24,6 +24,7 @@ import lombok.NonNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A socket connection to the server.
@@ -48,10 +49,17 @@ public interface SocketClient {
 
     /**
      * Close the connection with the server.
+     * @deprecated
+     * This method is deprecated. <p> Use {@link SocketClient#disconnectSocket()} instead.
      *
      * @return A close future.
      */
     ListenableFuture<Boolean> disconnect();
+
+    /**
+     * Close the connection with the server. This is an asynchronous call, and you should subscribe to OnClose callback to act on this.
+     */
+    void disconnectSocket();
 
     /**
      * Join a chat channel on the server.

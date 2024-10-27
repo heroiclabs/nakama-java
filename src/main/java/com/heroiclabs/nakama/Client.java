@@ -37,6 +37,8 @@ public interface Client {
 
     /**
      * Disconnects the client. This function kills all outgoing exchanges immediately without waiting.
+     * @deprecated
+     * This method is deprecated. <p> Use {@link Client#disconnect(long, TimeUnit)} instead.
      */
     void disconnect();
 

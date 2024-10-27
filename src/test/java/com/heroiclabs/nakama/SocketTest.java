@@ -16,12 +16,17 @@
 
 package com.heroiclabs.nakama;
 
+import com.heroiclabs.nakama.api.ChannelMessage;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +47,7 @@ public class SocketTest {
 
     @After
     public void shutdown() throws Exception {
-        socket.disconnect();
+        socket.disconnectSocket();
     }
 
     @Test(expected = Error.class)
@@ -111,5 +116,60 @@ public class SocketTest {
         }
 
         Assert.assertTrue("Success callback was not dispatched.", connectCallback.successDispatched);
+    }
+
+    @Test
+    public void testMultiConnectAndThreadCount() throws Exception {
+        final List<Boolean> callbacks = new ArrayList<Boolean>();
+        final CountDownLatch latch = new CountDownLatch(4);
+        final String content = "{\"message\":\"Hello world\"}";
+
+        socket.connect(session, new AbstractSocketListener() {
+            @Override public void onDisconnect(final Throwable t) {
+                callbacks.add(true);
+                latch.countDown();
+            }
+        });
+
+        socket.disconnectSocket();
+        Thread.sleep(1000);
+
+        socket.connect(session, new AbstractSocketListener() {
+            @Override
+            public void onChannelMessage(final ChannelMessage message) {
+                super.onChannelMessage(message);
+                callbacks.add(true);
+                latch.countDown();
+            }
+
+            @Override
+            public void onChannelPresence(final ChannelPresenceEvent presence) {
+                super.onChannelPresence(presence);
+                callbacks.add(true);
+                latch.countDown();
+            }
+
+            @Override public void onDisconnect(final Throwable t) {
+                callbacks.add(true);
+                latch.countDown();
+            }
+        });
+        final Channel channel = socket.joinChat("myroom2", ChannelType.ROOM).get();
+        Assert.assertNotNull(channel);
+        final ChannelMessageAck ack = socket.writeChatMessage(channel.getId(), content).get();
+        Assert.assertNotNull(ack);
+        socket.disconnectSocket();
+        Thread.sleep(1000);
+        latch.await(10, TimeUnit.SECONDS);
+
+        // let's make sure that we terminate all threads correctly.
+        for (Thread thread: Thread.getAllStackTraces().keySet()) {
+//            System.out.printf("%s: %s %s\n", thread.getName(), thread.getState(), thread.isDaemon() ? "(daemon)" : "");
+            if (!thread.getName().equalsIgnoreCase("main")) {
+                Assert.assertTrue(thread.isDaemon());
+            }
+        }
+
+        Assert.assertEquals(4, callbacks.size());
     }
 }

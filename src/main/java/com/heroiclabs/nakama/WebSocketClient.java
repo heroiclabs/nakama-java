@@ -27,9 +27,6 @@ import com.google.protobuf.Timestamp;
 import com.google.type.Date;
 import com.heroiclabs.nakama.api.NotificationList;
 import com.heroiclabs.nakama.api.Rpc;
-import com.heroiclabs.nakama.rtapi.PartyJoin;
-import com.heroiclabs.nakama.rtapi.PartyJoinRequestList;
-import com.heroiclabs.nakama.rtapi.PartyMatchmakerAdd;
 import com.heroiclabs.nakama.rtapi.PartyMatchmakerTicket;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +40,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -77,10 +75,11 @@ public class WebSocketClient implements SocketClient {
     private final int port;
     private final boolean ssl;
     private final boolean trace;
-    private final OkHttpClient client;
     private final Map<String, SettableFuture<?>> collationIds;
+    private final boolean shouldShutdownThreadExecService;
+    private final OkHttpClient.Builder clientBuilder;
+    private ExecutorService listenerThreadExec;
     private WebSocket socket;
-    private final ExecutorService listenerThreadExec;
 
     WebSocketClient(@NonNull final String host, final int port, final boolean ssl,
                     final int socketTimeoutMs, final int socketPingMs, final boolean trace, ExecutorService listenerThreadExec) {
@@ -89,14 +88,19 @@ public class WebSocketClient implements SocketClient {
         this.ssl = ssl;
         this.trace = trace;
         this.collationIds = new ConcurrentHashMap<>();
-        this.listenerThreadExec = listenerThreadExec;
+        if (listenerThreadExec != null) {
+            this.listenerThreadExec = listenerThreadExec;
+            this.shouldShutdownThreadExecService = false;
+        } else {
+            this.listenerThreadExec = Executors.newSingleThreadExecutor();
+            this.shouldShutdownThreadExecService = true;
+        }
 
-        client = new OkHttpClient.Builder()
+        clientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(socketTimeoutMs, TimeUnit.MILLISECONDS)
                 .readTimeout(socketTimeoutMs, TimeUnit.MILLISECONDS)
                 .writeTimeout(socketTimeoutMs, TimeUnit.MILLISECONDS)
-                .pingInterval(socketPingMs, TimeUnit.SECONDS)
-                .build();
+                .pingInterval(socketPingMs, TimeUnit.SECONDS);
     }
 
     @Override
@@ -107,7 +111,7 @@ public class WebSocketClient implements SocketClient {
     @Override
     public ListenableFuture<Session> connect(@NonNull final Session session, @NonNull final SocketListener listener, final boolean createStatus) {
         if (socket != null) {
-            return Futures.immediateFailedFuture(new DefaultError("Client is already connected"));
+            return Futures.immediateFailedFuture(new DefaultError("Socket is already connected"));
         }
 
         final String url = new HttpUrl.Builder()
@@ -133,8 +137,14 @@ public class WebSocketClient implements SocketClient {
     }
 
     private ListenableFuture<Session> createWebsocket(@NonNull final Session session, @NonNull final SocketListener listener, @NonNull final Request request) {
+        if (this.listenerThreadExec == null || this.listenerThreadExec.isShutdown() || this.listenerThreadExec.isTerminated()) {
+            // in case of previously closed/failed socket.
+            this.listenerThreadExec = Executors.newSingleThreadExecutor();
+        }
+
         final SettableFuture<Session> connectFuture = SettableFuture.create();
         final Object lock = this;
+        final OkHttpClient client = clientBuilder.build();
         socket = client.newWebSocket(request, new WebSocketListener() {
             @Override
             public void onOpen(final WebSocket webSocket, final Response response) {
@@ -146,7 +156,7 @@ public class WebSocketClient implements SocketClient {
             @Override
             public void onMessage(final WebSocket webSocket, final ByteString bytes) {
                 super.onMessage(webSocket, bytes);
-                // No text messages are expected.
+                // No binary messages are expected.
                 log.warn("Unexpected binary message from server: " + bytes.base64());
             }
 
@@ -293,32 +303,54 @@ public class WebSocketClient implements SocketClient {
             @Override
             public void onClosed(final WebSocket webSocket, final int code, final String reason) {
                 super.onClosed(webSocket, code, reason);
+                listener.onDisconnect(null);
+
                 // Graceful socket disconnect is complete, clean up.
                 synchronized (lock) {
+                    socket.cancel();
                     socket = null;
                     collationIds.clear();
 
                     if (!connectFuture.isCancelled() && !connectFuture.isDone()) {
                         connectFuture.setException(new Throwable("Socket closed."));
                     }
+
+                    if (shouldShutdownThreadExecService) {
+                        listenerThreadExec.shutdown();
+                    }
+
+                    // clean up OkHttp Websocket resources.
+                    client.connectionPool().evictAll();
+                    client.dispatcher().executorService().shutdown();
+                    // setup new executor service in case of reconnections.
+                    clientBuilder.setDispatcher$okhttp(new Dispatcher());
                 }
-                listener.onDisconnect(null);
             }
 
             @Override
             public void onFailure(final WebSocket webSocket, final Throwable t, final Response response) {
                 super.onFailure(webSocket, t, response);
+                listener.onDisconnect(t);
                 // Socket has failed and is no longer connected, clean up.
                 synchronized (lock) {
+                    socket.cancel();
                     socket = null;
                     collationIds.clear();
 
                     if (!connectFuture.isCancelled() && !connectFuture.isDone()) {
                         connectFuture.setException(t);
                     }
-                }
 
-                listener.onDisconnect(t);
+                    if (shouldShutdownThreadExecService) {
+                        listenerThreadExec.shutdown();
+                    }
+
+                    // clean up OkHttp Websocket resources.
+                    client.connectionPool().evictAll();
+                    client.dispatcher().executorService().shutdown();
+                    // setup new executor service in case of reconnections.
+                    clientBuilder.setDispatcher$okhttp(new Dispatcher());
+                }
             }
         });
         return connectFuture;
@@ -330,10 +362,21 @@ public class WebSocketClient implements SocketClient {
             // Returns true if a shutdown was initiated, false if already shutting down or disconnected.
             // Either result is acceptable here.
             // Socket reference will be set to null when disconnect is completed.
+            // Don't nullify the socket at this stage as we'll need to have the OnClose called.
             socket.close(1000, null);
-            socket = null;
         }
         return Futures.immediateFuture(true);
+    }
+
+    @Override
+    public synchronized void disconnectSocket() {
+        if (socket != null) {
+            // Returns true if a shutdown was initiated, false if already shutting down or disconnected.
+            // Either result is acceptable here.
+            // Socket reference will be set to null when disconnect is completed.
+            // Don't nullify the socket at this stage as we'll need to have the OnClose called.
+            socket.close(1000, null);
+        }
     }
 
     @Override
