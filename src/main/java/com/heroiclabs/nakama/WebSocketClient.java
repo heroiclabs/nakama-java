@@ -152,12 +152,22 @@ public class WebSocketClient implements SocketClient {
     }
 
     private ListenableFuture<Session> createWebsocket(@NonNull final Session session, @NonNull final SocketListener listener, @NonNull final Request request) {
-        if (this.listenerThreadExec == null || this.listenerThreadExec.isShutdown() || this.listenerThreadExec.isTerminated()) {
+        if (this.listenerThreadExec == null || this.listenerThreadExec.isShutdown()) {
             // in case of previously closed/failed socket.
             this.listenerThreadExec = Executors.newSingleThreadExecutor();
         }
 
         final SettableFuture<Session> connectFuture = SettableFuture.create();
+        if (clientBuilder.getDispatcher$okhttp().executorService().isShutdown()) {
+            if (this.shouldShutdownOkHttpThreadExecService) {
+                // in case we are managing the OkHttpExecService, and it was previously shutdown, then recreate it before creating the client.
+                clientBuilder.setDispatcher$okhttp(new Dispatcher());
+            } else {
+                connectFuture.setException(new Throwable("websocket dispatcher thread executing has been previously shutdown."));
+                return connectFuture;
+            }
+        }
+
         final Object lock = this;
         final OkHttpClient client = clientBuilder.build();
         socket = client.newWebSocket(request, new WebSocketListener() {
@@ -338,8 +348,6 @@ public class WebSocketClient implements SocketClient {
                     client.connectionPool().evictAll();
                     if (shouldShutdownOkHttpThreadExecService) {
                         client.dispatcher().executorService().shutdown();
-                        // setup new executor service in case of reconnections.
-                        clientBuilder.setDispatcher$okhttp(new Dispatcher());
                     }
                 }
             }
@@ -366,8 +374,6 @@ public class WebSocketClient implements SocketClient {
                     client.connectionPool().evictAll();
                     if (shouldShutdownOkHttpThreadExecService) {
                         client.dispatcher().executorService().shutdown();
-                        // setup new executor service in case of reconnections.
-                        clientBuilder.setDispatcher$okhttp(new Dispatcher());
                     }
                 }
             }
