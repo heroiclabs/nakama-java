@@ -76,13 +76,15 @@ public class WebSocketClient implements SocketClient {
     private final boolean ssl;
     private final boolean trace;
     private final Map<String, SettableFuture<?>> collationIds;
-    private final boolean shouldShutdownThreadExecService;
     private final OkHttpClient.Builder clientBuilder;
+    private final boolean shouldShutdownListenerThreadExecService;
+    private boolean shouldShutdownOkHttpThreadExecService;
     private ExecutorService listenerThreadExec;
     private WebSocket socket;
 
     WebSocketClient(@NonNull final String host, final int port, final boolean ssl,
-                    final int socketTimeoutMs, final int socketPingMs, final boolean trace, ExecutorService listenerThreadExec) {
+                    final int socketTimeoutMs, final int socketPingMs, final boolean trace,
+                    ExecutorService listenerThreadExec) {
         this.host = host;
         this.port = port;
         this.ssl = ssl;
@@ -90,10 +92,10 @@ public class WebSocketClient implements SocketClient {
         this.collationIds = new ConcurrentHashMap<>();
         if (listenerThreadExec != null) {
             this.listenerThreadExec = listenerThreadExec;
-            this.shouldShutdownThreadExecService = false;
+            this.shouldShutdownListenerThreadExecService = false;
         } else {
             this.listenerThreadExec = Executors.newSingleThreadExecutor();
-            this.shouldShutdownThreadExecService = true;
+            this.shouldShutdownListenerThreadExecService = true;
         }
 
         clientBuilder = new OkHttpClient.Builder()
@@ -101,6 +103,19 @@ public class WebSocketClient implements SocketClient {
                 .readTimeout(socketTimeoutMs, TimeUnit.MILLISECONDS)
                 .writeTimeout(socketTimeoutMs, TimeUnit.MILLISECONDS)
                 .pingInterval(socketPingMs, TimeUnit.SECONDS);
+
+        this.shouldShutdownOkHttpThreadExecService = true;
+        clientBuilder.setDispatcher$okhttp(new Dispatcher());
+    }
+
+    WebSocketClient(@NonNull final String host, final int port, final boolean ssl,
+                    final int socketTimeoutMs, final int socketPingMs, final boolean trace,
+                    ExecutorService listenerThreadExec, @NonNull ExecutorService okHttpThreadExec, final int maxNumConcurrentRequests) {
+        this(host, port, ssl, socketTimeoutMs, socketPingMs, trace, listenerThreadExec);
+        this.shouldShutdownOkHttpThreadExecService = false;
+        Dispatcher dispatcher = new Dispatcher(okHttpThreadExec);
+        dispatcher.setMaxRequests(maxNumConcurrentRequests);
+        clientBuilder.setDispatcher$okhttp(dispatcher);
     }
 
     @Override
@@ -137,12 +152,22 @@ public class WebSocketClient implements SocketClient {
     }
 
     private ListenableFuture<Session> createWebsocket(@NonNull final Session session, @NonNull final SocketListener listener, @NonNull final Request request) {
-        if (this.listenerThreadExec == null || this.listenerThreadExec.isShutdown() || this.listenerThreadExec.isTerminated()) {
+        if (this.listenerThreadExec == null || this.listenerThreadExec.isShutdown()) {
             // in case of previously closed/failed socket.
             this.listenerThreadExec = Executors.newSingleThreadExecutor();
         }
 
         final SettableFuture<Session> connectFuture = SettableFuture.create();
+        if (clientBuilder.getDispatcher$okhttp().executorService().isShutdown()) {
+            if (this.shouldShutdownOkHttpThreadExecService) {
+                // in case we are managing the OkHttpExecService, and it was previously shutdown, then recreate it before creating the client.
+                clientBuilder.setDispatcher$okhttp(new Dispatcher());
+            } else {
+                connectFuture.setException(new Throwable("websocket dispatcher thread executing has been previously shutdown."));
+                return connectFuture;
+            }
+        }
+
         final Object lock = this;
         final OkHttpClient client = clientBuilder.build();
         socket = client.newWebSocket(request, new WebSocketListener() {
@@ -315,15 +340,15 @@ public class WebSocketClient implements SocketClient {
                         connectFuture.setException(new Throwable("Socket closed."));
                     }
 
-                    if (shouldShutdownThreadExecService) {
+                    if (shouldShutdownListenerThreadExecService) {
                         listenerThreadExec.shutdown();
                     }
 
                     // clean up OkHttp Websocket resources.
                     client.connectionPool().evictAll();
-                    client.dispatcher().executorService().shutdown();
-                    // setup new executor service in case of reconnections.
-                    clientBuilder.setDispatcher$okhttp(new Dispatcher());
+                    if (shouldShutdownOkHttpThreadExecService) {
+                        client.dispatcher().executorService().shutdown();
+                    }
                 }
             }
 
@@ -341,15 +366,15 @@ public class WebSocketClient implements SocketClient {
                         connectFuture.setException(t);
                     }
 
-                    if (shouldShutdownThreadExecService) {
+                    if (shouldShutdownListenerThreadExecService) {
                         listenerThreadExec.shutdown();
                     }
 
                     // clean up OkHttp Websocket resources.
                     client.connectionPool().evictAll();
-                    client.dispatcher().executorService().shutdown();
-                    // setup new executor service in case of reconnections.
-                    clientBuilder.setDispatcher$okhttp(new Dispatcher());
+                    if (shouldShutdownOkHttpThreadExecService) {
+                        client.dispatcher().executorService().shutdown();
+                    }
                 }
             }
         });

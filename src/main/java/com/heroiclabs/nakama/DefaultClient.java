@@ -234,6 +234,11 @@ public class DefaultClient implements Client {
     }
 
     @Override
+    public SocketClient createSocket(final String host, final int port, final boolean ssl, final int socketTimeoutMs, final int socketPingMs, ExecutorService listenerThreadExec, ExecutorService socketThreadExec, int maxNumConcurrentRequests) {
+        return new WebSocketClient(host, port, ssl, socketTimeoutMs, socketPingMs, this.trace, listenerThreadExec, socketThreadExec, maxNumConcurrentRequests);
+    }
+
+    @Override
     public ListenableFuture<Empty> addFriends(@NonNull final Session session, @NonNull final String... ids) {
         return autoRefreshSession(session, getStub(session).addFriends(AddFriendsRequest.newBuilder().addAllIds(Arrays.asList(ids)).build()));
     }
