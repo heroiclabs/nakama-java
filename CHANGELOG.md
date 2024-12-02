@@ -4,6 +4,11 @@ All notable changes to this project are documented below.
 
 The format is based on [keep a changelog](http://keepachangelog.com/) and this project uses [semantic versioning](http://semver.org/).
 
+## [2.5.3] - 2024-12-02
+
+### Added
+- Add option to specify own dispatcher for socket connectivity.
+
 ## [2.5.2] - 2024-10-27
 
 ### Changed
